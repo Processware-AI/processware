@@ -16,22 +16,41 @@ tags: [folder-readme, workspace]
 
 ```
 02_표준/
-├── ISO9001/
+├── _scaffold/                        ← 새 표준 편입용 템플릿 (복사하여 사용)
+│   ├── README.md
+│   └── _inputs/
+│       ├── README.md
+│       ├── 01_표준원문/README.md
+│       ├── 02_법규/README.md
+│       ├── 03_해설서/README.md
+│       ├── 04_AsIs/README.md
+│       └── 05_산업가이드/README.md
+├── ISO9001/                          ← scaffold 복사해서 시작
 │   ├── 00_ISO9001_표준개요.md       ← standard-analyzer 생성
 │   ├── 01_ISO9001_요구사항분해.md   ← standard-analyzer 생성
 │   ├── 02_작업노트.md                ← 인간 가독 체크리스트
 │   ├── _state.yaml                   ← 파이프라인 상태 (gitignored)
-│   ├── 99_QA리포트_YYYYMMDD_attempt1.md  ← qa-reviewer 생성 (gitignored)
+│   ├── 99_QA리포트_*.md              ← qa-reviewer 생성 (gitignored)
 │   └── _inputs/
 │       ├── 01_표준원문/
 │       ├── 02_법규/
 │       ├── 03_해설서/
 │       ├── 04_AsIs/
 │       ├── 05_산업가이드/
-│       └── README.md                 ← 입력물 인벤토리
+│       └── README.md
 ├── ISO27001/
 │   └── ...
 ```
+
+## 빠른 시작 (새 표준 편입)
+```bash
+cd vault/02_표준/
+cp -R _scaffold ISO27001        # 5개 카테고리 폴더 + README 즉시 복사
+# 그 다음 각 카테고리에 파일 투하
+claude
+> /build-standard ISO27001
+```
+또는 `_scaffold/` 없이 바로 `/build-standard` 실행하면 `standard-analyzer` 가 자동 복사.
 
 ## 무엇이 들어가나
 - 표준 개요 (00_*)

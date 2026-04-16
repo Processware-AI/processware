@@ -8,15 +8,26 @@
 
 # ==========================================
 # 고객 입력자료 (저작권·기밀)
-# 스텁 README / .gitkeep 만 버전 관리
+# 실데이터는 제외, 구조·README 만 버전 관리
+# _scaffold 는 전체 추적 (템플릿)
 # ==========================================
-vault/_inputs_common/*
-!vault/_inputs_common/README.md
-!vault/_inputs_common/.gitkeep
 
-vault/02_표준/**/_inputs/*
-!vault/02_표준/**/_inputs/README.md
-!vault/02_표준/**/_inputs/.gitkeep
+# 전사 공통: 실데이터 제외, 구조만 추적
+/vault/_inputs_common/**
+!/vault/_inputs_common/
+!/vault/_inputs_common/README.md
+!/vault/_inputs_common/*/
+!/vault/_inputs_common/*/README.md
+
+# 표준별: 실데이터 제외, 구조만 추적
+/vault/02_표준/*/_inputs/**
+!/vault/02_표준/*/_inputs/
+!/vault/02_표준/*/_inputs/README.md
+!/vault/02_표준/*/_inputs/*/
+!/vault/02_표준/*/_inputs/*/README.md
+
+# Scaffold 는 전체 추적 (위 패턴 무효화)
+!/vault/02_표준/_scaffold/**
 
 # ==========================================
 # 파이프라인 실행 상태 (인스턴스별)

@@ -36,6 +36,14 @@ S-2. 자기 phase 를 `status: running` + `started: <now>` 로 Edit.
 - 자기 phase 를 `status: running` + `started: <now>` 로 Edit.
 
 ### Phase 0. 입력자료 Preflight (필수 선행)
+
+**0-A. `_inputs/` 자동 복사 (필요 시)**
+- `vault/02_표준/{표준코드}/_inputs/` 가 없으면:
+  1. `vault/02_표준/_scaffold/_inputs/` 를 해당 표준 폴더로 **재귀 복사** (bash `cp -R` 또는 각 파일 Read+Write)
+  2. 복사된 `_inputs/README.md` 의 `{표준코드}` placeholder 를 실제 코드로 치환
+  3. 5개 카테고리 폴더 + 각 README 가 생성됨
+  4. 사용자에게 "scaffold 복사 완료. `_inputs/{카테고리}/` 에 자료 배치 후 재실행 또는 추정 모드로 계속?" 안내
+- 이미 있으면 스캔으로 진행.
 0-1. `vault/02_표준/{표준코드}/_inputs/` 존재 확인.
    - **없으면**: 폴더 생성 + `_inputs/README.md` 스텁 작성 (규칙문서 §9 포맷) + 사용자에게 **경고**: "입력자료 없이 LLM 추정으로 진행하시겠습니까? 권장은 `_inputs/` 에 표준원문·법규·As-Is를 배치한 후 재실행." 승인 없이 진행 금지.
    - **있으면**: Glob 으로 전수 스캔, 각 파일을 5종(표준원문/법규/해설서/AsIs/산업가이드) 카테고리 분류 후 요약.
