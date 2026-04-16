@@ -48,11 +48,18 @@ S-2. 자기 phase 를 `status: running` + `started: <now>` 로 Edit.
 ### Phase 2. 표준 구조 조사
 2. **우선순위 순** 으로 근거 수집:
    - ① `_inputs/02_법규/` 원문 (공공)
-   - ② `_inputs/01_표준원문/` (라이선스 보유)
-   - ③ `_inputs/03_해설서/` + `_inputs/05_산업가이드/`
+   - ② `_inputs/01_표준원문/{표준코드}/*.md` **변환 MD 서브볼트**(있으면 최우선)
+        → 없으면 `_inputs/01_표준원문/*.pdf` 원본(페이지 지정 Read)
+   - ③ `_inputs/03_해설서/` + `_inputs/05_산업가이드/` (같은 원칙: MD 변환본 우선)
    - ④ LLM 내부 지식 (최근 개정판 포함 여부 표기)
    - ⑤ WebFetch/WebSearch (출처 URL 기록)
    조항 문구 추정 금지 → `[확인 필요]` 또는 `[_inputs 미제공 — LLM 추정]` 표기.
+
+   **변환 MD 인식 규칙** (규칙문서 §10 하이브리드 구조):
+   - PDF 와 같은 이름의 폴더가 옆에 있으면 = MD 서브볼트
+   - 각 MD 파일의 frontmatter `type: input_document`, `content_mode: paraphrase|summary|verbatim` 확인
+   - `verbatim` 은 원본 PDF와 동일 저작권 취급(직접 인용 금지)
+   - `paraphrase`/`summary` 는 본문에 조항번호와 함께 인용 가능
 
 ### Phase 3. 산출물 생성
 3. `vault/99_템플릿/T11_표준개요.md` → `vault/02_표준/{표준코드}/00_{표준코드}_표준개요.md` 생성.
