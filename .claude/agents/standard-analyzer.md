@@ -50,8 +50,26 @@ S-2. 자기 phase 를 `status: running` + `started: <now>` 로 Edit.
 0-2. `vault/_inputs_common/` 이 있으면 역시 스캔(선택).
 0-3. 각 입력물의 라이선스 상태를 `_inputs/README.md` 에서 확인. 불분명하면 `[라이선스 미확인]` 플래그.
 
-### Phase 1. 체계 내재화
-1. `01_구성원칙/표준프로세스_구성원칙.md` + `00_공통관리/01_문서체계.md` + `02_문서번호체계.md` + `05_입력자료_규칙.md` 를 읽어 체계·출처 우선순위 내재화.
+### Phase 1. 체계 내재화 + 레지스트리 조회
+1. 체계 기준 문서 Read:
+   - `01_구성원칙/표준프로세스_구성원칙.md`
+   - `00_공통관리/01_문서체계.md`
+   - `00_공통관리/02_문서번호체계.md`
+   - `00_공통관리/05_입력자료_규칙.md`
+   - **`00_공통관리/07_표준분류레지스트리.md`** ← 필수
+
+1-A. **표준 분류 메타 조회** (`[[07_표준분류레지스트리]]`):
+   - 대상 표준의 `layer`, `structure`, `integration_mode`, `scope_codes`, `interface_with` 추출
+   - 레지스트리 **미등록** 시: 사용자에게 경고 + 기본값(`L1_management`/`HLS`/`hls_merge`) 사용 여부 질의
+   - 조회 결과를 `_state.yaml` 의 `phases.analyze.metrics` 에 기록:
+     ```yaml
+     metrics:
+       layer: L2_engineering
+       structure: sw_lifecycle
+       integration_mode: interface_only
+       scope_codes: [MDSW]
+     ```
+   - 이후 단계(특히 `process-designer`)는 이 값에 따라 분기.
 
 ### Phase 2. 표준 구조 조사
 2. **우선순위 순** 으로 근거 수집:

@@ -25,11 +25,24 @@ S-1. `_state.yaml` 에서 선행 phase(`preflight`, `analyze`) 가 모두 `done`
 S-2. 자가수정 모드: `qa_failures[] where assigned_to == "process-designer"` 만 처리 + 처리 완료 시 해당 이슈 제거.
 S-3. 일반 모드: 자기 phase `design` 을 `status: running` + `started` 로 Edit.
 
-### Phase -1. 상태 Prerequisite 확인
+### Phase -1. 상태 Prerequisite 확인 + 레지스트리 분기
 - `_state.yaml` Read.
 - 선행 phase(`preflight`, `analyze`) 모두 `status: done` 확인. 아니면 중단.
-- 자가수정 모드 감지: orchestrator 요청에 `qa_failures` 서브셋이 포함되어 있으면 `assigned_to: process-designer` 항목만 수정 후 종료(phase status 변경 없이 history append).
+- **`phases.analyze.metrics` 에서 `integration_mode` 추출** (standard-analyzer 가 기록). 없으면 `[[07_표준분류레지스트리]]` 직접 조회.
+- 자가수정 모드 감지: orchestrator 요청에 `qa_failures` 서브셋이 포함되어 있으면 `assigned_to: process-designer` 항목만 수정 후 종료.
 - 정상 모드면 `phases.design` 을 `status: running`, `started: <now>` 로 Edit.
+
+### Phase -0.5. Integration Mode 분기 결정
+`[[07_표준분류레지스트리]]` §4.2 에 따라 설계 전략 결정:
+
+| integration_mode | 분기 동작 |
+|---|---|
+| **`hls_merge`** | 기존 POL/PRO grep → 동일 목적 있으면 `standards[]` 확장. 영역코드 충돌 시 신규 |
+| **`quasi_hls_merge`** | 경계면(문서관리·경영검토·역량·변경관리)만 기존 확장. 그 외는 전용 영역코드(MDQMS 등)로 독립 생성 |
+| **`interface_only`** | **독립 체계 생성** (전용 영역코드). 상위 L1 PRO 의 경계면만 "참조" 링크. `MAT-07` Interface 테이블 기록 (향후) |
+| **`reference_only`** | **POL/PRO 생성 금지**. REF 만 생성 + 기존 관련 POL/PRO 에 인용 주석 추가 |
+
+경계면 목록(interface_only 시 참조 대상): 문서관리·역량관리·공급자관리·변경관리·구성관리·리스크 거버넌스·내부심사 (레지스트리 §3).
 
 ### Phase 0. 입력자료·골든샘플 Preflight
 0-1. `_inputs/04_AsIs/` 스캔 → 고객사 기존 정책·절차 요약·용어 추출.
@@ -57,14 +70,14 @@ S-3. 일반 모드: 자기 phase `design` 을 `status: running` + `started` 로 
 4. 요구사항분해 매트릭스의 "연결 POL", "연결 PRO" 열을 링크로 갱신.
 5. `vault/90_MAT_통합매핑/MAT-003_산출물_목록표.md` 의 해당 표준 Row 갱신.
 
-## 설계 원칙 (구성원칙 §1, §3, §4 + 입력자료 규칙 §5 준수)
+## 설계 원칙 (구성원칙 §1, §3, §4 + 입력자료 규칙 §5 + 레지스트리 §4 준수)
 - 테일러링 가능하도록 범위/예외를 명확히 구분
-- 동일 목적의 기존 POL/PRO 가 있으면 **신규보다 기존 확장** 우선
+- **integration_mode 규칙 엄수** — `hls_merge` 만 기존 확장 우선, 나머지는 위 Phase -0.5 표대로
 - `_inputs/04_AsIs/` 고객사 기존 자산이 있으면 **용어·구조 존중** + 표준 대비 gap 만 보완
-- PDCA 사이클이 한 PRO 내 식별 가능해야 함
+- PDCA 사이클이 한 PRO 내 식별 가능해야 함 (L1 일 때만 강제. L2 `interface_only` 는 원본 구조 존중)
 - 정책서는 짧고 명확: 실무 세부 절차 혼입 금지
 - POL/PRO 본문에 Req-ID 와 출처 `source_citation` 섹션 포함
-- **골든샘플의 필수 섹션 구조 준수**:
+- **골든샘플의 필수 섹션 구조 준수** (L1 POL/PRO 기준. L2 는 필요 섹션만 선택적 적용):
   - POL: 목적·범위·정책 원칙(5개 내)·역할·준수 기준·하위 PRO·표준 매핑·출처·개정이력
   - PRO: 목적·범위·RACI·Mermaid 흐름도·단계별 I/O·연계 WI·KPI(5개 내)·표준 매핑·출처·개정이력
 

@@ -72,6 +72,18 @@ model: opus
 
 **검사 방법**: Grep 으로 `_inputs/01_표준원문/*.md` (PDF 텍스트 추출본 있을 경우) 의 15~20단어 샘플 문장을 산출물 전수 검색. 일치 시 **부적합(FAIL)**.
 
+### 11.5 Integration Mode 정합성 (레지스트리 §4.3)
+`[[07_표준분류레지스트리]]` 에 등록된 각 표준의 `integration_mode` 대비 배치 정합성:
+
+- [ ] `interface_only` 표준이 **HLS 영역코드**(QMS/ISMS 등) POL/PRO 의 `standards[]` 에 단독 매핑됨 → **레이어 혼재 FAIL**
+  - 예: `POL-QMS-001.md` 의 `standards: [ASPICE]` 단독 → FAIL (SPICE 전용 영역코드로 분리되어야)
+  - 단, HLS 표준과 **함께** 매핑된 건 OK (`[ISO 9001, ASPICE]` — 경계면 합의 시)
+- [ ] `reference_only` 표준(ISO 31000 등)이 POL/PRO 의 `standards[]` 에 등장 → 경고 (REF 만 허용)
+- [ ] L2 표준 전용 영역코드(SPICE/FUSA/VCSMS/MDRM/MDSW/MDCS) POL/PRO 가 HLS 필수 섹션(RACI·KPI·Mermaid) 을 억지로 강제당하지 않음 — L2 는 원본 구조 존중
+- [ ] 레지스트리 미등록 표준이 `standards[]` 에 등장 → 경고 (레지스트리 등록 필요)
+
+검증 방법: Glob 으로 POL/PRO/WI 수집 → frontmatter `standards[]` 파싱 → 레지스트리와 교차 조회.
+
 ### 11. 골든샘플 정합성 (구조 하한선)
 참조: `vault/99_템플릿/_골든샘플/`
 

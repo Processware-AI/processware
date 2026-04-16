@@ -20,6 +20,7 @@ tags: [folder-readme, common]
 | 04 | [[04_문서관리대장_link]] | MAT-001 로 진입하는 링크 |
 | 05 | [[05_입력자료_규칙]] | _inputs 구조·source_citation·저작권 가드·하이브리드 구조 |
 | 06 | [[06_파이프라인_상태규약]] | `_state.yaml` 스키마·체크포인트·자가수정 루프 규약 |
+| 07 | [[07_표준분류레지스트리]] | 표준별 Layer/Structure/Integration Mode 레지스트리 (HLS vs 非-HLS 처리) |
 
 ## 관리 규칙
 - **앞 번호는 순서 의미**. 번호 바꾸지 않기.
@@ -35,3 +36,4 @@ tags: [folder-readme, common]
 - 01·02 변경 → 파일명·메타 전수 점검 필요
 - 05 변경 → standard-analyzer 프롬프트 확인
 - 06 변경 → 모든 에이전트의 State 로직 확인
+- 07 변경 → process-designer 분기 로직·qa-reviewer §11.5 체크 확인
