@@ -29,24 +29,31 @@ S-3. 일반 모드: 자기 phase `trace` 를 `status: running` + `started` 로 E
 ### A. 표준별 추적성 매트릭스
 1. `vault/02_표준/{표준코드}/01_{표준코드}_요구사항분해.md` 의 모든 Req-ID 수집 (source_citation 포함).
 2. `vault/03_POL_정책`, `04_PRO_절차`, `05_WI_업무지침`, `06_TMP_템플릿` 내 문서의 frontmatter `standards` 및 본문 표준 매핑 섹션을 스캔.
-3. `vault/99_템플릿/T09_매핑표_MAT.md` 로 `vault/90_MAT_통합매핑/MAT-06_{표준코드}_추적성_v0.1.md` 생성/갱신.
-4. 커버리지 집계:
+3. **MAT 번호 부여 규칙** (`[[02_문서번호체계]]` §MAT 번호 할당 원칙):
+   - MAT-001~005 는 전사 공통 고정. 재배정 금지.
+   - 표준별 추적성은 **MAT-006 부터 순차 부여**.
+   - `vault/90_MAT_통합매핑/` 에 `ls MAT-*_*_추적성_*.md` 로 기존 번호 스캔 → 현재 최대 번호 +1 을 새 번호로 결정.
+   - 동일 표준 재실행 시에는 기존 번호 유지 (덮어쓰기).
+   - 번호는 **3자리 0-padding** (예: `MAT-006`, `MAT-007`, `MAT-099`).
+4. `vault/99_템플릿/T09_매핑표_MAT.md` 로 `vault/90_MAT_통합매핑/MAT-{NNN}_{표준코드}_추적성_v0.1.md` 생성/갱신. 결정된 번호를 파일명·frontmatter `doc_id`·본문 헤더에 일관 반영.
+5. 커버리지 집계:
    - ✅ 반영완료: POL+PRO+WI+TMP+증적경로 모두 링크
    - 🟡 작업중: 일부 누락
    - ⛔ 미착수: 매핑 없음
-5. 공백(Gap) 을 작업노트 이슈 로그에 반영.
+6. 공백(Gap) 을 작업노트 이슈 로그에 반영.
 
 ### B. 통합 MAT 5종 갱신
-6. **MAT-001 문서관리대장**: 신규/갱신 문서 Row 반영
-7. **MAT-002 규제요구사항 대조표**: 해당 표준 조항별 POL/PRO/WI 링크 채움
-8. **MAT-003 산출물 목록표**: 해당 표준 Row 의 POL/PRO/WI/TMP/EX 개수 갱신
-9. **MAT-004 RACI 통합표**: 신규 PRO 의 RACI 추출해 Row 추가, Accountable 누락/중복 탐지
-10. **MAT-005 심사증적 인덱스**: 표준 조항 ↔ POL ↔ PRO ↔ WI ↔ TMP ↔ REC(예상경로) + **입력 출처(`_inputs/`)** 연결
+7. **MAT-001 문서관리대장**: 신규/갱신 문서 Row 반영
+8. **MAT-002 규제요구사항 대조표**: 해당 표준 조항별 POL/PRO/WI 링크 채움
+9. **MAT-003 산출물 목록표**: 해당 표준 Row 의 POL/PRO/WI/TMP/EX 개수 갱신
+10. **MAT-004 RACI 통합표**: 신규 PRO 의 RACI 추출해 Row 추가, Accountable 누락/중복 탐지
+11. **MAT-005 심사증적 인덱스**: 표준 조항 ↔ POL ↔ PRO ↔ WI ↔ TMP ↔ REC(예상경로) + **입력 출처(`_inputs/`)** 연결
 
 ### C. 교차 표준 모드 (옵션 `--cross`)
 - 같은 HLS 조항(4~10)에 속한 서로 다른 표준의 Req-ID 를 나란히 배치, 통합 가능 지점 제안.
 
-11. `vault/00_MOC/MOC_추적성매트릭스.md` 인덱스에 신규 매트릭스 링크 추가.
+12. `vault/00_MOC/MOC_추적성매트릭스.md` 인덱스에 신규 매트릭스 링크 추가.
+13. `vault/00_공통관리/02_문서번호체계.md` §MAT 번호 할당 원칙의 "표준별 추적성" 표에 신규 행 추가 (번호·표준코드·편입일).
 
 ## 완료 시 State 갱신 (필수)
 - `_state.yaml` 의 `phases.trace` 를 `status: done` + `completed` + `artifacts[]` + `metrics{req_covered, req_uncovered, mat_rows_updated}` + `notes` 로 Edit.
