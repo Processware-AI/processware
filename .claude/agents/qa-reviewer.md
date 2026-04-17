@@ -30,7 +30,7 @@ model: opus
   - POL `POL-{영역}-{###}` (3자리), PRO `PRO-{영역}-{###}` (3자리)
   - WI `WI-{상위PRO번호}-{##}` (뒤 2자리)
   - TMP `TMP-{기능}-{###}` (3자리), REF `REF-{###}` (3자리)
-  - **MAT `MAT-{###}` (3자리 0-padding)** — MAT-001~005 공통 5종과 동일 자릿수 유지. `MAT-06`·`MAT-6` 같은 변칙 금지.
+  - **MAT `MAT-{###}` (3자리 0-padding)** — 공통 001~010 / 표준별 011~ 구역. `MAT-06`·`MAT-6`·`MAT-11` 같은 변칙 금지.
   - 같은 폴더 내 모든 파일이 동일 자릿수인지 Grep 으로 대조.
 
 ### 4. 분리 원칙
@@ -53,6 +53,7 @@ model: opus
 - [ ] MAT-001 문서관리대장에 모든 신규 문서 등록됨
 - [ ] MAT-003 산출물 목록에 공란 없음(또는 `-` 명시)
 - [ ] MAT-004 RACI 에 Accountable 중복(2+) 없음
+- [ ] **MAT-006 계층 매트릭스** 의 트리·표가 실제 frontmatter(parent_policy/child_pro/parent_pro/child_wi/parent_wi/related_tmp/parent_tmp) 와 정합. 고아(상위 없음)·끊긴 링크 0건
 
 ### 8. 형식 준수
 - [ ] 과도한 형식주의(불필요 세부 절차, 중복 양식) 없음

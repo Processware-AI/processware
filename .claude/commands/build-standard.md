@@ -78,7 +78,7 @@ argument-hint: "<표준코드> [--restart] [--resume] [--from <phase>] [--skip-q
    - done-marker: `phases.write`
 
 4. **Trace** — Agent `traceability-mapper`
-   - 출력: `90_MAT_통합매핑/MAT-{NNN}_{표준코드}_추적성_*` (NNN 은 MAT-006 부터 순차. 기존 번호 스캔 후 max+1), MAT-001~005 최신화, 02_문서번호체계 표에 신규 행 append
+   - 출력: `90_MAT_통합매핑/MAT-{NNN}_{표준코드}_추적성_*` (NNN 은 MAT-011 부터 순차. 기존 번호 스캔 후 max+1), 공통 매트릭스(MAT-001·003·004·005·006) 최신화, 02_문서번호체계 표에 신규 행 append
    - done-marker: `phases.trace`
 
 5. **QA** — Agent `qa-reviewer` (옵션 `--skip-qa` 시 생략)
