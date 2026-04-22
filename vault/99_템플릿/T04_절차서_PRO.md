@@ -1,13 +1,13 @@
 ---
 type: PRO
-doc_id: "PRO-{{영역}}-{{번호}}"
+doc_id: "PRO-{{영역}}-{{POL번호}}-{{PRO순번}}"
 title: "{{절차명}}"
 version: "0.1"
 owner: ""
 reviewer: ""
 approver: ""
 scope: ""
-parent_policy: "[[POL-{{영역}}-{{번호}}_정책명]]"
+parent_policy: "[[POL-{{영역}}-{{POL번호}}_정책명]]"
 child_wi: []
 standards: ["{{표준코드}}"]
 tier: "M | C | S"
@@ -17,9 +17,9 @@ updated: "{{date}}"
 tags: [PRO, "{{표준코드}}"]
 ---
 
-# {{절차명}} (PRO-{{영역}}-{{번호}})
+# {{절차명}} (PRO-{{영역}}-{{POL번호}}-{{PRO순번}})
 
-> 상위 정책: [[POL-{{영역}}-{{번호}}_정책명]] · 기준: [[표준프로세스_구성원칙]]
+> 상위 정책: [[POL-{{영역}}-{{POL번호}}_정책명]] · 기준: [[표준프로세스_구성원칙]]
 
 ## 1. 목적
 ## 2. 적용 범위
@@ -29,7 +29,7 @@ tags: [PRO, "{{표준코드}}"]
 
 ## 4. 절차 흐름
 ```mermaid
-flowchart LR
+flowchart TD
   A[시작] --> B[단계1] --> C[단계2] --> D[종료]
 ```
 

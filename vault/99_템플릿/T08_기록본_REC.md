@@ -1,9 +1,9 @@
 ---
 type: REC
-doc_id: "REC-{{기능}}-{{YYYY}}-{{번호}}"
+doc_id: "REC-{{영역}}-{{POL번호}}-{{PRO순번}}-{{WI순번}}-{{YYYY}}-{{##}}"
 title: "{{기록명}}"
-source_tmp: "[[TMP-{{기능}}-{{번호}}_양식명]]"
-related_wi: "[[WI-{{상위}}-{{번호}}_지침명]]"
+source_tmp: "[[TMP-{{영역}}-{{POL번호}}-{{PRO순번}}-{{WI순번}}_양식명]]"
+related_wi: "[[WI-{{영역}}-{{POL번호}}-{{PRO순번}}-{{WI순번}}_지침명]]"
 event_id: ""
 event_date: ""
 author: ""
@@ -13,12 +13,12 @@ retention: "5년"
 status: final         # draft | final | archived
 created: "{{date}}"
 updated: "{{date}}"
-tags: [REC, "{{기능}}"]
+tags: [REC, "{{영역}}"]
 ---
 
-# {{기록명}} (REC-{{기능}}-{{YYYY}}-{{번호}})
+# {{기록명}} (REC-{{영역}}-{{POL번호}}-{{PRO순번}}-{{WI순번}}-{{YYYY}}-{{##}})
 
-> 원본 양식: [[TMP-{{기능}}-{{번호}}_양식명]] · 근거 지침: [[WI-{{상위}}-{{번호}}_지침명]]
+> 원본 양식: [[TMP-{{영역}}-{{POL번호}}-{{PRO순번}}-{{WI순번}}_양식명]] · 근거 지침: [[WI-{{영역}}-{{POL번호}}-{{PRO순번}}-{{WI순번}}_지침명]]
 
 ## 1. 사건/활동 식별
 - 사건번호: 

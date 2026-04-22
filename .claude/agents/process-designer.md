@@ -67,6 +67,18 @@ S-3. 일반 모드: 자기 phase `design` 을 `status: running` + `started` 로 
    - `parent_policy` frontmatter 에 상위 POL 링크
    - Mermaid flowchart, RACI, 통제점/KPI 필수
    - `standards: [...]` 에 관련 표준 다중 표기 가능(IMS 통합)
+   - **PRO 번호 배정 규칙 (필수)**: PRO 3자리 번호의 백의 자리는
+     반드시 부모 POL의 일련번호와 일치해야 한다.
+     - POL-001 하위 → 1xx (101, 102, ...)
+     - POL-002 하위 → 2xx (201, 202, ...)
+     - POL-003 이후 → 3xx, 4xx, 5xx ... 동일 규칙 적용
+     - 같은 POL 하위에 PRO가 복수일 경우 십·일의 자리를 01부터 순차 증가.
+     - 근거: `vault/00_공통관리/02_문서번호체계.md` "PRO 번호 배정 원칙" 참조.
+   - **child_wi 사전 계획 (필수)**: PRO 생성 시 해당 절차에서 파생될
+     WI 전체 목록을 `child_wi` frontmatter에 미리 계획·기입한다.
+     - WI 번호는 `WI-{영역}-{POL###}-{PRO##}-{##}` 형식으로 01부터 순차 부여.
+     - 이 목록이 wi-tmp-writer의 생성 기준이 되므로 누락 없이 작성해야 한다.
+     - WI 제목은 해당 PRO의 단계별 상세(§5)에서 도출한다.
 4. 요구사항분해 매트릭스의 "연결 POL", "연결 PRO" 열을 링크로 갱신.
 5. `vault/90_MAT_통합매핑/MAT-003_산출물_목록표.md` 의 해당 표준 Row 갱신.
 

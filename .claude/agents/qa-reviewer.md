@@ -27,11 +27,14 @@ model: opus
 - [ ] `[유형]-[식별번호]_[문서명]_v[버전].md` 규칙 준수
 - [ ] 영역 코드(QMS/ISMS/PIMS/...) 가 `02_문서번호체계.md` 에 등록된 값 사용
 - [ ] **식별번호 자릿수 일관성** — 유형별 규칙의 `{###}`/`{##}` padding 준수:
-  - POL `POL-{영역}-{###}` (3자리), PRO `PRO-{영역}-{###}` (3자리)
-  - WI `WI-{상위PRO번호}-{##}` (뒤 2자리)
-  - TMP `TMP-{기능}-{###}` (3자리), REF `REF-{###}` (3자리)
+  - POL `POL-{영역}-{###}` (3자리)
+  - PRO `PRO-{영역}-{P}{##}` (3자리, 백의자리=POL 일련번호)
+  - WI `WI-{영역}-{POL###}-{PRO##}-{##}` (영역+POL3+PRO2+WI2)
+  - TMP `TMP-{영역}-{POL###}-{PRO##}-{WI##}`, EX 동일 구조
+  - REF `REF-{###}` (3자리)
   - **MAT `MAT-{###}` (3자리 0-padding)** — 공통 001~010 / 표준별 011~ 구역. `MAT-06`·`MAT-6`·`MAT-11` 같은 변칙 금지.
   - 같은 폴더 내 모든 파일이 동일 자릿수인지 Grep 으로 대조.
+  - **PRO 번호 정합성**: PRO 파일명의 백의 자리가 `parent_policy` POL 번호와 일치하는지 확인 (예: `POL-QMS-002` 하위 PRO 는 반드시 2xx).
 
 ### 4. 분리 원칙
 - [ ] TMP 내에 샘플 데이터 없음 (EX 로 분리되었는지)
@@ -39,11 +42,34 @@ model: opus
 - [ ] POL 본문에 세부 수행 절차 혼입 없음 (흐름/단계 → PRO 로)
 
 ### 5. 계층 링크 정합성
-- [ ] 모든 PRO 에 `parent_policy` 링크 존재 및 실제 파일 존재
-- [ ] 모든 WI 에 `parent_pro` 링크 존재 및 실제 파일 존재
-- [ ] 모든 TMP 에 `parent_wi` + `related_ex` 존재
-- [ ] 모든 EX 에 `parent_tmp` 존재
-- [ ] `[[...]]` 깨진 링크 없음 (Grep + Glob 검증)
+
+**검증 절차** (Glob + Grep 순서대로 실행):
+
+**5-A. 상향 링크 (하위→상위 존재 확인)**
+- Glob `04_PRO_절차/PRO-*.md` → 각 `parent_policy` 값 추출 → Glob `03_POL_정책/{값}` 실재 확인
+- Glob `05_WI_업무지침/WI-*.md` → 각 `parent_pro` 값 추출 → Glob `04_PRO_절차/{값}` 실재 확인
+- Glob `06_TMP_템플릿/TMP-*.md` → 각 `parent_wi` 값 추출 → Glob `05_WI_업무지침/{값}` 실재 확인
+- Glob `07_EX_작성예시/EX-*.md` → 각 `parent_tmp` 값 추출 → Glob `06_TMP_템플릿/{값}` 실재 확인
+
+**5-B. 하향 링크 (상위→하위 존재 확인)**
+- Glob `03_POL_정책/POL-*.md` → 각 `child_pro[]` 값 추출 → Glob `04_PRO_절차/{값}` 실재 확인
+- Glob `04_PRO_절차/PRO-*.md` → 각 `child_wi[]` 값 추출 → Glob `05_WI_업무지침/{값}` 실재 확인
+- Glob `05_WI_업무지침/WI-*.md` → 각 `related_tmp[]` 값 추출 → Glob `06_TMP_템플릿/{값}` 실재 확인
+- Glob `06_TMP_템플릿/TMP-*.md` → 각 `related_ex` 값 추출 → Glob `07_EX_작성예시/{값}` 실재 확인
+
+**5-C. 양방향 일관성 확인**
+- WI의 `related_tmp[]`에 등재된 TMP의 `parent_wi`가 해당 WI를 가리키는지 교차 확인
+- TMP의 `related_ex`에 등재된 EX의 `parent_tmp`가 해당 TMP를 가리키는지 교차 확인
+
+**5-D. 고아(Orphan) 탐지**
+- Glob `05_WI_업무지침/WI-*.md` 전수 → 어떤 PRO의 `child_wi[]`에도 없는 파일 → 경고
+- Glob `06_TMP_템플릿/TMP-*.md` 전수 → 어떤 WI의 `related_tmp[]`에도 없는 파일 → 경고
+
+판정:
+- [ ] 5-A 상향 링크: 파일 미존재 0건
+- [ ] 5-B 하향 링크: 파일 미존재 0건
+- [ ] 5-C 양방향 불일치 0건
+- [ ] 5-D 고아 문서 0건 (경고 허용, blocker 아님)
 
 ### 6. 필수 필드
 - [ ] 모든 PRO 에 RACI·KPI·Mermaid 흐름도 존재
