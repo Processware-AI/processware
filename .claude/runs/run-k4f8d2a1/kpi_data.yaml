@@ -1,0 +1,254 @@
+trace_id: run-k4f8d2a1
+generated_at: "2026-05-02T11:01:08+09:00"
+generated_by: "kpi-collector (claude-opus-4-7)"
+scope:
+  kind: standard
+  ids: ["CMMI-DEV-ML3"]
+  period: { from: "2026-01-01", to: "2026-04-30" }
+  resolved_targets:
+    pro: ["PRO-CMMI-04-01"]
+    wi:
+      - "WI-CMMI-04-01-01"
+      - "WI-CMMI-04-01-02"
+      - "WI-CMMI-04-01-03"
+      - "WI-CMMI-04-01-04"
+      - "WI-CMMI-04-01-05"
+counts:
+  defined_kpis: 6
+  meta_kpis: 5
+  measured: 7
+  data_gap: 4
+
+kpi:
+  - kpi_id: KPI-CMMI-04-01-01
+    source: PRO-CMMI-04-01
+    source_section: "§7 통제점/KPI"
+    name: "감사 계획 준수율"
+    category: compliance
+    target: ">=95%"
+    target_value: 95
+    target_op: ">="
+    unit: "%"
+    period: "분기"
+    period_iso: "P3M"
+    direction: higher_is_better
+    responsible_role: "QA"
+    measurement:
+      value: null
+      samples: []
+      sample_size: 0
+      data_gap_reason: "본 기간 내 감사 계획서 REC 0건 — REQ-003 / REQ-006 not_assessed 일치"
+      sources: []
+
+  - kpi_id: KPI-CMMI-04-01-02
+    source: PRO-CMMI-04-01
+    source_section: "§7"
+    name: "부적합 종결율"
+    category: defect
+    target: ">=95%"
+    target_value: 95
+    target_op: ">="
+    unit: "%"
+    period: "분기"
+    period_iso: "P3M"
+    direction: higher_is_better
+    responsible_role: "QA"
+    measurement:
+      value: 0.0
+      samples:
+        - rec_id: "REC-CMMI-04-01-03-01-2026-001"
+          status: "DoD 부적합 종결 ❌"
+          closed: false
+        - rec_id: "REC-CMMI-04-01-04-01-2026-002"
+          status: "결재 ❌ 반려"
+          closed: false
+      sample_size: 2
+      sources:
+        - rec_path: "vault/08_REC_기록/REC-CMMI-04-01-03-01-2026-001_작업산출물_평가표.md"
+        - rec_path: "vault/08_REC_기록/REC-CMMI-04-01-04-01-2026-002_품질_이슈_에스컬레이션_REJECTED.md"
+        - mat: "MAT-005 §실행 기록"
+
+  - kpi_id: KPI-CMMI-04-01-03
+    source: PRO-CMMI-04-01
+    source_section: "§7"
+    name: "부적합 평균 종결 기간"
+    category: defect
+    target: "<=20영업일"
+    target_value: 20
+    target_op: "<="
+    unit: "영업일"
+    period: "분기"
+    period_iso: "P3M"
+    direction: lower_is_better
+    responsible_role: "QA"
+    measurement:
+      value: null
+      samples: []
+      sample_size: 0
+      data_gap_reason: "종결 완료 부적합 0건 (NCR 4건 모두 open) — 다음 분기 종결 발생 후 측정 가능"
+      sources:
+        - mat: "MAT-006 §NCR 종결 현황"
+
+  - kpi_id: KPI-CMMI-04-01-04
+    source: PRO-CMMI-04-01
+    source_section: "§7"
+    name: "QA 독립성 점검 (평가자 vs 수행자 분리)"
+    category: independence
+    target: "=100%"
+    target_value: 100
+    target_op: "="
+    unit: "%"
+    period: "분기"
+    period_iso: "P3M"
+    direction: higher_is_better
+    responsible_role: "QMR"
+    measurement:
+      value: 100.0
+      samples:
+        - audit_trace: "run-a1c2d3e4"
+          violations: 0
+          overridden: false
+      sample_size: 1
+      sources:
+        - audit_trace: "run-a1c2d3e4"
+          path: "state.yaml.independence"
+
+  - kpi_id: KPI-CMMI-04-01-05
+    source: PRO-CMMI-04-01
+    source_section: "§7"
+    name: "동일 부적합 재발률"
+    category: defect
+    target: "<10%"
+    target_value: 10
+    target_op: "<"
+    unit: "%"
+    period: "반기"
+    period_iso: "P6M"
+    direction: lower_is_better
+    responsible_role: "QA"
+    measurement:
+      value: null
+      samples: []
+      sample_size: 0
+      data_gap_reason: "1회차 측정 — 재발 비교 baseline 부재 (다음 측정부터 가능)"
+      sources: []
+
+  - kpi_id: KPI-WI-04-01-03-01
+    source: WI-CMMI-04-01-03
+    source_section: "§9 KPI"
+    name: "산출물 품질 점수"
+    category: quality
+    target: ">=4.0/5.0"
+    target_value: 4.0
+    target_op: ">="
+    unit: "점 (5.0 만점)"
+    period: "분기"
+    period_iso: "P3M"
+    direction: higher_is_better
+    applies_to_wi: ["WI-CMMI-04-01-03"]
+    responsible_role: "QA"
+    measurement:
+      value: 4.92
+      samples:
+        - rec_id: "REC-CMMI-04-01-03-01-2026-001"
+          breakdown:
+            요구사항_등록부: 5.0   # 100% Pass
+            설계서: 4.75          # 95% Pass (마이너 누락)
+            테스트_보고: 5.0       # 100% Pass
+          excluded:
+            코드: "Sonar Pass — 완전성 N/A 로 평균에서 제외 (WI §7.3 자동화 적용)"
+      sample_size: 1                # REC 1건의 평가서 (산출물 3건 평균)
+      sources:
+        - rec_path: "vault/08_REC_기록/REC-CMMI-04-01-03-01-2026-001_작업산출물_평가표.md"
+
+meta_kpi:
+  - kpi_id: META-COVERAGE
+    name: "심사 Coverage (WI 단위)"
+    category: compliance
+    target: ">=80%"
+    target_value: 80
+    target_op: ">="
+    unit: "%"
+    direction: higher_is_better
+    measurement:
+      value: 40.0
+      samples:
+        - audit_trace: "run-a1c2d3e4"
+          wi_with_rec: 2
+          wi_without_rec: 3
+          total_wi: 5
+      sample_size: 1
+      sources:
+        - audit_trace: "run-a1c2d3e4"
+          path: "evidence.yaml.coverage_pct"
+
+  - kpi_id: META-FINDINGS-DENSITY
+    name: "Findings 밀도 (finding / requirement)"
+    category: defect
+    target: "<=20%"
+    target_value: 20
+    target_op: "<="
+    unit: "%"
+    direction: lower_is_better
+    measurement:
+      value: 33.3
+      samples:
+        - audit_trace: "run-a1c2d3e4"
+          findings: 4
+          requirements: 12
+      sample_size: 1
+      sources:
+        - audit_trace: "run-a1c2d3e4"
+          path: "conformity_matrix.counts"
+
+  - kpi_id: META-INDEPENDENCE
+    name: "독립성 검증 통과율"
+    category: independence
+    target: "=100%"
+    target_value: 100
+    target_op: "="
+    unit: "%"
+    direction: higher_is_better
+    measurement:
+      value: 100.0
+      samples:
+        - audit_trace: "run-a1c2d3e4"
+          passed: true
+      sample_size: 1
+      sources:
+        - audit_trace: "run-a1c2d3e4"
+
+  - kpi_id: META-NCR-CLOSURE
+    name: "NCR 종결율 (전사)"
+    category: defect
+    target: ">=95%"
+    target_value: 95
+    target_op: ">="
+    unit: "%"
+    direction: higher_is_better
+    measurement:
+      value: 0.0
+      samples:
+        open: 4
+        closed: 0
+        total_issued: 4
+      sample_size: 4
+      sources:
+        - mat: "MAT-006 §NCR 발행 현황 (open)"
+        - mat: "MAT-006 §NCR 종결 현황 (closed)"
+
+  - kpi_id: META-NCR-SLA
+    name: "NCR SLA 준수율"
+    category: defect
+    target: ">=90%"
+    target_value: 90
+    target_op: ">="
+    unit: "%"
+    direction: higher_is_better
+    measurement:
+      value: null
+      samples: []
+      sample_size: 0
+      data_gap_reason: "종결 NCR 0건 — n=0 으로 SLA 비교 불가. 다음 측정부터 가능."
+      sources:
+        - mat: "MAT-006 §NCR 종결 현황 (closed)"

@@ -83,6 +83,40 @@ argument-hint: "start <PRO|WI|범위> --auditor \"이름\" | --resume <trace_id>
 - `--overdue` : open 인 NCR 중 `today > sla_due_date` 인 것.
 - 출력은 stdout (파일 미생성, 미수정).
 
+### 1-7-K. `kpi` 모드 (Phase 3) — `/audit --kpi <subcommand> [...]`
+
+KPI 측정·시계열 누적·회귀 탐지를 담당하는 단일 진입점. 4 subcommand.
+
+```
+/audit --kpi start CMMI-DEV-ML3 --period 2026-01-01..2026-04-30
+/audit --kpi start PRO-CMMI-04-01 --period 2026-01-01..2026-04-30 --baseline auto
+/audit --kpi show CMMI-DEV-ML3                                   # MAT-008 표준 섹션 stdout 출력
+/audit --kpi show CMMI-DEV-ML3 --round 2                         # 특정 회차만
+/audit --kpi update CMMI-DEV-ML3                                 # 별칭 — start 와 동일 (period 미지정 시 자동 분기)
+/audit --kpi check-regressions                                   # 모든 표준의 critical+watch 알림 출력 + --overdue 가능
+```
+
+**4 subcommand 동작**:
+
+- **`start` / `update`** (신규 측정 회차):
+  1. 인자에서 표준 코드 / PRO doc_id / period 추출.
+  2. `period` 미지정 시 default = 직전 분기 (오늘 기준 90일 — Q1=1/1~3/31 식).
+  3. trace_id 생성 (`run-k` + 8자 hex — audit trace 와 prefix 분리).
+  4. `kpi-collector` 위임 (입력: scope, period, include_meta_kpis=true) → kpi_data.yaml.
+  5. `kpi-analyzer` 위임 (입력: kpi_data_path, options.baseline) → MAT-008 갱신 + MAT-006 §통계 갱신.
+  6. 결과 표 stdout (verdict 분포 + alerts 수).
+
+- **`show`** (조회만, 미수정):
+  1. `vault/90_MAT_통합매핑/MAT-008_KPI_대시보드.md` Read.
+  2. 해당 표준 섹션의 §회차 시계열 + §회귀 알림 + §결과 요약 출력.
+  3. `--round N` 지정 시 그 회차만 (전체는 default).
+
+- **`check-regressions`** (전사 알림 모음):
+  1. MAT-008 의 모든 표준 섹션 스캔.
+  2. 각 표준의 마지막 회차 §회귀 알림 표를 모음.
+  3. `--overdue` : 회귀 알림 중 NCR 이 SLA 경과한 항목만 표기 (MAT-006 cross-ref).
+  4. 출력은 stdout (파일 미수정).
+
 ### 1-7. `close-ncr` 모드 — `/audit --close-ncr <ncr_id> --capa <REC> [--closed-by <이름>] [--reason "..."]`
 ```
 /audit --close-ncr REC-NCR-04-01-2026-001 --capa REC-CMMI-04-01-04-01-2026-003
@@ -110,7 +144,10 @@ argument-hint: "start <PRO|WI|범위> --auditor \"이름\" | --resume <trace_id>
 | `--closed-by <이름>` | 종결 응답자 (close-ncr) | close-ncr |
 | `--standard <코드>` | NCR 목록 필터 (예: CMMI-DEV-ML3) | list-ncr |
 | `--severity <등급>` | NCR 목록 필터 (critical/major/minor) | list-ncr |
-| `--overdue` | SLA 기한 경과한 NCR 만 | list-ncr |
+| `--overdue` | SLA 기한 경과한 NCR 만 | list-ncr, kpi check-regressions |
+| `--baseline auto\|<round>` | KPI baseline 결정 (auto: 직전 회차) | kpi start/update |
+| `--regression-threshold-pp <N>` | 회귀 임계 %포인트 (default 5.0) | kpi start/update |
+| `--round <N>` | 특정 회차만 조회 | kpi show |
 
 ---
 
@@ -257,6 +294,49 @@ LN-2. 필터 적용:
 LN-3. 결과 표를 stdout 출력 (파일 미생성, 미수정).
 LN-4. 0건이면 "조건 충족 NCR 없음" 안내.
 
+### 2-K. `kpi` 모드 (Phase 3)
+
+#### 2-K-A. `start` / `update`
+
+KA-1. 인자 파싱: scope (표준코드 또는 PRO/WI doc_id), `--period from..to`, `--baseline auto|<N>`, `--regression-threshold-pp`.
+KA-2. trace_id 생성 (`run-k` + 8자 hex).
+KA-3. `.claude/runs/{trace_id}/state.yaml` 초기화 (kind: kpi, scope, options).
+KA-4. **kpi-collector 위임**:
+```
+[입력]
+- trace_id, scope (resolved_targets 포함), period, include_meta_kpis=true
+
+[출력]
+- .claude/runs/{trace_id}/kpi_data.yaml
+- trace.jsonl (kpi_collector_start ... kpi_collector_done)
+```
+KA-5. **kpi-analyzer 위임**:
+```
+[입력]
+- trace_id, kpi_data_path
+- options: { dry_run, baseline, regression_threshold_pp }
+
+[출력]
+- vault/90_MAT_통합매핑/MAT-008_KPI_대시보드.md (신규 또는 Edit append)
+- vault/90_MAT_통합매핑/MAT-006_NCR_관리대장.md (Edit, §"NCR 통계" 만)
+- state.yaml status: completed
+- trace.jsonl 마지막 라인 kpi_analyzer_done
+```
+KA-6. 종결 보고.
+
+#### 2-K-S. `show`
+
+KS-1. MAT-008 Read · 인자에서 표준 코드 매칭 → 그 §섹션 추출.
+KS-2. `--round N` 지정 시 그 회차 행만 필터.
+KS-3. 표 stdout 출력 (파일 미수정).
+
+#### 2-K-R. `check-regressions`
+
+KR-1. MAT-008 의 모든 `## {표준코드}` 섹션 스캔.
+KR-2. 각 표준의 마지막 회차의 §회귀 알림 표 행 수집.
+KR-3. `--overdue` 시 MAT-006 의 open NCR 중 today > sla_due_date 인 항목 cross-ref → 회귀 알림 행에 ⏰ 표기.
+KR-4. 통합 표 stdout (표준 / KPI ID / verdict / 측정값/목표 / 권고).
+
 ### 2-D. `reject-finding` 모드
 
 RF-1. trace 의 `conformity_matrix.yaml` Read.
@@ -339,19 +419,21 @@ finalized_at: null
 - `audit_finalized` — 보고서 저장 완료
 - `mat005_audit_history_updated` — MAT-005 §심사 이력 행 추가
 - `mat006_ncr_issued` — MAT-006 NCR 발행 행 추가 (Phase 2)
+- `kpi_collector_start` / `kpi_extracted` / `kpi_measured` / `meta_kpi_measured` / `kpi_collector_done` — KPI 수집 (Phase 3)
+- `kpi_analyzer_start` / `baseline_resolved` / `kpi_analyzed` / `alerts_raised` / `mat008_updated` / `mat006_stats_updated` / `kpi_analyzer_done` — KPI 분석 (Phase 3)
 - `aborted` — 중단 사유 (독립성 위반 / 요건 0건 / 사용자 중단)
 
 ---
 
 ## 4. Phase 범위 명시 (현 단계)
 
-본 커맨드는 다음 4 Phase 로 점진 구축된다. 현재는 **Phase 2**.
+본 커맨드는 다음 4 Phase 로 점진 구축된다. 현재는 **Phase 3**.
 
 | Phase | 포함 | 제외 |
 |---|---|---|
 | 1 | start / resume / confirm / reject-finding / status / 4 에이전트 (planner+collector+checker+reporter) / 단일 PRO PoC / 독립성 inline 가드 / `vault/08_REC_기록/AUDIT/` 산출 / MAT-005 §심사이력 자동 누적 | NCR 자동 발행 / KPI 대시보드 / RBAC 정식 / 다국어 / 외부 시스템 |
-| **2 (지금)** | **ncr-drafter** / NCR 일련번호 (`REC-NCR-{POL2}-{PRO2}-{YYYY}-{NNN}`) / **MAT-006** NCR 관리대장 / `--list-ncr`·`--close-ncr` / 시정조치 종결 워크플로우 / SLA 휴리스틱 (critical 20영업일 / major 60일 / minor 90일) / R/A 휴리스틱 (카테고리 → 책임자) / `--no-ncr` 옵션 / confirm 시 NCR 자동 발행 | KPI / 외부 시스템 / RBAC 정식 / 책임자 R/A 정식 매핑 |
-| 3 | KPI 대시보드 (MAT-008) / 회귀 알림 / PRO/WI §KPI 자동 추출 / NCR 종결율·SLA 준수율 자동 갱신 / 반복 부적합 TOP 자동 분석 | RBAC 정식 / 외부 시스템 |
+| 2 | **ncr-drafter** / NCR 일련번호 (`REC-NCR-{POL2}-{PRO2}-{YYYY}-{NNN}`) / **MAT-006** NCR 관리대장 / `--list-ncr`·`--close-ncr` / 시정조치 종결 워크플로우 / SLA 휴리스틱 (critical 20영업일 / major 60일 / minor 90일) / R/A 휴리스틱 (카테고리 → 책임자) / `--no-ncr` 옵션 / confirm 시 NCR 자동 발행 | KPI / 외부 시스템 / RBAC 정식 / 책임자 R/A 정식 매핑 |
+| **3 (지금)** | **kpi-collector** / **kpi-analyzer** / **MAT-008** KPI 대시보드 / `/audit --kpi start\|show\|update\|check-regressions` / PRO/WI §KPI 표 자동 추출 / 메타 KPI 5종 (Coverage / Findings density / Independence / NCR 종결율 / NCR SLA) / 4-tier verdict (healthy/watch/recovering/critical/data_gap) / baseline seed + 회귀 임계 (default ±5%p) / MAT-006 §통계 자동 갱신 hook | RBAC 정식 / 외부 시스템 / 차원 4 자동 트리거 / 시계열 시각화 |
 | 4 | independence-guard 정식 분리 / RBAC enforcement / 차원 4 인계 hook (NCR → 차원 1 재트리거 큐) / 외부 인증기관 보고서 양식 (XLSX/PDF) / 영업일 정식 계산기 (KST 휴일) | — |
 
 ---
@@ -363,8 +445,9 @@ finalized_at: null
   - `vault/08_REC_기록/AUDIT/REC-AUDIT-*.md` (신규)
   - `vault/08_REC_기록/AUDIT/REC-NCR-*.md` (Phase 2 — issue 신규 / close Edit)
   - `vault/90_MAT_통합매핑/MAT-005_*.md` (Edit append, §심사 이력 섹션만)
-  - `vault/90_MAT_통합매핑/MAT-006_*.md` (Phase 2 — Edit append / 행 이동, 두 섹션 운영)
-  - `.claude/runs/{trace_id}/*` (전체)
+  - `vault/90_MAT_통합매핑/MAT-006_*.md` (Phase 2 — Edit append / 행 이동, 두 섹션 운영 / Phase 3 — §"NCR 통계" Edit)
+  - `vault/90_MAT_통합매핑/MAT-008_*.md` (Phase 3 — 신규 또는 Edit append, 표준별 §섹션 / §회차 시계열 / §회귀 알림)
+  - `.claude/runs/{trace_id}/*` (전체) — audit trace `run-a*` / kpi trace `run-k*` 분리
 - 동일 (scope, 회차, 연도) 조합의 REC-AUDIT 일련번호 충돌 절대 금지 — Glob 재검증 후 Write.
 
 ---
@@ -419,4 +502,38 @@ finalized_at: null
 🔍 CAPA: REC-CMMI-04-01-04-01-2026-003
 👤 종결자: 박팀장 (PM)
 ⏱ SLA 준수: ✅ 11일 단축 (기한 2026-05-30 / 종결 2026-05-15)
+```
+
+### 6-5. kpi start / update 종료 시
+```
+✅ KPI 1회차 측정 완료 — CMMI-DEV-ML3 (baseline seed)
+📁 MAT-008 §"CMMI-DEV-ML3" — 11행 append
+📊 verdict 분포: 🟢 healthy 3 · 🟡 watch 0 · 🟠 recovering 0 · 🔴 critical 4 · ⚪ data_gap 4
+🚨 회귀 알림 4건 (모두 critical, baseline seed 라 임계 미달 단독)
+   - KPI-CMMI-04-01-02 부적합 종결율: 0.0% (목표 ≥95%)
+   - META-COVERAGE 심사 Coverage: 40.0% (목표 ≥80%)
+   - META-FINDINGS-DENSITY Findings 밀도: 33.3% (목표 ≤20%)
+   - META-NCR-CLOSURE NCR 종결율: 0.0% (목표 ≥95%)
+📋 MAT-006 §"NCR 통계" 9 항목 자동 갱신
+🔍 trace_id: run-k4f8d2a1
+⏱ 소요 시간: 4분 18초
+
+▶ 다음:
+  /audit --kpi show CMMI-DEV-ML3              # 결과 확인
+  /audit --kpi check-regressions              # 전사 알림 모음
+  /audit --kpi start CMMI-DEV-ML3 --period 2026-04-01..2026-06-30   # 2회차 (baseline 비교 자동)
+```
+
+### 6-6. kpi check-regressions 출력 예시
+```
+🚨 전사 회귀 알림 (current rounds, 모든 표준)
+
+| 표준 | 회차 | KPI ID | KPI 명 | 측정값/목표 | verdict | NCR 연계 |
+|---|---|---|---|---|---|---|
+| CMMI-DEV-ML3 | 1 | KPI-CMMI-04-01-02 | 부적합 종결율 | 0.0% / >=95% | 🔴 critical | NCR-001, NCR-002 |
+| CMMI-DEV-ML3 | 1 | META-COVERAGE | 심사 Coverage | 40.0% / >=80% | 🔴 critical | — |
+| CMMI-DEV-ML3 | 1 | META-FINDINGS-DENSITY | Findings 밀도 | 33.3% / <=20% | 🔴 critical | NCR-001~004 |
+| CMMI-DEV-ML3 | 1 | META-NCR-CLOSURE | NCR 종결율 | 0.0% / >=95% | 🔴 critical | NCR-001~004 |
+
+총 4건 (critical 4 / watch 0). --overdue 옵션 사용 시 SLA 경과한 NCR 만 표기.
 ```

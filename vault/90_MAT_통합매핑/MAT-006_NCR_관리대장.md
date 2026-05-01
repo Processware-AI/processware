@@ -90,20 +90,21 @@ tags: [MAT, ncr, audit-evidence]
 | NCR ID | Finding | 발행일 | 종결일 | 표준 | 출처 | 등급 | 종결자 | CAPA REC | SLA 준수 |
 |---|---|---|---|---|---|---|---|---|---|
 
-## NCR 통계 (Phase 3 자동 갱신 예정)
+## NCR 통계 (Phase 3 자동 갱신)
 
-> Phase 2 에서는 수동 — Phase 3 KPI 대시보드(MAT-008) 가 자동 갱신.
+> 본 섹션은 차원 3 Phase 3 의 `kpi-analyzer` 가 `/audit --kpi` 실행 시 자동 갱신. 직접 수정 금지.
 
-| 지표 | 값 |
-|---|---|
-| 총 발행 NCR (누적) | 4 |
-| 종결 완료 (CAPA 첨부) | 0 |
-| 미종결 (open) | 4 |
-| 종결율 (= 종결 / 발행) | 0% |
-| SLA 준수율 (= 기한 내 종결 / 종결 완료) | — (n=0) |
-| 평균 종결 기간 (영업일) | — (n=0) |
-| 등급별 누적 (critical / major / minor) | 2 / 1 / 1 |
-| 반복 부적합 TOP (동일 PRO·Req 의 재발) | (Phase 3 자동 분석) |
+| 지표 | 값 | source |
+|---|---|---|
+| 총 발행 NCR (누적) | 4 | MAT-006 §"발행 현황" + §"종결 현황" 합계 |
+| 종결 완료 (CAPA 첨부) | 0 | §"종결 현황" 행 수 |
+| 미종결 (open) | 4 | §"발행 현황" 행 수 |
+| 종결율 (= 종결 / 발행) | 0.0% | META-NCR-CLOSURE — 🔴 critical (목표 >=95%) |
+| SLA 준수율 (= 기한 내 종결 / 종결 완료) | — (n=0) | META-NCR-SLA — ⚪ data_gap (n=0) |
+| 평균 종결 기간 (영업일) | — (n=0) | KPI-CMMI-04-01-03 — ⚪ data_gap (n=0) |
+| 등급별 누적 (critical / major / minor) | 2 / 1 / 1 | §"발행 현황" + §"종결 현황" 등급 컬럼 |
+| 반복 부적합 TOP (동일 PRO·Req 의 재발) | 0건 (1회차 측정 — 재발 baseline 부재) | KPI-CMMI-04-01-05 (회차 ≥ 2 부터) |
+| 마지막 갱신 | 2026-05-02 (run-k4f8d2a1) | trace.jsonl mat006_stats_updated |
 
 ---
 
