@@ -111,6 +111,48 @@ model: opus
 
 검증 방법: Glob 으로 POL/PRO/WI 수집 → frontmatter `standards[]` 파싱 → 레지스트리와 교차 조회.
 
+### 11-A. WI ↔ steps.yaml 짝 정합성 (Phase 4 신규)
+
+차원 2 (Do) Agent 실행 정의 파일의 무결성 검증. WI MD 와 짝 `*.steps.yaml` 이 하나의 정본을 이루도록 강제.
+
+**11-A-1. 짝 존재 검증**:
+- Glob `vault/05_WI_업무지침/WI-*.md` 와 `vault/05_WI_업무지침/WI-*.steps.yaml` 양쪽 수집.
+- 모든 WI MD 마다 짝 steps.yaml 존재 — **누락 시 FAIL** (`assigned_to: wi-tmp-writer`, fix_scope: "5-bis 절차로 짝 생성").
+- 단, 본 검증은 차원 1 빌드 종료 시점부터 적용. Phase 4 도입 직후 기존 vault 의 WI 145건 중 짝 없는 항목은 점진 마이그레이션 허용 (`status: tolerated_phase4_migration`).
+
+**11-A-2. 메타 일치 검증** (각 짝마다 8개 필드):
+- yaml.wi_id == WI MD frontmatter.doc_id
+- yaml.title == WI MD frontmatter.title
+- yaml.version == WI MD frontmatter.version
+- yaml.parent_pro == WI MD frontmatter.parent_pro
+- yaml.parent_pol == WI MD frontmatter.parent_pol
+- yaml.related_tmp[] == WI MD frontmatter.related_tmp[]
+- yaml.scope_code == WI MD frontmatter.scope_code
+- yaml.standards[] == WI MD frontmatter.standards[]
+- 1건이라도 불일치 시 **FAIL** (`assigned_to: wi-tmp-writer`, fix_scope: "L-5 절차로 동기화").
+
+**11-A-3. 본문 일치 검증**:
+- WI MD §5 의 번호 항목 수 == steps.yaml.steps[] 길이. 불일치 시 FAIL.
+- WI MD §5.3 완료 조건 항목 수 == steps.yaml.dod_checklist[] 길이. 불일치 시 FAIL.
+- WI §2 "승인자" 명시 == steps.yaml 의 `hitl: required` step 의 approver_role. 불일치 시 FAIL.
+
+**11-A-4. 스키마 무결성**:
+- T16 표준 스키마(`vault/99_템플릿/T16_WI_steps_yaml.yaml`) 의 필수 필드 모두 존재 (wi_id, title, version, steps[]).
+- 각 step 에 `id`, `name` 필수.
+- `id` 가 `step-NN` zero-padded 패턴 준수.
+- `hitl: required` 인 step 은 `approver_role` 필수.
+- 위반 시 FAIL.
+
+**11-A-5. manual_override 보존 검증**:
+- yaml `manual_override: true` 표기된 파일은 WI MD 의 자동 갱신과 충돌해도 보존되어야 함. 자동 갱신 후 사용자 수정 영역(triggers/aliases) 이 사라졌으면 경고.
+
+판정:
+- [ ] 11-A-1 짝 누락 0건 (또는 마이그레이션 허용 표시)
+- [ ] 11-A-2 메타 불일치 0건
+- [ ] 11-A-3 본문 불일치 0건
+- [ ] 11-A-4 스키마 위반 0건
+- [ ] 11-A-5 manual_override 보존 OK
+
 ### 11. 골든샘플 정합성 (구조 하한선)
 참조: `vault/99_템플릿/_골든샘플/`
 
