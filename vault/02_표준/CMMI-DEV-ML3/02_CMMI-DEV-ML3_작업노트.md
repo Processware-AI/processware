@@ -4,7 +4,7 @@ standard: "CMMI-DEV-ML3"
 phase: "done"
 status: done
 created: 2026-04-29
-updated: 2026-04-29
+updated: 2026-05-01
 tags: [worknote, CMMI-DEV-ML3]
 ---
 
@@ -43,6 +43,7 @@ tags: [worknote, CMMI-DEV-ML3]
 | 2026-04-29 | **QA 이슈 #QA-20260429-001** | TMP/EX 128쌍 누락 (FAIL/blocker) — 142 WI 중 14 WI 만 TMP/EX 보유 | assigned_to: wi-tmp-writer / fix_scope: 128 TMP+128 EX 생성 |
 | 2026-04-29 | **QA 이슈 #QA-20260429-002** | PRO-CMMI-02-05 standards[] 에 ISO 31000 등재 (WARN/minor) — 레지스트리상 reference_only | assigned_to: process-designer / fix_scope: standards 에서 제거 후 본문 주석으로 처리 |
 | 2026-04-29 | **QA 이슈 #QA-20260429-003** | 작업노트 진행 체크리스트 갱신 누락 (WARN/minor) — Phase 3~7 [x] 표시 안됨 | assigned_to: orchestrator / fix_scope: 체크박스 [x] 갱신 |
+| 2026-05-01 | **RDM 누락 WI 보완 (attempt 3)** | PRO-CMMI-03-01 의 child_wi[]에는 등재되어 있으나 파일이 누락된 WI 3종(11 필요충분성·12 균형·13 확인) + TMP/EX 3쌍 신규 생성. MAT-001 9행 + MAT-011 RDM-3.5/3.6/3.7 행 ✅ 갱신. wi/tmp/ex_count 142→145. | 자릿수 마이그레이션 후 잔여 정합 이슈 해소 — 자가수정 wi-tmp-writer / 본 작업으로 종결 |
 
 ## 다음 phase (design) 에 전달할 핵심 메시지
 

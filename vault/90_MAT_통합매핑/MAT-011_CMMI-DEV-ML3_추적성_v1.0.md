@@ -2,7 +2,7 @@
 type: traceability-matrix
 doc_id: MAT-011
 title: "CMMI-DEV-ML3 추적성 매트릭스"
-version: "1.0"
+version: "1.1"
 owner: "SEPG Lead"
 reviewer: "PCB"
 approver: "CEO"
@@ -10,7 +10,7 @@ standards: ["CMMI-DEV-ML3"]
 scope_code: "CMMI"
 status: approved
 created: 2026-04-29
-updated: 2026-04-29
+updated: 2026-05-01
 retention: "상시"
 tags: [MAT, traceability, CMMI, CMMI-DEV-ML3]
 ---
@@ -141,9 +141,9 @@ CMMI-DEV v3.0 ML3 평가 통과를 위한 **126 Req-ID** 가 내부 POL/PRO/WI/T
 | CMMI-RDM-3.2 | RDM PG3 | 의무 | POL-CMMI-03 | PRO-CMMI-03-01 | [[WI-CMMI-03-01-08_운영개념_시나리오_개발_v1.0]] | — | — | 🟡 | Core PAs/RDM.pdf §RDM 3.2 |
 | CMMI-RDM-3.3 | RDM PG3 | 의무 | POL-CMMI-03 | PRO-CMMI-03-01 | [[WI-CMMI-03-01-09_요구사항_할당_v1.0]] | — | — | 🟡 | Core PAs/RDM.pdf §RDM 3.3 |
 | CMMI-RDM-3.4 | RDM PG3 | 의무 | POL-CMMI-03 | PRO-CMMI-03-01 | [[WI-CMMI-03-01-10_인터페이스_요구사항_관리_v1.0]] | — | — | 🟡 | Core PAs/RDM.pdf §RDM 3.4 |
-| CMMI-RDM-3.5 | RDM PG3 | 의무 | POL-CMMI-03 | PRO-CMMI-03-01 | [[WI-CMMI-03-01-06_요구사항_일관성_확인_v1.0]] | — | — | 🟡 | Core PAs/RDM.pdf §RDM 3.5 |
-| CMMI-RDM-3.6 | RDM PG3 | 의무 | POL-CMMI-03 | PRO-CMMI-03-01 | [[WI-CMMI-03-01-03_고객_요구사항_변환_v1.0]] | — | — | 🟡 | Core PAs/RDM.pdf §RDM 3.6 |
-| CMMI-RDM-3.7 | RDM PG3 | 의무 | POL-CMMI-03 | PRO-CMMI-03-01 | [[WI-CMMI-03-04-02_기본_확인_수행_v1.0]] | — | — | 🟡 | Core PAs/RDM.pdf §RDM 3.7 |
+| CMMI-RDM-3.5 | RDM PG3 | 의무 | POL-CMMI-03 | PRO-CMMI-03-01 | [[WI-CMMI-03-01-11_요구사항_필요충분성_분석_v1.0]] | [[TMP-CMMI-03-01-11-01_요구사항_필요충분성_분석서_v1.0]] | [[EX-CMMI-03-01-11-01_요구사항_필요충분성_분석서_작성예시_v1.0]] | ✅ | Core PAs/RDM.pdf §RDM 3.5 |
+| CMMI-RDM-3.6 | RDM PG3 | 의무 | POL-CMMI-03 | PRO-CMMI-03-01 | [[WI-CMMI-03-01-12_이해관계자_요구_제약_균형_v1.0]] | [[TMP-CMMI-03-01-12-01_요구_제약_균형_평가서_v1.0]] | [[EX-CMMI-03-01-12-01_요구_제약_균형_평가서_작성예시_v1.0]] | ✅ | Core PAs/RDM.pdf §RDM 3.6 |
+| CMMI-RDM-3.7 | RDM PG3 | 의무 | POL-CMMI-03 | PRO-CMMI-03-01 | [[WI-CMMI-03-01-13_요구사항_확인_v1.0]] | [[TMP-CMMI-03-01-13-01_요구사항_확인_보고서_v1.0]] | [[EX-CMMI-03-01-13-01_요구사항_확인_보고서_작성예시_v1.0]] | ✅ | Core PAs/RDM.pdf §RDM 3.7 |
 
 ### 1.8 ML2 PA — RSK (Risk & Opportunity Management) — 10 Req
 

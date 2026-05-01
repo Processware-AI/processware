@@ -4,10 +4,10 @@
 standard: "CMMI-DEV-ML3"
 pipeline_version: "1.0"
 created: "2026-04-29T00:00:00Z"
-updated: "2026-04-29T18:30:00Z"
+updated: "2026-05-01T00:00:00Z"
 overall_status: "done"
 current_phase: "done"
-attempts: 2
+attempts: 3
 max_attempts: 3
 
 phases:
@@ -102,13 +102,13 @@ phases:
       - "vault/07_EX_작성예시/EX-CMMI-* (142종, TMP 와 1:1 — self-heal v2 완비)"
       - "vault/90_MAT_통합매핑/MAT-001_문서관리대장.md (등록 갱신)"
     metrics:
-      wi_count: 142
-      tmp_count: 142
-      ex_count: 142
+      wi_count: 145
+      tmp_count: 145
+      ex_count: 145
       inherited_from_asis: 0
       pa_coverage_wi: "20/20 (100%) — 모든 PA 의 모든 Practice 가 WI 에 반영"
-      child_wi_coverage: "142/142 (100%) — 20 PRO 의 child_wi 전수 생성"
-      tmp_ex_coverage: "142/142 (전수 생성 완료 — QA-20260429-001 self-heal attempt 2)"
+      child_wi_coverage: "145/145"
+      tmp_ex_coverage: "145/145"
       separation_principle:
         tmp_no_sample_data: true
         tmp_rec_separate_folders: true
@@ -259,3 +259,8 @@ history:
   - ts: "2026-04-30T00:00:00Z"
     event: post_release_fix
     note: "사용자 사후 검사로 wikilink 정합성 이슈 발견 — WI 가 참조하는 TMP/EX 이름과 실제 파일명이 식별번호는 같으나 한국어명이 달라 broken link 107(TMP) + 108(EX, 오타 1 포함) 발생. 원인: attempt 2 wi-tmp-writer 가 128 누락 TMP/EX 생성 시 WI 의 related_tmp/related_ex 필드를 읽지 않고 자체 명명. 해결(옵션 A): 식별번호 기준 1:1 매핑으로 TMP 107 + EX 107 파일명 rename, 파일 내부 doc_id/title/self-link 일괄 갱신, EX 의 parent_tmp 갱신, WI-CMMI-04-03-01 wikilink 닫는 괄호 오타 수정. 재검증: WI→TMP/EX, EX→TMP, TMP→WI, MAT-011→TMP/EX 모두 broken 0건 / orphan 0건."
+  - ts: "2026-05-01T00:00:00Z"
+    event: phase_rerun_for_fix
+    phase: write
+    attempt: 3
+    note: "RDM 누락 WI 3종 + TMP/EX 3쌍 신규 생성. 자릿수 마이그레이션 후 잔여 정합 이슈 해소. 대상: WI-CMMI-03-01-11(필요충분성)/12(균형)/13(확인) + 각 TMP-01/EX-01. PRO-CMMI-03-01 의 child_wi[]에는 이미 등재되어 있던 3건의 역방향 정합 회복. MAT-011 의 RDM-3.5/3.6/3.7 행을 새 WI 로 재매핑 + TMP/EX 컬럼 채워 ✅ 처리. wi_count/tmp_count/ex_count 142→145. child_wi_coverage·tmp_ex_coverage 145/145 달성."
