@@ -15,18 +15,72 @@ model: opus
 
 ---
 
-## 1. 입력
+## 1. 입력 — 2가지 모드
 
+### 1-1. `finalize` 모드 (HITL 승인 후 또는 HITL 무관 정상 마감)
 ```yaml
+mode: finalize
 trace_id: run-xxxxxxxx
 payload_path: .claude/runs/{trace_id}/rec_payload.yaml
 options:
   dry_run: false
 ```
 
+### 1-2. `rejected` 모드 (HITL 반려 마감)
+```yaml
+mode: rejected
+trace_id: run-xxxxxxxx
+options:
+  dry_run: false
+```
+- payload_path 가 따로 필요 없음. state.yaml 의 `hitl.rejection_reason` + `steps[].answers` 를 본 에이전트가 직접 읽어 REC 를 생성.
+- 본 모드의 결과는 REC `status: rejected` 로 마감, MAT-005 에 `❌ 반려` 행 추가.
+- `dry_run` 은 finalize 와 동일하게 작동 (파일 미작성).
+
 ---
 
 ## 2. 절차
+
+### Phase 0 — 모드 분기
+
+0-1. 입력 `mode` 확인.
+0-2. **`finalize` 모드** → Phase A 부터 정상 진행.
+0-3. **`rejected` 모드** → Phase R (반려 전용 절차) 로 점프.
+
+### Phase R — 반려 마감 절차 (rejected 모드 전용)
+
+R-1. `state.yaml` Read · 다음 필드 모두 존재 확인:
+   - `hitl.decision == "rejected"`
+   - `hitl.rejection_reason` (필수)
+   - `hitl.approver_name`
+   - `wi_id`, `wi_path`, `tmp_path`, `executed_by`, `started_at`
+R-2. Phase B (REC 번호 산출) — finalize 와 동일 로직 (반려도 같은 일련번호 풀 사용).
+R-3. **REC 본문 합성** — finalize 와 다음만 다름:
+   - frontmatter `status: rejected`
+   - 본문 첫머리에 경고문 자동 삽입:
+```
+> **⚠ 본 기록은 반려 처리되었습니다.**
+> 반려자: {hitl.approver_name} ({hitl.approver_role})
+> 반려일시: {hitl.responded_at}
+> 반려 사유: {hitl.rejection_reason}
+>
+> 시정조치 후 신규 REC 발행이 필요합니다 (`/do {WI번호}` 재실행).
+```
+   - 본문 평가표·결재 표는 state.yaml `steps[].answers` 에서 매핑 가능한 만큼만 채움. 결재 표의 "승인" 칸은 "❌ 반려 — {hitl.approver_name} ({YYYY-MM-DD})" 로 표기.
+   - "(자동 추가) 완료 조건 충족 결과" 섹션 — 부분 미충족 그대로 유지하되, 모든 항목에 "반려로 인한 미완료" 메모 추가 가능.
+R-4. **MAT-005 갱신**:
+   - 행 형식 동일하지만 `상태` 컬럼: `❌ 반려`
+   - `HITL` 컬럼: `❌ {role} 반려`
+R-5. state·trace 마감 — finalize 의 Phase F 와 동일 (status: completed 대신 `status: rejected_finalized` 권장 — 단 호환성 위해 `completed` 도 허용).
+R-6. 호출자에게 반환:
+```
+❌ REC 반려 마감 — REC-XXX-...-001
+📁 vault/08_REC_기록/REC-...-001_*.md  (status: rejected)
+📋 MAT-005 §"실행 기록" 1행 (❌ 반려)
+🔍 trace_id: run-xxxxxxxx
+   사유: {hitl.rejection_reason}
+   ▶ 시정조치 후 신규 REC 발행: /do {WI번호}
+```
 
 ### Phase A — 입력 검증
 
@@ -186,9 +240,10 @@ F-2. trace.jsonl 에 `rec_finalized` 이벤트 기록 (path + 일련번호).
 - 표준 코드, scope_code 도 동일.
 - `generated_by` 는 항상 `process-execution-harness/rec-writer (claude-opus-4-7)` (모델 변경 시 갱신).
 
-### 3.4 HITL 결과 반영
-- payload `hitl.decision == "rejected"` 인 경우 → REC `status: rejected`, MAT-005 상태 컬럼 `❌ 반려`, 본문 첫머리에 "본 기록은 반려 처리되었으며 시정조치 필요" 경고문 자동 삽입.
-- payload `hitl.decision == null` (HITL 미수행) 인 경우 → `status: pending_approval`, MAT-005 상태 `⏸ 대기`. (Phase 2 정식 지원, Phase 1 에서는 발생하지 않아야 함 — process-executor 가 강제 처리)
+### 3.4 HITL 결과 반영 (Phase 2)
+- **`mode: rejected`** 로 호출됨 → Phase R 절차 (위 §2 Phase R 참조). REC.status: rejected, MAT-005 상태: ❌ 반려, 본문 첫머리 경고문.
+- **`mode: finalize` + payload `hitl.decision == "approved"`** → 정상 final 처리.
+- **`mode: finalize` + payload `hitl.decision == null`** → process-executor 미완 상태로 잘못 호출됨. 즉시 에러 반환 (state.status 가 pending_approval 인데 본 에이전트가 호출되면 안 됨).
 
 ### 3.5 dry-run 보장
 - `options.dry_run == true` 시 어떤 파일도 신규 생성·수정·append 하지 않는다. trace.jsonl 도 마찬가지.

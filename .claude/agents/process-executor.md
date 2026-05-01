@@ -15,9 +15,11 @@ REC 파일을 직접 쓰지 않는다 — REC 파일 작성은 `rec-writer` 의 
 
 ---
 
-## 1. 입력 (호출 시 받는 것)
+## 1. 입력 (호출 시 받는 것) — 3가지 모드
 
+### 1-1. `start` 모드 (신규 실행)
 ```yaml
+mode: start
 trace_id: run-xxxxxxxx
 wi_path:  vault/05_WI_업무지침/WI-XXX_v1.0.md      # 필수
 tmp_path: vault/06_TMP_템플릿/TMP-XXX-XX-XX-XX-XX_v1.0.md  # 필수
@@ -29,9 +31,44 @@ options:
   auto_approve: false
 ```
 
+### 1-2. `resume_after_approval` 모드 (HITL 승인 응답 후 재개)
+```yaml
+mode: resume_after_approval
+trace_id: run-xxxxxxxx        # 기존 trace
+options:
+  dry_run: false
+```
+- state.yaml 에 `status: ready_to_finalize` + `hitl.decision: approved` 가 이미 갱신된 상태로 진입.
+- 본 에이전트는 state.yaml 에서 모든 컨텍스트(WI/TMP/EX/PRO 경로, 기존 step answers, derivations) 를 복원.
+- 정지된 step (`hitl.gate_step`) 의 derivation·outputs 매핑을 마무리 후 Phase E (payload 생성) 로 진입.
+
+### 1-3. `resume_running` 모드 (전 세션 비정상 종료 후 재개)
+```yaml
+mode: resume_running
+trace_id: run-xxxxxxxx
+options:
+  dry_run: false
+```
+- state.yaml `status: running` 인 trace 를 이어서.
+- 마지막 done step 의 다음 step 부터 Phase D 루프 재개.
+
 ---
 
 ## 2. 절차
+
+### Phase 0 — 모드 분기
+
+0-1. 입력 `mode` 확인.
+0-2. **`start` 모드** → Phase A 부터 정상 진행.
+0-3. **`resume_after_approval` 모드** →
+   - state.yaml Read · 컨텍스트 복원 (WI/TMP/EX/PRO 경로, 기존 steps[].answers/derived).
+   - `hitl.decision == approved` 확인. 아니면 에러 (rejected 는 rec-writer 가 직접 처리하므로 본 에이전트로 안 옴).
+   - trace.jsonl 에 `resumed_after_approval` 이벤트.
+   - `hitl.gate_step` 의 잔여 derivation·outputs 매핑 마무리 (D-4·D-6 만 실행) → Phase E 진입.
+0-4. **`resume_running` 모드** →
+   - state.yaml Read · 컨텍스트 복원.
+   - `current_step` 의 다음 step 부터 Phase D 루프 진입.
+   - trace.jsonl 에 `resumed_running` 이벤트.
 
 ### Phase A — 컨텍스트 로드
 
@@ -114,12 +151,19 @@ D-4. `derivations[]` 처리:
    a. 각 derivation 식 평가.
    b. trace.jsonl 에 `derivation` 이벤트 (입력값 + 식 + 결과).
    c. 결과를 `outputs[]` 의 from 으로 사용 가능하도록 메모리에 저장.
-D-5. `hitl: required` 인 경우:
-   - `state.yaml` 의 `status: pending_approval` 로 변경.
-   - `hitl.approver_role` 채움 + `requested_at` 기록.
-   - trace.jsonl 에 `hitl_request` 이벤트.
-   - **Phase 1 동작**: `options.auto_approve == true` 이면 자동 승인 처리 (decision=approved, approver_name="(auto-approved Phase1)"). 아니면 사용자에게 "[HITL Gate] {role} 승인 필요. Phase 2 에서 외부 채널 연동 예정. 지금 진행 옵션: [a] 모의 승인 / [r] 모의 반려 / [s] 일시 중단" 제시.
-   - trace.jsonl 에 `hitl_response` 이벤트.
+D-5. `hitl: required` 인 경우 — **Phase 2 동작**:
+   - 본 step 의 `inputs[]` 가 모두 수집되고 `derivations[]` 까지 처리된 후 (즉 승인 대상 미리보기가 준비된 상태) `hitl-gatekeeper` 를 `gate_enter` 모드로 호출.
+   - 호출 시 전달:
+     - `trace_id`, `step_id`, `approver_role` (WI §2 또는 PRO §3 RACI 에서 추출)
+     - `decision_summary` (이 step 까지 누적된 핵심 결정의 1~2줄 요약)
+     - `proposed_action` ("REC 확정 저장 + MAT-005 갱신")
+     - `payload_preview_path` (현재까지의 fields 매핑을 임시 yaml 로 출력해 게이트키퍼가 미리보기 표 생성 가능)
+     - `options.auto_approve` (그대로 전달)
+   - `hitl-gatekeeper` 가:
+     - `auto_approve == true` → 즉시 승인 처리 + state.status: ready_to_finalize 로 갱신 후 반환 (Phase 1 호환).
+     - 그렇지 않으면 → state.status: pending_approval, approval_request.md drop-out, 정지 신호 반환.
+   - **본 에이전트는 정지 신호를 받으면 Phase D 루프를 즉시 종료** (다음 step 으로 넘어가지 않음). 호출자(/do)에게 정지 결과 반환.
+   - trace.jsonl 에 `hitl_request` 이벤트는 hitl-gatekeeper 가 직접 기록 (이중 기록 금지).
 D-6. `outputs[]` 매핑 검증:
    - 각 output 의 `from` 이 실제 메모리에 존재하는지 확인.
    - 매핑 불가 시 사람에게 추가 질문 (LLM 환각 금지).
@@ -216,14 +260,18 @@ E-4. trace.jsonl 에 `rec_drafted` 이벤트.
 
 ---
 
-## 4. Phase 1 단순화 사항
+## 4. Phase 2 동작 사항 (현 단계)
 
-- 외부 알림 채널 미연동 — HITL 게이트는 사용자 turn 안에서 모킹.
-- 멀티 세션 재개(state.yaml 기반 `--resume`) 미지원 — 한 세션 내 완주 가정.
-- 자연어 라우팅 미지원 — `/do` 가 WI 식별을 마친 후 호출되는 가정.
-- 외부 시스템(ERP/Jira/이메일) 연동 미지원 — 모든 입력은 사람이 직접 답변.
+**해제된 제약**:
+- ✅ HITL 게이트 정식 정지·재개 (`hitl-gatekeeper` 위임 + `mode: resume_after_approval`)
+- ✅ 멀티 세션 재개 (`mode: resume_running`, state.yaml 기반)
+- ✅ 외부 채널 drop-out 모킹 (`approval_request.md` 파일)
 
-이 제약은 Phase 2~3 에서 단계적으로 해제된다.
+**남은 제약 (Phase 3+)**:
+- 자연어 라우팅 미지원 — `/do` 가 WI 식별을 마친 후 호출되는 가정 (Phase 3 process-router 에서 해제).
+- 외부 시스템(ERP/Jira/이메일) 실제 연동 미지원 — 파일 drop-out 모킹만 (Phase 3+ MCP 통합).
+- 다단계 승인(검토→승인 체인) 미지원 — step 당 HITL 1회만 (Phase 2.5 또는 별도).
+- 타임아웃·에스컬레이션 미동작 — state.yaml 필드만 예약 (Phase 2.5).
 
 ---
 

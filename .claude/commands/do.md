@@ -1,6 +1,6 @@
 ---
-description: 표준 프로세스 실행 (차원 2 Do) — WI 1건을 대화식으로 이행하고 REC(기록)를 자동 작성. 사용: /do <WI번호 또는 자연어>
-argument-hint: "<WI번호 | 자연어 키워드> [--dry-run] [--executor <이름>] [--auto-approve]"
+description: 표준 프로세스 실행 (차원 2 Do) — WI 이행·REC 작성 + HITL 정지/재개/승인/반려. 사용: /do <WI번호> | --resume <trace> | --approve <trace> | --reject <trace> --reason "..."
+argument-hint: "<WI번호 | 자연어> | --resume <trace_id> | --approve <trace_id> | --reject <trace_id> --reason \"...\" | --status <trace_id> | --check-approvals  [+ --dry-run | --executor <이름> | --auto-approve]"
 ---
 
 # 표준 프로세스 실행 하네스 (차원 2 Do)
@@ -20,39 +20,73 @@ argument-hint: "<WI번호 | 자연어 키워드> [--dry-run] [--executor <이름
 - **MAT-005 만 갱신**: 추적성은 MAT-005 의 `## 실행 기록 (운영 인스턴스)` 섹션에 1행 append.
 - **모든 입력·LLM 출력 전수 로그**: `.claude/runs/{trace_id}/trace.jsonl` (심사 증적).
 - **환각 방지**: TMP 필드에 직접 매핑 가능한 값만 REC 에 기록한다. 매핑 불가능한 자유 서술이 필요하면 사람에게 추가 질문.
-- **HITL 강제 정지**: WI §5.3 "완료 조건" 에 "승인" 표현이 있거나, WI §2 "수행 주체" 의 "승인자" 역할이 있으면 반드시 사람 승인 게이트 발동 (Phase 1 에서는 게이트 검출만, 승인은 모킹).
+- **HITL 강제 정지·재개**: WI §5.3 "완료 조건" 에 "승인" 표현이 있거나, WI §2 "수행 주체" 의 "승인자" 역할이 있으면 반드시 사람 승인 게이트 발동. Phase 2 부터 진짜 정지 (`pending_approval`) + 외부 채널 drop-out + `/do --approve|--reject` 응답 후 재개.
 
 ---
 
-## 1. 인자 파싱
+## 1. 인자 파싱 — 진입 모드 (배타적, 1개만 적용)
 
-### 1-1. 직접 지정 (Phase 1 권장)
+본 커맨드는 다음 6개 진입 모드 중 하나로 동작한다. 첫 인자에 따라 분기.
+
+### 1-1. `start` 모드 — 신규 실행 (인자가 WI 식별자)
 ```
 /do WI-CMMI-04-01-03
 /do WI-CMMI-04-01-03_작업산출물_평가_v1.0
+/do 작업산출물 평가          # 자연어 — Phase 3 까지는 후보 목록 제시 후 선택
 ```
-→ 정확 매칭으로 WI 파일 1건 결정.
+→ Phase A (사전 점검) 부터 정상 시작.
 
-### 1-2. 자연어 (Phase 3 에서 확장)
+### 1-2. `resume` 모드 — `/do --resume <trace_id>`
 ```
-/do 작업산출물 평가
-/do 산출물 검토 시작
+/do --resume run-a3f9c2b1
 ```
-→ Phase 1 단계에서는 **자연어가 들어오면 후보 WI 목록을 보여주고 사용자에게 선택을 요청** 한다 (process-router 미구현 상태이므로).
+→ `state.yaml` Read · `status` 확인:
+  - `pending_approval` → "승인 대기 중" 안내 + `approval_request.md` 경로 출력 + 종료 (사용자가 응답할 차례).
+  - `ready_to_finalize` (승인 응답이 외부에서 들어와 갱신된 상태) → process-executor 재진입 후 rec-writer 위임.
+  - `running` (전 세션 비정상 종료) → 마지막 step 부터 재개.
+  - `completed` → "이미 완료된 trace" 안내 + REC 경로 출력.
 
-### 1-3. 옵션
-| 플래그 | 효과 |
-|---|---|
-| `--dry-run` | 대화는 진행하되 REC 파일은 쓰지 않고 미리보기만 출력 |
-| `--executor <이름>` | 실행자(작성자) 명시. 미지정 시 시스템 사용자명 자동 인식 시도 |
-| `--auto-approve` | HITL 게이트를 자동 승인으로 모킹 (Phase 1 PoC 검증용 — 실운영 금지) |
-| `--resume <trace_id>` | 이전 실행을 이어서 재개 (Phase 2 에서 정식 지원, Phase 1 은 검출만) |
+### 1-3. `approve` 모드 — `/do --approve <trace_id> [--approver <이름>]`
+```
+/do --approve run-a3f9c2b1
+/do --approve run-a3f9c2b1 --approver "박팀장"
+```
+→ `hitl-gatekeeper` `gate_response` 모드 호출 (decision: approved). 응답 처리 후 자동으로 process-executor 재개 → rec-writer 위임.
+
+### 1-4. `reject` 모드 — `/do --reject <trace_id> --reason "..." [--approver <이름>]`
+```
+/do --reject run-a3f9c2b1 --reason "표본 부족 — 재수집 필요"
+```
+→ `--reason` 누락 시 에러. 반려 처리 후 rec-writer 가 REC `status: rejected` 로 마감 + MAT-005 ❌ 반려 표기.
+
+### 1-5. `status` 모드 — `/do --status <trace_id>`
+```
+/do --status run-a3f9c2b1
+```
+→ `hitl-gatekeeper` `gate_query` 모드. 정지된 trace 의 현재 상태·승인자·경과 시간 출력.
+
+### 1-6. `check-approvals` 모드 — `/do --check-approvals`
+```
+/do --check-approvals
+```
+→ 모든 `.claude/runs/run-*/approval_request.md` 의 frontmatter 를 스캔. `status: approved/rejected` 인 drop-in 응답이 있으면 자동으로 처리 (외부 채널 사용자가 파일을 직접 편집한 경우의 일괄 회수).
+
+### 1-7. 공통 옵션
+| 플래그 | 효과 | 적용 모드 |
+|---|---|---|
+| `--dry-run` | 대화는 진행하되 REC 파일·MAT-005 갱신 생략, 미리보기만 출력 | start, resume, approve |
+| `--executor <이름>` | 실행자(작성자) 명시. 미지정 시 시스템 사용자명 자동 인식 | start |
+| `--auto-approve` | HITL 게이트를 자동 승인 (PoC·테스트용 — 실운영 금지) | start, resume |
+| `--approver <이름>` | 승인/반려 응답자 신원 명시 (감사 증적). 미지정 시 시스템 사용자명 | approve, reject |
+| `--reason "..."` | 반려 사유. `--reject` 모드에서 필수 | reject |
 
 ---
 
-## 2. 실행 시퀀스
+## 2. 실행 시퀀스 — 모드별
 
-### Phase A. 사전 점검
+### 2-A. `start` 모드 (신규 실행)
+
+#### Phase A. 사전 점검
 A-1. 인자에서 WI 식별. 매칭 실패 시 후보 목록 출력 후 종료.
 A-2. WI 파일 Read 성공 확인. frontmatter 의 다음 필드 추출:
    - `doc_id`, `parent_pro`, `parent_pol`, `related_tmp[]`, `related_ex[]`, `owner`, `reviewer`, `approver`, `standards`, `scope_code`
@@ -60,52 +94,85 @@ A-3. **TMP 필수 확인**: `related_tmp[]` 가 비어 있으면 실행 중단 (
 A-4. trace_id 생성 (예: `run-` + 8자 hex).
 A-5. `.claude/runs/{trace_id}/` 디렉터리 생성 + `state.yaml` 초기화.
 
-### Phase B. process-executor 위임
+#### Phase B. process-executor 위임
 B-1. 서브에이전트 `process-executor` 를 다음 컨텍스트로 호출:
 ```
 [입력]
-- wi_path:   vault/05_WI_업무지침/{WI파일}
-- tmp_path:  vault/06_TMP_템플릿/{TMP파일}
-- ex_path:   vault/07_EX_작성예시/{EX파일}  (있으면)
-- pro_path:  vault/04_PRO_절차/{PRO파일}    (있으면)
-- trace_id:  run-xxxxxxxx
-- executor:  {사용자명}
-- options:   {dry_run, auto_approve}
+- wi_path / tmp_path / ex_path / pro_path
+- trace_id, executor
+- options: {dry_run, auto_approve}
 
 [출력]
 - step 별 대화 진행
 - state.yaml 갱신
 - trace.jsonl 1라인/이벤트
+- HITL step 도달 시 hitl-gatekeeper 위임 → 정지
 - 모든 step 완료 시 .claude/runs/{trace_id}/rec_payload.yaml 생성
 ```
 
-B-2. process-executor 가 모든 step 을 처리하고 `state.status: ready_to_finalize` 로 만들면 Phase C 로.
-B-3. HITL 게이트 만나면 `state.status: pending_approval` + 사용자에게 안내 후 종료(Phase 2 에서 재개 메커니즘 정식화).
+B-2. process-executor 가 `state.status: ready_to_finalize` 로 만들면 Phase C 로.
+B-3. **HITL 게이트 만나면 `state.status: pending_approval` 로 정지 → 종료** (사용자가 응답할 차례).
+   - `hitl-gatekeeper` 가 `approval_request.md` 를 drop-out.
+   - 사용자에게 응답 명령 (`/do --approve` / `/do --reject`) 안내.
+   - 본 커맨드는 종료. 응답 시 `approve`/`reject` 모드로 재진입.
 
-### Phase C. rec-writer 위임
-C-1. 서브에이전트 `rec-writer` 호출:
-```
-[입력]
-- trace_id: run-xxxxxxxx
-- rec_payload: .claude/runs/{trace_id}/rec_payload.yaml
-- options: {dry_run}
-
-[작업]
-- REC 파일명 결정 (다음 일련번호 자동 산출)
-- TMP 양식 구조에 payload 매핑 → REC 파일 생성
-- MAT-005 §"실행 기록" 섹션에 1행 append
-- state.yaml 의 final_rec_path 갱신
-- trace.jsonl 마감 이벤트 기록
-```
-
+#### Phase C. rec-writer 위임
+C-1. 서브에이전트 `rec-writer` 호출 (입력: trace_id, payload_path, options).
 C-2. dry-run 인 경우 REC 미리보기만 출력하고 저장하지 않는다.
 
-### Phase D. 종결 보고
-- ✅ 생성된 REC 파일 경로
-- 📍 MAT-005 갱신 행 인용
-- 🔍 trace_id (감사증적)
-- ⏸ HITL 미해결 시: 승인자·승인 게이트 정보
-- ⚠ 부분 실패 시: 실패 step·복구 방법
+#### Phase D. 종결 보고
+
+---
+
+### 2-B. `resume` 모드
+
+R-1. `state.yaml` Read.
+R-2. `status` 별 분기:
+
+| status | 동작 |
+|---|---|
+| `pending_approval` | "승인 대기" 안내 + `approval_request.md` 경로 출력 + 종료 (재개 불가, 응답이 먼저). |
+| `ready_to_finalize` | process-executor 재진입 (`mode: resume_after_approval`) → derivation 마무리 + payload 생성 → rec-writer 위임. |
+| `running` (전 세션 중단) | process-executor 재진입 (`mode: resume_running`, last_step 부터) → 정상 흐름 이어서. |
+| `completed` | "이미 완료" 안내 + final_rec_path 출력 + 종료. |
+| `rejected` | "이미 반려 마감" 안내 + REC 경로 출력 + 종료. |
+| 미존재 trace_id | 에러 |
+
+---
+
+### 2-C. `approve` / `reject` 모드
+
+AR-1. `state.yaml` Read 후 `status == "pending_approval"` 확인. 아니면 에러.
+AR-2. `hitl-gatekeeper` `gate_response` 모드 호출:
+```
+[입력]
+- trace_id
+- decision: approved | rejected
+- approver_name: <--approver 옵션 또는 시스템 사용자>
+- reason: <--reason, reject 시 필수>
+- input_source: "/do --approve" or "/do --reject"
+```
+AR-3. gate_response 처리 완료 후 (`status: ready_to_finalize`):
+   - `decision == approved`: process-executor 마지막 step 마무리 (derivation) → rec-writer 위임.
+   - `decision == rejected`: rec-writer 를 **rejected 모드**로 직접 호출 (REC.status: rejected).
+AR-4. 종결 보고.
+
+---
+
+### 2-D. `status` 모드
+
+S-1. `hitl-gatekeeper` `gate_query` 모드 호출. 결과 출력 후 종료.
+
+---
+
+### 2-E. `check-approvals` 모드
+
+CA-1. `Glob ".claude/runs/run-*/approval_request.md"` 전수 스캔.
+CA-2. 각 파일의 frontmatter `status` 검사:
+   - `pending` → 그대로 두기 (대기 중 표시).
+   - `approved` / `rejected` → drop-in 응답으로 간주, `hitl-gatekeeper` `gate_response` 자동 호출.
+CA-3. 처리된 trace_id 목록 + 그 결과(approved/rejected/no_change) 표 형태로 출력.
+CA-4. drop-in 으로 처리된 trace_id 들에 대해 `approve`/`reject` 모드와 동일한 후속 흐름 (rec-writer 위임) 자동 트리거.
 
 ---
 
@@ -167,14 +234,14 @@ finalized_at: null
 
 ---
 
-## 4. Phase 1 범위 명시 (현 단계)
+## 4. Phase 범위 명시 (현 단계)
 
-본 커맨드는 다음 4 Phase 로 점진 구축된다. 현재는 **Phase 1**.
+본 커맨드는 다음 4 Phase 로 점진 구축된다. 현재는 **Phase 2**.
 
 | Phase | 포함 | 제외 |
 |---|---|---|
-| **1 (지금)** | 직접 WI 지정 / 단일 step 대화 / TMP 매핑 / REC 1건 생성 / MAT-005 1행 / trace 로그 | 자연어 라우팅 / HITL 정식 / 멀티턴 재개 |
-| 2 | HITL 게이트 정지·재개 / `--resume` / state 영속 | 자연어 라우팅 / 외부 알림 채널 |
+| 1 | 직접 WI 지정 / 단일 step 대화 / TMP 매핑 / REC 1건 생성 / MAT-005 1행 / trace 로그 / HITL `--auto-approve` 모킹 | 자연어 라우팅 / HITL 정식 / 멀티턴 재개 |
+| **2 (지금)** | HITL 정지(`pending_approval`) / 외부 채널 drop-out / `/do --resume\|--approve\|--reject\|--status\|--check-approvals` / 반려 처리 (REC.status: rejected) / 6개 진입 모드 | 자연어 라우팅 / 타임아웃·에스컬레이션 / 외부 IdP 인증 / 다단계 승인 |
 | 3 | process-router / MAT-007 카탈로그 / 자연어 매칭 | 외부 시스템 연동 |
 | 4 | wi-tmp-writer 확장 (steps.yaml 정식 출력) / steps.yaml ↔ MD 동기화 | — |
 
