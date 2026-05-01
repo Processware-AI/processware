@@ -1,0 +1,41 @@
+trace_id: run-k7d2e8f3
+kind: kpi
+round: 2
+scope:
+  kind: standard
+  ids: ["CMMI-DEV-ML3"]
+  period:
+    from: "2026-04-01"
+    to:   "2026-06-30"
+  resolved_targets:
+    pro: ["PRO-CMMI-04-01"]
+    wi:
+      - "WI-CMMI-04-01-01"
+      - "WI-CMMI-04-01-02"
+      - "WI-CMMI-04-01-03"
+      - "WI-CMMI-04-01-04"
+      - "WI-CMMI-04-01-05"
+include_meta_kpis: true
+status: completed
+started_at:   "2026-05-16T10:00:00+09:00"
+finalized_at: "2026-05-16T10:05:42+09:00"
+options:
+  dry_run: false
+  baseline: auto                       # round 1 (run-k4f8d2a1) 자동 baseline
+  regression_threshold_pp: 5.0
+phase:
+  collector: done
+  analyzer:  done
+counts:
+  defined_kpis: 6
+  meta_kpis: 5
+  measured: 9                         # round 1 의 7 → 9 (data_gap 4 → 2 — 2건 측정 가능)
+  data_gap: 2
+  alerts_critical: 1                  # round 1 의 4 → 1 (3건 healthy/recovering 전환)
+  alerts_watch: 0
+  alerts_total: 1
+final_mat008_round: 2
+related_audit_trace: "run-a1c2d3e4"
+related_act_trace:   "run-c4f8a1b2"
+related_capa_rec:    "REC-CMMI-04-01-04-01-2026-003"
+applied_pro_version: "1.1"

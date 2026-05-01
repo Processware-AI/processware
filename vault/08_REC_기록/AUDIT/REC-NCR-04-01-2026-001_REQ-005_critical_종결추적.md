@@ -12,7 +12,7 @@ req_source: PRO-CMMI-04-01
 req_section: "§5-6 종결 추적"
 category: procedure
 severity: critical
-status: open
+status: closed
 issued_at: "2026-05-02T10:06:30+09:00"
 issued_by: "audit-harness/ncr-drafter (claude-opus-4-7)"
 auditor: "이감사"
@@ -22,8 +22,8 @@ assignment:
   responsible_role: "QA"
   approver_role: "PM"
   suggested: true
-  responsible_name: null
-  approver_name: null
+  responsible_name: "dongseok (QA)"
+  approver_name: "박팀장 (PM)"
 evidence_refs:
   - rec_id: REC-CMMI-04-01-03-01-2026-001
     rec_path: "vault/08_REC_기록/REC-CMMI-04-01-03-01-2026-001_작업산출물_평가표.md"
@@ -31,10 +31,12 @@ evidence_refs:
   - rec_id: REC-CMMI-04-01-04-01-2026-002
     rec_path: "vault/08_REC_기록/REC-CMMI-04-01-04-01-2026-002_품질_이슈_에스컬레이션_REJECTED.md"
     trace_id: run-d8a3f6b7
-capa_rec: null
-closed_at: null
-closed_by: null
-closed_reason: null
+capa_rec: "REC-CMMI-04-01-04-01-2026-003"
+closed_at: "2026-05-15T14:55:00+09:00"
+closed_by: "박팀장 (PM)"
+closed_reason: "PRO-CMMI-04-01 v1.0 → v1.1 개정 완료 (§5-6 SLA + §7 측정 시점 정의). Sponsor 회의 정식 개최 후 WI-04-01-04 재실행 정상 승인 — REC-04-01-04-001-2026-003 발행. 본 시정 13일 만에 완료 (Major 60일 SLA 대비 47일 단축)."
+act_trace: "run-c4f8a1b2"
+revision_applied: "PRO-CMMI-04-01 v1.0 → v1.1"
 standards: ["CMMI-DEV-ML3"]
 scope_code: "CMMI"
 retention: "심사 종료 후 5년"
@@ -103,9 +105,17 @@ tags: [REC, NCR, CMMI, PQA, F-001, critical]
 | MAT-006 인덱스 | [[MAT-006_NCR_관리대장]] §"NCR 발행 현황 (open)" |
 | 차원 4 인계 | (대기 — Phase 4 자동화 시 차원 4 큐) |
 
-## 7. 종결 기록
+## 7. 종결 기록 (closed)
 
-> ⏸ 미종결 (status: open) — 종결 시 자동 채워집니다.
+| 항목 | 값 |
+|---|---|
+| 종결일시 | 2026-05-15 14:55 KST |
+| 종결자 | 박팀장 (PM) |
+| 시정조치 REC | [[REC-CMMI-04-01-04-01-2026-003_품질_이슈_에스컬레이션_시정]] |
+| 적용 자산 개정 | PRO-CMMI-04-01 v1.0 → v1.1 (§5-6 SLA + §7 측정 시점) |
+| 차원 4 trace | run-c4f8a1b2 |
+| 종결 사유 | PRO 개정 후 Sponsor 회의 정식 개최 + WI-04-01-04 재실행 정상 다단계 승인 |
+| **SLA 준수** | ✅ critical 20영업일 (2026-05-30) 대비 **15일 단축** (2026-05-15 종결) |
 
 ---
 

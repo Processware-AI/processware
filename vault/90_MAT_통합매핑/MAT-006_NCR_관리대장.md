@@ -80,7 +80,6 @@ tags: [MAT, ncr, audit-evidence]
 
 | NCR ID | Finding | 발행일 | 표준 | 출처 | Req | 등급 | 제목 (요약) | R/A | SLA 기한 | 상태 | 모(母) 심사 |
 |---|---|---|---|---|---|---|---|---|---|---|---|
-| [[REC-NCR-04-01-2026-001_REQ-005_critical_종결추적]] | F-001 | 2026-05-02 | CMMI-DEV-ML3 | PRO-CMMI-04-01 §5-6 | REQ-005 | critical | 종결 추적 미완료 | QA / PM | 2026-05-30 | open | [[REC-AUDIT-04-01-01-2026-001_프로세스_품질보증_심사보고서]] |
 | [[REC-NCR-04-01-2026-002_REQ-007_major_KPI종결율]] | F-002 | 2026-05-02 | CMMI-DEV-ML3 | PRO-CMMI-04-01 §7 KPI | REQ-007 | major | 부적합 종결율 KPI 미달 | QA / QMR | 2026-07-01 | open | [[REC-AUDIT-04-01-01-2026-001_프로세스_품질보증_심사보고서]] |
 | [[REC-NCR-04-01-2026-003_REQ-009_minor_평가서완전성]] | F-003 | 2026-05-02 | CMMI-DEV-ML3 | WI-CMMI-04-01-03 §4·§5.3 | REQ-009 | minor | 평가서 완전성 100% 미달 | QA / PM | 2026-07-31 | open | [[REC-AUDIT-04-01-01-2026-001_프로세스_품질보증_심사보고서]] |
 | [[REC-NCR-04-01-2026-004_REQ-010_critical_다단계승인]] | F-004 | 2026-05-02 | CMMI-DEV-ML3 | WI-CMMI-04-01-04 §2·§5 | REQ-010 | critical | 다단계 승인 — Sponsor 단계 차단 | PM / Process Owner | 2026-05-30 | open | [[REC-AUDIT-04-01-01-2026-001_프로세스_품질보증_심사보고서]] |
@@ -89,6 +88,7 @@ tags: [MAT, ncr, audit-evidence]
 
 | NCR ID | Finding | 발행일 | 종결일 | 표준 | 출처 | 등급 | 종결자 | CAPA REC | SLA 준수 |
 |---|---|---|---|---|---|---|---|---|---|
+| [[REC-NCR-04-01-2026-001_REQ-005_critical_종결추적]] | F-001 | 2026-05-02 | 2026-05-15 | CMMI-DEV-ML3 | PRO-CMMI-04-01 §5-6 | critical | 박팀장 (PM) | [[REC-CMMI-04-01-04-01-2026-003_품질_이슈_에스컬레이션_시정]] | ✅ 15일 단축 (act trace: run-c4f8a1b2 / PRO v1.0 → v1.1) |
 
 ## NCR 통계 (Phase 3 자동 갱신)
 
@@ -97,14 +97,14 @@ tags: [MAT, ncr, audit-evidence]
 | 지표 | 값 | source |
 |---|---|---|
 | 총 발행 NCR (누적) | 4 | MAT-006 §"발행 현황" + §"종결 현황" 합계 |
-| 종결 완료 (CAPA 첨부) | 0 | §"종결 현황" 행 수 |
-| 미종결 (open) | 4 | §"발행 현황" 행 수 |
-| 종결율 (= 종결 / 발행) | 0.0% | META-NCR-CLOSURE — 🔴 critical (목표 >=95%) |
-| SLA 준수율 (= 기한 내 종결 / 종결 완료) | — (n=0) | META-NCR-SLA — ⚪ data_gap (n=0) |
-| 평균 종결 기간 (영업일) | — (n=0) | KPI-CMMI-04-01-03 — ⚪ data_gap (n=0) |
-| 등급별 누적 (critical / major / minor) | 2 / 1 / 1 | §"발행 현황" + §"종결 현황" 등급 컬럼 |
-| 반복 부적합 TOP (동일 PRO·Req 의 재발) | 0건 (1회차 측정 — 재발 baseline 부재) | KPI-CMMI-04-01-05 (회차 ≥ 2 부터) |
-| 마지막 갱신 | 2026-05-02 (run-k4f8d2a1) | trace.jsonl mat006_stats_updated |
+| 종결 완료 (CAPA 첨부) | 1 | §"종결 현황" 행 수 (NCR-001 — 차원 4 폐쇄 루프 PoC) |
+| 미종결 (open) | 3 | §"발행 현황" 행 수 (NCR-002/003/004) |
+| 종결율 (= 종결 / 발행) | 25.0% | META-NCR-CLOSURE — 🟠 recovering (round 1 → 2: 0% → 25%, +25%p) |
+| SLA 준수율 (= 기한 내 종결 / 종결 완료) | 100.0% (n=1) | META-NCR-SLA — 🟢 healthy (NCR-001 15일 단축) |
+| 평균 종결 기간 (영업일) | 약 9 영업일 (n=1, 2026-05-02 → 05-15 = 13일 ≈ 9 영업일) | KPI-CMMI-04-01-03 — 🟢 healthy (목표 ≤ 20 영업일) |
+| 등급별 누적 (critical / major / minor) | 2 / 1 / 1 (그 중 종결: critical 1) | §"발행 현황" + §"종결 현황" 등급 컬럼 |
+| 반복 부적합 TOP (동일 PRO·Req 의 재발) | 0건 (회차 2 — 재발 없음) | KPI-CMMI-04-01-05 — 🟢 healthy |
+| 마지막 갱신 | 2026-05-16 (run-k7d2e8f3 — KPI round 2) | trace.jsonl mat006_stats_updated |
 
 ---
 

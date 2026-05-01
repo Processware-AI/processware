@@ -15,8 +15,21 @@ target_asset: PRO-CMMI-04-01
 target_sections: ["§5-6 종결 추적", "§7 KPI"]
 rebuild_command: "/build-standard CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01"
 expected_next_version: "1.1"
-tags: [asis-feedback, act-cycle, NCR-001, F-001, critical]
+tags: [asis-feedback, act-cycle, NCR-001, F-001, critical, applied]
+applied:
+  status: applied
+  applied_at: "2026-05-15T13:00:00+09:00"
+  applied_by: "/build-standard CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01"
+  result_version: "PRO-CMMI-04-01 v1.1"
+  capa_rec: "REC-CMMI-04-01-04-01-2026-003"
+  closed_ncr: "REC-NCR-04-01-2026-001"
+  kpi_recovery_round: 2
+  kpi_recovery_trace: "run-k7d2e8f3"
 ---
+
+> **✅ APPLIED** (2026-05-15) — 본 As-Is 입력은 차원 1 빌드 (`/build-standard --from write --target PRO-CMMI-04-01`) 에 의해 처리 완료. 산출: PRO v1.1. 후속 차원 2 (CAPA REC-003) + 차원 3 (NCR-001 close + KPI round 2 회복) 모두 완료. 4차원 PDCA 폐쇄 루프 실증 완료.
+
+
 
 # As-Is 피드백 — queue-qa1b2c3d4 (NCR-001 critical)
 
