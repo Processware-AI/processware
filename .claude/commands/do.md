@@ -77,6 +77,15 @@ argument-hint: "<WI번호 | 자연어> | --resume <trace_id> | --approve <trace_
 ```
 → 모든 `.claude/runs/run-*/approval_request.md` 의 frontmatter 를 스캔. `status: approved/rejected` 인 drop-in 응답이 있으면 자동으로 처리 (외부 채널 사용자가 파일을 직접 편집한 경우의 일괄 회수).
 
+### 1-7-bis. `check-timeouts` 모드 — `/do --check-timeouts [--dry-run]`
+```
+/do --check-timeouts                # 모든 pending_approval trace 의 타임아웃 검출 + 에스컬레이션
+/do --check-timeouts --dry-run      # 검출만, 발송 안 함
+```
+→ `escalation-coordinator` `scan` 모드 호출. 타임아웃 만료 trace 의 `escalate_to[]` 에 따라 다음 승인자에게 drop-out 재발송. 체인 소진 시 `escalation_exhausted` 상태 + 사용자 보고.
+
+권장 운영: 외부 cron 으로 30분 또는 1시간 주기 실행 (예: `*/30 * * * * /do --check-timeouts`).
+
 ### 1-7. `rebuild-catalog` 모드 — `/do --rebuild-catalog [--scope <영역>]`
 ```
 /do --rebuild-catalog                # 전체 표준 재인덱싱
@@ -94,6 +103,9 @@ argument-hint: "<WI번호 | 자연어> | --resume <trace_id> | --approve <trace_
 | `--reason "..."` | 반려 사유. `--reject` 모드에서 필수 | reject |
 | `--scope <영역>` | 카탈로그 재구축 범위 한정 (예: CMMI / ISO9001) | rebuild-catalog |
 | `--auto-threshold <0~1>` | process-router 자동 채택 임계 (기본 0.9) | start (자연어 진입) |
+| `--matching-strategy` | `llm_direct` (기본) \| `rag_vector` (Phase 3.5, 미구축 시 fallback) | start (자연어 진입) |
+| `--no-history` | Phase 3.5 사용자 이력 학습 가중치 비활성화 | start (자연어 진입) |
+| `--lang` | `auto` (기본) \| `ko` \| `en` — 언어 강제 지정 | start (자연어 진입) |
 
 ---
 
@@ -190,6 +202,12 @@ S-1. `hitl-gatekeeper` `gate_query` 모드 호출. 결과 출력 후 종료.
 
 ---
 
+### 2-G. `check-timeouts` 모드 (Phase 2.5)
+
+CT-1. `escalation-coordinator` `scan` 모드 호출.
+CT-2. 결과 보고 (스캔 수 / 만료 수 / 에스컬레이션 수 / 체인 소진 수).
+CT-3. `--dry-run` 시 발송 없이 검출만.
+
 ### 2-F. `rebuild-catalog` 모드
 
 RC-1. `traceability-mapper` 를 `catalog-rebuild` 모드로 호출 (scope 옵션 전달).
@@ -278,8 +296,10 @@ finalized_at: null
 |---|---|---|
 | 1 | 직접 WI 지정 / 단일 step 대화 / TMP 매핑 / REC 1건 생성 / MAT-005 1행 / trace 로그 / HITL `--auto-approve` 모킹 | 자연어 라우팅 / HITL 정식 / 멀티턴 재개 |
 | 2 | HITL 정지(`pending_approval`) / 외부 채널 drop-out / `/do --resume\|--approve\|--reject\|--status\|--check-approvals` / 반려 처리 (REC.status: rejected) / 6개 진입 모드 | 자연어 라우팅 / 타임아웃·에스컬레이션 / 외부 IdP 인증 / 다단계 승인 |
-| **3 (지금)** | process-router / MAT-007 카탈로그 / 자연어 매칭 (auto_accepted / candidates_presented / no_match) / `--rebuild-catalog` / `--auto-threshold` | 외부 시스템 연동 / 다국어 / RAG |
-| 4 | wi-tmp-writer 확장 (steps.yaml 정식 출력) / steps.yaml ↔ MD 동기화 | — |
+| 3 | process-router / MAT-007 카탈로그 / 자연어 매칭 / `--rebuild-catalog` / `--auto-threshold` | 외부 시스템 연동 / 다국어 / RAG |
+| 4 | wi-tmp-writer 확장 (steps.yaml 정식 출력) / steps.yaml ↔ MD 동기화 / qa-reviewer §11-A | — |
+| **2.5 (지금)** | escalation-coordinator / 다단계 승인 (review→approve→final) / 타임아웃·에스컬레이션 체인 / `--check-timeouts` / 외부 IdP 인터페이스 hook | 외부 cron 실연동 / 이메일·Slack 실연동 / IdP 실연동 |
+| **3.5 (지금)** | matching_strategy (llm_direct / rag_vector) / 다국어 매칭 / 사용자 이력 학습 | pgvector 실구축 / 트리거 이벤트 자동 탐지 / 사용자별 개인화 |
 
 ---
 
