@@ -17,6 +17,75 @@ argument-hint: "<표준코드> [--restart] [--resume] [--from <phase>] [--skip-q
 
 ---
 
+## Phase −2: Git Branch 격리 (state 결정 직전)
+
+본 파이프라인은 **branch-per-standard** 정책을 따른다. main 은 harness 와 표준 등록 메타만 누적하고, 표준별 산출물은 격리된 feature branch 에 영구 보존한다.
+
+### −2-1. 사전 등록 (main 작업)
+
+표준 빌드 시작 전, 다음 두 파일에 **신규 표준 식별 정보**를 등록하고 main 에 직접 commit·push 한다:
+
+- `vault/00_공통관리/02_문서번호체계.md` — 영역 코드 표 신규 행 + MAT 표준별 추적성 표 신규 행
+- `vault/00_공통관리/07_표준분류레지스트리.md` — §2 해당 섹션에 row 추가 + §6 메타 모델 YAML block 추가
+
+**진행 절차**:
+```bash
+git checkout main
+git pull --ff-only
+# (위 2개 파일 편집)
+git add vault/00_공통관리/02_문서번호체계.md vault/00_공통관리/07_표준분류레지스트리.md
+git commit -m "feat(registry): {표준코드} 영역코드 등록 + 표준분류레지스트리 등재"
+git push origin main
+```
+
+**예외**: 사용자가 `--no-branch` 플래그로 비활성화하면 본 phase 전체를 skip (단일 main 작업 모드).
+
+### −2-2. Feature branch 생성
+
+main 의 등록 commit 위에서 분기:
+
+```bash
+git checkout -b feat/{표준코드-소문자}-output
+```
+
+이후 모든 phase (preflight ~ qa, 자가수정) 는 이 branch 에서 작업.
+
+**branch 명 컨벤션**:
+- 형식: `feat/{표준코드 lower-case}-output` 예: `feat/iso9001-output`, `feat/cmmi-dev-ml3-output`
+- 동일 표준 재빌드 시: `feat/{표준코드}-output-{YYYYMMDD}` 로 일자 suffix
+
+### −2-3. 작업 도중 commit 정책
+
+각 phase 종료 시 **선택적 중간 commit** (사용자 옵션 `--commit-per-phase` 시):
+- analyze 종료: `feat({표준코드}): analyze 완료 — 요구사항 분해 N건`
+- design 종료: `feat({표준코드}): design 완료 — POL N / PRO M`
+- write 종료: `feat({표준코드}): write 완료 — WI/TMP/EX N×3`
+- trace 종료: `chore({표준코드}): MAT 갱신 + MAT-{NNN} 신규`
+- qa 종료: `chore({표준코드}): QA attempt N — Pass/Fail 통계`
+
+기본은 **종료 시 일괄 4개 분할 commit**:
+1. `feat({표준코드}): 표준 산출물 + 입력자료 (POL/PRO/WI/TMP/EX/REF)`
+2. `chore(MAT): MAT-001~006 갱신 + MAT-{NNN} 신규`
+3. `docs(MOC): 전체표준·추적성매트릭스 인덱스 갱신`
+4. (필요 시) `fix({표준코드}): self-heal 후속 보정`
+
+### −2-4. 종료 시 push
+
+`overall_status: done` 도달 시:
+```bash
+git push -u origin feat/{표준코드}-output
+```
+
+main 에 merge 는 사용자 결정 사항. PR 생성 안내만 출력 (`gh pr create` 명령 예시).
+
+### −2-5. 안전 가드
+
+- main 에 절대 force-push 하지 않는다.
+- branch 에 force-push 가 필요하면 `--force-with-lease` 사용.
+- 빌드 실패·중단 시 branch 는 그대로 보존 (다음 attempt 재개 가능).
+
+---
+
 ## Phase −1: State 결정 (가장 먼저)
 
 ### −1-1. `_state.yaml` 탐색
@@ -144,6 +213,8 @@ R-6. QA 결과로 루프 재평가.
 | `--skip-qa` | QA·자가수정 루프 생략 |
 | `--cross` | trace 단계에서 교차 표준 통합 분석 포함 |
 | `--max-attempts N` | 자가수정 최대 횟수 변경 (기본 3) |
+| `--no-branch` | Phase −2 (git branch 격리) skip — 단일 main 작업 모드 |
+| `--commit-per-phase` | 각 phase 종료 시 중간 commit (기본은 종료 시 일괄 4분할) |
 
 ---
 
@@ -163,4 +234,5 @@ R-6. QA 결과로 루프 재평가.
 - 🔗 `source_citation` 누락 건수 (목표: 0)
 - 📋 MAT 5종 갱신 요약
 - 🚩 잔여 Issue (`manual` 에스컬레이션 + 미해결)
+- 🌿 git branch 정보 (현재 branch / origin push 결과 / PR 생성 안내)
 - ➡️ 다음 편입 권장 표준
