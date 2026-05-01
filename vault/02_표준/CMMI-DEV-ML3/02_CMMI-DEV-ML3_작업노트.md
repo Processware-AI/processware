@@ -18,8 +18,8 @@ tags: [worknote, CMMI-DEV-ML3]
 - [x] **Phase 0. 입력자료 Preflight** — 40 PDF / 20 PA 인벤토리 작성 완료 (preflight 단계)
 - [x] **Phase 1. 표준 개요** — [[00_CMMI-DEV-ML3_표준개요]]
 - [x] **Phase 2. 요구사항 분해** — [[01_CMMI-DEV-ML3_요구사항분해]] (126 Req-ID)
-- [x] **Phase 3. 정책(POL) 작성** — `03_POL_정책/POL-CMMI-001~005` (5종, design phase)
-- [x] **Phase 4. 절차(PRO) 작성** — `04_PRO_절차/PRO-CMMI-101~501,502` (20종, design phase)
+- [x] **Phase 3. 정책(POL) 작성** — `03_POL_정책/POL-CMMI-01~005` (5종, design phase)
+- [x] **Phase 4. 절차(PRO) 작성** — `04_PRO_절차/PRO-CMMI-01-01~501,502` (20종, design phase)
 - [x] **Phase 5. 업무지침(WI) 작성** — `05_WI_업무지침/WI-CMMI-*` (142종 전수, write phase)
 - [x] **Phase 6. 템플릿(TMP) 작성** — `06_TMP_템플릿/TMP-CMMI-*` (14종 → 자가수정 attempt 2 에서 142종까지 보강 진행, write phase)
 - [x] **Phase 7. 작성예시(EX) 작성** — `07_EX_작성예시/EX-CMMI-*` (14종 → 자가수정 attempt 2 에서 142종까지 보강 진행, write phase)
@@ -41,7 +41,7 @@ tags: [worknote, CMMI-DEV-ML3]
 | 2026-04-29 | OSSP·PAL·측정저장소 통합 | PAD/MPM/PCM 등에서 참조되는 인프라는 단일 인스턴스로 설계 권고 | design phase 입력 |
 | 2026-04-29 | 라이선스 가드 | 모든 Req-ID 본문은 paraphrase, PA·Practice 번호 인용은 허용. 20단어 연속 일치 자가 점검 통과 | qa-reviewer 추가 검사 필요 |
 | 2026-04-29 | **QA 이슈 #QA-20260429-001** | TMP/EX 128쌍 누락 (FAIL/blocker) — 142 WI 중 14 WI 만 TMP/EX 보유 | assigned_to: wi-tmp-writer / fix_scope: 128 TMP+128 EX 생성 |
-| 2026-04-29 | **QA 이슈 #QA-20260429-002** | PRO-CMMI-205 standards[] 에 ISO 31000 등재 (WARN/minor) — 레지스트리상 reference_only | assigned_to: process-designer / fix_scope: standards 에서 제거 후 본문 주석으로 처리 |
+| 2026-04-29 | **QA 이슈 #QA-20260429-002** | PRO-CMMI-02-05 standards[] 에 ISO 31000 등재 (WARN/minor) — 레지스트리상 reference_only | assigned_to: process-designer / fix_scope: standards 에서 제거 후 본문 주석으로 처리 |
 | 2026-04-29 | **QA 이슈 #QA-20260429-003** | 작업노트 진행 체크리스트 갱신 누락 (WARN/minor) — Phase 3~7 [x] 표시 안됨 | assigned_to: orchestrator / fix_scope: 체크박스 [x] 갱신 |
 
 ## 다음 phase (design) 에 전달할 핵심 메시지
@@ -54,18 +54,18 @@ tags: [worknote, CMMI-DEV-ML3]
 ### 2. POL/PRO 묶음 설계 권고 (process-designer 입력)
 
 #### 권고 POL 구조 (5종)
-- `POL-CMMI-001 프로세스 거버넌스 정책` — GOV PA 전체 + PAD-3.1·3.2 (OSSP/테일러링)
-- `POL-CMMI-002 프로젝트관리 정책` — PLAN, MC, EST 통합 정책
-- `POL-CMMI-003 엔지니어링 정책` — RDM, TS, PI, VV
-- `POL-CMMI-004 품질·구성 정책` — PQA, CM, PR
-- `POL-CMMI-005 자원·역량·공급자 정책` — OT, RSK, SAM, II
+- `POL-CMMI-01 프로세스 거버넌스 정책` — GOV PA 전체 + PAD-3.1·3.2 (OSSP/테일러링)
+- `POL-CMMI-02 프로젝트관리 정책` — PLAN, MC, EST 통합 정책
+- `POL-CMMI-03 엔지니어링 정책` — RDM, TS, PI, VV
+- `POL-CMMI-04 품질·구성 정책` — PQA, CM, PR
+- `POL-CMMI-05 자원·역량·공급자 정책` — OT, RSK, SAM, II
 
 #### 권고 PRO 구조 (영역코드 CMMI, POL별 1xx~5xx)
-- POL-001 하위: `PRO-CMMI-101 OSSP 운영`, `PRO-CMMI-102 거버넌스 검토`, `PRO-CMMI-103 프로세스 자산 관리(PAL)`
-- POL-002 하위: `PRO-CMMI-201 프로젝트 계획`, `PRO-CMMI-202 추정`, `PRO-CMMI-203 모니터·통제`, `PRO-CMMI-204 시정조치·CAR/DAR`
-- POL-003 하위: `PRO-CMMI-301 요구사항 개발·관리`, `PRO-CMMI-302 기술솔루션 설계`, `PRO-CMMI-303 제품 통합`, `PRO-CMMI-304 검증·확인`
-- POL-004 하위: `PRO-CMMI-401 품질보증(PQA)`, `PRO-CMMI-402 형상관리(CM)`, `PRO-CMMI-403 동료검토(PR)`
-- POL-005 하위: `PRO-CMMI-501 조직교육(OT)`, `PRO-CMMI-502 위험·기회 관리(RSK)`, `PRO-CMMI-503 공급자 계약 관리(SAM)`, `PRO-CMMI-504 측정·성과(MPM)`, `PRO-CMMI-505 구현 인프라(II)`
+- POL-001 하위: `PRO-CMMI-01-01 OSSP 운영`, `PRO-CMMI-01-02 거버넌스 검토`, `PRO-CMMI-01-03 프로세스 자산 관리(PAL)`
+- POL-002 하위: `PRO-CMMI-02-01 프로젝트 계획`, `PRO-CMMI-02-02 추정`, `PRO-CMMI-02-03 모니터·통제`, `PRO-CMMI-02-04_성과_및_측정_관리_절차_v1.0 시정조치·CAR/DAR`
+- POL-003 하위: `PRO-CMMI-03-01 요구사항 개발·관리`, `PRO-CMMI-03-02 기술솔루션 설계`, `PRO-CMMI-03-03 제품 통합`, `PRO-CMMI-03-04 검증·확인`
+- POL-004 하위: `PRO-CMMI-04-01 품질보증(PQA)`, `PRO-CMMI-04-02 형상관리(CM)`, `PRO-CMMI-04-03 동료검토(PR)`
+- POL-005 하위: `PRO-CMMI-05-01 조직교육(OT)`, `PRO-CMMI-05-02 위험·기회 관리(RSK)`, `PRO-CMMI-05-03 공급자 계약 관리(SAM)`, `PRO-CMMI-05-04 측정·성과(MPM)`, `PRO-CMMI-05-05 구현 인프라(II)`
 
 #### 권고 WI/TMP 핵심 산출물
 - 형상항목목록 / 변경요청서 / 기준선 릴리스노트

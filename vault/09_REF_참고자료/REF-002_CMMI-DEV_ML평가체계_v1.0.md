@@ -63,7 +63,7 @@ CMMI v3.0 의 ML 평가는 **Benchmark Appraisal** 방식으로 수행되며, ML
 | 평가 요소 | 요지 | 본 체계 적용 영향 |
 |---|---|---|
 | Required Practice 충족 | 모든 Practice Statement 가 OU 내에서 일관되게 수행 | 모든 Req-ID 가 POL/PRO/WI 와 매핑 필수 |
-| OSSP 운영 | 조직 표준 프로세스 집합 + Tailoring 지침 보유 | PAD-3.1, PAD-3.2 → POL-CMMI-001 영역 |
+| OSSP 운영 | 조직 표준 프로세스 집합 + Tailoring 지침 보유 | PAD-3.1, PAD-3.2 → POL-CMMI-01 영역 |
 | PAL 운영 | 프로세스 자산 라이브러리 (도구·템플릿·예시) | PAD-3.3 → 본 체계의 99_템플릿/ + 09_REF 와 매핑 |
 | 측정 저장소 | 조직 차원의 측정 데이터 누적 | MPM-3.2, EST-3.1 → 단일 측정저장소 인스턴스 |
 | Tailoring | 프로젝트가 OSSP 를 테일러링하여 사용 | 본 체계의 테일러링 가이드 작성 필수 |
