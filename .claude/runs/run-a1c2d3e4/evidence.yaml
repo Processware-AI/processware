@@ -1,0 +1,121 @@
+trace_id: run-a1c2d3e4
+generated_at: "2026-05-02T10:01:42+09:00"
+generated_by: "evidence-collector (claude-opus-4-7)"
+scope_summary:
+  pro: ["PRO-CMMI-04-01"]
+  wi:
+    - "WI-CMMI-04-01-01"
+    - "WI-CMMI-04-01-02"
+    - "WI-CMMI-04-01-03"
+    - "WI-CMMI-04-01-04"
+    - "WI-CMMI-04-01-05"
+  period:
+    from: "2026-01-01"
+    to:   "2026-04-30"
+counts:
+  rec_total: 3
+  rec_final: 2
+  rec_rejected: 1
+  trace_total: 3
+  wi_with_rec: 2
+  wi_without_rec: 3
+  coverage_pct: 40
+
+rec:
+  - rec_id: REC-CMMI-04-01-03-01-2026-001
+    rec_path: "vault/08_REC_기록/REC-CMMI-04-01-03-01-2026-001_작업산출물_평가표.md"
+    parent_wi: WI-CMMI-04-01-03
+    parent_pro: PRO-CMMI-04-01
+    parent_pol: POL-CMMI-04
+    executed_by: dongseok
+    executed_at: "2026-05-01T15:30:00+09:00"
+    status: final
+    trace_id: run-b7d4e3c5
+    hitl:
+      required: true
+      approver_role: PM
+      approver_name: "(auto-approved Phase1)"
+      decision: approved
+    fields_summary:
+      평가표: "산출물 4건 평가, 모두 Pass — 단 설계서 완전성 95% (마이너 누락) / 코드는 Sonar Pass(완전성 N/A)"
+      결재: "작성 dongseok / 검토 Tech Lead / 승인 PM (auto-approved 2026-05-01 15:37)"
+      자동추가:
+        부적합: "설계서 §3.2 트레이서빌리티 매트릭스 누락 (등급 minor) — 다음 스프린트 종료 전 보완"
+        DoD: "평가서 ✅ / 부적합 종결 ❌ (재점검 2026-05-15 예정) / 데이터 적재 ✅"
+        예외: "WI §7.3 자동화 적용 — 코드 항목 Sonar 결과 사용"
+
+  - rec_id: REC-CMMI-04-01-04-01-2026-001
+    rec_path: "vault/08_REC_기록/REC-CMMI-04-01-04-01-2026-001_품질_이슈_에스컬레이션.md"
+    parent_wi: WI-CMMI-04-01-04
+    parent_pro: PRO-CMMI-04-01
+    parent_pol: POL-CMMI-04
+    executed_by: dongseok
+    executed_at: "2026-05-01T16:00:00+09:00"
+    status: final
+    trace_id: run-c5f8a9d2
+    hitl:
+      required: true
+      approver_role: Sponsor
+      approver_name: "박상무 (Sponsor)"
+      decision: approved
+    fields_summary:
+      이슈: "Major 1건 — Sponsor 승인까지 정상 진행"
+      결재: "PM 검토 → Sponsor 박상무 승인 (다단계 승인 정상 동작)"
+      자동추가:
+        DoD: "보고서 ✅ / 종결 합의 ✅ / 데이터 적재 ✅"
+
+  - rec_id: REC-CMMI-04-01-04-01-2026-002
+    rec_path: "vault/08_REC_기록/REC-CMMI-04-01-04-01-2026-002_품질_이슈_에스컬레이션_REJECTED.md"
+    parent_wi: WI-CMMI-04-01-04
+    parent_pro: PRO-CMMI-04-01
+    parent_pol: POL-CMMI-04
+    executed_by: dongseok
+    executed_at: "2026-05-01T16:30:00+09:00"
+    status: rejected
+    trace_id: run-d8a3f6b7
+    hitl:
+      required: true
+      approver_role: Sponsor
+      approver_name: "박상무 (Sponsor)"
+      decision: rejected
+      rejection_reason: "임계 기준(SLA) 미정의 + Sponsor 회의 미참석 — WI §7.1 결정 지연 분기 적용"
+    fields_summary:
+      이슈: "NCR-2026-077 Major 1건 — 1차 책임 미지정"
+      결재: "❌ 반려 — Sponsor 박상무 (PM 단독 검토만, Sponsor 미참석)"
+      자동추가:
+        DoD: "보고서 ⏸ / 종결 합의 ❌ / 데이터 적재 ⏸ — 모두 반려로 인한 미완료"
+        예외: "WI §7.1 결정 지연 분기 적용"
+        시정조치_요청: "1) SLA 임계 기준 §5.1.1 정식 정의, 2) Sponsor 결정 회의 정식 개최, 3) 본 WI 재실행"
+
+trace_refs:
+  - trace_id: run-b7d4e3c5
+    state_yaml_present: true
+    wi_id: WI-CMMI-04-01-03
+    executed_by: dongseok
+    started_at:   "2026-05-01T15:30:00+09:00"
+    finalized_at: "2026-05-01T15:37:10+09:00"
+    hitl: { required: true, decision: approved, approver_role: PM, approver_name: "(auto-approved Phase1)" }
+    event_counts: { question: 12, answer: 12, derivation: 3, hitl_request: 1, hitl_response: 1, rec_finalized: 1 }
+
+  - trace_id: run-c5f8a9d2
+    state_yaml_present: true
+    wi_id: WI-CMMI-04-01-04
+    executed_by: dongseok
+    started_at:   "2026-05-01T16:00:00+09:00"
+    finalized_at: "2026-05-01T16:25:00+09:00"
+    hitl: { required: true, decision: approved, approver_role: Sponsor, approver_name: "박상무" }
+    event_counts: { question: 9, answer: 9, hitl_request: 2, hitl_response: 2, rec_finalized: 1 }
+
+  - trace_id: run-d8a3f6b7
+    state_yaml_present: true
+    wi_id: WI-CMMI-04-01-04
+    executed_by: dongseok
+    started_at:   "2026-05-01T16:30:00+09:00"
+    finalized_at: "2026-05-01T16:55:00+09:00"
+    hitl: { required: true, decision: rejected, approver_role: Sponsor, approver_name: "박상무" }
+    event_counts: { question: 7, answer: 7, hitl_request: 1, hitl_response: 1, aborted: 0, rec_finalized: 1 }
+
+coverage_hint:
+  wi_with_rec:    ["WI-CMMI-04-01-03", "WI-CMMI-04-01-04"]
+  wi_without_rec: ["WI-CMMI-04-01-01", "WI-CMMI-04-01-02", "WI-CMMI-04-01-05"]
+  notes: "WI-04-01-01 (부적합 식별), WI-04-01-02 (프로세스 평가), WI-04-01-05 (QA 기록 관리) — 본 분기 내 이행 증적 0건. checker 가 not_assessed 후보로 처리."

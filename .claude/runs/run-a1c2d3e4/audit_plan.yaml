@@ -1,0 +1,158 @@
+trace_id: run-a1c2d3e4
+generated_at: "2026-05-02T10:00:08+09:00"
+generated_by: "audit-planner (claude-opus-4-7)"
+scope:
+  kind: PRO
+  ids: ["PRO-CMMI-04-01"]
+  resolved_targets:
+    pro: ["PRO-CMMI-04-01"]
+    wi:
+      - "WI-CMMI-04-01-01"
+      - "WI-CMMI-04-01-02"
+      - "WI-CMMI-04-01-03"
+      - "WI-CMMI-04-01-04"
+      - "WI-CMMI-04-01-05"
+    pol: ["POL-CMMI-04"]
+  period:
+    from: "2026-01-01"
+    to:   "2026-04-30"
+options:
+  strictness: normal
+counts:
+  total: 12
+  by_category:
+    raci: 2
+    procedure: 3
+    kpi: 2
+    approval: 2
+    output: 3
+  by_severity:
+    critical: 4
+    major: 6
+    minor: 2
+
+requirement:
+  - req_id: REQ-001
+    source: PRO-CMMI-04-01
+    source_section: "§3 RACI"
+    statement: "PQA 활동 5단계 (식별·평가·산출물·에스컬레이션·기록) 의 R/A 가 RACI 표에 명시되어야 한다."
+    category: raci
+    severity_default: critical
+    expected_evidence_type:
+      - rec_field: "PRO §3 RACI 표 자체"
+    applies_to_wi: ["WI-CMMI-04-01-01", "WI-CMMI-04-01-02", "WI-CMMI-04-01-03", "WI-CMMI-04-01-04", "WI-CMMI-04-01-05"]
+
+  - req_id: REQ-002
+    source: PRO-CMMI-04-01
+    source_section: "§3 RACI / §7 통제점"
+    statement: "QA 평가자와 수행자가 분리되어 독립성 100% 가 유지되어야 한다 (ISO §9.2)."
+    category: raci
+    severity_default: critical
+    expected_evidence_type:
+      - rec_field: "REC.executed_by ↔ WI.수행자 분리"
+      - trace_event: "independence_checked"
+    applies_to_wi: ["WI-CMMI-04-01-03", "WI-CMMI-04-01-04"]
+
+  - req_id: REQ-003
+    source: PRO-CMMI-04-01
+    source_section: "§5-1 감사 계획"
+    statement: "분기 감사 계획서가 수립되어야 한다."
+    category: procedure
+    severity_default: major
+    expected_evidence_type:
+      - rec_field: "감사 계획서 (TMP 미정 — PRO §5-1)"
+    applies_to_wi: ["WI-CMMI-04-01-02"]
+
+  - req_id: REQ-004
+    source: PRO-CMMI-04-01
+    source_section: "§5-3 산출물 평가"
+    statement: "정의된 작업산출물에 대해 객관 평가가 수행되어야 한다."
+    category: procedure
+    severity_default: major
+    expected_evidence_type:
+      - rec_field: "REC §평가표 (Pass/Fail 결과)"
+    applies_to_wi: ["WI-CMMI-04-01-03"]
+
+  - req_id: REQ-005
+    source: PRO-CMMI-04-01
+    source_section: "§5-6 종결 추적"
+    statement: "식별된 부적합은 시정조치가 종결될 때까지 추적되어 종결 기록이 남아야 한다."
+    category: procedure
+    severity_default: major
+    expected_evidence_type:
+      - rec_field: "REC §(자동 추가) 완료 조건 충족 결과 — 부적합 종결"
+      - rec_field: "REC §결재 (종결 합의)"
+    applies_to_wi: ["WI-CMMI-04-01-04"]
+
+  - req_id: REQ-006
+    source: PRO-CMMI-04-01
+    source_section: "§7 KPI — 감사 계획 준수율"
+    statement: "감사 계획 준수율 ≥ 95% (분기 측정) 를 충족해야 한다."
+    category: kpi
+    severity_default: major
+    expected_evidence_type:
+      - rec_field: "KPI 측정 보고서 (REC 미정)"
+    applies_to_wi: ["WI-CMMI-04-01-02"]
+
+  - req_id: REQ-007
+    source: PRO-CMMI-04-01
+    source_section: "§7 KPI — 부적합 종결율"
+    statement: "부적합 종결율 ≥ 95% (분기 측정) 를 충족해야 한다."
+    category: kpi
+    severity_default: major
+    expected_evidence_type:
+      - rec_field: "REC §DoD 부적합 종결"
+      - rec_field: "MAT-005 §실행기록 의 final/rejected 비율"
+    applies_to_wi: ["WI-CMMI-04-01-04"]
+
+  - req_id: REQ-008
+    source: WI-CMMI-04-01-03
+    source_section: "§2 수행 주체"
+    statement: "WI-04-01-03 (작업산출물 평가) 의 결재는 PM 승인을 받아야 한다."
+    category: approval
+    severity_default: critical
+    expected_evidence_type:
+      - rec_field: "REC §결재.승인 (PM)"
+      - trace_event: "hitl_response decision=approved"
+    applies_to_wi: ["WI-CMMI-04-01-03"]
+
+  - req_id: REQ-009
+    source: WI-CMMI-04-01-03
+    source_section: "§4 입출력 / §5.3 DoD"
+    statement: "산출물 평가서 (TMP-04-01-03-01) 가 작성되고, 평가 결과의 완전성이 100% 충족되어야 한다."
+    category: output
+    severity_default: minor
+    expected_evidence_type:
+      - rec_field: "REC §평가표.완전성"
+    applies_to_wi: ["WI-CMMI-04-01-03"]
+
+  - req_id: REQ-010
+    source: WI-CMMI-04-01-04
+    source_section: "§2 수행 주체 / §5 다단계 승인"
+    statement: "WI-04-01-04 (품질이슈 에스컬레이션) 의 결재는 PM 검토 후 Sponsor 승인을 받아야 한다 (다단계)."
+    category: approval
+    severity_default: critical
+    expected_evidence_type:
+      - rec_field: "REC §결재.승인 (Sponsor)"
+      - trace_event: "hitl_response stage=final_approval decision=approved"
+    applies_to_wi: ["WI-CMMI-04-01-04"]
+
+  - req_id: REQ-011
+    source: WI-CMMI-04-01-01
+    source_section: "§4 산출물"
+    statement: "부적합 식별 시 부적합 등록부 (TMP) 가 산출되어야 한다."
+    category: output
+    severity_default: major
+    expected_evidence_type:
+      - rec_field: "REC (WI-04-01-01)"
+    applies_to_wi: ["WI-CMMI-04-01-01"]
+
+  - req_id: REQ-012
+    source: WI-CMMI-04-01-05
+    source_section: "§4 산출물"
+    statement: "QA 활동·결과는 QA 기록부 (TMP) 로 보관되어야 한다."
+    category: output
+    severity_default: major
+    expected_evidence_type:
+      - rec_field: "REC (WI-04-01-05)"
+    applies_to_wi: ["WI-CMMI-04-01-05"]
