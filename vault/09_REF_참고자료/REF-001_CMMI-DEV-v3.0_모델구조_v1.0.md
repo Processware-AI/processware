@@ -1,10 +1,10 @@
 ---
 type: REF
 doc_id: "REF-001"
-title: "CMMI for Development v2.0 — 모델 구조 요약"
+title: "CMMI for Development v3.0 — 모델 구조 요약"
 version: "1.0"
-source: "ISACA / CMMI Institute, CMMI for Development v2.0"
-source_date: "2018 이후 지속 갱신"
+source: "ISACA / CMMI Institute, CMMI for Development v3.0"
+source_date: "2023"
 author: "ISACA / CMMI Institute"
 status: draft
 created: 2026-04-29
@@ -12,15 +12,15 @@ updated: 2026-04-29
 tags: [REF, CMMI, capability-model, paraphrase]
 ---
 
-# CMMI for Development v2.0 — 모델 구조 (REF-001)
+# CMMI for Development v3.0 — 모델 구조 (REF-001)
 
-> 원문 출처: ISACA / CMMI Institute, *CMMI for Development, Version 2.0*
+> 원문 출처: ISACA / CMMI Institute, *CMMI for Development, Version 3.0*
 > 라이선스: ISACA — paraphrase only, 원문 직접 인용 금지
 > 최종 확인일: 2026-04-29
 
 ## 요약
 
-CMMI v2.0 은 개발(DEV)·서비스(SVC)·공급자관리(SPM) 등 도메인별 View 를 가진 capability model 이다. 본 REF 는 **CMMI-DEV View** 에 한해 모델 구조를 paraphrase 로 정리한다.
+CMMI v3.0 은 개발(DEV)·서비스(SVC)·공급자관리(SPM) 등 도메인별 View 를 가진 capability model 이다. 본 REF 는 **CMMI-DEV View** 에 한해 모델 구조를 paraphrase 로 정리한다.
 
 ## 핵심 구조
 
@@ -55,7 +55,7 @@ ML 평가는 **누적**: ML3 = ML2 PA 의 PG2 + ML3 PA 의 PG3.
 | ML2 (Managed) | CM, MC, MPM, PAD, PLAN, PQA, RDM, RSK, SAM (+ GOV·II 의 PG2) |
 | ML3 (Defined) | ML2 + CAR, DAR, EST, GOV(PG3), II(PG3), OT, PCM, PR, VV, PI, TS |
 
-### 4. PA 카테고리 (CMMI v2.0)
+### 4. PA 카테고리 (CMMI v3.0)
 
 #### Doing (실행)
 - **Ensuring Quality**: RDM, PQA, PR, VV

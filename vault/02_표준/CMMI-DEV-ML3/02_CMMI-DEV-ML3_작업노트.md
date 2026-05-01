@@ -116,7 +116,7 @@ tags: [worknote, CMMI-DEV-ML3]
   - `vault/02_표준/CMMI-DEV-ML3/00_CMMI-DEV-ML3_표준개요.md`
   - `vault/02_표준/CMMI-DEV-ML3/01_CMMI-DEV-ML3_요구사항분해.md`
   - `vault/02_표준/CMMI-DEV-ML3/02_CMMI-DEV-ML3_작업노트.md`
-  - `vault/09_REF_참고자료/REF-001_CMMI-DEV-v2.0_모델구조_v1.0.md`
+  - `vault/09_REF_참고자료/REF-001_CMMI-DEV-v3.0_모델구조_v1.0.md`
   - `vault/09_REF_참고자료/REF-002_CMMI-DEV_ML평가체계_v1.0.md`
   - `vault/09_REF_참고자료/REF-003_CMMI-vs-ASPICE_비교_v1.0.md`
 - 갱신 파일:

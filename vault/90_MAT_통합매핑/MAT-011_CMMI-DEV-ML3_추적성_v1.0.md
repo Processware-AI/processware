@@ -23,7 +23,7 @@ tags: [MAT, traceability, CMMI, CMMI-DEV-ML3]
 
 ## 0. 목적·범위
 
-CMMI-DEV v2.0 ML3 평가 통과를 위한 **126 Req-ID** 가 내부 POL/PRO/WI/TMP/EX/REC 까지 도달하는 경로 추적. 단일 Req-ID 단위 행 + PA단위 요약·통계 제공.
+CMMI-DEV v3.0 ML3 평가 통과를 위한 **126 Req-ID** 가 내부 POL/PRO/WI/TMP/EX/REC 까지 도달하는 경로 추적. 단일 Req-ID 단위 행 + PA단위 요약·통계 제공.
 
 - **단위**: Req-ID (Practice Statement) 1건 = 1행
 - **계층**: POL → PRO → WI → TMP → EX → (REC 운영단계)
@@ -416,7 +416,7 @@ CMMI-DEV v2.0 ML3 평가 통과를 위한 **126 Req-ID** 가 내부 POL/PRO/WI/T
 ## 5. 출처 인용 (source_citation)
 
 - **공통 출처**: `_inputs/01_표준원문/CMMI-DEV/` 의 20개 PA PDF (영문·한글 각각).
-- **Publisher**: ISACA / CMMI Institute (CMMI for Development v2.0, 2018).
+- **Publisher**: ISACA / CMMI Institute (CMMI for Development v3.0, 2023).
 - **License**: ISACA copyright — paraphrase only, 20단어 이상 연속 일치 금지.
 - **paraphrase_only**: true.
 - **출처 유형 분포**: 100% standard_original (직접 Read 4 PA 32 Practice + Practice Summary 16 PA 94 Practice).

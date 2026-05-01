@@ -29,7 +29,7 @@ tags: [POL, CMMI, governance, process-asset]
 > 상위 기준: [[표준프로세스_구성원칙]] · 표준 분류: [[07_표준분류레지스트리]] · 영역코드: `CMMI`
 
 ## 1. 목적
-본 정책은 CMMI-DEV v2.0 ML3 의 **거버넌스(GOV)·프로세스 자산 개발(PAD)·프로세스 관리(PCM)·구현 인프라(II)** Practice Area 가 요구하는 조직 차원의 방향성·자원·자산·내재화 체계를 정의하여, 조직의 모든 개발 활동이 일관된 정의 프로세스에 따라 수행되고 비즈니스 목표 달성에 기여하도록 한다.
+본 정책은 CMMI-DEV v3.0 ML3 의 **거버넌스(GOV)·프로세스 자산 개발(PAD)·프로세스 관리(PCM)·구현 인프라(II)** Practice Area 가 요구하는 조직 차원의 방향성·자원·자산·내재화 체계를 정의하여, 조직의 모든 개발 활동이 일관된 정의 프로세스에 따라 수행되고 비즈니스 목표 달성에 기여하도록 한다.
 
 ## 2. 적용 범위
 - 전사 개발 부문(연구개발·SW엔지니어링·시스템엔지니어링)
@@ -79,7 +79,7 @@ tags: [POL, CMMI, governance, process-asset]
 ```yaml
 - type: standard_original
   publisher: "ISACA / CMMI Institute"
-  publication: "CMMI for Development v2.0 — Governance (GOV) Practice Area"
+  publication: "CMMI for Development v3.0 — Governance (GOV) Practice Area"
   file: "_inputs/01_표준원문/CMMI-DEV/Core PAs/GOV.pdf"
   locator: "PA-2 Governance, PG1~PG3 Practice Statements"
   retrieved_at: "2026-04-29"

@@ -1,8 +1,8 @@
 ---
 type: standard-overview
 standard: "CMMI-DEV-ML3"
-title: "CMMI for Development v2.0 — Maturity Level 3 표준 개요"
-version: "v2.0"
+title: "CMMI for Development v3.0 — Maturity Level 3 표준 개요"
+version: "v3.0"
 domain: "CMMI"
 layer: "L2_engineering"
 structure: "capability_model"
@@ -19,9 +19,9 @@ tags: [standard, CMMI-DEV-ML3, capability-model]
 
 ## 1. 표준 식별
 - **표준 코드**: CMMI-DEV-ML3
-- **정식 명칭(영문)**: Capability Maturity Model Integration for Development (CMMI-DEV) v2.0 — Maturity Level 3
-- **정식 명칭(국문)**: 개발용 능력 성숙도 모델 통합 v2.0 — 성숙도 레벨 3
-- **발행기관 / 발행년도**: ISACA / CMMI Institute, v2.0 (2018, 이후 지속 갱신)
+- **정식 명칭(영문)**: Capability Maturity Model Integration for Development (CMMI-DEV) v3.0 — Maturity Level 3
+- **정식 명칭(국문)**: 개발용 능력 성숙도 모델 통합 v3.0 — 성숙도 레벨 3
+- **발행기관 / 발행년도**: ISACA / CMMI Institute, v3.0 (2023, 이후 지속 갱신)
 - **국내 대응 표준**: 없음 (자율 채택 모델)
 - **관련 법규**: 없음 (자율 채택 — 법적 강제 없음)
 - **영역 코드**: `CMMI`
@@ -31,7 +31,7 @@ tags: [standard, CMMI-DEV-ML3, capability-model]
 
 ## 2. 적용 범위 (Scope)
 
-본 편입은 CMMI-DEV v2.0 의 **Maturity Level 3 (ML3) 평가 통과 가능 수준** 의 프로세스 체계 수립을 목표로 한다.
+본 편입은 CMMI-DEV v3.0 의 **Maturity Level 3 (ML3) 평가 통과 가능 수준** 의 프로세스 체계 수립을 목표로 한다.
 
 - **대상 조직**: 소프트웨어·시스템 개발 조직 (CMMI-DEV View)
 - **포함 PA 수**: 20개
@@ -46,7 +46,7 @@ tags: [standard, CMMI-DEV-ML3, capability-model]
 
 ## 3. 핵심 구조
 
-### 3.1 Practice Area 카테고리 (CMMI v2.0)
+### 3.1 Practice Area 카테고리 (CMMI v3.0)
 
 | 카테고리 | 영역 | 포함 PA |
 |---|---|---|
@@ -69,7 +69,7 @@ tags: [standard, CMMI-DEV-ML3, capability-model]
 - **Example Activities (예시 활동)**: 권고 활동 (필수 아님 — Practice 충족 방식 자유)
 - **Example Work Products (예시 작업 산출물)**: 권고 산출물
 
-> 출처: ISACA CMMI v2.0 PA PDF 공통 구조 (paraphrase). 본 평가 모델은 Required(=Practice Statement) / Expected(=의도/가치) / Informative(=Activities/Products) 의 3단계 정보를 제공.
+> 출처: ISACA CMMI v3.0 PA PDF 공통 구조 (paraphrase). 본 평가 모델은 Required(=Practice Statement) / Expected(=의도/가치) / Informative(=Activities/Products) 의 3단계 정보를 제공.
 
 ### 3.3 ML3 평가 통과 조건 (요지)
 1. ML2 9개 PA 의 모든 PG2 Practice 를 정의·수행·증적 보유
@@ -156,7 +156,7 @@ tags: [standard, CMMI-DEV-ML3, capability-model]
 - **작업노트**: [[02_CMMI-DEV-ML3_작업노트]]
 - **추적성 매트릭스**: `MAT-011_CMMI-DEV-ML3_추적성_v0.1.md` (design phase 후 생성)
 - **참고자료(REF)**:
-  - [[REF-001_CMMI-DEV-v2.0_모델구조_v1.0]]
+  - [[REF-001_CMMI-DEV-v3.0_모델구조_v1.0]]
   - [[REF-002_CMMI-DEV_ML평가체계_v1.0]]
   - [[REF-003_CMMI-vs-ASPICE_비교_v1.0]]
 - **정책(POL)**: design phase 에서 생성 예정
@@ -164,7 +164,7 @@ tags: [standard, CMMI-DEV-ML3, capability-model]
 
 ## 7. 참고 문헌
 
-1. ISACA / CMMI Institute, *CMMI for Development, Version 2.0*, 2018 (지속 갱신)
+1. ISACA / CMMI Institute, *CMMI for Development, Version 3.0*, 2023 (지속 갱신)
 2. CMMI Institute, *CMMI Model — Practice Areas* (PA별 PDF)
 3. SEI Carnegie Mellon, *CMMI for Development, Version 1.3* (legacy 참고)
 4. ISO/IEC/IEEE 12207:2017 — Systems and software engineering — Software life cycle processes

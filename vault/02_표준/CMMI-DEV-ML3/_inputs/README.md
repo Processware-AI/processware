@@ -19,7 +19,7 @@ tags: [inputs, inventory, CMMI-DEV-ML3]
 
 ## 인벤토리
 
-### 01_표준원문 — CMMI-DEV v2.0 Practice Areas (총 20 PA × 2 언어 = 40 PDF)
+### 01_표준원문 — CMMI-DEV v3.0 Practice Areas (총 20 PA × 2 언어 = 40 PDF)
 
 #### Core PAs (17 종)
 | PA | 영문 PDF | 한글 PDF | 카테고리 | 라이선스 | 우선순위 | content_mode |

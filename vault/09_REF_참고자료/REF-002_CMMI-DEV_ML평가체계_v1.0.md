@@ -4,7 +4,7 @@ doc_id: "REF-002"
 title: "CMMI Maturity Level 평가체계 — ML3 인증 가이드"
 version: "1.0"
 source: "ISACA / CMMI Institute, CMMI Appraisal Method (SCAMPI/Benchmark)"
-source_date: "2018 이후 지속 갱신"
+source_date: "2023"
 author: "ISACA / CMMI Institute"
 status: draft
 created: 2026-04-29
@@ -20,11 +20,11 @@ tags: [REF, CMMI, appraisal, ML3, paraphrase]
 
 ## 요약
 
-CMMI v2.0 의 ML 평가는 **Benchmark Appraisal** 방식으로 수행되며, ML3 통과 조건은 다음과 같다.
+CMMI v3.0 의 ML 평가는 **Benchmark Appraisal** 방식으로 수행되며, ML3 통과 조건은 다음과 같다.
 
 ## 핵심 평가 방식
 
-### 1. Appraisal 종류 (CMMI v2.0)
+### 1. Appraisal 종류 (CMMI v3.0)
 - **Benchmark Appraisal**: 공식 ML 인증 (3년 유효)
 - **Sustainment Appraisal**: 인증 갱신 (2년차)
 - **Action Plan Reappraisal**: 미충족 항목 재평가
@@ -81,7 +81,7 @@ CMMI v2.0 의 ML 평가는 **Benchmark Appraisal** 방식으로 수행되며, ML
 
 - [[00_CMMI-DEV-ML3_표준개요]]
 - [[01_CMMI-DEV-ML3_요구사항분해]]
-- [[REF-001_CMMI-DEV-v2.0_모델구조_v1.0]]
+- [[REF-001_CMMI-DEV-v3.0_모델구조_v1.0]]
 
 ## 원문 인용
 
