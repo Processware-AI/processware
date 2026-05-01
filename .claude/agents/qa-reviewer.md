@@ -121,6 +121,74 @@ model: opus
 - [ ] **분량 상한선**: POL 본문이 PRO 보다 긴 경우 세부 절차 혼입 의심 → 재검토
 - [ ] WI 문체: "작성자가 ~한다" 능동형 (수동태 비율 > 30% 이면 경고)
 
+### 12. Wikilink 전수 Resolve 검사 (CRITICAL)
+
+§5 계층 링크 정합성은 **frontmatter 의 parent_*/child_*/related_* 필드만** 검사한다. 본 §12 는 **모든 산출물 본문 내 `[[...]]` 위키링크가 실재 파일로 resolve 되는지** 전수 검증한다.
+
+**왜 필요한가**: frontmatter 와 본문은 독립 작성될 수 있고, 같은 식별번호라도 한국어 문서명이 일치하지 않으면 Obsidian 에서 broken link 가 된다. 식별번호 기반 §5 검사는 한국어 이름 불일치를 잡지 못한다.
+
+**검증 절차**:
+
+12-A. Wikilink 추출 (전수)
+- 검사 대상 폴더: `02_표준/`, `03_POL_정책/`, `04_PRO_절차/`, `05_WI_업무지침/`, `06_TMP_템플릿/`, `07_EX_작성예시/`, `08_REC_기록/`, `09_REF_참고자료/`, `90_MAT_통합매핑/`, `00_MOC/`
+- 추출 정규식: `\[\[([^\]\|]+?)(\|[^\]]*)?\]\]` (alias `|` 처리, 첫 캡처가 타겟)
+- 도구: `Grep` 또는 `perl -ne 'while(/\[\[(...)/g){...}'`
+
+12-B. 실재 파일 인벤토리
+- 각 폴더의 `*.md` 전수 → 확장자 제외 basename 집합
+
+12-C. 매칭 검사 (양방향)
+- **Broken link**: 본문이 참조하는 wikilink 중 실재 파일 없는 항목 → **FAIL** (blocker)
+- **Orphan 파일**: 어떤 산출물에서도 참조되지 않는 파일 → 경고 (blocker 아님). 단 README/_inputs/_state.yaml 은 제외.
+
+12-D. 식별번호 기반 근접 매칭 (원인 진단용)
+- broken link 중 같은 식별번호(`POL-XXX-###` 패턴) 의 실재 파일이 존재 → **"한국어명 불일치(rename mismatch)"** 분류
+- 같은 식별번호 실재 파일 없음 → **"완전 누락(missing file)"** 분류
+
+**판정**:
+- [ ] 12-C 깨진 wikilink 0건
+- [ ] 12-D rename_mismatch 0건 (식별번호는 같지만 한국어명 다름)
+- [ ] 12-C orphan 파일 0건 (README/_state.yaml/_inputs 제외, blocker 아닌 WARN)
+
+**Fail 시 라우팅** (상태규약 §7 라우팅 표 보완분):
+| 카테고리 | 세부 분류 | assigned_to |
+|---|---|---|
+| link | rename_mismatch (TMP/EX) | wi-tmp-writer |
+| link | rename_mismatch (POL/PRO) | process-designer |
+| link | missing_file (TMP/EX) | wi-tmp-writer |
+| link | missing_file (POL/PRO) | process-designer |
+| link | orphan (TMP/EX/REF) | wi-tmp-writer |
+| link | MAT 내부 link 깨짐 | traceability-mapper |
+
+**fix_scope 권고 액션**:
+- rename_mismatch → 옵션 A (실재 파일 rename) 또는 옵션 B (참조 측 frontmatter/본문 갱신). 일반적으로 정본(상위 문서) 기준으로 부속(하위 문서) rename = 옵션 A 권장.
+- missing_file → 신규 파일 생성. 같은 식별번호로 만들고 frontmatter 의 doc_id/title/parent_* 정합 확보.
+- orphan → 어디서 참조되어야 하는지 결정 후 wikilink 추가.
+
+**구현 힌트** (자동화 친화 — Bash):
+
+    # 1. 본문 wikilink 전수 추출
+    perl -ne 'while(/\[\[([^\]\|]+?)(\|[^\]]*)?\]\]/g){print "$1\n"}' \
+      03_POL_정책/*.md 04_PRO_절차/*.md 05_WI_업무지침/*.md \
+      06_TMP_템플릿/*.md 07_EX_작성예시/*.md 09_REF_참고자료/*.md \
+      90_MAT_통합매핑/*.md | sort -u > /tmp/all_links.txt
+    # 2. 실재 파일 인벤토리
+    for dir in 03_POL_정책 04_PRO_절차 05_WI_업무지침 06_TMP_템플릿 \
+               07_EX_작성예시 09_REF_참고자료 90_MAT_통합매핑; do
+      ls "$dir" 2>/dev/null | sed 's/\.md$//'
+    done | sort -u > /tmp/all_files.txt
+    # 3. broken link
+    comm -23 /tmp/all_links.txt /tmp/all_files.txt > /tmp/broken_links.txt
+    # 4. rename mismatch 분류 (식별번호 첫 토큰 기준 교집합)
+    awk -F'_' '{print $1}' /tmp/broken_links.txt | sort -u > /tmp/broken_ids.txt
+    awk -F'_' '{print $1}' /tmp/all_files.txt | sort -u > /tmp/file_ids.txt
+    comm -12 /tmp/broken_ids.txt /tmp/file_ids.txt > /tmp/rename_mismatch_ids.txt
+
+본 §12 검사는 **§5 와 분리해서** 별도 점검 항목으로 카운트한다. attempt 별 `_state.yaml`의 `phases.qa.metrics` 에 다음 3개 필드를 추가:
+- `wikilink_broken`: 깨진 링크 총수
+- `wikilink_rename_mismatch`: 식별번호 매칭되나 한국어명 불일치 수
+- `wikilink_orphan`: 어디서도 참조되지 않는 파일 수 (README/_state.yaml/_inputs 제외)
+
 ## 절차
 ### State Check
 S-1. `_state.yaml` 의 선행 phase(preflight/analyze/design/write/trace) 모두 `done` 확인. 아니면 중단.
@@ -150,7 +218,11 @@ S-2. 자기 phase `qa` 를 `status: running` + `started` 로 Edit.
 | structure §11 WI | wi-tmp-writer |
 | citation 누락 | 생성한 에이전트 (로그 추적) |
 | copyright §10 위반 | 해당 유형 생성 에이전트 |
-| link/traceability/mat | traceability-mapper |
+| link 본문 wikilink rename_mismatch (TMP/EX) | wi-tmp-writer |
+| link 본문 wikilink rename_mismatch (POL/PRO) | process-designer |
+| link 본문 wikilink missing/orphan (TMP/EX) | wi-tmp-writer |
+| link 본문 wikilink missing/orphan (POL/PRO) | process-designer |
+| traceability/mat 자체 정합 | traceability-mapper |
 | 판단 불가 | `manual` (사용자 에스컬레이션) |
 
 ### State 갱신
