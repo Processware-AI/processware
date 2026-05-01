@@ -1,0 +1,183 @@
+# =============================================================
+# WI-CMMI-04-01-03 작업산출물 평가 — Agent 실행 정의
+# 짝 문서: WI-CMMI-04-01-03_작업산출물_평가_v1.0.md
+# 표준 스키마: vault/99_템플릿/T16_WI_steps_yaml.yaml
+# =============================================================
+
+wi_id:        "WI-CMMI-04-01-03"
+title:        "작업산출물 평가"
+version:      "1.0"
+parent_pro:   "PRO-CMMI-04-01"
+parent_pol:   "POL-CMMI-04"
+related_tmp:
+  - "TMP-CMMI-04-01-03-01"
+scope_code:   "CMMI"
+standards:    ["CMMI-DEV-ML3", "ISO 9001"]
+
+extracted_at:    "2026-05-02T00:00:00+09:00"
+extractor:       "wi-tmp-writer (Phase 4 cache promotion)"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+# ---- 단계 정의 ----
+steps:
+  - id: step-01
+    name: 표본 추출
+    section_ref: "§5.1.1"
+    inputs:
+      - field: sample_items
+        type: multiselect_text
+        question: "평가할 산출물 표본을 알려주세요. (예: 요구사항 등록부, 설계서, 코드, 테스트 보고)"
+        required: true
+    outputs:
+      - tmp_field: "평가표[].산출물"
+        from: sample_items
+    hitl: false
+
+  - id: step-02
+    name: 루브릭 확정
+    section_ref: "§5.1.2"
+    inputs:
+      - field: rubric_summary
+        type: text
+        question: "어떤 루브릭(평가 기준 문서)을 적용했나요? 짧게 요약해주세요."
+        required: false
+    outputs: []
+    hitl: false
+
+  - id: step-03
+    name: "점검 — 표준 일치 여부"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: per_item.standard_match
+        type: text_per_row
+        rows_from: sample_items
+        question: "각 산출물별 표준 일치 여부를 알려주세요."
+        required: true
+    outputs:
+      - tmp_field: "평가표[].표준_일치"
+        from: per_item.standard_match
+    hitl: false
+
+  - id: step-04
+    name: "점수화 — 완전성(%)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: per_item.completeness_pct
+        type: number_per_row
+        validation: "0 <= x <= 100 or 'N/A'"
+        rows_from: sample_items
+        question: "각 산출물의 완전성을 0~100% 또는 'N/A' 로 입력해주세요."
+        required: true
+    derivations:
+      - id: per_item.result
+        expr: |
+          if completeness_pct == 'N/A': 'Pass' if standard_match contains 'Pass' else 'Review'
+          elif completeness_pct >= 90: 'Pass'
+          elif completeness_pct >= 80: 'Pass (마이너 누락)'
+          else: 'Fail'
+        description: "완전성 점수 → 평가 등급"
+    outputs:
+      - tmp_field: "평가표[].완전성"
+        from: per_item.completeness_pct
+      - tmp_field: "평가표[].결과"
+        from: per_item.result
+    hitl: false
+
+  - id: step-05
+    name: 부적합 등록
+    section_ref: "§5.2.3"
+    inputs:
+      - field: nonconformities
+        type: table
+        columns: ["item", "description", "severity"]
+        question: "부적합 항목을 등록해주세요. (없으면 '없음')"
+        required: true
+    outputs: []
+    hitl: false
+
+  - id: step-06
+    name: 시정 권고
+    section_ref: "§5.2.4"
+    inputs:
+      - field: corrective_recommendations
+        type: text
+        required_if: "nonconformities not empty"
+        question: "부적합에 대한 시정 권고를 작성해주세요."
+    outputs: []
+    hitl: false
+
+  - id: step-07
+    name: 재점검
+    section_ref: "§5.2.5"
+    inputs:
+      - field: recheck_required
+        type: enum
+        options: ["yes", "no"]
+        question: "재점검이 필요한가요?"
+        required: true
+      - field: recheck_target_date
+        type: date
+        required_if: "recheck_required == 'yes'"
+        question: "재점검 목표일은 언제인가요? (YYYY-MM-DD)"
+    outputs: []
+    hitl: false
+
+  - id: step-08
+    name: 종결 (결재)
+    section_ref: "§5.2.6"
+    inputs: []
+    derivations:
+      - id: "결재.작성"
+        expr: "executor + ' (' + today + ')'"
+      - id: "결재.검토"
+        expr: "WI.reviewer + ' (' + today + ')'"
+        description: "WI §2 reviewer = 'Tech Lead'"
+      - id: "결재.승인"
+        expr: "WI.approver + ' (' + hitl.approved_at + ')'"
+        description: "WI §2 approver = 'PM'"
+    outputs:
+      - tmp_field: "결재.작성"
+        from: "결재.작성"
+      - tmp_field: "결재.검토"
+        from: "결재.검토"
+      - tmp_field: "결재.승인"
+        from: "결재.승인"
+    hitl: required
+    approver_role: "PM"
+    rationale: "WI §2 의 '승인자: PM' 명시 — 책임자 서명 게이트"
+
+# ---- 완료 조건 ----
+dod_checklist:
+  - "평가서"
+  - "부적합 종결"
+  - "데이터 적재"
+
+# ---- 예외 처리 분기 ----
+exception_hooks:
+  - section: "§7.1"
+    name: "평가자 편향"
+    rule: "단일 평가자 의심 시 '2인 평가' 분기 — 다음 step 진입 전 사용자 확인"
+  - section: "§7.2"
+    name: "표본 부족"
+    rule: "sample_items 가 3개 미만이면 '추가 표본 권고' 안내"
+  - section: "§7.3"
+    name: "자동화"
+    rule: "Sonar/도구 결과로 점검이 자동화된 항목은 standard_match 에 'Sonar Pass' 등 도구 결과 기재 허용"
+
+# ---- 자연어 라우팅용 메타 (MAT-007 동기화) ----
+triggers:
+  - "작업산출물 평가"
+  - "산출물 평가"
+  - "산출물 검토"
+  - "산출물 점검"
+  - "품질 감사"
+  - "work product 평가"
+aliases:
+  - "산출물 audit"
+  - "QA 평가"
+event_triggers:
+  - "산출물 표본 추출 후"
+  - "주기적 품질 점검 시"
+  - "내부 감사 일정"
+domains: ["일반", "SW"]
