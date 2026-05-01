@@ -43,3 +43,11 @@
 {"ts":"2026-05-02T10:06:29+09:00","event":"ncr_issued","ncr_id":"REC-NCR-04-01-2026-004","finding_id":"F-004","req_id":"REQ-010","severity":"critical","sla_due_date":"2026-05-30"}
 {"ts":"2026-05-02T10:06:30+09:00","event":"mat006_ncr_issued","rows_added":4,"section":"NCR 발행 현황 (open)"}
 {"ts":"2026-05-02T10:06:30+09:00","event":"ncrs_drafted","issued_count":4,"by_severity":{"critical":2,"major":1,"minor":1}}
+{"ts":"2026-05-02T10:06:33+09:00","event":"act_trigger_invoked","mode":"from_audit","issued_ncrs":4,"recommendations":3}
+{"ts":"2026-05-02T10:06:35+09:00","event":"act_queue_created","queue_id":"queue-qa1b2c3d4","kind":"ncr_capa","priority":"critical","ncr_id":"REC-NCR-04-01-2026-001"}
+{"ts":"2026-05-02T10:06:36+09:00","event":"act_queue_created","queue_id":"queue-qe5f6a7b8","kind":"ncr_capa","priority":"major","ncr_id":"REC-NCR-04-01-2026-002"}
+{"ts":"2026-05-02T10:06:37+09:00","event":"act_queue_created","queue_id":"queue-q9c8d7e6f","kind":"ncr_capa","priority":"minor","ncr_id":"REC-NCR-04-01-2026-003"}
+{"ts":"2026-05-02T10:06:38+09:00","event":"act_queue_created","queue_id":"queue-qf1e2d3c4","kind":"ncr_capa","priority":"critical","ncr_id":"REC-NCR-04-01-2026-004","linked_recommendations":1}
+{"ts":"2026-05-02T10:06:39+09:00","event":"act_queue_created","queue_id":"queue-q9d8c7b6a","kind":"recommendation","priority":"major","note":"단독 권고 — root cause NCR 와 다름"}
+{"ts":"2026-05-02T10:06:40+09:00","event":"mat008_act_queue_updated","rows_added":5,"section":"CMMI-DEV-ML3 §차원 4 인계"}
+{"ts":"2026-05-02T10:06:40+09:00","event":"act_trigger_done","queues_created":5,"queues_skipped":0,"linked_recommendations_merged":1}

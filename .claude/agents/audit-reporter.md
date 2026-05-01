@@ -26,6 +26,7 @@ auditor: "이감사"               # confirm 응답자
 options:
   dry_run: false
   no_ncr: false                 # Phase 2: true 면 ncr-drafter 위임 보류
+  no_act_queue: false            # Phase 4: true 면 act-trigger 위임 보류 (보고서 + NCR 만 발행)
 ```
 
 ---
@@ -232,6 +233,41 @@ C-NCR-3. ncr-drafter 반환 처리:
    - trace.jsonl 에 `ncrs_drafted` 종합 이벤트 (ncr-drafter 가 별도로 ncr_issued N건 + ncrs_drafted 1건 기록).
 
 C-NCR-4. ncr-drafter 가 에러 반환 시 (예: MAT-006 손상) 본 reporter 도 abort. REC-AUDIT 미작성 (정합성 우선).
+
+### Phase C-ACT — act-trigger 위임 (Phase 4 신규, options.no_act_queue == false 일 때)
+
+C-ACT-1. `options.no_act_queue == true` 또는 (issued_ncrs[] == 0 AND audit_recommendations 없음) 이면 skip.
+
+C-ACT-2. `act-trigger` 를 `from_audit` 모드로 호출:
+```yaml
+mode: from_audit
+trace_id: run-axxxxxxxx
+audit_rec_id: REC-AUDIT-04-01-01-2026-001
+issued_ncrs:
+  - ncr_id: REC-NCR-04-01-2026-001
+    finding_id: F-001
+    req_id: REQ-005
+    severity: critical
+    sla_due_date: "2026-05-30"
+    rationale: "..."           # conformity_matrix.row[REQ-005].rationale 인용
+audit_recommendations:
+  - "..."                       # 본 reporter 의 §6 권고 텍스트 list
+options:
+  dry_run: false
+  no_act_queue: false           # 호출자 옵션 그대로 전달
+```
+
+C-ACT-3. act-trigger 반환 처리:
+   - `created: N`, `queues: [...]` 수집.
+   - state.yaml `counts.act_queue_created: N` 갱신.
+   - 본 reporter 의 보고서 §6 권고 사항 끝에 다음 줄 자동 추가:
+     ```
+     > 본 권고 사항은 Phase 4 act-trigger 가 차원 4 (Act) 인계 큐로 자동 push 했습니다 (큐 N건).
+     > 큐 조회: `/audit --act-queue list --status pending`
+     ```
+   - trace.jsonl 에 `act_trigger_invoked` + `act_trigger_done` (act-trigger 본체가 큐별 이벤트도 함께 기록).
+
+C-ACT-4. act-trigger 가 에러 반환 시 큐 발행 skip + 보고서는 정상 발행. abort 안 함 (queues 는 fail-soft).
 
 ### Phase D — 파일 저장
 

@@ -14,6 +14,8 @@ counts:
   total_rounds: 1                  # 누적 측정 회차 (모든 표준 합)
   total_kpis_tracked: 11           # 정의 6 + 메타 5
   alerts_current: 4                # 모든 표준 현재 회차 critical+watch 합
+  act_queues_pending: 6            # Phase 4 — 차원 4 인계 큐 (status: pending)
+  act_queues_total: 6              # 누적
 ---
 
 # MAT-008 KPI 대시보드
@@ -120,6 +122,59 @@ counts:
 - **회차 2 측정 시점**: 2026-Q3 (2026-07-01 ~ 09-30) 또는 NCR 일부 종결 후 임의 시점.
 - **목표**: data_gap 4건 중 ≥ 2건 측정 가능 상태 도달 + critical 4건 중 ≥ 1건 recovering 으로 전환.
 - **명령**: `/audit --kpi start CMMI-DEV-ML3 --period 2026-04-01..2026-06-30` (2회차 자동 baseline 비교).
+
+### 차원 4 인계 (act queue) — Phase 4
+
+> 본 표는 act-trigger 가 confirm / kpi finalize 직후 자동 발행한 차원 4 (Act) 큐. NCR 미종결·KPI critical·권고를 차원 1 재트리거 후보로 구조화.
+
+| Queue ID | kind | priority | source | target | proposed_action | due | status |
+|---|---|---|---|---|---|---|---|
+| [[queue-qa1b2c3d4]] | ncr_capa | critical | NCR-001 (F-001 / REQ-005) | PRO-CMMI-04-01 | `/build-standard ... --from write --target PRO-CMMI-04-01` | 2026-05-30 | pending |
+| [[queue-qe5f6a7b8]] | ncr_capa | major | NCR-002 (F-002 / REQ-007) | PRO-CMMI-04-01 (§7 명문화) | `/build-standard ... --from write --target PRO-CMMI-04-01` | 2026-07-01 | pending |
+| [[queue-q9c8d7e6f]] | ncr_capa | minor | NCR-003 (F-003 / REQ-009) | REC-CMMI-04-01-03-01-2026-001 | `/do WI-CMMI-04-01-03 --reissue ...` | 2026-07-31 | pending |
+| [[queue-qf1e2d3c4]] | ncr_capa | critical | NCR-004 (F-004 / REQ-010) | WI-CMMI-04-01-04 | `/build-standard ... --from write --target WI-CMMI-04-01-04` | 2026-05-30 | pending |
+| [[queue-q5a6b7c8d]] | kpi_critical | critical | META-COVERAGE 40% / ≥80% | WI-04-01-{01,02,05} | `/do WI-CMMI-04-01-01` 등 운영 시작 | 2026-06-30 | pending |
+| [[queue-q9d8c7b6a]] | recommendation | major | 보고서 §6 권고 2번 (KPI 측정 명문화) | PRO-CMMI-04-01 (§7) | `/build-standard ... --from write --target PRO-CMMI-04-01` | 2026-06-30 | pending |
+
+총 6 큐 (kind: ncr_capa 4 / kpi_critical 1 / recommendation 1; priority: critical 4 / major 1 / minor 1).
+
+> KPI critical 통합 사례:
+> - KPI-CMMI-04-01-02 (부적합 종결율) → NCR-001 큐의 `kpi_alerts[]` 통합 (root cause 동일)
+> - META-FINDINGS-DENSITY → NCR-001 큐 통합
+> - META-NCR-CLOSURE → NCR-001 큐 통합
+> - META-COVERAGE → 신규 큐 (관련 NCR 없음)
+>
+> 권고 통합: "WI-04-01-04 SLA 정의" 권고 → NCR-004 큐의 linked_recommendations 통합. "WI-04-01-01 운영 시작" → COVERAGE 큐 통합. "PRO §7 KPI 측정 명문화" 만 단독 권고 큐.
+
+### 시계열 시각화 (Mermaid PoC)
+
+```mermaid
+gantt
+    title CMMI-DEV-ML3 회차 시계열 (PoC, 회차 1 만 측정)
+    dateFormat  YYYY-MM-DD
+    axisFormat %m/%d
+
+    section KPI critical (current round)
+    KPI-04-01-02 종결율 0%        :crit, k1, 2026-05-02, 1d
+    META-COVERAGE 40%             :crit, k2, 2026-05-02, 1d
+    META-FINDINGS-DENSITY 33.3%   :crit, k3, 2026-05-02, 1d
+    META-NCR-CLOSURE 0%           :crit, k4, 2026-05-02, 1d
+
+    section KPI healthy
+    KPI-04-01-04 독립성 100%      :done, h1, 2026-05-02, 1d
+    KPI-WI-04-01-03-01 4.92/5.0  :done, h2, 2026-05-02, 1d
+    META-INDEPENDENCE 100%        :done, h3, 2026-05-02, 1d
+
+    section 차원 4 인계 큐 (SLA)
+    queue-qa1b2c3d4 NCR-001       :active, q1, 2026-05-02, 28d
+    queue-qf1e2d3c4 NCR-004       :active, q2, 2026-05-02, 28d
+    queue-q5a6b7c8d COVERAGE      :active, q3, 2026-05-02, 59d
+    queue-qe5f6a7b8 NCR-002       :q4, 2026-05-02, 60d
+    queue-q9d8c7b6a 권고          :q5, 2026-05-02, 59d
+    queue-q9c8d7e6f NCR-003       :q6, 2026-05-02, 90d
+```
+
+> 본 다이어그램은 회차 2 부터는 시계열 트렌드 (회귀/개선 화살표) 로 확장 권장. Phase 4.5+ 에서 자동 트렌드 다이어그램 도입.
 
 ---
 

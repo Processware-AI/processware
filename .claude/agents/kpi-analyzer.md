@@ -24,6 +24,7 @@ options:
   dry_run: false
   baseline: auto                       # auto: MAT-008 의 직전 분기 자동 조회 / specific: --baseline <round>
   regression_threshold_pp: 5.0          # %p (퍼센트포인트) — 직전 대비 N%p 하락 시 회귀
+  no_act_queue: false                   # Phase 4: true 면 critical KPI 의 차원 4 큐 발행 보류
 ```
 
 ---
@@ -133,6 +134,35 @@ D-2. §"NCR 통계" 섹션 표 9개 항목 갱신 (모두 kpi_data 의 메타 KP
 ```
 
 D-3. trace.jsonl 에 `mat006_stats_updated` 이벤트.
+
+### Phase D-ACT — act-trigger 위임 (Phase 4 신규, options.no_act_queue == false 일 때)
+
+D-ACT-1. critical_alerts == 0 또는 `options.no_act_queue == true` 면 skip.
+
+D-ACT-2. `act-trigger` 를 `from_kpi` 모드로 호출:
+```yaml
+mode: from_kpi
+trace_id: run-kxxxxxxxx
+kpi_round: 1
+critical_alerts:
+  - kpi_id: KPI-CMMI-04-01-02
+    name: "부적합 종결율"
+    value: 0.0
+    target: ">=95%"
+    related_ncrs: ["REC-NCR-04-01-2026-001", "REC-NCR-04-01-2026-002"]
+    root_cause_hint: "..."
+options:
+  dry_run: false
+  no_act_queue: false
+```
+
+D-ACT-3. act-trigger 반환 처리:
+   - `created`, `queues` 수집.
+   - state.yaml `counts.act_queue_created: N` 갱신.
+   - 본 analyzer 의 출력 보고에 큐 발행 결과 추가 (큐 ID list).
+   - 중요: KPI 의 critical 이 NCR 와 연계되면 act-trigger 가 NCR 큐와 통합 (새 큐 안 만들고 NCR 큐의 kpi_alerts[] 에 append). created < critical_alerts.length 가 정상.
+
+D-ACT-4. trace.jsonl 에 `act_trigger_invoked` + `act_trigger_done`.
 
 ### Phase E — 출력 + 최종 보고
 

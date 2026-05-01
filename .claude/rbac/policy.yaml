@@ -1,0 +1,143 @@
+# RBAC 정책 — 차원 3 Check Phase 4
+# 본 파일은 independence-guard 에이전트가 rbac_check 모드에서 참조한다.
+# 직접 수정 가능하지만, 변경 시 모든 활성 audit/kpi trace 에 즉시 영향. 변경 이력은 git history.
+#
+# 6 역할 (role) — 표준 ISO/CMMI 거버넌스 구조 동형:
+#   - auditor       : 차원 3 심사원 (내부/외부)
+#   - executor      : 차원 2 이행자 (업무 담당자)
+#   - process_owner : PRO 의 owner 역할 (개정 권한)
+#   - qmr           : QMR (Quality Management Representative) — 전 차원 모니터링
+#   - admin         : 시스템 관리자 — RBAC 변경·정책 갱신
+#   - viewer        : 조회 전용 (감사관·외부 이해관계자)
+#
+# action 식별자 패턴: {scope}.{verb}[.{subscope}]
+#   scope: audit | do | build-standard | rbac
+#   verb:  start / confirm / close-ncr / kpi / list-ncr / show / act-queue / rbac-check / read / write
+#
+# 매칭 규칙: role.allow[] 의 항목과 action 을 prefix 매칭. 와일드카드 `*` 허용.
+# 거부가 default — allow[] 에 없으면 denied.
+
+version: "0.1"
+created: 2026-05-02
+updated: 2026-05-02
+owner: "QMR"
+status: draft
+
+roles:
+
+  auditor:
+    description: "차원 3 심사원. 자기 업무는 심사 불가 (ISO §9.2). 차원 1·2 자산은 읽기만."
+    allow:
+      - audit.start
+      - audit.confirm
+      - audit.reject-finding
+      - audit.status
+      - audit.resume
+      - audit.list-ncr
+      - audit.kpi.show
+      - audit.kpi.check-regressions
+      - audit.act-queue.read
+      - do.read                  # 차원 2 trace / REC 조회 (사후 검토)
+      - build-standard.read       # 차원 1 자산 조회
+    deny:                         # 명시적 deny — auditor 는 차원 2 실행 금지
+      - do.start
+      - do.approve
+      - do.reject
+      - build-standard.write
+    target_constraints:
+      independence_required: true   # ISO §9.2 — independence-guard 가 강제
+
+  executor:
+    description: "차원 2 업무 담당자. /do 실행 권한. 차원 3 보고서는 조회만."
+    allow:
+      - do.start
+      - do.resume
+      - do.status
+      - do.read
+      - audit.kpi.show              # 본인 작업의 KPI 결과 조회
+      - audit.list-ncr              # 본인 작업과 연계된 NCR 조회
+      - audit.act-queue.read        # 본인에게 할당된 act queue 조회
+      - build-standard.read
+    deny:
+      - audit.start
+      - audit.confirm
+      - audit.close-ncr
+      - audit.kpi.start
+      - rbac.*
+
+  process_owner:
+    description: "PRO 의 owner. 시정조치 종결·차원 4 인계 권한. 자기가 owner 인 PRO 만."
+    allow:
+      - audit.close-ncr
+      - audit.list-ncr
+      - audit.kpi.show
+      - audit.kpi.check-regressions
+      - audit.act-queue.read
+      - audit.act-queue.dispatch    # act queue 의 항목을 차원 4 에 dispatch
+      - build-standard.start         # 차원 4 → 차원 1 재실행 트리거
+      - build-standard.read
+      - do.read
+    target_constraints:
+      owns_pro_required: true        # 자기 PRO 만 — users[].owns_pro[] 와 비교
+
+  qmr:
+    description: "QMR — 전 차원 모니터링. 정책 결정·KPI 측정·정합성 검증."
+    allow:
+      - audit.*
+      - do.read
+      - build-standard.read
+      - rbac.read                    # RBAC 정책 조회 (변경은 admin)
+
+  admin:
+    description: "시스템 관리자. RBAC 변경·환경 설정. 운영 작업은 가급적 회피."
+    allow:
+      - "*"                          # 모든 작업
+    target_constraints:
+      escalation_log: true           # 모든 admin 작업은 별도 감사 로그 (Phase 4.5)
+
+  viewer:
+    description: "조회 전용 — 외부 감사관·이해관계자. 모든 자산 read 가능, 쓰기는 모두 deny."
+    allow:
+      - audit.status
+      - audit.list-ncr
+      - audit.kpi.show
+      - audit.act-queue.read
+      - do.read
+      - build-standard.read
+    deny:
+      - "*.start"
+      - "*.confirm"
+      - "*.close-ncr"
+      - "*.write"
+      - "*.dispatch"
+      - "rbac.*"
+
+# 사용자 (Phase 4 PoC — 시스템 사용자명 → role 매핑)
+users:
+  - username: "dongseok"
+    role: executor                   # PoC: 차원 2 이행자로 등록
+    aliases: []
+    owns_pro: []
+  - username: "이감사"               # 가상 — PoC 심사원
+    role: auditor
+    aliases: []
+    owns_pro: []
+  - username: "박팀장"
+    role: process_owner
+    aliases: []
+    owns_pro: []                     # 운영 시 owns_pro: ["PRO-CMMI-04-01"] 등
+  - username: "박상무"
+    role: qmr                        # PoC 시나리오에서 Sponsor 였으나 RBAC 상 QMR 권한 (전 차원)
+    aliases: ["박 상무"]
+    owns_pro: []
+
+# Phase 4.5+ 확장 항목
+extensions:
+  external_idp:                       # SAML / OIDC 연동 (Phase 4.5)
+    enabled: false
+    provider: null
+  delegation:                         # 위임 (A → B 한시 권한)
+    enabled: false
+  audit_log:                          # 모든 RBAC 거부 별도 로그
+    enabled: false
+    path: ".claude/audit_log/rbac_denials.jsonl"

@@ -50,5 +50,12 @@ ncr_refs:
   - "REC-NCR-04-01-2026-003"          # F-003 minor
   - "REC-NCR-04-01-2026-004"          # F-004 critical
 final_audit_path: "vault/08_REC_기록/AUDIT/REC-AUDIT-04-01-01-2026-001_프로세스_품질보증_심사보고서.md"
-finalized_at: "2026-05-02T10:06:30+09:00"
+finalized_at: "2026-05-02T10:06:40+09:00"
 auditor_confirmed_by: "이감사"
+act_queue_created: 5                  # Phase 4 — act-trigger 결과 (NCR 4 + 단독 권고 1)
+act_queues:
+  - queue-qa1b2c3d4                   # NCR-001 + KPI 3 통합 + ...
+  - queue-qe5f6a7b8                   # NCR-002
+  - queue-q9c8d7e6f                   # NCR-003
+  - queue-qf1e2d3c4                   # NCR-004 + 권고 1 통합
+  - queue-q9d8c7b6a                   # 단독 권고 (KPI 측정 명문화)

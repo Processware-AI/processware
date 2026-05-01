@@ -35,3 +35,7 @@ counts:
   alerts_total: 4
 final_mat008_round: 1
 related_audit_trace: "run-a1c2d3e4"
+act_queue_created: 1                  # Phase 4 — META-COVERAGE 만 신규 (3 KPI 는 NCR 큐에 통합)
+act_queue_merged: 3                   # KPI-04-01-02 / META-FINDINGS-DENSITY / META-NCR-CLOSURE → queue-qa1b2c3d4
+act_queues:
+  - queue-q5a6b7c8d                   # META-COVERAGE 신규
