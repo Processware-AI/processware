@@ -1,0 +1,37 @@
+---
+type: EX
+doc_id: "EX-CMMI-004-02-03"
+title: "CM 시스템 운영 표준 작성예시"
+version: "1.0"
+owner: "CM"
+parent_tmp: "[[TMP-CMMI-004-02-03_CM_시스템_운영표_v1.0]]"
+parent_wi: "[[WI-CMMI-004-02-03_CM_시스템_운영_v1.0]]"
+standards: ["CMMI-DEV-ML3"]
+status: approved
+created: 2026-04-29
+updated: 2026-04-29
+tags: [EX, CMMI, sample, CM]
+---
+
+# CM 시스템 운영 표준 작성예시 (EX-CMMI-004-02-03)
+
+> 원본: [[TMP-CMMI-004-02-03_CM_시스템_운영표_v1.0]]
+
+## 1. 시스템
+| 영역 | 도구 | 정책 |
+|---|---|---|
+| 코드 | GitHub Enterprise | Git-Flow + branch protection |
+| 문서 | Confluence + Git | 버저닝 자동 |
+| 빌드 | Jenkins + ArgoCD | 무결성 해시 |
+| 아티팩트 | Nexus | 보존 5년 |
+
+## 2. 백업·복구
+| 항목 | 주기 | 책임 |
+|---|---|---|
+| 일일 | 매일 02:00 | IT |
+| 분기 복구 검증 | Q1, Q3 | IT + CM |
+
+## 3. 결재
+| 작성 | 검토 | 승인 |
+|---|---|---|
+| CM 담당 (2026-04-29) | IT Lead (2026-05-08) | CTO (2026-05-15) |
