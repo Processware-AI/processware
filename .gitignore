@@ -25,6 +25,8 @@
 !/vault/02_표준/*/_inputs/README.md
 !/vault/02_표준/*/_inputs/*/
 !/vault/02_표준/*/_inputs/*/README.md
+# 차원 4 (Act) act-cycle 의 As-Is 입력 — 시스템 자동 발행 (마스킹 의무 없음, 추적성 보장 필요)
+!/vault/02_표준/*/_inputs/04_AsIs/queue-q*.md
 
 # Scaffold 는 전체 추적 (위 패턴 무효화)
 !/vault/02_표준/_scaffold/**

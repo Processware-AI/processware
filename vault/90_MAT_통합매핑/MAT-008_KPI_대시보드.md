@@ -14,7 +14,9 @@ counts:
   total_rounds: 1                  # 누적 측정 회차 (모든 표준 합)
   total_kpis_tracked: 11           # 정의 6 + 메타 5
   alerts_current: 4                # 모든 표준 현재 회차 critical+watch 합
-  act_queues_pending: 6            # Phase 4 — 차원 4 인계 큐 (status: pending)
+  act_queues_pending: 5            # Phase 4 — 차원 4 인계 큐 (status: pending)
+  act_queues_in_progress: 0
+  act_queues_done: 1               # queue-qa1b2c3d4 — 차원 4 PoC 완료
   act_queues_total: 6              # 누적
 ---
 
@@ -129,7 +131,7 @@ counts:
 
 | Queue ID | kind | priority | source | target | proposed_action | due | status |
 |---|---|---|---|---|---|---|---|
-| [[queue-qa1b2c3d4]] | ncr_capa | critical | NCR-001 (F-001 / REQ-005) | PRO-CMMI-04-01 | `/build-standard ... --from write --target PRO-CMMI-04-01` | 2026-05-30 | pending |
+| [[queue-qa1b2c3d4]] | ncr_capa | critical | NCR-001 (F-001 / REQ-005) | PRO-CMMI-04-01 | `/build-standard ... --from write --target PRO-CMMI-04-01` | 2026-05-30 | **done** (run-c4f8a1b2 / 차원 1 재트리거 대기) |
 | [[queue-qe5f6a7b8]] | ncr_capa | major | NCR-002 (F-002 / REQ-007) | PRO-CMMI-04-01 (§7 명문화) | `/build-standard ... --from write --target PRO-CMMI-04-01` | 2026-07-01 | pending |
 | [[queue-q9c8d7e6f]] | ncr_capa | minor | NCR-003 (F-003 / REQ-009) | REC-CMMI-04-01-03-01-2026-001 | `/do WI-CMMI-04-01-03 --reissue ...` | 2026-07-31 | pending |
 | [[queue-qf1e2d3c4]] | ncr_capa | critical | NCR-004 (F-004 / REQ-010) | WI-CMMI-04-01-04 | `/build-standard ... --from write --target WI-CMMI-04-01-04` | 2026-05-30 | pending |
