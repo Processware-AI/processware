@@ -43,6 +43,12 @@ findings_by_severity:
   critical: 2
   major: 1
   minor: 1
+ncr_issued: 4                        # Phase 2 — ncr-drafter 위임 결과
+ncr_refs:
+  - "REC-NCR-04-01-2026-001"          # F-001 critical
+  - "REC-NCR-04-01-2026-002"          # F-002 major
+  - "REC-NCR-04-01-2026-003"          # F-003 minor
+  - "REC-NCR-04-01-2026-004"          # F-004 critical
 final_audit_path: "vault/08_REC_기록/AUDIT/REC-AUDIT-04-01-01-2026-001_프로세스_품질보증_심사보고서.md"
-finalized_at: "2026-05-02T10:06:24+09:00"
+finalized_at: "2026-05-02T10:06:30+09:00"
 auditor_confirmed_by: "이감사"

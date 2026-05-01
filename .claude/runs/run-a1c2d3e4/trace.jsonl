@@ -36,3 +36,10 @@
 {"ts":"2026-05-02T10:05:55+09:00","event":"audit_drafted","scope":"PRO-CMMI-04-01","findings":4}
 {"ts":"2026-05-02T10:06:20+09:00","event":"mat005_audit_history_updated","row":"1회차 2026 — PRO-CMMI-04-01"}
 {"ts":"2026-05-02T10:06:24+09:00","event":"audit_finalized","path":"vault/08_REC_기록/AUDIT/REC-AUDIT-04-01-01-2026-001_프로세스_품질보증_심사보고서.md","trace_id":"run-a1c2d3e4"}
+{"ts":"2026-05-02T10:06:25+09:00","event":"ncr_drafter_invoked","mode":"issue","findings_count":4,"skip_overridden":true}
+{"ts":"2026-05-02T10:06:26+09:00","event":"ncr_issued","ncr_id":"REC-NCR-04-01-2026-001","finding_id":"F-001","req_id":"REQ-005","severity":"critical","sla_due_date":"2026-05-30"}
+{"ts":"2026-05-02T10:06:27+09:00","event":"ncr_issued","ncr_id":"REC-NCR-04-01-2026-002","finding_id":"F-002","req_id":"REQ-007","severity":"major","sla_due_date":"2026-07-01"}
+{"ts":"2026-05-02T10:06:28+09:00","event":"ncr_issued","ncr_id":"REC-NCR-04-01-2026-003","finding_id":"F-003","req_id":"REQ-009","severity":"minor","sla_due_date":"2026-07-31"}
+{"ts":"2026-05-02T10:06:29+09:00","event":"ncr_issued","ncr_id":"REC-NCR-04-01-2026-004","finding_id":"F-004","req_id":"REQ-010","severity":"critical","sla_due_date":"2026-05-30"}
+{"ts":"2026-05-02T10:06:30+09:00","event":"mat006_ncr_issued","rows_added":4,"section":"NCR 발행 현황 (open)"}
+{"ts":"2026-05-02T10:06:30+09:00","event":"ncrs_drafted","issued_count":4,"by_severity":{"critical":2,"major":1,"minor":1}}

@@ -25,6 +25,7 @@ conformity_matrix_path: .claude/runs/{trace_id}/conformity_matrix.yaml
 auditor: "이감사"               # confirm 응답자
 options:
   dry_run: false
+  no_ncr: false                 # Phase 2: true 면 ncr-drafter 위임 보류
 ```
 
 ---
@@ -99,6 +100,11 @@ findings_by_severity:
   critical: 1
   major: 2
   minor: 1
+ncr_refs:                          # Phase 2 — ncr-drafter 위임 후 채워짐
+  - "REC-NCR-04-01-2026-001"
+  - "REC-NCR-04-01-2026-002"
+  - "REC-NCR-04-01-2026-003"
+  - "REC-NCR-04-01-2026-004"
 retention: "심사 종료 후 5년"
 created: "YYYY-MM-DD"
 tags: [REC, AUDIT, CMMI, PQA]
@@ -167,9 +173,12 @@ C-7. **§4 부적합 상세** — finding 별 1블록:
 3. 재실행 결과를 신규 REC 로 발행하여 본 finding 을 종결.
 
 **확정 상태**: ✅ 심사원 확정 (또는 인정 거부 시 ❌ rejected by auditor — reason)
+
+**📌 NCR 발행 (Phase 2)**: [[REC-NCR-04-01-2026-001_REQ-005_critical_종결추적]] (status: open / SLA 기한 2026-05-30)
+> ncr-drafter 가 자동 발행. 시정조치 종결: `/audit --close-ncr REC-NCR-04-01-2026-001 --capa <REC>`
 ```
 
-> 각 finding 마다 동일 양식으로 반복.
+> 각 finding 마다 동일 양식으로 반복. NCR 발행 줄은 `options.no_ncr == false` 일 때만 (Phase 2 default).
 
 C-8. **§5 미평가 항목 (Coverage Gap)** — 표:
 | WI | 카테고리 | 미평가 사유 |
@@ -196,11 +205,40 @@ C-11. **변경 금지 영역** — 본문 마지막:
 > 부적합 시정조치 종결: `/audit --close-ncr <ncr_id> --capa <REC>` (Phase 2 지원 예정).
 ```
 
+### Phase C-NCR — ncr-drafter 위임 (Phase 2 신규, options.no_ncr == false 일 때)
+
+C-NCR-1. `options.no_ncr == true` 또는 conformity_matrix.findings_count == 0 이면 본 단계 skip → Phase D 로.
+
+C-NCR-2. `ncr-drafter` 를 `issue` 모드로 호출:
+```yaml
+mode: issue
+trace_id: run-axxxxxxxx
+audit_plan_path: ...
+evidence_path: ...
+conformity_matrix_path: ...
+audit_rec_id: REC-AUDIT-04-01-01-2026-001          # 본 reporter 가 결정한 doc_id
+audit_rec_path: vault/08_REC_기록/AUDIT/...        # 아직 미작성 — ncr-drafter 가 frontmatter 만 신뢰하면 됨
+auditor: "이감사"
+options:
+  dry_run: false
+  skip_overridden: true
+```
+
+C-NCR-3. ncr-drafter 반환 처리:
+   - `issued: true`, `issued_count: N`, `issued_ncrs: [...]` 수집.
+   - `issued_ncrs[]` 의 각 NCR 정보를 본 reporter 의 보고서 §4 finding 블록에 삽입 (아래 C-7 갱신 로직).
+   - frontmatter `ncr_refs[]` 에 NCR 식별번호 list append.
+   - state.yaml `counts.ncr_issued: N` 갱신.
+   - trace.jsonl 에 `ncrs_drafted` 종합 이벤트 (ncr-drafter 가 별도로 ncr_issued N건 + ncrs_drafted 1건 기록).
+
+C-NCR-4. ncr-drafter 가 에러 반환 시 (예: MAT-006 손상) 본 reporter 도 abort. REC-AUDIT 미작성 (정합성 우선).
+
 ### Phase D — 파일 저장
 
 D-1. `options.dry_run == true`:
    - 파일 미작성. 호출자에게 합성된 본문 미리보기 반환.
    - MAT-005 도 갱신 안 함. trace.jsonl 도 마찬가지 (dry-run 이벤트만 한 줄).
+   - dry_run 시 ncr-drafter 도 dry_run 모드로 호출 (양쪽 일관).
 
 D-2. `vault/08_REC_기록/AUDIT/` 디렉터리 없으면 생성.
 
@@ -295,13 +333,17 @@ F-2. trace.jsonl 에 `audit_drafted` → `audit_finalized` 이벤트 (2개).
 
 ## 5. Phase 1 동작 사항
 
-**Phase 1 범위 (지금)**:
+**Phase 1 범위**:
 - ✅ REC-AUDIT 보고서 발행 (PRO/WI/standard 3 범위 지원).
 - ✅ MAT-005 §심사 이력 헤더 일관화 + 1행 append.
 - ✅ §6 권고 사항 (차원 4 인계 단서).
 
-**Phase 2+ 확장**:
-- Finding 별 NCR 자동 발행 (`ncr-drafter` 위임) — REC-NCR-*.md + MAT-006 갱신.
+**Phase 2 범위 (지금)**:
+- ✅ Finding 별 NCR 자동 발행 (`ncr-drafter` 위임) — REC-NCR-*.md + MAT-006 갱신.
+- ✅ frontmatter `ncr_refs[]` + §4 finding 블록의 NCR 링크 자동 삽입.
+- ✅ `options.no_ncr` 옵션 (NCR 발행 보류 — 보고서만 작성).
+
+**Phase 3+ 확장**:
 - KPI 대시보드 자동 발행 (MAT-008) — Phase 3.
 - QMR 다단계 결재 hook — Phase 4 RBAC 와 연동.
 - 외부 인증기관 보고서 양식 변환 (XLSX / PDF) — Phase 4.
