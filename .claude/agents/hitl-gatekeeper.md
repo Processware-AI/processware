@@ -242,9 +242,66 @@ D-3. drop-in 응답 시 `input_source: "approval_request.md drop-in"` 로 trace.
 ### 4.5 반려 사유 필수
 - `decision == "rejected"` 인 경우 `reason` 누락 절대 금지. 누락 시 호출자에게 에러 반환 + 사용자에게 사유 재요청 유도.
 
-### 4.6 중첩 HITL (다단계 승인)
-- 본 Phase 에서는 step 당 HITL 1회만 가정. 다단계(검토→승인) 는 Phase 3 이후.
-- WI 에 `hitl: required` 가 여러 step 에 있으면 각각 독립적으로 본 에이전트가 호출됨.
+### 4.6 다단계 HITL (Phase 2.5 — 단일 step 의 stage chain)
+
+본 Phase 부터 한 step 안에서 review → approve → final 같은 stage chain 을 지원.
+
+**state.yaml.hitl 스키마 (다단계)**:
+```yaml
+hitl:
+  required: true
+  stages:
+    - name: review
+      approver_role: "Tech Lead"
+      decision: null      # null | approved | rejected
+      requested_at: null
+      responded_at: null
+      timeout_at: null
+    - name: approve
+      approver_role: "PM"
+      decision: null
+    - name: final
+      approver_role: "Sponsor"
+      decision: null
+  current_stage_index: 0  # 현재 진행 중인 stage 의 인덱스
+  timeout_duration: 86400 # 각 stage 의 기본 timeout (초)
+  escalate_to: ["CEO"]    # stage 별 escalate_to 가 더 정확하면 stage 안에 둠
+```
+
+**stage 진행 로직**:
+- `gate_enter` 시 `current_stage_index = 0` 으로 시작. 첫 stage 의 approver 에게 drop-out.
+- `gate_response` 시 현재 stage 에 decision 기록.
+  - `approved` → `current_stage_index += 1`. 다음 stage 가 있으면 그 approver 에게 drop-out 재발송 (approval_request.md 갱신).
+  - `rejected` → 즉시 chain 중단, `state.hitl.decision: rejected` 로 마감.
+  - 마지막 stage 에서 `approved` → `state.hitl.decision: approved` 마감, process-executor 재개.
+
+**stage 별 timeout 처리**:
+- 각 stage 의 timeout 검사는 `escalation-coordinator` 가 담당. 본 에이전트는 stage 진행만.
+- escalation-coordinator 가 stage 의 approver 변경 시 본 에이전트는 그 변경을 반영해 다음 응답을 받음.
+
+**단순 모드 (Phase 2 호환)**:
+- WI 가 stages 를 정의하지 않으면 `hitl.stages` 미존재 → Phase 2 동작 (단일 approver).
+- 다단계는 WI MD §2 가 "검토자: X / 승인자: Y" 처럼 명시적 chain 일 때만 활성. wi-tmp-writer 가 이를 stages[] 로 자동 추출.
+
+**WI 에서 stages 다중 유추**:
+- WI §2 "주 수행자 / 검토자 / 승인자" 3계층이면 stages = [review(검토자), approve(승인자)] 2단계.
+- PRO §3 RACI 의 R/A/C 분포로 더 정밀 추출 가능 — wi-tmp-writer 가 결정.
+
+WI 에 `hitl: required` 가 여러 step 에 있으면 각 step 마다 독립적인 stages chain 이 본 에이전트에 의해 처리됨.
+
+### 4.7 timeout 메타 (Phase 2.5 신규)
+
+`gate_enter` 시 다음 필드를 항상 채운다 (없으면 escalation-coordinator 가 동작 못 함):
+
+- `hitl.timeout_duration: <초>` — WI/PRO 의 SLA 추출 또는 기본 24h
+- `hitl.timeout_at: <requested_at + duration>` — ISO8601
+- `hitl.escalate_to: [<role>...]` — WI §2 의 상위 책임자 또는 PRO §3 RACI 의 escalation path
+
+WI 에 명시 없으면 다음 휴리스틱 적용:
+- approver_role == PM → escalate_to = [Sponsor]
+- approver_role == Sponsor → escalate_to = [CEO]
+- approver_role == Tech Lead → escalate_to = [PM]
+- 기본: escalate_to = []  (에스컬레이션 미정의)
 
 ---
 
