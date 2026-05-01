@@ -28,13 +28,19 @@ argument-hint: "<WI번호 | 자연어> | --resume <trace_id> | --approve <trace_
 
 본 커맨드는 다음 6개 진입 모드 중 하나로 동작한다. 첫 인자에 따라 분기.
 
-### 1-1. `start` 모드 — 신규 실행 (인자가 WI 식별자)
+### 1-1. `start` 모드 — 신규 실행
 ```
-/do WI-CMMI-04-01-03
-/do WI-CMMI-04-01-03_작업산출물_평가_v1.0
-/do 작업산출물 평가          # 자연어 — Phase 3 까지는 후보 목록 제시 후 선택
+/do WI-CMMI-04-01-03                 # 직접 doc_id
+/do WI-CMMI-04-01-03_작업산출물_평가_v1.0    # 직접 파일명
+/do 작업산출물 평가                   # 자연어 (Phase 3) — process-router 위임
+/do 공급자 평가                       # 자연어 + 후보 제시 모드 가능
 ```
-→ Phase A (사전 점검) 부터 정상 시작.
+→ 인자 파싱:
+- 인자가 `WI-` / `PRO-` 접두사 + doc_id 패턴이면 **직접 매칭** → Phase A 진입.
+- 그 외(자연어) → **process-router 위임** (Phase 3 정식 동작):
+  - `auto_accepted` → 즉시 Phase A 진입.
+  - `candidates_presented` → 후보 표 출력 + 사용자 선택 대기.
+  - `no_match` → 구체화 요청 메시지 후 종료.
 
 ### 1-2. `resume` 모드 — `/do --resume <trace_id>`
 ```
@@ -71,7 +77,14 @@ argument-hint: "<WI번호 | 자연어> | --resume <trace_id> | --approve <trace_
 ```
 → 모든 `.claude/runs/run-*/approval_request.md` 의 frontmatter 를 스캔. `status: approved/rejected` 인 drop-in 응답이 있으면 자동으로 처리 (외부 채널 사용자가 파일을 직접 편집한 경우의 일괄 회수).
 
-### 1-7. 공통 옵션
+### 1-7. `rebuild-catalog` 모드 — `/do --rebuild-catalog [--scope <영역>]`
+```
+/do --rebuild-catalog                # 전체 표준 재인덱싱
+/do --rebuild-catalog --scope CMMI   # CMMI 만
+```
+→ `traceability-mapper` 를 **catalog-rebuild 모드** 로 호출. 모든 PRO/WI 의 frontmatter + §1 업무목적 + §2 수행주체 + §5 절차 를 스캔해 MAT-007 의 trigger·alias·event_triggers·hitl_required 를 재추출. 사람이 `manual_override: true` 표시한 행은 보존.
+
+### 1-8. 공통 옵션
 | 플래그 | 효과 | 적용 모드 |
 |---|---|---|
 | `--dry-run` | 대화는 진행하되 REC 파일·MAT-005 갱신 생략, 미리보기만 출력 | start, resume, approve |
@@ -79,6 +92,8 @@ argument-hint: "<WI번호 | 자연어> | --resume <trace_id> | --approve <trace_
 | `--auto-approve` | HITL 게이트를 자동 승인 (PoC·테스트용 — 실운영 금지) | start, resume |
 | `--approver <이름>` | 승인/반려 응답자 신원 명시 (감사 증적). 미지정 시 시스템 사용자명 | approve, reject |
 | `--reason "..."` | 반려 사유. `--reject` 모드에서 필수 | reject |
+| `--scope <영역>` | 카탈로그 재구축 범위 한정 (예: CMMI / ISO9001) | rebuild-catalog |
+| `--auto-threshold <0~1>` | process-router 자동 채택 임계 (기본 0.9) | start (자연어 진입) |
 
 ---
 
@@ -86,8 +101,18 @@ argument-hint: "<WI번호 | 자연어> | --resume <trace_id> | --approve <trace_
 
 ### 2-A. `start` 모드 (신규 실행)
 
+#### Phase A0. 자연어 라우팅 (Phase 3 — 인자가 doc_id 가 아닐 때)
+A0-1. 인자가 `WI-`/`PRO-` 접두사 + 영역코드 패턴이면 본 단계 skip → A-1 로.
+A0-2. 그 외 자연어면 `process-router` 에이전트 호출:
+   - 입력: `query`, `catalog_path: vault/90_MAT_통합매핑/MAT-007_프로세스_카탈로그.md`, `options.auto_threshold` (기본 0.9), `scope_filter` (선택)
+A0-3. process-router 반환 처리:
+   - `mode: auto_accepted` → 사용자에게 "자동 매칭: {doc_id} ({title}, confidence {score})" 안내 + Phase A 진입.
+   - `mode: candidates_presented` → 후보 표 출력 + "[1/2/3] 또는 doc_id 직접 입력" 대기. 응답 수신 후 Phase A 진입.
+   - `mode: no_match` → 구체화 요청 메시지 + 종료.
+A0-4. trace.jsonl 의 첫 이벤트로 `routed` 기록 (mode, query, selected.doc_id, confidence).
+
 #### Phase A. 사전 점검
-A-1. 인자에서 WI 식별. 매칭 실패 시 후보 목록 출력 후 종료.
+A-1. WI 식별 (Phase A0 또는 직접 인자에서). 매칭 실패 시 후보 목록 출력 후 종료.
 A-2. WI 파일 Read 성공 확인. frontmatter 의 다음 필드 추출:
    - `doc_id`, `parent_pro`, `parent_pol`, `related_tmp[]`, `related_ex[]`, `owner`, `reviewer`, `approver`, `standards`, `scope_code`
 A-3. **TMP 필수 확인**: `related_tmp[]` 가 비어 있으면 실행 중단 (REC 산출 불가 — TMP 부재).
@@ -165,6 +190,17 @@ S-1. `hitl-gatekeeper` `gate_query` 모드 호출. 결과 출력 후 종료.
 
 ---
 
+### 2-F. `rebuild-catalog` 모드
+
+RC-1. `traceability-mapper` 를 `catalog-rebuild` 모드로 호출 (scope 옵션 전달).
+RC-2. 결과 출력:
+```
+✅ MAT-007 카탈로그 갱신 완료
+   인덱싱: PRO 20 / WI 145 (정밀 26 + 자동 119)
+   manual_override 보존: 0 행
+   변경: trigger 추출 갱신 12 행 / 신규 5 행
+```
+
 ### 2-E. `check-approvals` 모드
 
 CA-1. `Glob ".claude/runs/run-*/approval_request.md"` 전수 스캔.
@@ -241,8 +277,8 @@ finalized_at: null
 | Phase | 포함 | 제외 |
 |---|---|---|
 | 1 | 직접 WI 지정 / 단일 step 대화 / TMP 매핑 / REC 1건 생성 / MAT-005 1행 / trace 로그 / HITL `--auto-approve` 모킹 | 자연어 라우팅 / HITL 정식 / 멀티턴 재개 |
-| **2 (지금)** | HITL 정지(`pending_approval`) / 외부 채널 drop-out / `/do --resume\|--approve\|--reject\|--status\|--check-approvals` / 반려 처리 (REC.status: rejected) / 6개 진입 모드 | 자연어 라우팅 / 타임아웃·에스컬레이션 / 외부 IdP 인증 / 다단계 승인 |
-| 3 | process-router / MAT-007 카탈로그 / 자연어 매칭 | 외부 시스템 연동 |
+| 2 | HITL 정지(`pending_approval`) / 외부 채널 drop-out / `/do --resume\|--approve\|--reject\|--status\|--check-approvals` / 반려 처리 (REC.status: rejected) / 6개 진입 모드 | 자연어 라우팅 / 타임아웃·에스컬레이션 / 외부 IdP 인증 / 다단계 승인 |
+| **3 (지금)** | process-router / MAT-007 카탈로그 / 자연어 매칭 (auto_accepted / candidates_presented / no_match) / `--rebuild-catalog` / `--auto-threshold` | 외부 시스템 연동 / 다국어 / RAG |
 | 4 | wi-tmp-writer 확장 (steps.yaml 정식 출력) / steps.yaml ↔ MD 동기화 | — |
 
 ---
