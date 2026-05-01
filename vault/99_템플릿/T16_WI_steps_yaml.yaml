@@ -1,0 +1,102 @@
+# =============================================================
+# T16 — WI 이중 포맷의 Agent 실행 정의 (steps.yaml) 표준 템플릿
+# =============================================================
+# 본 템플릿은 wi-tmp-writer 가 차원 1 빌드 시 WI MD 와 짝으로 생성하는
+# steps.yaml 의 정식 스키마 정의. 차원 2 process-executor 가 LLM 추론
+# 대신 본 yaml 을 실행 명세로 직접 사용한다.
+#
+# 파일명: WI-{영역}-{POL2}-{PRO2}-{##}_{이름}_v{버전}.steps.yaml
+# 위치:   vault/05_WI_업무지침/  (WI MD 와 동일 폴더, 짝으로 보관)
+#
+# 동기화 강제:
+#   - WI MD 의 frontmatter version, doc_id, title 과 본 yaml 의 동일 필드는
+#     반드시 일치해야 한다. qa-reviewer 가 불일치 시 Fail 발행.
+#   - WI 개정 시 wi-tmp-writer 가 둘 다 갱신.
+#
+# 우선순위 (process-executor):
+#   1) 본 정식 steps.yaml 존재 → 이를 우선 사용 (WI MD 본문 §5 무시)
+#   2) 없으면 vault/05_WI_업무지침/.cache/{file}.steps.yaml fallback
+#   3) 그것도 없으면 WI MD 본문 §5 에서 LLM 즉석 추출
+# =============================================================
+
+# ---- 메타 (WI MD frontmatter 와 동기화 필수) ----
+wi_id:           "WI-{영역}-{POL2}-{PRO2}-{##}"          # WI MD frontmatter.doc_id 와 일치
+title:           "{WI 제목}"                              # WI MD frontmatter.title 과 일치
+version:         "1.0"                                    # WI MD frontmatter.version 과 일치
+parent_pro:      "PRO-{영역}-{POL2}-{PRO2}"               # WI MD parent_pro
+parent_pol:      "POL-{영역}-{POL2}"
+related_tmp:                                              # WI MD related_tmp[] 와 일치
+  - "TMP-{영역}-{POL2}-{PRO2}-{WI2}-{TMP2}"
+scope_code:      "{영역코드}"
+standards:       ["{표준코드1}"]
+
+# ---- 추출 메타 (자동 채움) ----
+extracted_at:    "ISO8601"                # 본 yaml 작성 시각
+extractor:       "wi-tmp-writer"          # auto-generated 표시 (사람 수동 편집 시 'manual' 로 변경)
+extractor_model: "claude-opus-4-7"
+manual_override: false                    # 사람이 본 yaml 을 직접 손댄 후 true 로 표기 → 차후 자동 갱신 시 보존
+
+# ---- 단계 정의 (Phase D 핵심) ----
+steps:
+  - id:           "step-01"               # zero-padded
+    name:         "{단계명}"
+    section_ref:  "§5.2.1"                # WI MD 본문 어느 섹션 기반인지 역참조
+    description:  "{한 줄 설명, 선택}"
+
+    # 사용자에게 묻는 입력 항목 (질문 = 카탈로그 형태)
+    inputs:
+      - field:    "snake_case_id"         # rec_payload.fields 매핑 키와 일치
+        type:     "text"                  # text|enum|number|person|date|boolean|multiselect|table|text_per_row|number_per_row
+        question: "사용자에게 보여줄 자연어 질문"
+        required: true                    # 기본 true
+        required_if: "..."                # 조건식 (선택)
+        validation: "0 <= x <= 100"       # 검증 규칙 (선택)
+        options:  ["승인", "조건부승인", "반려"]   # type=enum 시 필수
+        columns:  ["item", "score", "comment"]  # type=table 시 필수
+        rows_from: "다른_step_field"       # type=*_per_row 시 (행 정의 기반 step)
+
+    # 자동 계산·판정 (사용자 답변 기반 derivation)
+    derivations:
+      - id:       "field_id"
+        expr:     |
+          # Python-like pseudo-code 또는 자연어 규칙
+          if total >= 80: "Pass"
+          elif total >= 60: "Conditional"
+          else: "Fail"
+        description: "한 줄 설명"
+
+    # 출력 — TMP 양식 필드 매핑
+    outputs:
+      - tmp_field: "TMP의 셀·컬럼 식별"     # 예: "평가표[].산출물" 또는 "결재.승인"
+        from:      "input_field_id 또는 derivation_id"
+
+    # HITL 게이트 (해당 step 에서 사람 승인 필요 여부)
+    hitl: false                           # false | required
+    # hitl: required 일 때:
+    # approver_role: "PM"                 # WI MD §2 승인자 또는 PRO §3 RACI A
+    # rationale:     "WI §2 승인자 명시"   # 게이트 발동 사유
+
+# ---- WI §5.3 완료 조건 (DoD) ----
+dod_checklist:
+  - "{체크 항목 1}"
+  - "{체크 항목 2}"
+
+# ---- WI §7 예외 처리 (분기 단서) ----
+exception_hooks:
+  - section: "§7.1"
+    name:    "{예외 상황명}"
+    rule:    "process-executor 가 어떻게 분기 처리할지 자연어 규칙"
+
+# ---- 도메인 / 트리거 (process-router 보조 — MAT-007 동기화) ----
+# 본 섹션은 traceability-mapper 가 MAT-007 카탈로그 갱신 시 입력으로 사용.
+triggers:        ["자연어 키워드1", "키워드2"]
+aliases:         ["동의어1", "외래어1"]
+event_triggers:  ["트리거 이벤트 또는 시점"]
+domains:         ["일반"]                  # 일반|SW|자동차|의료기기|AI 등
+
+# =============================================================
+# 사용 예: WI-CMMI-04-01-03_작업산출물_평가
+# - vault/05_WI_업무지침/WI-CMMI-04-01-03_작업산출물_평가_v1.0.steps.yaml
+# - 본 파일 옆에 WI-CMMI-04-01-03_작업산출물_평가_v1.0.md 동시 배치
+# - process-executor 가 본 yaml 을 직접 로드해 Phase B(step 추출) 생략
+# =============================================================

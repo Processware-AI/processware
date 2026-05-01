@@ -50,6 +50,42 @@ S-3. 일반 모드: 자기 phase `trace` 를 `status: running` + `started` 로 E
 11. **MAT-005 심사증적 인덱스**: 표준 조항 ↔ POL ↔ PRO ↔ WI ↔ TMP ↔ REC(예상경로) + **입력 출처(`_inputs/`)** 연결
 11-A. **MAT-006 문서 계층 추적 매트릭스**: 해당 표준의 POL → PRO → WI → TMP → EX 5단 계층을 **트리 형식 + 표 형식 두 가지 뷰** 로 append/갱신. 각 말단 경로의 상태(✅ 완전 / 🟡 EX 없음 / ⚠️  unresolved 등)를 기호로 표기. 고아 문서(상위 참조 없음) 탐지·보고.
 
+11-B. **MAT-007 프로세스 카탈로그 (차원 2 자연어 라우팅용)** — Phase 3 신규:
+   - 본 표준의 모든 PRO + WI 를 카탈로그에 인덱싱 (자연어 진입을 위한 trigger·alias·event_triggers·hitl 추출).
+   - **추출 절차**:
+     a) 각 PRO/WI 의 frontmatter 에서 `doc_id`, `title`, `parent_pro`, `parent_pol`, `owner`, `reviewer`, `approver`, `scope_code`, `standards` 추출.
+     b) WI §1 "업무 목적" + §2 "수행 주체" + §5 "수행 절차" 의 핵심 동사·명사 분석 → `triggers[]` 후보 LLM 추출.
+     c) WI §2 "승인자" 또는 PRO §3 RACI 의 A 가 명시되면 `hitl_required: true`, 그 외 `false`.
+     d) `responsible_role` ← WI §2 "주 수행자" / `approver_role` ← WI §2 "승인자" 또는 PRO §3 RACI A.
+     e) `aliases[]` 는 외래어·약어·구어체 추출 (예: 형상관리↔CM, V&V↔검증·확인, 동료검토↔peer review).
+     f) `event_triggers[]` 는 WI §3 "범위" 또는 PRO §1 "목적" 에서 "~ 시", "~ 발생 시" 같은 trigger 단서 추출.
+   - **갱신 정책**:
+     - `manual_override: true` 표기 행은 보존 (덮어쓰지 않음).
+     - 기존 행과 동일 doc_id 면 trigger·alias 만 갱신, 사람이 수정한 영역(예: aliases) 은 LLM 재추출 결과와 합집합.
+     - 신규 doc_id 면 신규 행 추가.
+     - 삭제된 doc_id (vault 에서 사라짐) 는 카탈로그에서도 제거 + 변경 로그 기록.
+   - **scope 옵션** (catalog-rebuild 모드에서만):
+     - `--scope <영역>` 명시 시 해당 영역의 PRO/WI 만 처리.
+     - 미명시 시 전체 표준 (모든 영역) 처리.
+   - **본 갱신은 §3 "빠른 검색표" + §5 "YAML 인덱스" 두 영역에 동시 반영**.
+   - **갱신 이력 §6 에 1행 추가**: 버전 +0.1, 변경 내용 요약, 담당("traceability-mapper auto-update").
+   - 카탈로그 파일 미존재 시 신규 생성 (vault/90_MAT_통합매핑/MAT-007_프로세스_카탈로그.md, T09 템플릿 변형 또는 인라인 작성).
+
+### B-2. catalog-rebuild 모드 (Phase 3 — `/do --rebuild-catalog` 호출)
+
+본 모드는 차원 1 빌드와 무관하게 본 에이전트를 호출할 수 있는 단독 진입점:
+
+CR-1. `_state.yaml` 검사 생략 (차원 1 의존 없음).
+CR-2. 입력: `mode: catalog-rebuild`, `scope: <영역|전체>`.
+CR-3. 위 §B 11-B 의 추출·갱신 절차만 실행. 다른 MAT (001~006) 은 건드리지 않음.
+CR-4. 완료 후 결과 표 호출자(/do)에게 반환:
+```
+✅ MAT-007 카탈로그 갱신 완료
+   인덱싱: PRO N / WI M (정밀 K + 자동 (M-K))
+   manual_override 보존: X 행
+   변경: trigger 추출 갱신 Y 행 / 신규 Z 행 / 삭제 W 행
+```
+
 ### C. 교차 표준 모드 (옵션 `--cross`)
 - 같은 HLS 조항(4~10)에 속한 서로 다른 표준의 Req-ID 를 나란히 배치, 통합 가능 지점 제안.
 

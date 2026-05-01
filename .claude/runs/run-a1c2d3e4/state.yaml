@@ -1,0 +1,61 @@
+trace_id: run-a1c2d3e4
+kind: audit
+scope:
+  kind: PRO
+  ids: ["PRO-CMMI-04-01"]
+  period:
+    from: "2026-01-01"
+    to:   "2026-04-30"
+  resolved_targets:
+    pro: ["PRO-CMMI-04-01"]
+    wi:
+      - "WI-CMMI-04-01-01"
+      - "WI-CMMI-04-01-02"
+      - "WI-CMMI-04-01-03"
+      - "WI-CMMI-04-01-04"
+      - "WI-CMMI-04-01-05"
+    pol: ["POL-CMMI-04"]
+status: completed
+started_at:   "2026-05-02T10:00:00+09:00"
+auditor: "이감사"
+options:
+  dry_run: false
+  strictness: normal
+  override_independence: false
+independence:
+  checked: true
+  violations: []                    # auditor "이감사" ≠ executed_by "dongseok" → 통과
+  overridden: false
+phase:
+  planner:  done
+  evidence: done
+  checker:  done
+  reporter: done
+counts:
+  requirements: 12
+  evidence_recs: 3
+  conformant: 4
+  partial: 2
+  nonconformant: 2
+  not_assessed: 4
+findings_count: 4
+findings_by_severity:
+  critical: 2
+  major: 1
+  minor: 1
+ncr_issued: 4                        # Phase 2 — ncr-drafter 위임 결과
+ncr_refs:
+  - "REC-NCR-04-01-2026-001"          # F-001 critical
+  - "REC-NCR-04-01-2026-002"          # F-002 major
+  - "REC-NCR-04-01-2026-003"          # F-003 minor
+  - "REC-NCR-04-01-2026-004"          # F-004 critical
+final_audit_path: "vault/08_REC_기록/AUDIT/REC-AUDIT-04-01-01-2026-001_프로세스_품질보증_심사보고서.md"
+finalized_at: "2026-05-02T10:06:40+09:00"
+auditor_confirmed_by: "이감사"
+act_queue_created: 5                  # Phase 4 — act-trigger 결과 (NCR 4 + 단독 권고 1)
+act_queues:
+  - queue-qa1b2c3d4                   # NCR-001 + KPI 3 통합 + ...
+  - queue-qe5f6a7b8                   # NCR-002
+  - queue-q9c8d7e6f                   # NCR-003
+  - queue-qf1e2d3c4                   # NCR-004 + 권고 1 통합
+  - queue-q9d8c7b6a                   # 단독 권고 (KPI 측정 명문화)

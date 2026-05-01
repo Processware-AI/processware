@@ -1,0 +1,56 @@
+queue_id: queue-qe5f6a7b8
+kind: ncr_capa
+priority: major
+status: done                          # Phase 2 batch — run-c8b3d4f7 (2026-05-16) 통합 처리
+batch_trace: run-c8b3d4f7
+batched_with: [queue-q9d8c7b6a]
+done_capa_rec: "vault/02_표준/CMMI-DEV-ML3/_inputs/04_AsIs/queue-batch-e5f6a7b8.md"
+done_at: "2026-05-16T15:35:00+09:00"
+done_reason: "Phase 2 batch — queue-q9d8c7b6a 와 root cause 통합 (PRO §7 KPI 측정). PCB 일괄 승인 후 통합 As-Is 파일 작성. 차원 1 재트리거 대기 (PRO v1.1 → v1.2 + WI-04-01-06 + TMP-04-01-06-01 신규)."
+created_at: "2026-05-02T10:06:36+09:00"
+created_by: "act-trigger (claude-opus-4-7)"
+
+source:
+  trace_id: run-a1c2d3e4
+  audit_rec: REC-AUDIT-04-01-01-2026-001
+  ncr_id: REC-NCR-04-01-2026-002
+  finding_id: F-002
+  req_id: REQ-007
+  req_section: "PRO-CMMI-04-01 §7 KPI"
+  severity: major
+  sla_due_date: "2026-07-01"
+
+target:
+  scope_kind: PRO
+  scope_id: PRO-CMMI-04-01
+  proposed_action: "/build-standard CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01"
+  alternative_action: null
+  scope_rationale: "PRO §7 에 KPI 측정 보고서 산출물 정의 명문화 (현재 측정 산출물 부재)"
+
+rationale: |
+  부적합 종결율 KPI 측정 결과 0/2 = 0% (목표 95% 대비 심각 미달).
+  표본 n=2 의 통계적 유의성 부족으로 partial 분류, 다음 분기 표본 n≥10 누적 시 critical 격상 권고.
+  F-001 (종결 추적 미완료) 의 KPI 측정 결과 — F-001 의 시정이 본 NCR 종결의 직접 경로.
+
+recommendation: |
+  1. F-001 시정조치 완료 (queue-qa1b2c3d4) — 본 KPI 의 root cause 처리
+  2. 분기마다 KPI 측정 보고서를 REC 로 발행하도록 PRO §7 절차 명문화
+  3. 다음 분기 (2026-Q3) KPI 재측정 — 표본 n≥10 확보 후 95% 충족 검증
+
+assignment:
+  responsible_role: "QA"
+  responsible_name: null
+  approver_role: "QMR"
+  approver_name: null
+  suggested: true
+  due_date: "2026-07-01"
+
+kpi_alerts: []
+
+linked_recommendations: []
+
+dispatched_to: null
+dispatched_at: null
+done_at: null
+done_capa_rec: null
+done_reason: null

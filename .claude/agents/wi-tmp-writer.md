@@ -89,6 +89,38 @@ Glob `vault/04_PRO_절차/PRO-*.md` 로 대상 PRO 전수 수집.
    - EX 생성 직후 대응 TMP의 `related_ex` frontmatter를 실제 EX 파일명으로 Edit.
    - **카운트 검증**: 예상 목록 테이블의 TMP 수 = 실제 생성된 EX 수. 불일치 시 즉시 보완 생성.
 5. 생성 후 PRO 의 연계 링크를 실제 파일명과 일치하도록 Edit.
+
+5-bis. **WI steps.yaml 짝 생성 (Phase 4 — 차원 2 Agent 실행 정의)**:
+   - 각 WI MD 생성 직후 (또는 §5 본문 확정 직후), 같은 폴더 (`vault/05_WI_업무지침/`) 에 짝 파일 `WI-XXX_v{버전}.steps.yaml` 동시 생성.
+   - 표준 스키마: `vault/99_템플릿/T16_WI_steps_yaml.yaml` 사용.
+   - **메타 동기화 필수** (qa-reviewer 가 일치 검증):
+     - `wi_id` ← WI MD frontmatter.doc_id
+     - `title` ← WI MD frontmatter.title
+     - `version` ← WI MD frontmatter.version
+     - `parent_pro` / `parent_pol` / `related_tmp[]` / `scope_code` / `standards[]` 모두 일치
+   - **steps[] 추출** (WI MD 본문 §5):
+     - §5.1 사전 준비 + §5.2 수행 단계 의 모든 번호 항목을 `step-NN` 으로 zero-padding.
+     - 각 step 마다 `inputs[]` (사용자 질문), `outputs[]` (TMP 필드 매핑), `derivations[]` (자동 계산) 정의.
+     - WI §2 "승인자" 명시된 step (보통 마지막 결재 step) 은 `hitl: required` + `approver_role` 채움.
+     - PRO §3 RACI 의 A 가 더 구체적이면 PRO 우선.
+   - **dod_checklist** ← WI §5.3 완료 조건 체크리스트.
+   - **exception_hooks** ← WI §7 예외 처리 분기 단서.
+   - **triggers/aliases/event_triggers/domains** (MAT-007 동기화용):
+     - WI §1 업무 목적 + §3 범위 + §6 인터페이스 부서 에서 자연어 키워드 LLM 추출.
+     - 도메인 코드 (자동차/의료기기/AI 등) 는 `parent_pol` 의 영역코드에서 매핑.
+   - **자동 채움 메타**:
+     - `extracted_at: <ISO8601 now>`
+     - `extractor: "wi-tmp-writer"`
+     - `extractor_model: "claude-opus-4-7"`
+     - `manual_override: false`
+   - **개정 시 동기화 강제**:
+     - WI MD version 이 변경되면 짝 steps.yaml 의 version 도 동시 갱신.
+     - WI §5 본문 변경 시 steps[] 도 재추출.
+     - `manual_override: true` 표기된 yaml 은 자동 갱신 시 사용자 수정 영역(예: aliases) 보존.
+
+5-ter. **steps.yaml ↔ MAT-007 카탈로그 동기화 신호** (선택):
+   - 각 WI 의 triggers/aliases 가 MAT-007 의 해당 row 와 동일하도록, 본 phase 종료 시 traceability-mapper 에게 "MAT-007 갱신 요청" 신호. (실제 갱신은 trace phase 의 §B 11-B 가 담당.)
+
 6. `vault/90_MAT_통합매핑/MAT-001_문서관리대장.md` 에 신규 문서 등록 Row 추가.
 
 ### Phase 2. WI ↔ TMP 링크 정합성 검증 (생성 완료 후 필수)
@@ -118,6 +150,16 @@ Glob `vault/04_PRO_절차/PRO-*.md` 로 대상 PRO 전수 수집.
 - 불일치(계획에 있으나 파일 없음) 는 전수 생성 원칙 위반 → 즉시 WI 보완 생성.
 
 **검증 완료 조건**: L-1 ~ L-4 전 항목에서 깨진 링크 0건.
+
+**L-5. WI ↔ steps.yaml 짝 정합성 (Phase 4 신규)**
+- Glob `vault/05_WI_업무지침/WI-*.md` 와 `vault/05_WI_업무지침/WI-*.steps.yaml` 양쪽 수집.
+- 각 WI MD 마다 짝 steps.yaml 존재 여부 확인. 없으면 즉시 5-bis 절차로 보완 생성.
+- 메타 일치 검증:
+  - WI MD frontmatter.{doc_id, title, version, parent_pro, parent_pol, related_tmp, scope_code, standards}
+  - steps.yaml.{wi_id, title, version, parent_pro, parent_pol, related_tmp, scope_code, standards}
+  - 8개 필드 중 1개라도 불일치면 즉시 Edit 로 동기화 (WI MD 가 정본 — yaml 을 맞춤).
+- step 수 검증: WI MD §5 의 번호 항목 수 = steps.yaml.steps[] 길이. 불일치 시 §5 본문 우선으로 yaml 재추출.
+- HITL 승인자 일관성: WI §2 "승인자" = steps.yaml 의 마지막 hitl: required step 의 approver_role.
 
 ## 금기
 - PRO 에 근거 없는 임의 WI/TMP 생성 금지

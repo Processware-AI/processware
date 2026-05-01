@@ -1,0 +1,41 @@
+{"ts":"2026-05-02T11:00:00+09:00","event":"start","trace_id":"run-k4f8d2a1","kind":"kpi","scope":{"kind":"standard","ids":["CMMI-DEV-ML3"],"period":"2026-01-01..2026-04-30"},"options":{"dry_run":false,"baseline":"auto","regression_threshold_pp":5.0}}
+{"ts":"2026-05-02T11:00:05+09:00","event":"kpi_collector_start","scope":{"kind":"standard","ids":["CMMI-DEV-ML3"]}}
+{"ts":"2026-05-02T11:00:08+09:00","event":"scope_resolved","pro":["PRO-CMMI-04-01"],"wi":["WI-CMMI-04-01-01","WI-CMMI-04-01-02","WI-CMMI-04-01-03","WI-CMMI-04-01-04","WI-CMMI-04-01-05"]}
+{"ts":"2026-05-02T11:00:12+09:00","event":"kpi_extracted","source":"PRO-CMMI-04-01","section":"§7","count":5}
+{"ts":"2026-05-02T11:00:14+09:00","event":"kpi_extracted","source":"WI-CMMI-04-01-03","section":"§9","count":1}
+{"ts":"2026-05-02T11:00:25+09:00","event":"kpi_measured","kpi_id":"KPI-CMMI-04-01-01","value":null,"data_gap":true}
+{"ts":"2026-05-02T11:00:35+09:00","event":"kpi_measured","kpi_id":"KPI-CMMI-04-01-02","value":0.0,"sample_size":2}
+{"ts":"2026-05-02T11:00:42+09:00","event":"kpi_measured","kpi_id":"KPI-CMMI-04-01-03","value":null,"data_gap":true}
+{"ts":"2026-05-02T11:00:48+09:00","event":"kpi_measured","kpi_id":"KPI-CMMI-04-01-04","value":100.0,"sample_size":1}
+{"ts":"2026-05-02T11:00:54+09:00","event":"kpi_measured","kpi_id":"KPI-CMMI-04-01-05","value":null,"data_gap":true}
+{"ts":"2026-05-02T11:01:02+09:00","event":"kpi_measured","kpi_id":"KPI-WI-04-01-03-01","value":4.92,"sample_size":1}
+{"ts":"2026-05-02T11:01:05+09:00","event":"meta_kpi_measured","kpi_id":"META-COVERAGE","value":40.0}
+{"ts":"2026-05-02T11:01:06+09:00","event":"meta_kpi_measured","kpi_id":"META-FINDINGS-DENSITY","value":33.3}
+{"ts":"2026-05-02T11:01:07+09:00","event":"meta_kpi_measured","kpi_id":"META-INDEPENDENCE","value":100.0}
+{"ts":"2026-05-02T11:01:07+09:00","event":"meta_kpi_measured","kpi_id":"META-NCR-CLOSURE","value":0.0}
+{"ts":"2026-05-02T11:01:08+09:00","event":"meta_kpi_measured","kpi_id":"META-NCR-SLA","value":null,"data_gap":true}
+{"ts":"2026-05-02T11:01:08+09:00","event":"kpi_collector_done","defined":6,"meta":5,"measured":7,"data_gap":4,"data_path":".claude/runs/run-k4f8d2a1/kpi_data.yaml"}
+{"ts":"2026-05-02T11:02:00+09:00","event":"kpi_analyzer_start","baseline":"auto"}
+{"ts":"2026-05-02T11:02:02+09:00","event":"baseline_resolved","status":"seed","reason":"표준 CMMI-DEV-ML3 의 MAT-008 회차 0 (첫 측정) → 본 회차가 baseline 시드"}
+{"ts":"2026-05-02T11:02:30+09:00","event":"kpi_analyzed","kpi_id":"KPI-CMMI-04-01-01","verdict":"data_gap"}
+{"ts":"2026-05-02T11:02:35+09:00","event":"kpi_analyzed","kpi_id":"KPI-CMMI-04-01-02","verdict":"critical","target_op":">=","target":95,"value":0.0}
+{"ts":"2026-05-02T11:02:40+09:00","event":"kpi_analyzed","kpi_id":"KPI-CMMI-04-01-03","verdict":"data_gap"}
+{"ts":"2026-05-02T11:02:45+09:00","event":"kpi_analyzed","kpi_id":"KPI-CMMI-04-01-04","verdict":"healthy","target":100,"value":100.0}
+{"ts":"2026-05-02T11:02:50+09:00","event":"kpi_analyzed","kpi_id":"KPI-CMMI-04-01-05","verdict":"data_gap"}
+{"ts":"2026-05-02T11:02:55+09:00","event":"kpi_analyzed","kpi_id":"KPI-WI-04-01-03-01","verdict":"healthy","target":4.0,"value":4.92}
+{"ts":"2026-05-02T11:03:00+09:00","event":"kpi_analyzed","kpi_id":"META-COVERAGE","verdict":"critical","target":80,"value":40.0}
+{"ts":"2026-05-02T11:03:05+09:00","event":"kpi_analyzed","kpi_id":"META-FINDINGS-DENSITY","verdict":"critical","target":20,"value":33.3,"direction":"lower_is_better"}
+{"ts":"2026-05-02T11:03:08+09:00","event":"kpi_analyzed","kpi_id":"META-INDEPENDENCE","verdict":"healthy","target":100,"value":100.0}
+{"ts":"2026-05-02T11:03:11+09:00","event":"kpi_analyzed","kpi_id":"META-NCR-CLOSURE","verdict":"critical","target":95,"value":0.0}
+{"ts":"2026-05-02T11:03:14+09:00","event":"kpi_analyzed","kpi_id":"META-NCR-SLA","verdict":"data_gap"}
+{"ts":"2026-05-02T11:03:30+09:00","event":"alerts_raised","count":4,"critical":4,"watch":0,"healthy":3,"data_gap":4}
+{"ts":"2026-05-02T11:04:05+09:00","event":"mat008_updated","round":1,"rows_added":11,"section":"CMMI-DEV-ML3"}
+{"ts":"2026-05-02T11:04:12+09:00","event":"mat006_stats_updated","totals":{"발행":4,"종결":0,"open":4,"종결율":"0.0%","SLA준수율":"— (n=0)","평균종결기간":"— (n=0)","등급별":"2/1/1"}}
+{"ts":"2026-05-02T11:04:18+09:00","event":"kpi_analyzer_done","verdict_summary":{"healthy":3,"watch":0,"recovering":0,"critical":4,"data_gap":4},"trace_id":"run-k4f8d2a1"}
+{"ts":"2026-05-02T11:04:20+09:00","event":"act_trigger_invoked","mode":"from_kpi","critical_alerts":4}
+{"ts":"2026-05-02T11:04:21+09:00","event":"act_queue_merged","kpi_id":"KPI-CMMI-04-01-02","into_queue":"queue-qa1b2c3d4","reason":"related_ncrs:[NCR-001,NCR-002] root cause 동일 — NCR-001 큐의 kpi_alerts[] 통합"}
+{"ts":"2026-05-02T11:04:21+09:00","event":"act_queue_merged","kpi_id":"META-FINDINGS-DENSITY","into_queue":"queue-qa1b2c3d4"}
+{"ts":"2026-05-02T11:04:22+09:00","event":"act_queue_merged","kpi_id":"META-NCR-CLOSURE","into_queue":"queue-qa1b2c3d4"}
+{"ts":"2026-05-02T11:04:22+09:00","event":"act_queue_created","queue_id":"queue-q5a6b7c8d","kind":"kpi_critical","priority":"critical","kpi_id":"META-COVERAGE","note":"related_ncrs 없음 — 신규 큐"}
+{"ts":"2026-05-02T11:04:23+09:00","event":"mat008_act_queue_updated","rows_added":1,"section":"CMMI-DEV-ML3 §차원 4 인계"}
+{"ts":"2026-05-02T11:04:23+09:00","event":"act_trigger_done","queues_created":1,"queues_merged":3}

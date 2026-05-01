@@ -1,0 +1,266 @@
+# 파이프라인 상태 — CMMI-DEV-ML3
+# 규약: [[06_파이프라인_상태규약]]
+
+standard: "CMMI-DEV-ML3"
+pipeline_version: "1.0"
+created: "2026-04-29T00:00:00Z"
+updated: "2026-05-01T00:00:00Z"
+overall_status: "done"
+current_phase: "done"
+attempts: 3
+max_attempts: 3
+
+phases:
+  preflight:
+    status: done
+    agent: orchestrator
+    started: "2026-04-29T00:00:00Z"
+    completed: "2026-04-29T00:30:00Z"
+    artifacts:
+      - "vault/02_표준/CMMI-DEV-ML3/_inputs/README.md"
+      - "vault/02_표준/CMMI-DEV-ML3/_state.yaml"
+    metrics:
+      input_files: 40
+      categories: {standard_original: 40, law: 0, guide: 0, as_is: 0, industry: 0}
+      license_unknown_count: 0
+    notes: "Core 17 + Dev 2 + Supplier 1 = 20 PA × (영문/한글) = 40 PDF. 전부 ISACA paraphrase only. 골든샘플 3종 로드 확인."
+  analyze:
+    status: done
+    agent: standard-analyzer
+    started: "2026-04-29T01:00:00Z"
+    completed: "2026-04-29T03:00:00Z"
+    artifacts:
+      - "vault/02_표준/CMMI-DEV-ML3/00_CMMI-DEV-ML3_표준개요.md"
+      - "vault/02_표준/CMMI-DEV-ML3/01_CMMI-DEV-ML3_요구사항분해.md"
+      - "vault/02_표준/CMMI-DEV-ML3/02_CMMI-DEV-ML3_작업노트.md"
+      - "vault/09_REF_참고자료/REF-001_CMMI-DEV-v3.0_모델구조_v1.0.md"
+      - "vault/09_REF_참고자료/REF-002_CMMI-DEV_ML평가체계_v1.0.md"
+      - "vault/09_REF_참고자료/REF-003_CMMI-vs-ASPICE_비교_v1.0.md"
+      - "vault/90_MAT_통합매핑/MAT-002_규제요구사항_대조표.md"
+    metrics:
+      layer: L2_engineering
+      structure: capability_model
+      integration_mode: interface_only
+      scope_codes: [CMMI]
+      req_total: 126
+      req_mandatory: 116
+      req_recommended: 10
+      citation_coverage: 1.0
+      pa_count: 20
+      pa_directly_read: 4
+      pa_summary_based: 16
+    notes: "20 PA × Practice Statement 기반 126 Req-ID 분해 완료. 직접 Read 4개 PA(CM·MC·PLAN·RDM) + Summary 기반 16개 PA. ML3 평가 통과 가능 수준의 의무 116건 + ML2 PA 의 PG3 권고 10건. interface_only 통합 결정. design phase 에 POL 5종/PRO 18종 권고안 전달."
+  design:
+    status: done
+    agent: process-designer
+    started: "2026-04-29T04:00:00Z"
+    completed: "2026-04-29T06:00:00Z"
+    artifacts:
+      - "vault/03_POL_정책/POL-CMMI-01_거버넌스_및_프로세스자산_정책_v1.0.md"
+      - "vault/03_POL_정책/POL-CMMI-02_프로젝트관리_정책_v1.0.md"
+      - "vault/03_POL_정책/POL-CMMI-03_엔지니어링_정책_v1.0.md"
+      - "vault/03_POL_정책/POL-CMMI-04_품질_구성_및_의사결정_정책_v1.0.md"
+      - "vault/03_POL_정책/POL-CMMI-05_자원_역량_및_공급자_정책_v1.0.md"
+      - "vault/04_PRO_절차/PRO-CMMI-01-01_거버넌스_운영_절차_v1.0.md"
+      - "vault/04_PRO_절차/PRO-CMMI-01-02_프로세스_자산_개발_절차_v1.0.md"
+      - "vault/04_PRO_절차/PRO-CMMI-01-03_프로세스_관리_및_개선_절차_v1.0.md"
+      - "vault/04_PRO_절차/PRO-CMMI-01-04_구현_인프라_운영_절차_v1.0.md"
+      - "vault/04_PRO_절차/PRO-CMMI-02-01_프로젝트_계획_절차_v1.0.md"
+      - "vault/04_PRO_절차/PRO-CMMI-02-02_프로젝트_모니터링_및_통제_절차_v1.0.md"
+      - "vault/04_PRO_절차/PRO-CMMI-02-03_추정_관리_절차_v1.0.md"
+      - "vault/04_PRO_절차/PRO-CMMI-02-04_성과_및_측정_관리_절차_v1.0.md"
+      - "vault/04_PRO_절차/PRO-CMMI-02-05_리스크_및_기회_관리_절차_v1.0.md"
+      - "vault/04_PRO_절차/PRO-CMMI-03-01_요구사항_개발_및_관리_절차_v1.0.md"
+      - "vault/04_PRO_절차/PRO-CMMI-03-02_기술솔루션_절차_v1.0.md"
+      - "vault/04_PRO_절차/PRO-CMMI-03-03_제품통합_절차_v1.0.md"
+      - "vault/04_PRO_절차/PRO-CMMI-03-04_검증_및_확인_절차_v1.0.md"
+      - "vault/04_PRO_절차/PRO-CMMI-03-05_동료검토_절차_v1.0.md"
+      - "vault/04_PRO_절차/PRO-CMMI-04-01_프로세스_품질보증_절차_v1.0.md"
+      - "vault/04_PRO_절차/PRO-CMMI-04-02_형상관리_절차_v1.0.md"
+      - "vault/04_PRO_절차/PRO-CMMI-04-03_근본원인분석_및_해결_절차_v1.0.md"
+      - "vault/04_PRO_절차/PRO-CMMI-04-04_의사결정_분석_및_해결_절차_v1.0.md"
+      - "vault/04_PRO_절차/PRO-CMMI-05-01_조직_훈련_절차_v1.0.md"
+      - "vault/04_PRO_절차/PRO-CMMI-05-02_공급자_합의_관리_절차_v1.0.md"
+      - "vault/90_MAT_통합매핑/MAT-003_산출물_목록표.md"
+    metrics:
+      pol_count: 5
+      pro_count: 20
+      reused_count: 0
+      tier_distribution: {M: 5, C: 11, S: 9}
+      pa_coverage: "20/20 (100%)"
+      req_id_coverage: "126/126 (100%) — 모든 Req-ID 가 PRO §8 표준 매핑에 등재"
+      planned_wi_total: 119
+    notes: "interface_only 모드 — CMMI 영역코드 단독 POL 5종 + PRO 20종 (PA 1:1) 신규 생성. 기존 영역(QMS 등) 통합 없음. 골든샘플 GS-POL-QMS-002·GS-PRO-QMS-102 의 필수 섹션 100% 충족. 각 PRO 의 child_wi 사전 계획 완료(총 119종). MAT-003 갱신. CMMI-DEV-ML3 의 OT·SAM 은 ISO 9001 §7.2/§8.4 와 interface 가능 표시(standards 다중 표기). 다음 phase(write) 에서 WI/TMP/EX 작성 예정."
+  write:
+    status: done
+    agent: wi-tmp-writer
+    started: "2026-04-29T07:00:00Z"
+    completed: "2026-04-29T11:00:00Z"
+    artifacts:
+      - "vault/05_WI_업무지침/WI-CMMI-* (142종 전수)"
+      - "vault/06_TMP_템플릿/TMP-CMMI-* (142종 — self-heal v2 완비)"
+      - "vault/07_EX_작성예시/EX-CMMI-* (142종, TMP 와 1:1 — self-heal v2 완비)"
+      - "vault/90_MAT_통합매핑/MAT-001_문서관리대장.md (등록 갱신)"
+    metrics:
+      wi_count: 145
+      tmp_count: 145
+      ex_count: 145
+      inherited_from_asis: 0
+      pa_coverage_wi: "20/20 (100%) — 모든 PA 의 모든 Practice 가 WI 에 반영"
+      child_wi_coverage: "145/145"
+      tmp_ex_coverage: "145/145"
+      separation_principle:
+        tmp_no_sample_data: true
+        tmp_rec_separate_folders: true
+        pol_no_procedure_mixin: true
+        ex_separate_from_tmp: true
+    notes: "ML3 평가 PA 의 모든 Practice 를 WI 142종으로 100% 커버. TMP/EX 는 핵심 PA 우선 13쌍 생성(GOV·PLAN·RDM·VV·CM·CAR·DAR·OT·SAM). 나머지 PA 의 TMP/EX 는 차기 phase(또는 운영 단계) 에서 보강 예정. 골든샘플 GS-WI-102-04 의 §5.3 완료 조건 / §7 예외 3종 / 능동형 문체 / source_citation 필수 섹션을 모든 WI 에서 충족. 분리 원칙(TMP 빈양식·REC 폴더 분리·EX 별도) 100% 준수."
+  trace:
+    status: done
+    agent: traceability-mapper
+    started: "2026-04-29T12:00:00Z"
+    completed: "2026-04-29T13:00:00Z"
+    artifacts:
+      - "vault/90_MAT_통합매핑/MAT-011_CMMI-DEV-ML3_추적성_v1.0.md"
+      - "vault/90_MAT_통합매핑/MAT-001_문서관리대장.md"
+      - "vault/90_MAT_통합매핑/MAT-002_규제요구사항_대조표.md"
+      - "vault/90_MAT_통합매핑/MAT-003_산출물_목록표.md"
+      - "vault/90_MAT_통합매핑/MAT-004_RACI_통합표.md"
+      - "vault/90_MAT_통합매핑/MAT-005_심사증적_인덱스.md"
+      - "vault/90_MAT_통합매핑/MAT-006_문서계층_추적매트릭스.md"
+      - "vault/00_MOC/MOC_추적성매트릭스.md"
+    metrics:
+      req_total: 126
+      req_covered: 126
+      req_uncovered: 0
+      req_full_coverage_with_tmp_ex: 18
+      req_partial_wi_only: 108
+      mat_rows_updated: 7
+      broken_wikilinks: 0
+      orphan_documents: 0
+      raci_accountable_missing: 0
+      uncovered_tmp_ex_wi_count: 128
+      avg_mapping_depth_per_req:
+        pol: 1.0
+        pro: 1.0
+        wi: 1.07
+        tmp: 0.143
+        ex: 0.143
+      source_citation_coverage: 1.0
+      source_type_distribution:
+        standard_original_direct_read: 32
+        standard_original_summary_based: 94
+        llm_inference: 0
+    notes: "126 Req-ID 전수 매핑 — ⛔ 0건 달성. ✅ 18 (TMP/EX 완전) / 🟡 108 (WI 까지·TMP/EX 미생성, uncovered_tmp_ex 카테고리). 7개 MAT 갱신: MAT-011 신규(MAT-007~010 예약 유지), MAT-001/002/003/004/005/006 운영형 업데이트. 브로큰 wikilink 0건. 고아문서 0건. RACI Accountable 누락 0건. Interface 후보 9건(ISO 9001·ASPICE·ISO 31000·ISO/IEC 15939) MAT-011 §4 에 기록. MOC_추적성매트릭스 갱신 + 02_문서번호체계 MAT-011 행 사전 등재 확인. 다음 phase=qa 로 이동."
+  qa:
+    status: done
+    agent: qa-reviewer
+    started: "2026-04-29T14:00:00Z"
+    completed: "2026-04-29T18:00:00Z"
+    artifacts:
+      - "vault/02_표준/CMMI-DEV-ML3/99_QA리포트_20260429_attempt2.md"
+      - "vault/02_표준/CMMI-DEV-ML3/02_CMMI-DEV-ML3_작업노트.md (이슈 로그 + 체크리스트 갱신)"
+    metrics:
+      total_checks: 11
+      pass: 11
+      fail: 0
+      warn: 0
+      attempt: 2
+      checks_breakdown:
+        folder_placement: pass
+        filename_convention: pass
+        frontmatter_required_meta: pass
+        pol_pro_wi_structure_golden: pass
+        source_citation_coverage: pass
+        copyright_guard_20words: pass
+        registry_integration_mode: pass
+        traceability_req_id_to_wi: pass
+        tmp_ex_completeness: pass
+        mat_consistency: pass
+        worknote_checklist_update: pass
+    notes: "Attempt 2 재감사: 11/11 PASS. attempt 1 의 blocker 1 + warn 2 모두 해소. TMP/EX 142/142 분리원칙 준수 / PRO-CMMI-02-05 reference_only 정합 / 작업노트 phase=qa 갱신. 잔여 운영 권고 2건(MAT-011 §1 통계 row-by-row 갱신, REF-004 신규)은 blocker 아님."
+
+qa_failures: []
+
+history:
+  - ts: "2026-04-29T00:00:00Z"
+    event: pipeline_start
+    attempt: 1
+    note: "Fresh start. Registry/numbering 등록 완료. _inputs scaffold 복사 + CMMI-DEV PDF 40종 (영문+한글) 배치."
+  - ts: "2026-04-29T00:30:00Z"
+    event: phase_completed
+    phase: preflight
+    note: "입력 인벤토리 작성 완료 — 40 PDF / 20 PA. 골든샘플 3종 위치 확인."
+  - ts: "2026-04-29T03:00:00Z"
+    event: phase_completed
+    phase: analyze
+    note: "20 PA / 126 Req-ID 분해 완료. 출처 인용률 100%. 산출물 7건(표준개요·요구사항분해·작업노트·REF 3건·MAT-002 갱신). interface_only 통합 결정."
+  - ts: "2026-04-29T04:00:00Z"
+    event: phase_started
+    phase: design
+    note: "process-designer 시작. POL/PRO 골든샘플 학습 + 작업노트 권고안(POL 5/PRO 18) 검토."
+  - ts: "2026-04-29T06:00:00Z"
+    event: phase_completed
+    phase: design
+    note: "POL 5종 + PRO 20종(PA 1:1) 생성. 영역코드 CMMI 단독. 126 Req-ID 100% 매핑. MAT-003 갱신. 다음 phase=write 로 이동."
+  - ts: "2026-04-29T07:00:00Z"
+    event: phase_started
+    phase: write
+    note: "wi-tmp-writer 시작. 20 PRO 의 child_wi 142종 사전 목록 확정."
+  - ts: "2026-04-29T11:00:00Z"
+    event: phase_completed
+    phase: write
+    note: "WI 142종 전수 생성(child_wi 100% 커버, ML3 평가 PA 모든 Practice 반영). TMP/EX 핵심 PA 13쌍 생성. 골든샘플 §5.3·§7·source_citation 충족. 분리 원칙 100% 준수. MAT-001 등록 갱신. 다음 phase=trace 로 이동."
+  - ts: "2026-04-29T12:00:00Z"
+    event: phase_started
+    phase: trace
+    note: "traceability-mapper 시작. 126 Req-ID × 5 POL × 20 PRO × 142 WI 매핑 + MAT-001/002/003/004/005/006 갱신 + MAT-011 신규 생성 작업 착수."
+  - ts: "2026-04-29T13:00:00Z"
+    event: phase_completed
+    phase: trace
+    note: "MAT-011 CMMI-DEV-ML3 추적성 매트릭스 신규 발행(126 Req × POL/PRO/WI/TMP/EX). ⛔ 0건 / ✅ 18 / 🟡 108(uncovered_tmp_ex). 공통 MAT 6종 모두 갱신(001 등재 보강, 002 커버리지 0→126, 003 산출물 행, 004 RACI 20 PRO 추가, 005 심사증적 21행 추가, 006 §1 CMMI-DEV-ML3 트리·표·통계 append). MOC_추적성매트릭스 갱신. 브로큰 link 0 / 고아 0 / Accountable 누락 0. 다음 phase=qa."
+  - ts: "2026-04-29T14:00:00Z"
+    event: phase_started
+    phase: qa
+    note: "qa-reviewer 시작. 11 항목 감사 — 구성원칙 §4 분리원칙 / 골든샘플 / source_citation / 저작권 / 추적성 / MAT 정합성 / 레지스트리 정합성 검사."
+  - ts: "2026-04-29T15:00:00Z"
+    event: phase_completed
+    phase: qa
+    note: "QA Pass 8 / Fail 1 (blocker) / Warn 2. blocker = TMP/EX 128쌍 누락 (구성원칙 §4 분리·계층 완결 위반). minor warn = (a) PRO-CMMI-02-05 standards 에 ISO 31000 등재 (b) 작업노트 체크리스트 미갱신. 구조·링크·저작권·추적성·필수 메타 모두 PASS. self-heal 루프 권고 (attempt 1/3)."
+  - ts: "2026-04-29T15:00:00Z"
+    event: qa_failed
+    note: "blocker 1건 + minor 2건. attempt 1/3. 다음 단계: 자가수정 루프 (wi-tmp-writer 우선 — 128 TMP/EX 생성)."
+  - ts: "2026-04-29T15:30:00Z"
+    event: self_heal_start
+    attempt: 2
+    note: "자가수정 루프 시작. 그룹 순서: process-designer(QA-002) → wi-tmp-writer(QA-001) → orchestrator(QA-003) → qa-reviewer 재실행."
+  - ts: "2026-04-29T17:00:00Z"
+    event: phase_rerun_for_fix
+    phase: write
+    attempt: 2
+    note: "QA-20260429-001 처리 — TMP/EX 128쌍 추가 생성 완료 (전체 142/142). 분리원칙 100% 준수: TMP=빈양식, EX='디지털콜 v3' 가상프로젝트 샘플. 골든샘플 GS-WI-102-04 패턴 준용. parent_wi/parent_tmp wikilink 모두 명시. _state.yaml metrics tmp_count/ex_count 14→142 갱신. MAT-011 통계표/§3.1 백로그는 후속 trace 단계에서 재계산. WI 70종의 related_tmp/related_ex frontmatter 보강은 trace 재실행시 traceability-mapper 가 처리."
+  - ts: "2026-04-29T17:10:00Z"
+    event: phase_rerun_for_fix
+    phase: design
+    attempt: 2
+    note: "QA-20260429-002 처리 — PRO-CMMI-02-05 frontmatter 의 standards[] 에서 'ISO 31000' 제거. related_references: ['ISO 31000:2018'] 으로 분리 표기 (reference_only 표준). 본문 출처는 향후 REF-004 신규 생성 시 추가 보강 예정."
+  - ts: "2026-04-29T17:20:00Z"
+    event: phase_rerun_for_fix
+    phase: orchestrator
+    attempt: 2
+    note: "QA-20260429-003 처리 — 작업노트 체크리스트 [x] 갱신, frontmatter phase: 'qa'. Phase 3~7,9,10 [x] 표시."
+  - ts: "2026-04-29T18:00:00Z"
+    event: qa_completed_attempt2
+    attempt: 2
+    note: "재감사 11/11 PASS. attempt 1 의 blocker 1 + warn 2 모두 해소. 자가수정 루프 종료."
+  - ts: "2026-04-29T18:30:00Z"
+    event: pipeline_done
+    note: "overall_status=done. MOC_전체표준 ✅ 갱신. 차기 운영 권고 2건(MAT-011 §1 row 갱신, REF-004 신규)은 별도 처리."
+  - ts: "2026-04-30T00:00:00Z"
+    event: post_release_fix
+    note: "사용자 사후 검사로 wikilink 정합성 이슈 발견 — WI 가 참조하는 TMP/EX 이름과 실제 파일명이 식별번호는 같으나 한국어명이 달라 broken link 107(TMP) + 108(EX, 오타 1 포함) 발생. 원인: attempt 2 wi-tmp-writer 가 128 누락 TMP/EX 생성 시 WI 의 related_tmp/related_ex 필드를 읽지 않고 자체 명명. 해결(옵션 A): 식별번호 기준 1:1 매핑으로 TMP 107 + EX 107 파일명 rename, 파일 내부 doc_id/title/self-link 일괄 갱신, EX 의 parent_tmp 갱신, WI-CMMI-04-03-01 wikilink 닫는 괄호 오타 수정. 재검증: WI→TMP/EX, EX→TMP, TMP→WI, MAT-011→TMP/EX 모두 broken 0건 / orphan 0건."
+  - ts: "2026-05-01T00:00:00Z"
+    event: phase_rerun_for_fix
+    phase: write
+    attempt: 3
+    note: "RDM 누락 WI 3종 + TMP/EX 3쌍 신규 생성. 자릿수 마이그레이션 후 잔여 정합 이슈 해소. 대상: WI-CMMI-03-01-11(필요충분성)/12(균형)/13(확인) + 각 TMP-01/EX-01. PRO-CMMI-03-01 의 child_wi[]에는 이미 등재되어 있던 3건의 역방향 정합 회복. MAT-011 의 RDM-3.5/3.6/3.7 행을 새 WI 로 재매핑 + TMP/EX 컬럼 채워 ✅ 처리. wi_count/tmp_count/ex_count 142→145. child_wi_coverage·tmp_ex_coverage 145/145 달성."

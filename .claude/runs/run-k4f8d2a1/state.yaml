@@ -1,0 +1,41 @@
+trace_id: run-k4f8d2a1
+kind: kpi
+scope:
+  kind: standard
+  ids: ["CMMI-DEV-ML3"]
+  period:
+    from: "2026-01-01"
+    to:   "2026-04-30"
+  resolved_targets:
+    pro: ["PRO-CMMI-04-01"]
+    wi:
+      - "WI-CMMI-04-01-01"
+      - "WI-CMMI-04-01-02"
+      - "WI-CMMI-04-01-03"
+      - "WI-CMMI-04-01-04"
+      - "WI-CMMI-04-01-05"
+include_meta_kpis: true
+status: completed
+started_at:   "2026-05-02T11:00:00+09:00"
+finalized_at: "2026-05-02T11:04:18+09:00"
+options:
+  dry_run: false
+  baseline: auto
+  regression_threshold_pp: 5.0
+phase:
+  collector: done
+  analyzer:  done
+counts:
+  defined_kpis: 6
+  meta_kpis: 5
+  measured: 7
+  data_gap: 4
+  alerts_critical: 4
+  alerts_watch: 0
+  alerts_total: 4
+final_mat008_round: 1
+related_audit_trace: "run-a1c2d3e4"
+act_queue_created: 1                  # Phase 4 — META-COVERAGE 만 신규 (3 KPI 는 NCR 큐에 통합)
+act_queue_merged: 3                   # KPI-04-01-02 / META-FINDINGS-DENSITY / META-NCR-CLOSURE → queue-qa1b2c3d4
+act_queues:
+  - queue-q5a6b7c8d                   # META-COVERAGE 신규

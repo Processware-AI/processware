@@ -1,0 +1,98 @@
+trace_id: run-c4f8a1b2
+queue_id: queue-qa1b2c3d4
+generated_at: "2026-05-02T14:13:42+09:00"
+generated_by: "revision-planner (claude-opus-4-7)"
+
+revision_scope:
+  primary_asset:
+    kind: PRO
+    id: PRO-CMMI-04-01
+    current_version: "1.0"
+    expected_next_version: "1.1"
+    sections_to_revise:
+      - section: "§5-6 종결 추적"
+        change_type: enhancement
+        reason: "primary root cause — SLA 미정의. 등급별 기한·R/A 분리 추가 필요."
+      - section: "§7 KPI"
+        change_type: enhancement
+        reason: "secondary root cause — 측정 기준 시점이 §5-6 와 정합되도록 보강 필요."
+  affected_assets:
+    - asset_id: WI-CMMI-04-01-03
+      relation: "child_of_pro"
+      potential_impact: "DoD 의 종결 시점이 PRO §5-6 SLA 와 정합 검토 필요. qa-reviewer §11-A 검증 시 충돌 가능성."
+    - asset_id: WI-CMMI-04-01-04
+      relation: "child_of_pro"
+      potential_impact: "다단계 승인 SLA 와 정합 검토. queue-qf1e2d3c4 (NCR-004) 와 통합 처리 후보."
+  not_affected:
+    - asset_id: WI-CMMI-04-01-01
+      reason: "본 root cause 와 무관 — 별도 큐 (queue-q5a6b7c8d META-COVERAGE) 처리"
+    - asset_id: WI-CMMI-04-01-05
+      reason: "본 root cause 와 무관 — 별도 큐 처리"
+    - asset_id: POL-CMMI-04
+      reason: "POL 변경 불필요 — PRO 수준 SLA 정의로 충분"
+
+rebuild_mode: "--from write"
+rebuild_target: "PRO-CMMI-04-01"
+rebuild_command: "/build-standard CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01"
+estimated_impact: medium
+estimated_effort_hours: 8
+
+recommended_actions:
+  - step: 1
+    action_type: backup
+    command: null
+    note: "기존 PRO-CMMI-04-01 v1.0 의 git tag 또는 별도 백업 — `git tag pre-revision/PRO-CMMI-04-01-v1.0`"
+    responsible_role: admin
+  - step: 2
+    action_type: rebuild
+    command: "/build-standard CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01"
+    expected_output: "PRO-CMMI-04-01_v1.1.md (개정판) — §5-6 SLA 추가 + §7 정합 갱신"
+    responsible_role: admin
+  - step: 3
+    action_type: validate
+    command: "qa-reviewer 자동 호출 — /build-standard 내부에서 처리"
+    expected_output: "§11-A WI ↔ steps.yaml 일치 + (Phase 4.5) §11-D 개정 정합 검증"
+    responsible_role: 자동
+  - step: 4
+    action_type: register
+    command: "MAT-001 §개정 이력 자동 갱신 (act-coordinator Phase C 단계 — 본 시점에서 사전 작성)"
+    expected_output: "PRO-CMMI-04-01 v1.0 → v1.1 (예정) 행 추가"
+    responsible_role: 자동
+  - step: 5
+    action_type: close_ncr
+    command: "/audit --close-ncr REC-NCR-04-01-2026-001 --capa <개정판 PRO 의 후속 REC>"
+    expected_output: "MAT-006 §발행 → §종결 행 이동 + SLA 준수 자동 계산"
+    responsible_role: process_owner
+  - step: 6
+    action_type: re_kpi
+    command: "/audit --kpi start CMMI-DEV-ML3 --period 2026-04-01..2026-06-30"
+    expected_output: "회차 2 측정 — KPI-04-01-02 / META-NCR-CLOSURE 회복 검증 (recovering 또는 healthy 전환 기대)"
+    responsible_role: qmr
+
+dependencies:
+  blocks: []
+  blocked_by: []
+  related_to:
+    - queue_id: queue-qe5f6a7b8
+      reason: "secondary root cause (KPI 측정 절차) 동일 — 통합 처리 권장"
+    - queue_id: queue-q9d8c7b6a
+      reason: "단독 권고 (PRO §7 KPI 측정 명문화) — 본 큐의 §7 개정과 동시 처리"
+    - queue_id: queue-qf1e2d3c4
+      reason: "WI-04-01-04 SLA 가 본 PRO §5-6 SLA 와 정합 — Phase 2 다중 큐 일괄 처리 시 통합 후보"
+
+assignment:
+  responsible_role: "Process Owner"
+  responsible_name: null
+  approver_role: "PCB"
+  due_date: "2026-05-30"
+
+risk_factors:
+  - factor: "정합성 위험"
+    description: "PRO §5-6 개정이 자식 WI 의 DoD 와 충돌할 수 있음 — qa-reviewer §11-A 검증 필수"
+    mitigation: "rebuild 모드를 --from write 로 한정 (process-designer 미재실행)"
+  - factor: "기존 운영 영향"
+    description: "MAT-005 §실행기록의 운영 trace 3건이 v1.0 기준 — 개정 후 trace 의 '적용 표준 버전' 명시 필요"
+    mitigation: "act-coordinator 의 As-Is 입력 파일에 기존 trace 3건 인용"
+  - factor: "다중 큐 통합 미수행 위험"
+    description: "본 사이클은 단일 큐 PoC. queue-qe5f6a7b8 / q9d8c7b6a / qf1e2d3c4 의 root cause 와 일부 겹침"
+    mitigation: "Phase 2 다중 큐 일괄 처리 후속 사이클로 분리 (단, 본 PoC 의 As-Is 파일이 secondary root cause 를 명시하여 차원 1 빌드 시 일부 흡수 가능)"

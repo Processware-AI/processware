@@ -1,0 +1,60 @@
+trace_id: run-a3f9c2b1
+wi_id: WI-CMMI-04-01-03
+wi_path: vault/05_WI_업무지침/WI-CMMI-04-01-03_작업산출물_평가_v1.0.md
+tmp_id: TMP-CMMI-04-01-03-01
+tmp_path: vault/06_TMP_템플릿/TMP-CMMI-04-01-03-01_산출물_평가서_v1.0.md
+parent_pro: "[[PRO-CMMI-04-01_프로세스_품질보증_절차_v1.0]]"
+parent_pol: "[[POL-CMMI-04_품질_구성_및_의사결정_정책_v1.0]]"
+standards: ["CMMI-DEV-ML3"]
+scope_code: "CMMI"
+executor: "dongseok"
+executed_at: "2026-05-01T15:00:00+09:00"
+hitl:
+  required: true
+  approver_role: "PM"
+  approver_name: "(auto-approved Phase1)"
+  decision: "approved"
+  approved_at: "2026-05-01T15:07:00+09:00"
+fields:
+  평가표:
+    - 산출물: "요구사항 등록부"
+      표준_일치: "TMP-003-01-01 일치"
+      완전성: "100%"
+      결과: "Pass"
+    - 산출물: "설계서"
+      표준_일치: "TMP-003-02-04 일치"
+      완전성: "95%"
+      결과: "Pass (마이너 누락)"
+    - 산출물: "코드"
+      표준_일치: "Sonar Pass"
+      완전성: "N/A"
+      결과: "Pass"
+    - 산출물: "테스트 보고"
+      표준_일치: "TMP-003-04-06 일치"
+      완전성: "100%"
+      결과: "Pass"
+  결재:
+    작성: "dongseok (2026-05-01)"
+    검토: "Tech Lead (2026-05-01)"
+    승인: "PM (2026-05-01 15:07 KST, auto-approved Phase1)"
+notes:
+  rubric: "내부 코딩 표준 v3.2 + ISO/IEC 25010 품질 모델"
+  nonconformities:
+    - item: "설계서"
+      description: "§3.2 트레이서빌리티 매트릭스 누락"
+      severity: "minor"
+  corrective_recommendations: "다음 스프린트 종료 전 §3.2 보완 및 재제출. QA 가 PR 시점에서 자동 점검 추가."
+  recheck:
+    required: true
+    target_date: "2026-05-15"
+  exceptions_applied:
+    - "§7.3 자동화: '코드' 항목 Sonar 결과 사용 (완전성 N/A)"
+dod_checklist:
+  - item: "평가서"
+    satisfied: true
+  - item: "부적합 종결"
+    satisfied: false
+    reason: "재점검 2026-05-15 예정 — 후속 REC 발행 시 종결 예상"
+  - item: "데이터 적재"
+    satisfied: true
+    note: "본 REC 자체가 적재 산출물"

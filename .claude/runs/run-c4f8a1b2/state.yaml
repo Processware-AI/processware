@@ -1,0 +1,47 @@
+trace_id: run-c4f8a1b2
+kind: act
+queue_id: queue-qa1b2c3d4
+queue_path: .claude/queues/act/queue-qa1b2c3d4.yaml
+queue_kind: ncr_capa
+priority: critical
+status: completed
+started_at:   "2026-05-02T14:00:00+09:00"
+finalized_at: "2026-05-02T14:32:18+09:00"
+actor: "박팀장"                       # process_owner (가상 — RBAC users[].owns_pro 운영 시 채움)
+options:
+  rca_method: 5why
+  auto_approve: true                 # PoC 한정 — PCB 즉시 승인
+  dry_run: false
+  no_mat001_update: false
+phase:
+  rca:         done
+  planner:     done
+  pcb:         done
+  coordinator: done
+rca_summary: "PRO-CMMI-04-01 §5-6 종결 추적에 SLA 미정의가 primary root cause. KPI 측정 기준 시점과 절차 시점 분리가 secondary. 5-Why depth 5 + Fishbone Method/Measurement 카테고리 수렴 — high confidence."
+revision_summary:
+  scope_kind: PRO
+  scope_id: PRO-CMMI-04-01
+  current_version: "1.0"
+  expected_next_version: "1.1"
+  rebuild_mode: "--from write"
+  rebuild_target: "PRO-CMMI-04-01"
+  estimated_impact: medium
+  estimated_effort_hours: 8
+  affected_assets:
+    - PRO-CMMI-04-01 (primary)
+    - WI-CMMI-04-01-03 (정합)
+    - WI-CMMI-04-01-04 (통합 후보 — queue-qf1e2d3c4)
+pcb:
+  required: true
+  approver_role: "PCB"
+  approver_name: "(auto-approved Phase1 PoC)"
+  decision: approved
+  requested_at:  "2026-05-02T14:15:00+09:00"
+  responded_at:  "2026-05-02T14:15:01+09:00"
+  rejection_reason: null
+final_asis_path: "vault/02_표준/CMMI-DEV-ML3/_inputs/04_AsIs/queue-qa1b2c3d4.md"
+final_mat001_row: "PRO-CMMI-04-01 / v1.0 → v1.1 / run-c4f8a1b2 / 차원 1 재트리거 대기"
+related_audit_trace: "run-a1c2d3e4"
+related_kpi_trace:   "run-k4f8d2a1"
+related_ncr: "REC-NCR-04-01-2026-001"
