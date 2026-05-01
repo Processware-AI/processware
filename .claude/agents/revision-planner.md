@@ -255,8 +255,57 @@ revision_summary:
 - ✅ 의존성 추적 (related_to / blocks / blocked_by).
 - ✅ risk_factors.
 
-**Phase 2+ 확장**:
-- 다중 큐 일괄 처리 — blocks/blocked_by 자동 그래프 + 단일 rebuild 명령.
+**Phase 2 (지금) — 다중 큐 일괄 + 의존성 그래프 + Mermaid 자동 생성**:
+- ✅ batch 입력 — root_cause.merged_root_cause 가 applicable: true 면 단일 rebuild_plan.
+- ✅ **Mermaid 의존성 다이어그램** 자동 생성 — `revision_plan.dependency_graph_mermaid` 필드:
+```mermaid
+graph TD
+  Q1[queue-qe5f6a7b8<br/>NCR-002 major<br/>KPI 종결율] --> R[merged_root_cause<br/>PRO §7 측정 시점 정의 분리]
+  Q2[queue-q9d8c7b6a<br/>recommendation major<br/>KPI 측정 명문화] --> R
+  R --> A[PRO-CMMI-04-01 §7 개정<br/>v1.1 → v1.2 예정]
+  A --> B[/build-standard --from write --target PRO-CMMI-04-01]
+  B --> C[v1.2 산출 + qa-reviewer §11-A]
+  C --> D[NCR-002 close + queue-q9d8c7b6a done]
+  D --> E[KPI round 3 — 종결율 75%, 측정 절차 healthy 기대]
+```
+- ✅ 통합 rebuild_plan — 다수 큐의 affected_assets 합집합 + rebuild_mode 통일.
+- ✅ 의존성 충돌 검출 — rebuild_mode 가 큐별로 불일치하면 abort + 분리 권고.
+
+```yaml
+# Phase 2 batch 출력 추가 필드
+trace_id: run-cxxxxxxxx
+queue_ids: [queue-qe5f6a7b8, queue-q9d8c7b6a]
+batch_mode: true
+
+revision_scope:
+  primary_asset:
+    kind: PRO
+    id: PRO-CMMI-04-01                           # merged_root_cause.affects 의 공통 asset
+    sections_to_revise:
+      - section: "§7 KPI 측정 시점"
+        change_type: enhancement
+        source_queues: [queue-qe5f6a7b8]
+      - section: "§7 KPI 분기 측정 보고서 TMP 신설"
+        change_type: addition
+        source_queues: [queue-q9d8c7b6a]
+
+dependency_graph_mermaid: |
+  graph TD
+    Q1[queue-qe5f6a7b8] --> R[merged: PRO §7 정합]
+    Q2[queue-q9d8c7b6a] --> R
+    R --> A[PRO-CMMI-04-01 §7]
+
+rebuild_command: "/build-standard CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01"
+                 # 단일 명령 — 두 큐 동시 처리
+
+per_queue_summary:
+  - queue_id: queue-qe5f6a7b8
+    contribution: "§7 KPI 측정 시점 정합"
+  - queue_id: queue-q9d8c7b6a
+    contribution: "§7 KPI 분기 측정 보고서 산출물 (TMP) 신설"
+```
+
+**Phase 3+ 확장**:
 - 정합 검증 자동화 (`qa-reviewer §11-D 개정 정합 검증`) — Phase 4.5.
 - 외부 사용자 정의 정책 — `revision-policy.yaml` 에서 회사 정책 (예: critical 은 항상 PCB 회의 1주 안 승인) 반영.
 - effort 추정 정밀화 — 과거 사이클의 실제 소요 시간 학습 (MAT-001 §개정 이력 cross-ref).

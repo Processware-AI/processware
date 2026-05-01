@@ -231,7 +231,40 @@ rca_summary: "{root_cause_summary 의 1~2 문장}"
 - ✅ Both 모드 (두 결과 통합).
 - ✅ Secondary root cause + relates_to_queues (다중 큐 통합 단서).
 
-**Phase 2+ 확장**:
-- 다중 큐 일괄 RCA — 의존성 그래프 작성 (`queue 간 root cause 통합 → 단일 사이클 처리`).
+**Phase 2 (지금) — 다중 큐 일괄 RCA**:
+- ✅ batch 입력 (`queue_data` 가 list 또는 `queues[]`).
+- ✅ 통합 root cause 분석:
+   1. 각 큐 개별 5-Why / Fishbone 실행.
+   2. **공통 root cause 식별** — 큐들의 primary_root_cause.statement 가 paraphrase 동일하면 `merged_root_cause` 1건으로 통합.
+   3. **공통 root cause 신뢰도** = 개별 confidence 의 최소값 (보수적).
+   4. **개별 root cause 보존** — `per_queue[]` 배열에 큐별 분석 결과 모두.
+- ✅ 의존성 그래프 입력 — primary 통합 시 revision-planner 에 `merge_proposed: true` 신호.
+
+```yaml
+# Phase 2 batch 출력 추가 필드
+trace_id: run-cxxxxxxxx
+queue_ids: [queue-qe5f6a7b8, queue-q9d8c7b6a]   # batch 모드일 때 list
+
+per_queue:                                       # 큐별 개별 분석
+  - queue_id: queue-qe5f6a7b8
+    why_chain: [...]
+    primary_root_cause: { ... }
+    confidence_overall: high
+  - queue_id: queue-q9d8c7b6a
+    why_chain: [...]
+    primary_root_cause: { ... }
+    confidence_overall: high
+
+merged_root_cause:                               # batch 모드 통합 결과
+  applicable: true
+  category: measurement
+  statement: "PRO §7 KPI 측정 시점 정의 분리 — KPI 측정 보고서 산출물 부재"
+  affects: ["PRO-CMMI-04-01 §7"]
+  source_queues: [queue-qe5f6a7b8, queue-q9d8c7b6a]
+  confidence: high                               # min(per_queue[].confidence)
+  merge_proposed: true                            # revision-planner 가 단일 rebuild 명령으로 처리 가능
+```
+
+**Phase 3+ 확장**:
 - 시계열 분석 — 동일 root cause 의 재발 패턴 (MAT-006 §"반복 부적합" 와 cross-ref).
 - 외부 표준 비교 — root cause 가 표준 원문 자체의 결함이면 외부 표준 (ISO/CMMI 원문) 인용 보강.

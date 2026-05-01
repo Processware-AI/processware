@@ -291,8 +291,25 @@ E-2. trace.jsonl 에 `act_finalized` 이벤트.
 - ✅ MAT-008 §"차원 4 인계" status 컬럼 갱신.
 - ✅ 차원 1 재트리거 명령 stdout (사용자 실행).
 
-**Phase 2+ 확장**:
-- 다중 큐 일괄 — 통합 As-Is 파일 (related_to[] 통합) — Phase 2.
+**Phase 2 (지금) — 다중 큐 통합 As-Is**:
+- ✅ batch 모드 입력 (revision_plan.batch_mode == true) — 통합 As-Is 1건 작성.
+- ✅ **통합 As-Is 파일명**: `queue-batch-{first-id-suffix}.md` (예: `queue-batch-e5f6a7b8.md`).
+- ✅ **frontmatter 확장**:
+   ```yaml
+   linked_queues:                              # batch 모드 — 다수 큐 인용
+     - queue-qe5f6a7b8
+     - queue-q9d8c7b6a
+   merged_root_cause: { ... }
+   batch_size: 2
+   dependency_graph_embed: true                # 본문에 Mermaid 다이어그램 포함
+   ```
+- ✅ 본문 §1 추적성 표 — batch_size 행 추가, 큐별 NCR/KPI 구분 표시.
+- ✅ 본문 §6 기존 운영 trace — 큐별로 그룹화.
+- ✅ 큐 status 일괄 전환 — 모든 linked_queues[] 를 done.
+- ✅ MAT-001 §개정 이력 1행 (자산 단위, batch 큐 모두 인용).
+- ✅ MAT-008 §"차원 4 인계" 표 — 큐별로 status 갱신 (모두 done).
+
+**Phase 3+ 확장**:
 - 차원 1 자동 실행 (사용자 명시 승인 후) — Phase 3.
 - As-Is 파일의 차원 1 빌드 결과와의 cross-ref (개정 후 v1.1 의 어느 섹션이 본 As-Is 의 어느 요구를 반영했는지 자동 추적) — Phase 4.
 - 외부 시스템 알림 (개정 완료 시 Jira/Slack) — Phase 4.5.

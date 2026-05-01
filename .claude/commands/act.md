@@ -26,12 +26,30 @@ argument-hint: "start <queue_id> | --resume <trace_id> | --approve <trace_id> [-
 
 ## 1. 인자 파싱 — 진입 모드 (배타적, 1개만 적용)
 
-### 1-1. `start` 모드 — `/act start <queue_id> [--rca-method ...] [--auto-approve]`
+### 1-1. `start` 모드 — `/act start <queue_id|--batch <ids>> [--rca-method ...] [--auto-approve]`
 ```
 /act start queue-qa1b2c3d4
 /act start queue-qa1b2c3d4 --rca-method both    # 5-Why + Fishbone
 /act start queue-qa1b2c3d4 --auto-approve        # PCB HITL skip (PoC)
+
+# Phase 2 — 다중 큐 일괄 처리 (의존성 그래프 + 통합 As-Is)
+/act start --batch queue-qe5f6a7b8,queue-q9d8c7b6a            # 명시적 list
+/act start --batch-related queue-qa1b2c3d4                    # queue.related_to 자동 펼침
+/act start --batch queue-qe5f6a7b8,queue-q9d8c7b6a --auto-approve
 ```
+
+#### Phase 2 — `--batch` / `--batch-related` 동작
+- `--batch <id1,id2,...>`: 명시한 큐 list 를 단일 사이클로 처리.
+- `--batch-related <id>`: 시드 큐의 `dependencies.related_to[]` 를 펼쳐서 일괄 처리 (또는 revision-planner 의 1차 분석 결과로 통합 후보 자동 식별).
+- 일괄 처리의 효과:
+   1. **rca-analyzer** 가 큐들의 root cause 통합 분석 (공통 root cause 가 있으면 단일 root_cause.yaml 의 `merged_root_cause`).
+   2. **revision-planner** 가 Mermaid 의존성 다이어그램 자동 생성 + 통합 rebuild_plan (단일 `--from write` 명령으로 다수 자산 처리 가능).
+   3. **act-coordinator** 가 **통합 As-Is 파일** 작성 (`queue-batch-{first-id-suffix}.md` — frontmatter `linked_queues[]` 에 모든 큐 인용).
+   4. PCB 승인 1회 (다수 큐 일괄).
+- 단점·제약:
+   - 의존성 충돌 (큐 간 rebuild_mode 불일치) 시 자동 abort + 사용자에게 분리 권고.
+   - 통합 RCA 의 confidence 가 medium 이하면 사용자에게 분리 처리 권고.
+   - 통합 As-Is 파일 1건 = 큐 다수 처리 → 차원 1 빌드 시 한 번에 다수 자산 개정 (정합 검증 부담 증가).
 → 인자 파싱:
 - queue_id 가 `.claude/queues/act/queue-q*.yaml` 에 존재하고 `status in [pending, in_progress]` 확인.
 - queue 가 dispatched_to 채워져 있으면 그 사람의 권한으로 진행 (RBAC).
@@ -293,8 +311,8 @@ related_ncr: REC-NCR-04-01-2026-001       # 큐가 NCR 큐일 때
 
 | Phase | 포함 | 제외 |
 |---|---|---|
-| **1 (지금)** | start / resume / approve / reject / trigger-rebuild / status / list 7 모드 / 4 에이전트 (rca-analyzer + revision-planner + pcb-gatekeeper + act-coordinator) / 단일 큐 PoC / RBAC 검증 / As-Is 파일 자동 작성 / MAT-001 §개정 이력 자동 누적 / 차원 1 재트리거 명령 stdout (사용자 실행) | 다중 큐 일괄 처리 / 의존성 그래프 / /build-standard 자동 실행 / 사이클 측정 |
-| 2 | 다중 큐 일괄 (`/act start --batch <queue_ids>`) / 의존성 그래프 (큐 간 root cause 통합) / Mermaid 의존성 다이어그램 | 자동 재실행 / 사이클 KPI |
+| 1 | start / resume / approve / reject / trigger-rebuild / status / list 7 모드 / 4 에이전트 (rca-analyzer + revision-planner + pcb-gatekeeper + act-coordinator) / 단일 큐 PoC / RBAC 검증 / As-Is 파일 자동 작성 / MAT-001 §개정 이력 자동 누적 / 차원 1 재트리거 명령 stdout (사용자 실행) | 다중 큐 일괄 처리 / 의존성 그래프 / /build-standard 자동 실행 / 사이클 측정 |
+| **2 (지금)** | **`--batch <ids>` / `--batch-related <id>` 모드** / rca-analyzer 통합 root cause 분석 (`merged_root_cause`) / revision-planner Mermaid 의존성 다이어그램 자동 생성 / act-coordinator 통합 As-Is 파일 (`queue-batch-{id}.md` — `linked_queues[]`) / PCB 승인 1회 (다수 큐 일괄) / 의존성 충돌 자동 abort | 자동 재실행 / 사이클 KPI |
 | 3 | 차원 1 자동 재실행 (`--auto-rebuild` 옵션, 사용자 명시 승인 후) / 재실행 결과 검증 (qa-reviewer 자동 호출) | 사이클 KPI |
 | 4 | 사이클 측정 — NCR 발행 → 차원 4 종결 → KPI 회복까지의 평균 기간 / 재발률 / 회귀 알림 (MAT-008 차원 4 KPI 추가) | — |
 

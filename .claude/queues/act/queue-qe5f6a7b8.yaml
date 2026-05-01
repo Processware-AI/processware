@@ -1,7 +1,12 @@
 queue_id: queue-qe5f6a7b8
 kind: ncr_capa
 priority: major
-status: pending
+status: done                          # Phase 2 batch — run-c8b3d4f7 (2026-05-16) 통합 처리
+batch_trace: run-c8b3d4f7
+batched_with: [queue-q9d8c7b6a]
+done_capa_rec: "vault/02_표준/CMMI-DEV-ML3/_inputs/04_AsIs/queue-batch-e5f6a7b8.md"
+done_at: "2026-05-16T15:35:00+09:00"
+done_reason: "Phase 2 batch — queue-q9d8c7b6a 와 root cause 통합 (PRO §7 KPI 측정). PCB 일괄 승인 후 통합 As-Is 파일 작성. 차원 1 재트리거 대기 (PRO v1.1 → v1.2 + WI-04-01-06 + TMP-04-01-06-01 신규)."
 created_at: "2026-05-02T10:06:36+09:00"
 created_by: "act-trigger (claude-opus-4-7)"
 
