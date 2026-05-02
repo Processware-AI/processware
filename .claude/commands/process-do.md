@@ -1,5 +1,5 @@
 ---
-description: 표준 프로세스 실행 (차원 2 Do) — WI 이행·REC 작성 + HITL 정지/재개/승인/반려. 사용: /process-do <WI번호> | --resume <trace> | --approve <trace> | --reject <trace> --reason "..."
+description: '표준 프로세스 실행 (차원 2 Do) — WI 이행·REC 작성 + HITL 정지/재개/승인/반려. 사용: /process-do <WI번호> | --resume <trace> | --approve <trace> | --reject <trace> --reason "..."'
 argument-hint: "<WI번호 | 자연어> | --resume <trace_id> | --approve <trace_id> | --reject <trace_id> --reason \"...\" | --status <trace_id> | --check-approvals  [+ --dry-run | --executor <이름> | --auto-approve]"
 ---
 
