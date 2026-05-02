@@ -1,7 +1,13 @@
 # 4차원 PDCA AI 자동화 플랫폼 (Claude Code + Obsidian)
 
-> **[PoC 브랜치]** `feat/cmmi-dev-ml3-output`
-> 이 브랜치는 **인증 모델(CMMI-DEV ML3) 전체를 플랫폼이 소화할 수 있음을 검증한 PoC**입니다.
+> **[PoC / 교육·훈련용 브랜치]** `feat/cmmi-dev-ml3-output`
+>
+> | 용도 | 설명 |
+> |---|---|
+> | **PoC** | `/process-plan` 파이프라인이 대형 인증 모델 전체를 소화함을 검증 |
+> | **교육·훈련** | CMMI PA 가 POL/PRO/WI/TMP(146종)/EX(146종)로 구현되면 어떤 모습인지 참조. 신규 인력 온보딩·프로세스 설계 교육용. |
+> | **갭 분석** | 실운영 모듈 빌드 후 `/process-check --against CMMI-ML3` 로 인증 커버리지 확인 |
+>
 > 실운영 목적의 프로세스 모듈은 `/process-plan "업무 요건"` 으로 별도 브랜치를 구성하세요.
 > 프로덕션 플랫폼 기준: `main` 브랜치.
 
