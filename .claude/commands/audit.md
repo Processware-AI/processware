@@ -9,7 +9,7 @@ argument-hint: "start <PRO|WI|범위> --auditor \"이름\" | --resume <trace_id>
 
 본 커맨드는 차원 2 (`/do`) 가 누적한 **REC + trace.jsonl + MAT-005** 를 입력으로, AI 심사원이 **PRO/WI 요건 ↔ REC 충족 여부**를 자동 대조하여 **심사 보고서·부적합·KPI** 를 산출한다.
 
-상위 설계: `표준프로세스_AI관리체계_4차원PDCA.md` §3 "차원 3 — CHECK" / §5.2 "AI 독립성 보장" / `AI-Driven CMMI Operating Platform.md` Layer 2 회귀 방지
+상위 설계: `docs/표준프로세스_AI관리체계_4차원PDCA.md` §3 "차원 3 — CHECK" / §5.2 "AI 독립성 보장" / `docs/AI-Driven CMMI Operating Platform.md` Layer 2 회귀 방지
 
 ---
 

@@ -9,7 +9,7 @@ argument-hint: "start <queue_id> | --resume <trace_id> | --approve <trace_id> [-
 
 본 커맨드는 차원 3 (`/audit`) 의 act-trigger 가 발행한 큐 (`.claude/queues/act/queue-q*.yaml`) 를 받아 **근본 원인 분석 → 개정 범위 결정 → PCB 승인 → 차원 1 재트리거** 의 4단계로 자산 개정을 자동화한다. 4차원 PDCA 의 **Act → Plan 재트리거 폐쇄 루프**.
 
-상위 설계: `표준프로세스_AI관리체계_4차원PDCA.md` §3 차원 4 / §5.4 차원 4 재트리거 조건 / `AI-Driven CMMI Operating Platform.md` Layer 3 자동 최적화 (ML5)
+상위 설계: `docs/표준프로세스_AI관리체계_4차원PDCA.md` §3 차원 4 / §5.4 차원 4 재트리거 조건 / `docs/AI-Driven CMMI Operating Platform.md` Layer 3 자동 최적화 (ML5)
 
 ---
 
