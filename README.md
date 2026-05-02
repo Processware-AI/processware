@@ -9,7 +9,7 @@
 
 | 차원 | 슬래시 | 에이전트 | 핵심 산출물 |
 |---|---|---|---|
-| **1 (Plan)** 표준 수립 | `/build-standard` | standard-analyzer · process-designer · wi-tmp-writer · qa-reviewer · traceability-mapper (5) | POL / PRO / WI / TMP / EX / MAT / REF |
+| **1 (Plan)** 표준 수립 | `/build-process` | standard-analyzer · process-designer · wi-tmp-writer · qa-reviewer · traceability-mapper (5) | POL / PRO / WI / TMP / EX / MAT / REF |
 | **2 (Do)** 프로세스 실행 | `/do` | process-router · process-executor · hitl-gatekeeper · rec-writer · escalation-coordinator (5) | REC + MAT-005 §실행기록 + MAT-007 카탈로그 |
 | **3 (Check)** 심사·KPI | `/audit` (`--kpi` `--act-queue` `--rbac-check`) | audit-planner · evidence-collector · compliance-checker · audit-reporter · ncr-drafter · kpi-collector · kpi-analyzer · independence-guard · act-trigger (9) | REC-AUDIT / REC-NCR + MAT-008 KPI 대시보드 + MAT-009 NCR 관리대장 + act queue |
 | **4 (Act)** 제·개정 | `/act` | rca-analyzer · revision-planner · pcb-gatekeeper · act-coordinator (4) | As-Is 입력 + MAT-001 §개정이력 + 차원 1 재트리거 명령 |
@@ -48,7 +48,7 @@
 - **5-Why / Fishbone RCA**: queue → primary_root_cause + confidence + secondary
 - **개정 범위 결정**: 5종 rebuild_mode (manual_edit / rec_only / `--from write` / `--from design` / `--restart`)
 - **PCB 승인 게이트**: HITL drop-out + Phase 4.5 다단계 quorum (4 모드)
-- **차원 1 재트리거 인계**: As-Is 입력 파일 자동 작성 → 사용자가 `/build-standard --from write` 실행
+- **차원 1 재트리거 인계**: As-Is 입력 파일 자동 작성 → 사용자가 `/build-process --from write` 실행
 - **다중 큐 일괄** (Phase 2): merged_root_cause + Mermaid 의존성 그래프 + 통합 As-Is
 
 ### 폐쇄 루프 (4차원 통합)
@@ -75,7 +75,7 @@ STD_Process_Builder/
 ├── 표준_프로세스_제개정_가이드.md           ← 차원 4 운영 가이드 (Phase 1~2 + 4.5 명세)
 ├── .claude/                                 ← 4차원 자동화 인프라
 │   ├── commands/                            ← 슬래시 커맨드 (4)
-│   │   ├── build-standard.md                ← 차원 1
+│   │   ├── build-process.md                ← 차원 1
 │   │   ├── do.md                            ← 차원 2 (8 진입 모드)
 │   │   ├── audit.md                         ← 차원 3 (--kpi, --act-queue, --rbac-check)
 │   │   └── act.md                           ← 차원 4 (7 진입 모드 + --batch)
@@ -144,7 +144,7 @@ STD_Process_Builder/
 
 ```
 [차원 1 Plan]                        [차원 2 Do]                       [차원 3 Check]
-/build-standard ISO9001              /do WI-XXX                        /audit start <PRO|WI|표준>
+/build-process ISO9001              /do WI-XXX                        /audit start <PRO|WI|표준>
         │                                    │                                  │
         ▼                                    ▼                                  ▼
 ┌──────────────────┐                ┌──────────────────┐              ┌──────────────────┐
@@ -181,7 +181,7 @@ STD_Process_Builder/
                                                             │
                                                             ▼
                                                    [차원 1 재실행 (사용자 명시 실행)]
-                                                   /build-standard --from write --target {asset}
+                                                   /build-process --from write --target {asset}
                                                             │
                                                             ▼
                                                        개정판 (v1.1) → 다음 사이클
@@ -198,13 +198,13 @@ STD_Process_Builder/
 
 ### 1. 차원 1 (Plan) — 표준 수립
 ```bash
-/build-standard ISO9001                                       # 단일 표준 편입
-/build-standard ISO/IEC_27001 --cross                         # 교차 표준 통합 분석
-/build-standard ISO9001 --resume                              # 현재 phase 부터 재개
-/build-standard ISO9001 --from design                          # design phase 부터 강제 재시작
-/build-standard ISO9001 --restart                              # 기존 state 폐기 후 처음부터
-/build-standard ISO9001 --from write --target PRO-CMMI-04-01   # 차원 4 인계 후 부분 재실행
-/build-standard ISO9001 --max-attempts 5 --skip-qa            # 자가수정·QA 옵션
+/build-process ISO9001                                       # 단일 표준 편입
+/build-process ISO/IEC_27001 --cross                         # 교차 표준 통합 분석
+/build-process ISO9001 --resume                              # 현재 phase 부터 재개
+/build-process ISO9001 --from design                          # design phase 부터 강제 재시작
+/build-process ISO9001 --restart                              # 기존 state 폐기 후 처음부터
+/build-process ISO9001 --from write --target PRO-CMMI-04-01   # 차원 4 인계 후 부분 재실행
+/build-process ISO9001 --max-attempts 5 --skip-qa            # 자가수정·QA 옵션
 ```
 
 > 상세: `표준_빌드_워크플로우_가이드.md`
@@ -274,7 +274,7 @@ STD_Process_Builder/
 ### 5. 폐쇄 루프 시나리오 (PoC 검증된 흐름)
 ```bash
 # Plan: 표준 수립
-/build-standard CMMI-DEV-ML3
+/build-process CMMI-DEV-ML3
 
 # Do: WI 실행 → REC + MAT-005 §실행기록 자동
 /do WI-CMMI-04-01-03                       # → REC-CMMI-04-01-03-01-2026-001
@@ -288,7 +288,7 @@ STD_Process_Builder/
 /act start queue-qa1b2c3d4 --auto-approve  # → vault/02_표준/.../_inputs/04_AsIs/queue-qa1b2c3d4.md
 
 # Plan' (재실행): 차원 1 재트리거
-/build-standard CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01
+/build-process CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01
                                             # → PRO v1.0 → v1.1 (As-Is 자동 read)
 
 # Do (개정판 운영) + Check (NCR 종결 + KPI round 2)
@@ -391,7 +391,7 @@ POL-{영역}-{###}
 |---|---|---|
 | **auditor** | audit.start / confirm / reject-finding (ISO §9.2 독립성 강제 — 자기 업무 심사 불가) | 3 |
 | **executor** | do.start / resume (audit / act 쓰기 deny) | 2 |
-| **process_owner** | audit.close-ncr / act-queue.dispatch / build-standard.start (자기 PRO 한정) | 3, 4, 1 (재실행) |
+| **process_owner** | audit.close-ncr / act-queue.dispatch / build-process.start (자기 PRO 한정) | 3, 4, 1 (재실행) |
 | **qmr** | audit.* + 모니터링 + RBAC read | 전 차원 |
 | **admin** | * (모든 작업, 감사 로그 필수) | 전 차원 |
 | **viewer** | *.start / write 모두 deny, 조회 전용 | 전 차원 (read-only) |
@@ -427,7 +427,7 @@ Phase 4.5 extensions (명세 활성화):
 - **총 commits**: 49
 - **Tracked 파일**: ~722
 - **에이전트**: 23 (차원별 5/5/9/4)
-- **슬래시 커맨드**: 4 (`/build-standard`, `/do`, `/audit`, `/act`)
+- **슬래시 커맨드**: 4 (`/build-process`, `/do`, `/audit`, `/act`)
 - **운영 MAT**: 9 / 10 슬롯 (MAT-001~009 운영, MAT-010 예약)
 - **PoC trace**: 10 (do 5, audit 1, kpi 2, act 2)
 - **act queue**: 6 (3 done — 1 단일 + 2 batch / 3 pending)

@@ -11,7 +11,7 @@
 #   - viewer        : 조회 전용 (감사관·외부 이해관계자)
 #
 # action 식별자 패턴: {scope}.{verb}[.{subscope}]
-#   scope: audit | do | build-standard | rbac
+#   scope: audit | do | build-process | rbac
 #   verb:  start / confirm / close-ncr / kpi / list-ncr / show / act-queue / rbac-check / read / write
 #
 # 매칭 규칙: role.allow[] 의 항목과 action 을 prefix 매칭. 와일드카드 `*` 허용.
@@ -38,12 +38,12 @@ roles:
       - audit.kpi.check-regressions
       - audit.act-queue.read
       - do.read                  # 차원 2 trace / REC 조회 (사후 검토)
-      - build-standard.read       # 차원 1 자산 조회
+      - build-process.read       # 차원 1 자산 조회
     deny:                         # 명시적 deny — auditor 는 차원 2 실행 금지
       - do.start
       - do.approve
       - do.reject
-      - build-standard.write
+      - build-process.write
     target_constraints:
       independence_required: true   # ISO §9.2 — independence-guard 가 강제
 
@@ -57,7 +57,7 @@ roles:
       - audit.kpi.show              # 본인 작업의 KPI 결과 조회
       - audit.list-ncr              # 본인 작업과 연계된 NCR 조회
       - audit.act-queue.read        # 본인에게 할당된 act queue 조회
-      - build-standard.read
+      - build-process.read
     deny:
       - audit.start
       - audit.confirm
@@ -74,8 +74,8 @@ roles:
       - audit.kpi.check-regressions
       - audit.act-queue.read
       - audit.act-queue.dispatch    # act queue 의 항목을 차원 4 에 dispatch
-      - build-standard.start         # 차원 4 → 차원 1 재실행 트리거
-      - build-standard.read
+      - build-process.start         # 차원 4 → 차원 1 재실행 트리거
+      - build-process.read
       - do.read
     target_constraints:
       owns_pro_required: true        # 자기 PRO 만 — users[].owns_pro[] 와 비교
@@ -85,7 +85,7 @@ roles:
     allow:
       - audit.*
       - do.read
-      - build-standard.read
+      - build-process.read
       - rbac.read                    # RBAC 정책 조회 (변경은 admin)
 
   admin:
@@ -103,7 +103,7 @@ roles:
       - audit.kpi.show
       - audit.act-queue.read
       - do.read
-      - build-standard.read
+      - build-process.read
     deny:
       - "*.start"
       - "*.confirm"
@@ -163,7 +163,7 @@ extensions:
     path: ".claude/audit_log/rbac.jsonl"
     events_logged:
       - rbac_denied
-      - rbac_allowed (if action in [audit.confirm, audit.close-ncr, act.approve, act.reject, build-standard.start])
+      - rbac_allowed (if action in [audit.confirm, audit.close-ncr, act.approve, act.reject, build-process.start])
       - delegation_granted
       - delegation_revoked
       - independence_overridden        # PoC --override-independence 사용 시

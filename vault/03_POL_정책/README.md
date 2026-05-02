@@ -34,7 +34,7 @@ POL-{영역}-{###}_{이름}_v{버전}.md
 참조: [[GS-POL-QMS-002_문서화된정보_관리_정책]]
 
 ## 생성 담당
-Agent `process-designer` — `/build-standard` 파이프라인의 Design phase
+Agent `process-designer` — `/build-process` 파이프라인의 Design phase
 
 ## 판단 기준
 > "이 문서를 읽고 **우리 조직은 어떤 원칙으로 관리하는가** 가 보이면 POL"

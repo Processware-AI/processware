@@ -92,7 +92,7 @@ source:
 target:                                 # 차원 1 재트리거 후보
   scope_kind: WI                        # WI | PRO | POL | TMP
   scope_id: WI-CMMI-04-01-04            # NCR 의 source 또는 evidence_refs 의 parent_wi
-  proposed_action: "/build-standard CMMI-DEV-ML3 --from write --target WI-CMMI-04-01-04"
+  proposed_action: "/build-process CMMI-DEV-ML3 --from write --target WI-CMMI-04-01-04"
   alternative_action: "/do WI-CMMI-04-01-04"  # 자산 개정 없이 재실행만 필요한 경우
 rationale: "..."                        # NCR rationale 인용
 recommendation: "..."                   # NCR §4 시정조치 권고 1번 인용
@@ -112,7 +112,7 @@ A-4. **MAT-008 §"차원 4 인계" 신규 섹션 갱신** — 표 1행 append:
 
 | Queue ID | kind | priority | source | target | proposed_action | due | status |
 |---|---|---|---|---|---|---|---|
-| queue-q3a8f2c1 | ncr_capa | critical | NCR-001 (F-001 / REQ-005) | WI-CMMI-04-01-04 | /build-standard ... --target WI-CMMI-04-01-04 | 2026-05-30 | pending |
+| queue-q3a8f2c1 | ncr_capa | critical | NCR-001 (F-001 / REQ-005) | WI-CMMI-04-01-04 | /build-process ... --target WI-CMMI-04-01-04 | 2026-05-30 | pending |
 ```
 
 A-5. **audit_recommendations[]** 처리 (보고서 §6 권고 — NCR 외 부가 권고):
@@ -173,7 +173,7 @@ queues:
     kind: ncr_capa
     priority: critical
     target_scope: WI-CMMI-04-01-04
-    proposed_action: "/build-standard CMMI-DEV-ML3 --from write --target WI-CMMI-04-01-04"
+    proposed_action: "/build-process CMMI-DEV-ML3 --from write --target WI-CMMI-04-01-04"
   - queue_id: queue-q...
     ...
 mat008_updated: true
@@ -196,7 +196,7 @@ mat008_updated: true
 
 ### 3.3 환각 방지
 - rationale / recommendation / proposed_action 은 NCR 본문 / kpi_data / audit recommendations 에서만 인용.
-- 외부 추측·추가 사실 금지. proposed_action 은 표준화된 명령 (/build-standard / /do) 로만 표기.
+- 외부 추측·추가 사실 금지. proposed_action 은 표준화된 명령 (/build-process / /do) 로만 표기.
 
 ### 3.4 우선순위 일관
 - queue.priority 는 source 의 severity 와 동일 (critical/major/minor) 또는 KPI verdict 의 매핑 (critical → critical, watch → major).

@@ -180,7 +180,7 @@ C-7. **§4 시정조치 권고 (CAPA — Corrective Action Plan)**:
 C-8. **§5 종결 조건 (Definition of Closed)**:
 | 항목 | 충족 기준 |
 |---|---|
-| 시정조치 완료 | 후속 REC (`/do {WI번호}` 또는 `/build-standard --from write`) 발행 |
+| 시정조치 완료 | 후속 REC (`/do {WI번호}` 또는 `/build-process --from write`) 발행 |
 | 증적 첨부 | 본 NCR 의 `capa_rec` 필드에 후속 REC doc_id 명시 |
 | 책임자 종결 합의 | A 역할 (PM 또는 Process Owner) 의 종결 응답 |
 | 종결 명령 | `/audit --close-ncr REC-NCR-04-01-2026-001 --capa <REC>` |

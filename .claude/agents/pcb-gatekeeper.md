@@ -108,7 +108,7 @@ PCB (Process Control Board) 위원회께,
 
 ## 4. 권장 단계 (PCB 승인 후 실행)
 1. backup (기존 v1.0 git tag) — admin/process_owner
-2. rebuild (`/build-standard ... --from write --target PRO-CMMI-04-01`) — admin
+2. rebuild (`/build-process ... --from write --target PRO-CMMI-04-01`) — admin
 3. validate (qa-reviewer 자동) — 자동
 4. register (MAT-001 §개정 이력) — 자동 (act-coordinator)
 5. close_ncr (`/audit --close-ncr REC-NCR-04-01-2026-001 --capa <후속 REC>`) — process_owner

@@ -187,7 +187,7 @@ REC 수집 (MAT-005 기반)
 NCR 분석 결과
     → 개정 대상 PRO/WI 식별
     → As-Is 피드백을 _inputs/04_AsIs/ 에 투입
-    → /build-standard {표준코드} --from design 재실행
+    → /build-process {표준코드} --from design 재실행
     → 개정판 문서 생성 (초판보다 실운영 피드백 반영으로 품질 향상)
 ```
 
@@ -292,7 +292,7 @@ steps:
 | 오탈자·링크 수정 (v1.n) | 해당 문서만 직접 편집 |
 | 소절 추가·책임 변경 | `--from write` 또는 `--from design` 부분 재실행 |
 | 구조·범위·정책 변경 | `--restart` 전체 재실행 |
-| 상위 표준 개정판 편입 | `/build-standard {코드} --restart` |
+| 상위 표준 개정판 편입 | `/build-process {코드} --restart` |
 
 ---
 
@@ -301,7 +301,7 @@ steps:
 | 단계 | 대상 차원 | 핵심 과제 |
 |---|---|---|
 | **현재** | 차원 1 | Claude Code 하네스 운영 중 |
-| **Phase 1** | 차원 1 | 독립 Python 프레임워크 포팅 (`spx build-standard`) |
+| **Phase 1** | 차원 1 | 독립 Python 프레임워크 포팅 (`spx build-process`) |
 | **Phase 1.5** | 차원 1 확장 | `wi-tmp-writer` WI 이중 포맷 출력 (MD + steps.yaml) |
 | **Phase 2** | 차원 2 | 대화식 Process Execution Agent + HITL 승인 |
 | **Phase 3** | 차원 3 | 심사 자동화 + NCR 관리 + KPI 대시보드 |

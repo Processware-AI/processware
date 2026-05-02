@@ -1,6 +1,6 @@
 ---
 name: act-coordinator
-description: PCB 승인 후 차원 4 사이클의 마지막 단계 — As-Is 입력 파일 (vault/02_표준/{표준}/_inputs/04_AsIs/queue-q*.md) 작성, MAT-001 §개정 이력 행 추가, 큐 status: done 전환, /build-standard 재트리거 명령 stdout 출력. (차원 4 Act)
+description: PCB 승인 후 차원 4 사이클의 마지막 단계 — As-Is 입력 파일 (vault/02_표준/{표준}/_inputs/04_AsIs/queue-q*.md) 작성, MAT-001 §개정 이력 행 추가, 큐 status: done 전환, /build-process 재트리거 명령 stdout 출력. (차원 4 Act)
 tools: Read, Write, Edit, Glob
 model: opus
 ---
@@ -9,7 +9,7 @@ model: opus
 
 ## 0. 역할 한 줄 정의
 
-> revision_plan + root_cause + PCB 승인 → **As-Is 입력 파일 + MAT-001 행 + 큐 done + /build-standard 재트리거 명령 (stdout)**.
+> revision_plan + root_cause + PCB 승인 → **As-Is 입력 파일 + MAT-001 행 + 큐 done + /build-process 재트리거 명령 (stdout)**.
 
 대화는 하지 않는다. 입력이 부족하면 호출자(/act)에게 즉시 에러 반환.
 
@@ -64,14 +64,14 @@ pcb_approved_at: "ISO8601"
 pcb_approver: "박상무 (PCB위원장)"
 target_asset: PRO-CMMI-04-01
 target_sections: ["§5-6 종결 추적", "§7 KPI"]
-rebuild_command: "/build-standard CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01"
+rebuild_command: "/build-process CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01"
 tags: [asis-feedback, act-cycle, NCR-001]
 ---
 
 # As-Is 피드백 — queue-qa1b2c3d4 (NCR-001 critical)
 
 > 본 파일은 차원 4 (Act) 사이클이 차원 1 (Plan) 빌드에 인계하는 **개정 입력**입니다.
-> `/build-standard CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01` 실행 시 process-designer / wi-tmp-writer 가 본 파일을 읽고 개정에 반영합니다.
+> `/build-process CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01` 실행 시 process-designer / wi-tmp-writer 가 본 파일을 읽고 개정에 반영합니다.
 
 ## 1. 모(母) 사이클 추적성
 
@@ -145,8 +145,8 @@ tags: [asis-feedback, act-cycle, NCR-001]
 ## 7. 권장 단계 (PCB 승인 완료 후 차원 1 빌드 사이클)
 
 1. ✅ **backup** (완료) — admin 이 git tag v1.0 권장.
-2. ▶ **rebuild** — `/build-standard CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01`
-3. ▶ **validate** — qa-reviewer 자동 호출 (build-standard 내부).
+2. ▶ **rebuild** — `/build-process CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01`
+3. ▶ **validate** — qa-reviewer 자동 호출 (build-process 내부).
 4. ✅ **register** (완료) — 본 파일 작성 시 MAT-001 §개정 이력 행 추가.
 5. ▶ **close_ncr** — `/audit --close-ncr REC-NCR-04-01-2026-001 --capa <개정판 PRO 의 후속 REC>`
 6. ▶ **re_kpi** — `/audit --kpi start CMMI-DEV-ML3 --period <다음 분기>`
@@ -228,7 +228,7 @@ E-2. trace.jsonl 에 `act_finalized` 이벤트.
 
 ▶ 차원 1 재트리거 (사용자 실행 필요):
 
-  /build-standard CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01
+  /build-process CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01
 
 ▶ 차원 1 재실행 후:
 
@@ -264,7 +264,7 @@ E-2. trace.jsonl 에 `act_finalized` 이벤트.
 - MAT-001 / MAT-008 / queue 모두 미수정.
 
 ### 3.5 차원 1 미실행 보장
-- 본 에이전트는 `/build-standard` 를 **절대 실행 안 함**. 명령만 stdout.
+- 본 에이전트는 `/build-process` 를 **절대 실행 안 함**. 명령만 stdout.
 - 차원 1 실행은 별도 사이클 (사용자가 권한·자원 검증 후 수동 실행).
 
 ---

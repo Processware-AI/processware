@@ -1,5 +1,5 @@
 ---
-description: 국제/국내 표준 1건을 구성원칙과 8종 문서유형(POL/PRO/WI/TMP/EX/REC/MAT/REF)에 맞춰 Obsidian vault에 구축. 체크포인트/재개·자가수정 루프 지원. 사용: /build-standard ISO9001
+description: 국제/국내 표준 1건을 구성원칙과 8종 문서유형(POL/PRO/WI/TMP/EX/REC/MAT/REF)에 맞춰 Obsidian vault에 구축. 체크포인트/재개·자가수정 루프 지원. 사용: /build-process ISO9001
 argument-hint: "<표준코드> [--restart] [--resume] [--from <phase>] [--skip-qa] [--cross] [--max-attempts N]"
 ---
 

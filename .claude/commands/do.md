@@ -7,7 +7,7 @@ argument-hint: "<WI번호 | 자연어> | --resume <trace_id> | --approve <trace_
 
 대상 입력: **$ARGUMENTS**
 
-본 커맨드는 `/build-standard` 가 만들어 놓은 자산(WI/TMP/EX/PRO/POL)을 **계약서**로 삼아, AI Agent 가 사람과 대화하며 절차를 이행하고 REC(기록본)를 자동 작성한다.
+본 커맨드는 `/build-process` 가 만들어 놓은 자산(WI/TMP/EX/PRO/POL)을 **계약서**로 삼아, AI Agent 가 사람과 대화하며 절차를 이행하고 REC(기록본)를 자동 작성한다.
 
 상위 설계: `docs/표준프로세스_AI관리체계_4차원PDCA.md` §3 "차원 2 — DO" / §5.3 "WI 이중 포맷"
 
