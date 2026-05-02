@@ -1,11 +1,11 @@
 ---
-description: 국제/국내 표준 1건을 구성원칙과 8종 문서유형(POL/PRO/WI/TMP/EX/REC/MAT/REF)에 맞춰 Obsidian vault에 구축. 체크포인트/재개·자가수정 루프 지원. 사용: /build-process ISO9001
-argument-hint: "<표준코드> [--restart] [--resume] [--from <phase>] [--skip-qa] [--cross] [--max-attempts N]"
+description: 프로세스 모듈 1건을 구성원칙과 8종 문서유형(POL/PRO/WI/TMP/EX/REC/MAT/REF)에 맞춰 Obsidian vault에 구축. 입력은 표준 코드·PA 그룹·자연어 요건 기술 모두 수용. 체크포인트/재개·자가수정 루프 지원. 사용: /build-process "프로젝트 계획·추정·리스크 관리"
+argument-hint: "<모듈_또는_요건> [--restart] [--resume] [--from <phase>] [--skip-qa] [--cross] [--max-attempts N]"
 ---
 
-# 표준 1건 구축 파이프라인 (Level 3: 체크포인트 + 자가수정)
+# 프로세스 모듈 빌드 파이프라인 (Level 3: 체크포인트 + 자가수정)
 
-대상 표준: **$ARGUMENTS**
+빌드 대상: **$ARGUMENTS**
 
 ## 실행 원칙
 - 기준 문서: `vault/01_구성원칙/표준프로세스_구성원칙.md`
@@ -45,14 +45,19 @@ git push origin main
 main 의 등록 commit 위에서 분기:
 
 ```bash
-git checkout -b feat/{표준코드-소문자}-output
+git checkout -b feat/{모듈슬러그}-output
 ```
 
 이후 모든 phase (preflight ~ qa, 자가수정) 는 이 branch 에서 작업.
 
 **branch 명 컨벤션**:
-- 형식: `feat/{표준코드 lower-case}-output` 예: `feat/iso9001-output`, `feat/cmmi-dev-ml3-output`
-- 동일 표준 재빌드 시: `feat/{표준코드}-output-{YYYYMMDD}` 로 일자 suffix
+- 형식: `feat/{모듈슬러그}-output`
+- 모듈슬러그 결정 규칙:
+  - 표준 코드 입력: 소문자 그대로. 예: `feat/iso9001-output`, `feat/cmmi-dev-ml3-output`
+  - PA 그룹명 입력: 소문자·하이픈. 예: `feat/cmmi-prj-planning-output`
+  - 자연어 입력: 핵심 키워드 추출 후 소문자·하이픈. 예: "프로젝트 계획·추정·리스크 관리" → `feat/prj-planning-est-risk-output`
+  - 슬러그 결정 후 사용자에게 확인 후 진행
+- 동일 모듈 재빌드 시: `feat/{모듈슬러그}-output-{YYYYMMDD}` 로 일자 suffix
 
 ### −2-3. 작업 도중 commit 정책
 
@@ -235,4 +240,4 @@ R-6. QA 결과로 루프 재평가.
 - 📋 MAT 5종 갱신 요약
 - 🚩 잔여 Issue (`manual` 에스컬레이션 + 미해결)
 - 🌿 git branch 정보 (현재 branch / origin push 결과 / PR 생성 안내)
-- ➡️ 다음 편입 권장 표준
+- ➡️ 다음 권장 빌드 (연관 모듈·갭 보완 제안)
