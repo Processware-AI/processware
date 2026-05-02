@@ -10,8 +10,15 @@ integration_mode: "interface_only"
 status: draft
 created: 2026-04-29
 updated: 2026-04-29
-tags: [standard, CMMI-DEV-ML3, capability-model]
+tags: [standard, CMMI-DEV-ML3, capability-model, poc]
+poc: true
+poc_purpose: "인증 모델(CMMI-DEV ML3) 전체를 /process-plan 파이프라인이 소화할 수 있음을 검증. 조직·프로젝트 레벨 PA 혼재, 멀티 프로젝트 대응 미비 등 모듈화 필요성 도출."
+poc_date: 2026-04-29
 ---
+
+> **[PoC]** 이 브랜치(`feat/cmmi-dev-ml3-output`)는 인증 모델 전체 편입 가능성을 검증한 PoC입니다.
+> 실운영에서는 PA 그룹 단위(`/process-plan "..."`)로 필요한 모듈만 빌드하세요.
+> 발견된 한계: 조직/프로젝트 레벨 PA 혼재 · 멀티 프로젝트 TMP 미비 · 인증 요건 종속 구조.
 
 # CMMI-DEV-ML3 표준 개요
 

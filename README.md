@@ -1,5 +1,10 @@
 # 4차원 PDCA AI 자동화 플랫폼 (Claude Code + Obsidian)
 
+> **[PoC 브랜치]** `feat/cmmi-dev-ml3-output`
+> 이 브랜치는 **인증 모델(CMMI-DEV ML3) 전체를 플랫폼이 소화할 수 있음을 검증한 PoC**입니다.
+> 실운영 목적의 프로세스 모듈은 `/process-plan "업무 요건"` 으로 별도 브랜치를 구성하세요.
+> 프로덕션 플랫폼 기준: `main` 브랜치.
+
 국제/국내 표준(ISO·IEC·KS·IATF 등)의 **수립(Plan) → 이행(Do) → 심사(Check) → 제·개정(Act)** 4 차원 전체를 AI 에이전트로 자동화하는 플랫폼. **4차원 PDCA 폐쇄 루프** PoC 검증 완료 (Plan→Do→Check→Act→Plan' 사이클로 KPI 회복 실증).
 
 > 상위 개념: `AI-Driven CMMI Operating Platform.md` (Layer 1/2/3 비전) · `표준프로세스_AI관리체계_4차원PDCA.md` (4차원 PDCA 설계)
