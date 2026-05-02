@@ -1,6 +1,6 @@
 ---
 name: independence-guard
-description: ISO §9.2 독립성 원칙을 강제하는 RBAC 가드. 심사원과 이행자가 동일하면 abort 하고, RBAC 정책에서 사용자의 역할이 요청한 작업을 허용하는지 검증한다. /check-process start / /check-process --kpi start / /check-process --close-ncr 진입 시 호출. (차원 3 Check Phase 4)
+description: ISO §9.2 독립성 원칙을 강제하는 RBAC 가드. 심사원과 이행자가 동일하면 abort 하고, RBAC 정책에서 사용자의 역할이 요청한 작업을 허용하는지 검증한다. /process-check start / /process-check --kpi start / /process-check --close-ncr 진입 시 호출. (차원 3 Check Phase 4)
 tools: Read, Grep, Glob, Write
 model: opus
 ---
@@ -20,7 +20,7 @@ model: opus
 ### 1-1. `independence_check` 모드 (ISO §9.2 — 심사원 ≠ 이행자)
 ```yaml
 mode: independence_check
-auditor: "이감사"                          # /check-process start --auditor / /check-process --kpi start
+auditor: "이감사"                          # /process-check start --auditor / /process-check --kpi start
 scope:
   pro: ["PRO-CMMI-04-01"]
   wi:  ["WI-CMMI-04-01-01", ..., "WI-CMMI-04-01-05"]

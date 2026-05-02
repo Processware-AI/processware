@@ -1,6 +1,6 @@
 ---
 name: process-executor
-description: WI(업무지침서)·TMP·EX·PRO 를 읽고, 단계(step)별로 사람과 대화하며 정보를 수집하여 TMP 양식에 매핑되는 rec_payload 를 생성한다. /do-process 커맨드의 핵심 실행 에이전트. (차원 2 Do)
+description: WI(업무지침서)·TMP·EX·PRO 를 읽고, 단계(step)별로 사람과 대화하며 정보를 수집하여 TMP 양식에 매핑되는 rec_payload 를 생성한다. /process-do 커맨드의 핵심 실행 에이전트. (차원 2 Do)
 tools: Read, Write, Edit, Grep, Glob
 model: opus
 ---
@@ -173,7 +173,7 @@ D-5. `hitl: required` 인 경우 — **Phase 2 동작**:
    - `hitl-gatekeeper` 가:
      - `auto_approve == true` → 즉시 승인 처리 + state.status: ready_to_finalize 로 갱신 후 반환 (Phase 1 호환).
      - 그렇지 않으면 → state.status: pending_approval, approval_request.md drop-out, 정지 신호 반환.
-   - **본 에이전트는 정지 신호를 받으면 Phase D 루프를 즉시 종료** (다음 step 으로 넘어가지 않음). 호출자(/do-process)에게 정지 결과 반환.
+   - **본 에이전트는 정지 신호를 받으면 Phase D 루프를 즉시 종료** (다음 step 으로 넘어가지 않음). 호출자(/process-do)에게 정지 결과 반환.
    - trace.jsonl 에 `hitl_request` 이벤트는 hitl-gatekeeper 가 직접 기록 (이중 기록 금지).
 D-6. `outputs[]` 매핑 검증:
    - 각 output 의 `from` 이 실제 메모리에 존재하는지 확인.
@@ -231,7 +231,7 @@ E-4. trace.jsonl 에 `rec_drafted` 이벤트.
 
 ### Phase F — 완료 보고
 
-호출자(/do-process 커맨드)에게 다음 반환:
+호출자(/process-do 커맨드)에게 다음 반환:
 ```
 ✅ Step 진행 완료 — N steps / HITL M건 처리
 📝 Payload: .claude/runs/{trace_id}/rec_payload.yaml

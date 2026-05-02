@@ -13,7 +13,7 @@ tags: [MAT, ncr, audit-evidence]
 
 # MAT-009 NCR 관리대장
 
-> 차원 3 (Check) `/check-process` 하네스 + `ncr-drafter` 가 자동 발행한 부적합(NCR) 의 전사 인덱스. 자동 갱신 — 사람이 직접 수정 금지.
+> 차원 3 (Check) `/process-check` 하네스 + `ncr-drafter` 가 자동 발행한 부적합(NCR) 의 전사 인덱스. 자동 갱신 — 사람이 직접 수정 금지.
 >
 > **상위 인덱스**: [[MAT-005_심사증적_인덱스]] §"심사 이력" — 모(母) 심사 보고서 추적.
 > **개별 NCR 본문**: `vault/08_REC_기록/AUDIT/REC-NCR-*.md`
@@ -22,14 +22,14 @@ tags: [MAT, ncr, audit-evidence]
 ## 1. 워크플로우
 
 ```
-[/check-process --confirm <trace>]
+[/process-check --confirm <trace>]
    └ audit-reporter 위임
        └ ncr-drafter (issue 모드)
            ├ REC-NCR-*.md 1건/finding 발행
            └ §"NCR 발행 현황 (open)" 1행 append/finding
 
 [시정조치 후]
-[/check-process --close-ncr <ncr_id> --capa <REC>]
+[/process-check --close-ncr <ncr_id> --capa <REC>]
    └ ncr-drafter (close 모드)
        ├ NCR frontmatter status: closed + capa_rec + closed_*
        ├ §"NCR 발행 현황 (open)" 행 제거
@@ -81,7 +81,7 @@ tags: [MAT, ncr, audit-evidence]
 
 ## NCR 통계
 
-> 본 섹션은 차원 3 Phase 3 의 `kpi-analyzer` 가 `/check-process --kpi` 실행 시 자동 갱신. 직접 수정 금지.
+> 본 섹션은 차원 3 Phase 3 의 `kpi-analyzer` 가 `/process-check --kpi` 실행 시 자동 갱신. 직접 수정 금지.
 
 | 지표 | 값 | source |
 |---|---|---|

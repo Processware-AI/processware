@@ -11,7 +11,7 @@ model: opus
 
 > `rec_payload.yaml` + `TMP 빈 양식` → **REC 파일 1건 생성 + MAT-005 1행 추가 + state/trace 마감**.
 
-대화는 하지 않는다. 입력이 부족하면 호출자(/do-process)에게 즉시 에러 반환.
+대화는 하지 않는다. 입력이 부족하면 호출자(/process-do)에게 즉시 에러 반환.
 
 ---
 
@@ -64,7 +64,7 @@ R-3. **REC 본문 합성** — finalize 와 다음만 다름:
 > 반려일시: {hitl.responded_at}
 > 반려 사유: {hitl.rejection_reason}
 >
-> 시정조치 후 신규 REC 발행이 필요합니다 (`/do-process {WI번호}` 재실행).
+> 시정조치 후 신규 REC 발행이 필요합니다 (`/process-do {WI번호}` 재실행).
 ```
    - 본문 평가표·결재 표는 state.yaml `steps[].answers` 에서 매핑 가능한 만큼만 채움. 결재 표의 "승인" 칸은 "❌ 반려 — {hitl.approver_name} ({YYYY-MM-DD})" 로 표기.
    - "(자동 추가) 완료 조건 충족 결과" 섹션 — 부분 미충족 그대로 유지하되, 모든 항목에 "반려로 인한 미완료" 메모 추가 가능.
@@ -79,7 +79,7 @@ R-6. 호출자에게 반환:
 📋 MAT-005 §"실행 기록" 1행 (❌ 반려)
 🔍 trace_id: run-xxxxxxxx
    사유: {hitl.rejection_reason}
-   ▶ 시정조치 후 신규 REC 발행: /do-process {WI번호}
+   ▶ 시정조치 후 신규 REC 발행: /process-do {WI번호}
 ```
 
 ### Phase A — 입력 검증
@@ -168,7 +168,7 @@ C-6. **변경 금지 영역**: 본문 마지막에 자동 안내 추가:
 ```
 ---
 > 본 REC 는 자동 생성되었으며, 심사 증적 무결성을 위해 직접 수정하지 마십시오.
-> 정정이 필요하면 신규 REC 발행 (`/do-process {WI번호} --reissue {기존REC번호}` — Phase 2 지원 예정).
+> 정정이 필요하면 신규 REC 발행 (`/process-do {WI번호} --reissue {기존REC번호}` — Phase 2 지원 예정).
 ```
 
 ### Phase D — 파일 저장

@@ -22,7 +22,7 @@ counts:
 
 # MAT-008 KPI 대시보드
 
-> 차원 3 (Check) `/check-process --kpi` 하네스가 자동 갱신하는 정량 지표 대시보드. 자동 갱신 — 사람이 직접 수정 금지.
+> 차원 3 (Check) `/process-check --kpi` 하네스가 자동 갱신하는 정량 지표 대시보드. 자동 갱신 — 사람이 직접 수정 금지.
 >
 > **상위 인덱스**: [[MAT-005_심사증적_인덱스]] §"심사 이력" / [[MAT-009_NCR_관리대장]]
 > **운영 가이드**: `vault/09_REF_참고자료/표준_프로세스_심사_가이드.md` §6.3 KPI 대시보드 / §11 트러블슈팅
@@ -30,7 +30,7 @@ counts:
 ## 1. 워크플로우
 
 ```
-[/check-process --kpi start <표준코드> --period <from..to>]
+[/process-check --kpi start <표준코드> --period <from..to>]
    ├ kpi-collector → kpi_data.yaml (PRO/WI §KPI 추출 + REC/MAT 측정)
    └ kpi-analyzer → 임계 비교·회귀 판정·MAT-008 갱신·MAT-009 §통계 갱신
 
@@ -66,8 +66,8 @@ counts:
 - 첫 측정 (회차 1) → baseline **seed** (회귀 비교 없음, 임계 비교만).
 - 회차 ≥ 2 → 직전 회차의 같은 kpi_id 측정값을 baseline 으로 자동 사용.
 - 회귀 임계 default: `±5.0%p`.
-- 사용자 지정: `/check-process --kpi start ... --regression-threshold-pp 3.0`
+- 사용자 지정: `/process-check --kpi start ... --regression-threshold-pp 3.0`
 
 ---
 
-> 표준 편입 후 `/check-process --kpi` 실행 시 표준별 섹션이 자동 append 됩니다.
+> 표준 편입 후 `/process-check --kpi` 실행 시 표준별 섹션이 자동 append 됩니다.

@@ -22,12 +22,12 @@ cp -R _scaffold ISO27001
 이후 각 카테고리 폴더에 파일을 투하하고:
 ```
 claude
-> /plan-process ISO27001
+> /process-plan ISO27001
 ```
 
 ### 방법 B: 자동 (에이전트에 위임)
 ```
-/plan-process ISO27001
+/process-plan ISO27001
 ```
 `standard-analyzer` 가 `_inputs/` 없음을 감지하면 이 scaffold 를 자동 복사.
 

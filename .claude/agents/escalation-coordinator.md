@@ -1,6 +1,6 @@
 ---
 name: escalation-coordinator
-description: HITL 정지된 trace 들의 타임아웃 검출·에스컬레이션 체인 라우팅을 전담. /do-process --check-timeouts 호출 시 진입. (차원 2 Do Phase 2.5)
+description: HITL 정지된 trace 들의 타임아웃 검출·에스컬레이션 체인 라우팅을 전담. /process-do --check-timeouts 호출 시 진입. (차원 2 Do Phase 2.5)
 tools: Read, Write, Edit, Grep, Glob
 model: opus
 ---
@@ -17,7 +17,7 @@ model: opus
 
 ## 1. 호출 모드 — 2가지
 
-### 1-1. `scan` 모드 (기본 — `/do-process --check-timeouts`)
+### 1-1. `scan` 모드 (기본 — `/process-do --check-timeouts`)
 ```yaml
 mode: scan
 options:
@@ -184,7 +184,7 @@ hitl:
 
 ## 7. 미구현 (Phase 2.5 한도)
 
-- 외부 cron / scheduler 자동 호출 — 사용자가 `/do-process --check-timeouts` 수동 실행 또는 외부 cron 등록 (예: `*/30 * * * * /do-process --check-timeouts`).
+- 외부 cron / scheduler 자동 호출 — 사용자가 `/process-do --check-timeouts` 수동 실행 또는 외부 cron 등록 (예: `*/30 * * * * /process-do --check-timeouts`).
 - 이메일·Slack 실연동 — 현재는 approval_request.md 파일만 갱신. 외부 채널 라우팅은 별도 MCP.
 - 외부 IdP 실연동 — 인터페이스 hook 만 예약.
 - 다단계 timeout 의 stage 별 다른 duration — 현재는 모든 stage 동일.

@@ -187,7 +187,7 @@ REC 수집 (MAT-005 기반)
 NCR 분석 결과
     → 개정 대상 PRO/WI 식별
     → As-Is 피드백을 _inputs/04_AsIs/ 에 투입
-    → /plan-process {표준코드} --from design 재실행
+    → /process-plan {표준코드} --from design 재실행
     → 개정판 문서 생성 (초판보다 실운영 피드백 반영으로 품질 향상)
 ```
 
@@ -292,7 +292,7 @@ steps:
 | 오탈자·링크 수정 (v1.n) | 해당 문서만 직접 편집 |
 | 소절 추가·책임 변경 | `--from write` 또는 `--from design` 부분 재실행 |
 | 구조·범위·정책 변경 | `--restart` 전체 재실행 |
-| 상위 표준 개정판 편입 | `/plan-process {코드} --restart` |
+| 상위 표준 개정판 편입 | `/process-plan {코드} --restart` |
 
 ---
 

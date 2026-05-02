@@ -1,6 +1,6 @@
 ---
 name: pcb-gatekeeper
-description: 차원 4 (Act) 의 표준 자산 개정 제안에 대한 PCB (Process Control Board) 승인 게이트. revision_plan.yaml 을 입력으로 PCB 승인 요청서(drop-out)를 발행하고, /act-process --approve 또는 --reject 응답을 수신하여 처리. ISO/IEC 27001 §9.3 (관리검토) 동형. (차원 4 Act)
+description: 차원 4 (Act) 의 표준 자산 개정 제안에 대한 PCB (Process Control Board) 승인 게이트. revision_plan.yaml 을 입력으로 PCB 승인 요청서(drop-out)를 발행하고, /process-act --approve 또는 --reject 응답을 수신하여 처리. ISO/IEC 27001 §9.3 (관리검토) 동형. (차원 4 Act)
 tools: Read, Write, Edit
 model: opus
 ---
@@ -29,14 +29,14 @@ options:
   auto_approve: false                    # PoC 한정 — 즉시 승인 처리
 ```
 
-### 1-2. `gate_response` 모드 (`/act-process --approve` / `--reject` 응답 수신)
+### 1-2. `gate_response` 모드 (`/process-act --approve` / `--reject` 응답 수신)
 ```yaml
 mode: gate_response
 trace_id: run-cxxxxxxxx
 decision: approved | rejected
 approver_name: "박상무 (PCB위원장)"      # --approver 옵션
 rejection_reason: "..."                  # decision == rejected 일 때 필수
-input_source: "/act-process --approve" or "/act-process --reject"
+input_source: "/process-act --approve" or "/process-act --reject"
 ```
 
 ---
@@ -108,19 +108,19 @@ PCB (Process Control Board) 위원회께,
 
 ## 4. 권장 단계 (PCB 승인 후 실행)
 1. backup (기존 v1.0 git tag) — admin/process_owner
-2. rebuild (`/plan-process ... --from write --target PRO-CMMI-04-01`) — admin
+2. rebuild (`/process-plan ... --from write --target PRO-CMMI-04-01`) — admin
 3. validate (qa-reviewer 자동) — 자동
 4. register (MAT-001 §개정 이력) — 자동 (act-coordinator)
-5. close_ncr (`/check-process --close-ncr REC-NCR-04-01-2026-001 --capa <후속 REC>`) — process_owner
-6. re_kpi (`/check-process --kpi start CMMI-DEV-ML3 --period <다음 분기>`) — qmr
+5. close_ncr (`/process-check --close-ncr REC-NCR-04-01-2026-001 --capa <후속 REC>`) — process_owner
+6. re_kpi (`/process-check --kpi start CMMI-DEV-ML3 --period <다음 분기>`) — qmr
 
 ## 5. 위험 요인
 - 정합성 위험 — PRO §5-6 개정이 자식 WI DoD 와 충돌 가능 (qa-reviewer §11-A 검증 필수)
 - 기존 운영 영향 — MAT-005 §실행기록 trace 3건이 v1.0 기준 (As-Is 입력 파일에 기존 trace 인용)
 
 ## 6. 응답
-- 승인: `/act-process --approve run-cxxxxxxxx [--approver "박상무 (PCB위원장)"]`
-- 반려: `/act-process --reject  run-cxxxxxxxx --reason "..."`
+- 승인: `/process-act --approve run-cxxxxxxxx [--approver "박상무 (PCB위원장)"]`
+- 반려: `/process-act --reject  run-cxxxxxxxx --reason "..."`
 
 ## 7. 참조 자료
 - [[root_cause.yaml]] — 5-Why depth 5 + Fishbone 6 카테고리
@@ -129,7 +129,7 @@ PCB (Process Control Board) 위원회께,
 ```
 
 A-4. trace.jsonl 에 `pcb_requested` 이벤트.
-A-5. **호출자에게 정지 신호 반환** — /act-process 가 본 시점에서 종료 (PCB 응답 대기).
+A-5. **호출자에게 정지 신호 반환** — /process-act 가 본 시점에서 종료 (PCB 응답 대기).
 
 ### Phase B — gate_response (응답 수신)
 
@@ -148,12 +148,12 @@ pcb:
 B-2. drop-out 갱신 (`pcb_request.md` frontmatter status: approved/rejected + 응답 정보).
 
 B-3. **decision 별 분기**:
-- `approved` → state.yaml.status: pcb_approved → /act-process 가 act-coordinator 위임으로 자동 진행.
+- `approved` → state.yaml.status: pcb_approved → /process-act 가 act-coordinator 위임으로 자동 진행.
 - `rejected` → state.yaml.status: rejected + 큐 status: pending 복귀 (재시도 가능). act-coordinator 호출 안 함.
 
 B-4. trace.jsonl 에 `pcb_responded` 이벤트:
 ```json
-{"ts": "...", "event": "pcb_responded", "decision": "approved", "approver_name": "박상무 (PCB위원장)", "input_source": "/act-process --approve"}
+{"ts": "...", "event": "pcb_responded", "decision": "approved", "approver_name": "박상무 (PCB위원장)", "input_source": "/process-act --approve"}
 ```
 
 ### Phase C — 호출자에게 반환
@@ -183,7 +183,7 @@ C-3. gate_response: 결정 + 다음 단계 안내 (approved → coordinator / re
 - PCB 위원의 의견·결정을 LLM 이 추측하지 않음 — 본 에이전트는 양식화만 + 응답 수신 처리만.
 
 ### 3.4 dry-run 보장
-- options.dry_run 은 본 에이전트에 직접 전달되지 않지만, /act-process 가 dry_run=true 면 본 에이전트를 호출하지 않음 (승인 단계 자체 skip — 정상 동작).
+- options.dry_run 은 본 에이전트에 직접 전달되지 않지만, /process-act 가 dry_run=true 면 본 에이전트를 호출하지 않음 (승인 단계 자체 skip — 정상 동작).
 
 ---
 
@@ -215,4 +215,4 @@ C-3. gate_response: 결정 + 다음 단계 안내 (approved → coordinator / re
 - 다단계 PCB (예: PCB 위원 3명 quorum) — 차원 2 의 hitl-gatekeeper Phase 2.5 다단계 승인 동형.
 - PCB 회의 일정 자동 검색 — 외부 캘린더 (Phase 4.5).
 - 외부 채널 알림 (이메일·Slack) — Phase 4.5.
-- 타임아웃·에스컬레이션 (escalation-coordinator 동형 — `/act-process --check-timeouts`).
+- 타임아웃·에스컬레이션 (escalation-coordinator 동형 — `/process-act --check-timeouts`).

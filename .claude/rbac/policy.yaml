@@ -48,7 +48,7 @@ roles:
       independence_required: true   # ISO §9.2 — independence-guard 가 강제
 
   executor:
-    description: "차원 2 업무 담당자. /do-process 실행 권한. 차원 3 보고서는 조회만."
+    description: "차원 2 업무 담당자. /process-do 실행 권한. 차원 3 보고서는 조회만."
     allow:
       - do.start
       - do.resume

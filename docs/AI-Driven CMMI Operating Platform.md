@@ -34,7 +34,7 @@ ML 단계가 올라갈수록 **사람이 부담해야 하는 정량·통계·분
 | ML | 본질 | 사람 부담 | AI 자동화 적합성 |
 |---|---|---|---|
 | ML2 | 관리 (Managed) | 반복적 기록·보고서 | 중 (RPA 수준) |
-| ML3 | 정의·일관성 (Defined) | 표준 문서화·교육 | **고** — 본 프로젝트의 `/plan-process` 하네스가 이미 처리 |
+| ML3 | 정의·일관성 (Defined) | 표준 문서화·교육 | **고** — 본 프로젝트의 `/process-plan` 하네스가 이미 처리 |
 | **ML4** | **정량 관리 (Quantitatively Managed)** | **통계 분석·SPC·baseline** | **매우 고** — AI 가 가장 강한 영역 |
 | **ML5** | **최적화 (Optimizing)** | **RCA·혁신 발굴·예측** | **매우 고** — LLM 추론·생성 영역 |
 
@@ -101,7 +101,7 @@ ML 이 올라갈수록 **AI 우위**가 극대화된다.
 ## 5. 단계적 로드맵
 
 ### Phase 1 (현재 완료) — Layer 1 ML3
-- `/plan-process` 하네스 + 5개 핵심 에이전트
+- `/process-plan` 하네스 + 5개 핵심 에이전트
 - CMMI-DEV-ML3 산출물 459건 생성 사례 보유
 - branch-per-standard 운영 정책 확립
 
@@ -112,13 +112,13 @@ ML 이 올라갈수록 **AI 우위**가 극대화된다.
 
 ### Phase 3 (중기 3~6개월) — Layer 2 풀 패키지
 - SPC·baseline 자동화 + QPM 연계
-- ML4 산출물 신규 빌드: `/plan-process CMMI-DEV-ML4`
+- ML4 산출물 신규 빌드: `/process-plan CMMI-DEV-ML4`
 - PRO/WI 의 KPI·예외 처리 분기가 Agent 호출로 실행
 
 ### Phase 4 (장기 6~12개월) — Layer 3 ML5 자동화
 - 공통 원인 탐지·혁신 제안·학습조직 자동화
 - "AI 가 지속 개선 사이클을 운영하는 조직" 모델 검증
-- ML5 산출물 빌드: `/plan-process CMMI-DEV-ML5`
+- ML5 산출물 빌드: `/process-plan CMMI-DEV-ML5`
 
 ---
 
@@ -135,7 +135,7 @@ ML 이 올라갈수록 **AI 우위**가 극대화된다.
 | WI §7 예외 처리 | Agent 의 error handling 분기 |
 | KPI | Agent 자기 평가 기준 (self-evaluation) |
 
-즉 **`/plan-process` 가 만든 문서가 AI Agent 의 행동 명세서로 직결**된다. 이는 일반 표준 도입과의 본질적 차이이며, 차별화의 핵심이다.
+즉 **`/process-plan` 가 만든 문서가 AI Agent 의 행동 명세서로 직결**된다. 이는 일반 표준 도입과의 본질적 차이이며, 차별화의 핵심이다.
 
 ---
 
@@ -143,7 +143,7 @@ ML 이 올라갈수록 **AI 우위**가 극대화된다.
 
 | 차원 | 전통 CMMI 컨설팅 | AI-Driven CMMI Platform |
 |---|---|---|
-| ML3 도달 시간 | 12~24 개월 | **수일** (`/plan-process`) |
+| ML3 도달 시간 | 12~24 개월 | **수일** (`/process-plan`) |
 | ML4 도달 가능성 | 대기업 한정 | **모든 조직** (Agent 가 통계 처리) |
 | ML5 운영 비용 | 매우 고가 (전문가 다수) | **저비용** (Agent 가 24/7 운영) |
 | 회귀(degradation) 방지 | 수동 내부심사 (연 1~2회) | **자동 모니터링** (실시간) |
@@ -179,7 +179,7 @@ ML 이 올라갈수록 **AI 우위**가 극대화된다.
 ## 10. 다음 행동 옵션
 
 - **A**. ML4 운영 Agent **개념 설계 문서** 작성 — 본 비전을 구체 스펙으로 분해 (Layer 2 5개 Agent)
-- **B**. `/plan-process CMMI-DEV-ML4` 로 ML4 산출물 먼저 빌드 → 그 위에 Agent 운영
+- **B**. `/process-plan CMMI-DEV-ML4` 로 ML4 산출물 먼저 빌드 → 그 위에 Agent 운영
 - **C**. ML4 Agent 1종 PoC 구현 (`rca-agent` 또는 `metric-collector` 권장)
 - **D**. 대외 발표·제안용 비전 페이퍼·로드맵 작성
 
@@ -195,6 +195,6 @@ ML 이 올라갈수록 **AI 우위**가 극대화된다.
 
 본 프로젝트는 시작점부터 단순 "표준 문서 자동 생성"을 목표로 하지 않았다. **"AI 가 표준 자체를 운영하는 살아있는 시스템"** 이 본질적 비전이며, ML4/ML5 자동화는 그 비전의 자연스러운 다음 단계이다.
 
-`/plan-process` 하네스 (Layer 1) 는 운영 자동화 (Layer 2/3) 의 **기반 인프라** 다. 표준 산출물이 Agent 의 명세서로 직결되는 구조는, 전통 컨설팅·일반 RPA·범용 LLM 자동화 모두와 명확히 차별화되는 전략적 자산이다.
+`/process-plan` 하네스 (Layer 1) 는 운영 자동화 (Layer 2/3) 의 **기반 인프라** 다. 표준 산출물이 Agent 의 명세서로 직결되는 구조는, 전통 컨설팅·일반 RPA·범용 LLM 자동화 모두와 명확히 차별화되는 전략적 자산이다.
 
 **ML5 까지 자동화한 첫 조직** 은 글로벌 시장에서 정의되지 않은 위치에 선다. 이것이 본 비전의 도달 좌표다.

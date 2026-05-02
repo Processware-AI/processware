@@ -9,7 +9,7 @@ model: opus
 
 ## 0. 역할 한 줄 정의
 
-> NCR open + critical KPI → `.claude/queues/act-process/queue-{8자hex}.yaml` N건 + MAT-008 §"차원 4 인계" 갱신.
+> NCR open + critical KPI → `.claude/queues/process-act/queue-{8자hex}.yaml` N건 + MAT-008 §"차원 4 인계" 갱신.
 
 대화는 하지 않는다. 입력이 부족하면 호출자에게 즉시 에러 반환.
 
@@ -69,10 +69,10 @@ options:
 ### Phase A — NCR 기반 큐 발행
 
 A-1. `issued_ncrs[]` 가 비어 있으면 정상 반환 (NCR 없음 — 차원 4 인계 불필요).
-A-2. **중복 검사**: `Glob ".claude/queues/act-process/queue-*.yaml"` 으로 기존 큐 조회 · 같은 ncr_id 가 이미 큐에 있으면 건너뜀 (재발행 방지).
+A-2. **중복 검사**: `Glob ".claude/queues/process-act/queue-*.yaml"` 으로 기존 큐 조회 · 같은 ncr_id 가 이미 큐에 있으면 건너뜀 (재발행 방지).
 A-3. 매 NCR 마다 큐 1건 작성:
    - 큐 ID: `queue-q` + 8자 hex (act trace 와 prefix 분리: queue-q*).
-   - 파일: `.claude/queues/act-process/queue-q{hex}.yaml`
+   - 파일: `.claude/queues/process-act/queue-q{hex}.yaml`
    - 내용:
 ```yaml
 queue_id: queue-q3a8f2c1
@@ -92,8 +92,8 @@ source:
 target:                                 # 차원 1 재트리거 후보
   scope_kind: WI                        # WI | PRO | POL | TMP
   scope_id: WI-CMMI-04-01-04            # NCR 의 source 또는 evidence_refs 의 parent_wi
-  proposed_action: "/plan-process CMMI-DEV-ML3 --from write --target WI-CMMI-04-01-04"
-  alternative_action: "/do-process WI-CMMI-04-01-04"  # 자산 개정 없이 재실행만 필요한 경우
+  proposed_action: "/process-plan CMMI-DEV-ML3 --from write --target WI-CMMI-04-01-04"
+  alternative_action: "/process-do WI-CMMI-04-01-04"  # 자산 개정 없이 재실행만 필요한 경우
 rationale: "..."                        # NCR rationale 인용
 recommendation: "..."                   # NCR §4 시정조치 권고 1번 인용
 assignment:
@@ -112,7 +112,7 @@ A-4. **MAT-008 §"차원 4 인계" 신규 섹션 갱신** — 표 1행 append:
 
 | Queue ID | kind | priority | source | target | proposed_action | due | status |
 |---|---|---|---|---|---|---|---|
-| queue-q3a8f2c1 | ncr_capa | critical | NCR-001 (F-001 / REQ-005) | WI-CMMI-04-01-04 | /plan-process ... --target WI-CMMI-04-01-04 | 2026-05-30 | pending |
+| queue-q3a8f2c1 | ncr_capa | critical | NCR-001 (F-001 / REQ-005) | WI-CMMI-04-01-04 | /process-plan ... --target WI-CMMI-04-01-04 | 2026-05-30 | pending |
 ```
 
 A-5. **audit_recommendations[]** 처리 (보고서 §6 권고 — NCR 외 부가 권고):
@@ -141,7 +141,7 @@ source:
 target:
   scope_kind: WI
   scope_ids: ["WI-CMMI-04-01-01", "WI-CMMI-04-01-02", "WI-CMMI-04-01-05"]
-  proposed_action: "WI-04-01-01/02/05 운영 시작 — /do-process WI-CMMI-04-01-01 등"
+  proposed_action: "WI-04-01-01/02/05 운영 시작 — /process-do WI-CMMI-04-01-01 등"
 recommendation: "다음 분기 측정 시 Coverage ≥ 80% 회복을 위해 미운영 WI 3개의 운영 시작 필요"
 ...
 ```
@@ -173,7 +173,7 @@ queues:
     kind: ncr_capa
     priority: critical
     target_scope: WI-CMMI-04-01-04
-    proposed_action: "/plan-process CMMI-DEV-ML3 --from write --target WI-CMMI-04-01-04"
+    proposed_action: "/process-plan CMMI-DEV-ML3 --from write --target WI-CMMI-04-01-04"
   - queue_id: queue-q...
     ...
 mat008_updated: true
@@ -185,7 +185,7 @@ mat008_updated: true
 
 ### 3.1 자산 무결성
 - 쓰기 허용:
-  - `.claude/queues/act-process/queue-q*.yaml` (신규 또는 dispatch/done 시 Edit)
+  - `.claude/queues/process-act/queue-q*.yaml` (신규 또는 dispatch/done 시 Edit)
   - `vault/90_MAT_통합매핑/MAT-008_KPI_대시보드.md` (Edit, §"차원 4 인계" 만)
   - 호출자의 `trace.jsonl` (append)
 - 외 모두 보호.
@@ -196,7 +196,7 @@ mat008_updated: true
 
 ### 3.3 환각 방지
 - rationale / recommendation / proposed_action 은 NCR 본문 / kpi_data / audit recommendations 에서만 인용.
-- 외부 추측·추가 사실 금지. proposed_action 은 표준화된 명령 (/plan-process / /do-process) 로만 표기.
+- 외부 추측·추가 사실 금지. proposed_action 은 표준화된 명령 (/process-plan / /process-do) 로만 표기.
 
 ### 3.4 우선순위 일관
 - queue.priority 는 source 의 severity 와 동일 (critical/major/minor) 또는 KPI verdict 의 매핑 (critical → critical, watch → major).
@@ -210,7 +210,7 @@ mat008_updated: true
 ## 4. 자기 점검 체크리스트 (Phase E 직전)
 
 - [ ] queues_created == issued_ncrs.length (skip 제외) 또는 critical_alerts 통합 결과와 일치
-- [ ] 모든 큐 파일이 .claude/queues/act-process/ 에 정확한 식별번호로 존재
+- [ ] 모든 큐 파일이 .claude/queues/process-act/ 에 정확한 식별번호로 존재
 - [ ] MAT-008 §"차원 4 인계" 표 행 == queues_created
 - [ ] 중복 검사 통과 (skip 카운트 명시)
 - [ ] dry_run 시 어떤 파일도 수정 안 됨
@@ -226,7 +226,7 @@ mat008_updated: true
 - ✅ MAT-008 §"차원 4 인계" 섹션 자동 누적.
 
 **Phase 4.5+ 확장**:
-- 차원 4 의 정식 슬래시 (`/act-process`) 와 본 큐 인계 — Phase 5 차원 4 진입 시.
-- 큐 dispatch / 종결 워크플로우 — Phase 4.5 (`/check-process --act-queue dispatch <queue_id> --to <role>`).
+- 차원 4 의 정식 슬래시 (`/process-act`) 와 본 큐 인계 — Phase 5 차원 4 진입 시.
+- 큐 dispatch / 종결 워크플로우 — Phase 4.5 (`/process-check --act-queue dispatch <queue_id> --to <role>`).
 - 외부 시스템 (Jira / 캘린더) 자동 알림 — Phase 4.5 외부 연동.
 - 큐 우선순위 자동 재조정 — SLA 임박·관련 NCR 변경 시 재정렬.
