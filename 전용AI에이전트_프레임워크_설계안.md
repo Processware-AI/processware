@@ -23,18 +23,35 @@
 
 ---
 
-## 1. 먼저 확정할 선택지
+## 1. 전략 결정
 
-| 축 | 옵션 A | 옵션 B | 옵션 C |
-|---|---|---|---|
-| **사용자 범위** | 내부 컨설팅 툴 | 컨설팅 펌 B2B | 멀티테넌트 SaaS |
-| **배포 형태** | CLI / 데스크탑 | 온프렘 서버 | 클라우드 |
-| **데이터 저장** | 로컬 Vault만 | Vault + 서버 DB | 클라우드 DB + Git |
-| **진입 UI** | CLI | 웹 대시보드 | Obsidian 플러그인 |
-| **LLM 모델** | Claude 전용 | 멀티 프로바이더 | BYO Key |
+### 1-A. 선택지 맵
 
-어느 조합을 노리냐에 따라 프레임워크 규모가 3배 이상 달라짐.
-**추천 진화 경로**: 내부 툴 → B2B 온프렘 → SaaS (단계적)
+| 축 | 옵션 A | 옵션 B | 옵션 C | **결정** |
+|---|---|---|---|---|
+| **사용자 범위** | 내부 컨설팅 툴 | 컨설팅 펌 B2B | 멀티테넌트 SaaS | 내부 툴 → B2B → SaaS (단계적) |
+| **배포 형태** | CLI / 데스크탑 | 온프렘 서버 | 클라우드 | 단계적 |
+| **데이터 저장** | 로컬 Vault만 | Vault + 서버 DB | 클라우드 DB + Git | 단계적 |
+| **진입 UI** | CLI | 웹 대시보드 | Obsidian 플러그인 | 단계적 |
+| **LLM 모델** | Claude 전용 | **멀티 프로바이더** | BYO Key | **멀티 프로바이더** ✅ |
+
+### 1-B. 결정 완료 항목
+
+| # | 항목 | 결정 |
+|---|---|---|
+| 1 | **패키지명** | `processmine` (PyPI 등록 예정) |
+| 2 | **LLM 모델** | 멀티 프로바이더 지향 — Claude 우선 구현 후 OpenAI·Gemini·온프렘 LLM 추상화 레이어 추가 |
+| 3 | **언어** | Python (미결 → 섹션 1-C 참조) |
+| 4 | **오픈소스/상용** | 미결 |
+| 5 | **Obsidian 유지 여부** | 미결 |
+
+### 1-C. 미결 결정 항목
+
+1. **언어**: Python 전용 vs TypeScript vs 양쪽?
+2. **타겟 고객 최소단위**: 1인 컨설턴트 vs 10인 펌 vs 100인 기업
+3. **Obsidian 유지 여부**: 계속 핵심 UI로 / 웹 UI 대체 / 둘 다
+4. **오픈소스/상용**: 코어 OSS + 상용 부가기능(멀티테넌트·지식팩) 여부
+5. **프레임워크**: Claude Agent SDK 단독 vs SDK + LangGraph 하이브리드
 
 ---
 
@@ -89,24 +106,25 @@
 
 | 프레임워크 | 장점 | 단점 | 적합도 |
 |---|---|---|---|
-| **Claude Agent SDK** | 현 하네스 개념 그대로 이식. 서브에이전트·MCP 네이티브 | Claude 종속 | ★★★★★ (1순위) |
-| **LangGraph** | 그래프 기반 상태머신·재개·HITL 강력 | 학습곡선·상태모델 복잡 | ★★★★ (복잡 워크플로우면) |
+| **Claude Agent SDK** | 현 하네스 개념 그대로 이식. 서브에이전트·MCP 네이티브 | Claude 종속 — 멀티 프로바이더 지향 시 추상화 레이어 필요 | ★★★★★ (1순위, MVP) |
+| **LangGraph** | 그래프 기반 상태머신·재개·HITL 강력. 멀티 프로바이더 LLM 지원 | 학습곡선·상태모델 복잡 | ★★★★ (오케스트레이션 레이어) |
 | **CrewAI** | 역할 기반 다중에이전트 직관적 | 프로덕션 성숙도 부족 | ★★ |
 | **AutoGen** | 대화형 에이전트 강점 | 구조적 파이프라인엔 과잉 | ★★ |
 | **직접 구축** | 최대 자유도 | 6개월+ 재발명 | ★ (비추) |
 
-**추천: Claude Agent SDK + LangGraph 하이브리드**
-- 에이전트 실행: Claude Agent SDK (서브에이전트/MCP 패턴 그대로)
+**결정: Claude Agent SDK + LangGraph 하이브리드**
+- 에이전트 실행: Claude Agent SDK (서브에이전트/MCP 패턴 그대로, MVP 우선)
 - 파이프라인 오케스트레이션: LangGraph (체크포인트·재개·HITL)
+- **멀티 프로바이더 전략**: `LLMProvider` 추상화 인터페이스 → Claude / OpenAI / Gemini / 온프렘(Ollama 등) 교체 가능하도록 설계. MVP는 Claude 전용으로 시작 후 인터페이스 분리.
 
-MVP 단계는 **Claude Agent SDK 전용**도 충분함.
+MVP 단계는 **Claude Agent SDK 전용**으로 시작해 LLM 추상화 레이어를 이후 적용.
 
 ---
 
 ## 4. 제안 아키텍처 (Python 기준)
 
 ```
-spx/                              ← 프레임워크 패키지명 예시 (SPX=Standard Process eXpert)
+processmine/                              ← 프레임워크 패키지명 예시 (processmine — Process + Mine (내 프로세스를 채굴·정제))
 ├── core/
 │   ├── orchestrator.py          ← 파이프라인 엔진 (4차원 PDCA 폐쇄 루프 포함)
 │   ├── agent_registry.py
@@ -161,7 +179,7 @@ spx/                              ← 프레임워크 패키지명 예시 (SPX=S
 │   ├── pcb_quorum.py            ← quorum 4 모드
 │   └── auto_trend_mermaid.py    ← Mermaid 자동 트렌드
 ├── api/                         ← FastAPI 엔드포인트
-├── cli/                         ← typer CLI (spx build-standard ISO9001)
+├── cli/                         ← typer CLI (processmine build-standard ISO9001)
 ├── web/                         ← Next.js 대시보드 (선택)
 └── audit/                       ← 감사증적 로거 (OTel)
 ```
@@ -181,7 +199,7 @@ spx/                              ← 프레임워크 패키지명 예시 (SPX=S
 ### Phase 1. 코어 포팅 — 차원 1 (핵심 기능 확보)
 - 현 `.claude/agents/*.md` → Python 에이전트 클래스로 이식 (5종) ← *하네스 검증됨*
 - Claude Agent SDK로 서브에이전트 호출 재현
-- CLI 1개: `spx build-standard ISO9001 --vault ./vault`
+- CLI 1개: `processmine build-standard ISO9001 --vault ./vault`
 - Obsidian vault 쓰기 기능 검증
 - **체크포인트·자가수정 루프** 이식 (`_state.yaml` 패턴 → Python State 객체) ← *하네스 검증됨*
 - **표준 분류 레지스트리** 이식 (`registry.yaml` + Layer/Structure/Integration Mode 분기 로직) ← *하네스 검증됨*
@@ -229,25 +247,16 @@ spx/                              ← 프레임워크 패키지명 예시 (SPX=S
 | **심사 독립성 강제** | auditor ≠ trace.executed_by 검증 + RBAC 6 역할 — independence-guard 패턴 Python 재현 *(하네스 검증됨)* |
 | **폐쇄 루프 act queue 자동 발행** | 차원 3 NCR/KPI → `.claude/queues/act/` 자동 push → 차원 4 RCA → PCB → 차원 1 재트리거 — 전체 루프 패턴 *(하네스 PoC 실증됨)* |
 | **PCB quorum 다단계** | simple_majority / supermajority / unanimous / chair_veto 4 모드 — Phase 4.5 명세 완료 *(Python 이식 대상)* |
+| **LLM API 운영 비용** | 23 에이전트 자동 실행 시 대용량 컨텍스트 → per-run 토큰 비용이 제품 단가 설계에 직결. 표준 분석 1회 예상 토큰량 측정 후 과금 모델 설계 필요 — **검토 필요** |
 
 ---
 
-## 7. 즉시 결정 필요한 항목
-
-1. **언어**: Python(SDK 1순위) vs TypeScript vs 양쪽?
-2. **타겟 고객 최소단위**: 1인 컨설턴트 vs 10인 펌 vs 100인 기업
-3. **Obsidian 유지 여부**: 계속 핵심 UI로 쓸지, 웹 UI로 대체할지, 둘 다 지원할지
-4. **오픈소스 / 상용**: 코어는 OSS 두고 상용 부가기능(멀티테넌트·지식팩)만 판매할지
-5. **단독 빌드 vs 파운데이션 활용**: 완전 자체 구현 vs Claude Agent SDK + LangGraph 조합
-
----
-
-## 8. 결론 및 첫 수
+## 7. 결론 및 첫 수
 
 **가능하고 준비됐다.** 하네스에서 4차원 PDCA 전체(23 에이전트, 폐쇄 루프 PoC)가 검증 완료됨. 남은 것은 **실행 엔진을 Claude Code CLI 에서 떼어내는 것**. 각 차원의 구현 패턴이 명확히 정립되어 포팅 범위와 비용을 정확히 예측할 수 있는 상태.
 
 **가장 현실적인 첫 수**:
-> "Python + Claude Agent SDK 로 현 `.claude/agents/*` 를 포팅 → CLI 1개로 ISO 9001 구축 재현(차원 1) → 차원 2~4 에이전트 순차 포팅 → Phase 3 배포 키트"
+> "Python + Claude Agent SDK 로 현 `.claude/agents/*` 를 포팅 → `processmine build-standard ISO9001` CLI 1개로 차원 1 재현 → `LLMProvider` 추상화 레이어 삽입(멀티 프로바이더 기반 확보) → 차원 2~4 에이전트 순차 포팅 → Phase 3 배포 키트"
 
 → Phase 1 MVP 예상 소요: **4~6주** (차원 1 코어 — 계층 번호 생성기·표준 분류 레지스트리·멀티도메인 Integration Mode 분기 포함)
 → Phase 2 포팅 소요: **6~8주** (차원 2~4 에이전트 + 폐쇄 루프 Orchestrator + Phase 4.5 외부 연동 기반 구현)
