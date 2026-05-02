@@ -1,7 +1,7 @@
 # 전용 AI Agent 프레임워크 설계 제안
 
 > 현재 Claude Code 하네스로 검증된 개념을 **독립 실행 프레임워크**로 승격시키는 방향 설계안.
-> 작성일: 2026-04-17 · 최종 갱신: 2026-05-02 · 상태: draft (depth 검토 예정)
+> 작성일: 2026-04-17 · 최종 갱신: 2026-05-02 · 상태: 하네스 검증 완료 · Python 포팅 설계 진행 중
 > 관련: [[표준프로세스_구성원칙]], 현 하네스(`.claude/agents/`, `.claude/commands/`)
 
 > **하네스 현황 (2026-05-02)**: **4차원 PDCA 폐쇄 루프 PoC 완료** — 차원 1~4 전체 구현·통합 완료(main 머지, commit be900cc). 총 23 에이전트 / 4 슬래시 커맨드 운영 중. 주요 구현 기능 — 계층적 문서 번호 체계(POL→PRO→WI 계보 추적), 표준 분류 레지스트리(Layer/Structure/Integration Mode 3축), 자동차 4종·의료기기 4종 도메인 지원, MAT 9종(001~009) 운영, WI 이중 포맷(MD+steps.yaml), HITL 다단계 승인·타임아웃·에스컬레이션, 심사 9 에이전트 + RBAC 6 역할 + NCR + KPI 대시보드, RCA·PCB quorum·폐쇄 루프 Act→Plan' 재트리거, Phase 4.5 외부 인프라 연동 명세(OIDC·Slack·Jira·한국 영업일·Mermaid 자동 트렌드). 포팅 범위 및 구현 패턴 모두 명확히 정립됨.
@@ -108,30 +108,58 @@ MVP 단계는 **Claude Agent SDK 전용**도 충분함.
 ```
 spx/                              ← 프레임워크 패키지명 예시 (SPX=Standard Process eXpert)
 ├── core/
-│   ├── orchestrator.py          ← 파이프라인 엔진
+│   ├── orchestrator.py          ← 파이프라인 엔진 (4차원 PDCA 폐쇄 루프 포함)
 │   ├── agent_registry.py
 │   ├── tool_registry.py         ← MCP 서버 로더
-│   └── state.py                 ← 체크포인트
-├── agents/                      ← 현 .claude/agents/ 포팅
-│   ├── standard_analyzer.py
-│   ├── process_designer.py
-│   ├── wi_tmp_writer.py
-│   ├── traceability_mapper.py
-│   └── qa_reviewer.py
+│   └── state.py                 ← 체크포인트 (_state.yaml → Python State 객체)
+├── agents/
+│   ├── dim1_plan/               ← 차원 1 (5종) — .claude/agents/ 포팅
+│   │   ├── standard_analyzer.py
+│   │   ├── process_designer.py
+│   │   ├── wi_tmp_writer.py
+│   │   ├── traceability_mapper.py
+│   │   └── qa_reviewer.py
+│   ├── dim2_do/                 ← 차원 2 (5종) — /do 하네스 포팅
+│   │   ├── process_router.py    ← MAT-007 자연어 라우팅
+│   │   ├── process_executor.py  ← steps.yaml 로드·멀티턴 실행
+│   │   ├── hitl_gatekeeper.py   ← 다단계 승인·타임아웃·에스컬레이션
+│   │   ├── rec_writer.py        ← REC 생성 + MAT-005 기록
+│   │   └── escalation_coordinator.py
+│   ├── dim3_check/              ← 차원 3 (9종) — /audit 하네스 포팅
+│   │   ├── audit_planner.py
+│   │   ├── evidence_collector.py
+│   │   ├── compliance_checker.py ← 4-tier verdict
+│   │   ├── audit_reporter.py
+│   │   ├── ncr_drafter.py       ← SLA 휴리스틱 + R/A 추정
+│   │   ├── kpi_collector.py
+│   │   ├── kpi_analyzer.py      ← 회귀 탐지 + Mermaid 트렌드
+│   │   ├── independence_guard.py ← auditor ≠ executor 검증
+│   │   └── act_trigger.py       ← act queue 자동 발행
+│   └── dim4_act/                ← 차원 4 (4종) — /act 하네스 포팅
+│       ├── rca_analyzer.py      ← 5-Why / Fishbone
+│       ├── revision_planner.py  ← 5종 rebuild_mode 결정
+│       ├── pcb_gatekeeper.py    ← quorum 4 모드
+│       └── act_coordinator.py   ← As-Is 생성 + 차원 1 재트리거
+├── queues/                      ← 차원 3→4 폐쇄 루프 큐
+│   └── act/                     ← queue-q*.yaml (NCR/KPI→Act 인계)
 ├── tools/                       ← MCP 서버들
 │   ├── vault_fs/                ← Obsidian vault 읽기/쓰기
 │   ├── standards_catalog/       ← ISO/IEC/KS 메타DB
 │   ├── legal_kr/                ← 국가법령정보센터 API
 │   └── git_sync/                ← vault ↔ Git
 ├── standards/                   ← 표준별 지식팩 (현 하네스의 표준분류레지스트리 패턴 이식)
-│   ├── registry.yaml            ← Layer/Structure/Integration Mode 3축 메타 (현 07_표준분류레지스트리.md 정형화)
+│   ├── registry.yaml            ← Layer/Structure/Integration Mode 3축 메타
 │   ├── iso9001/
 │   │   ├── meta.yaml            ← layer/structure/integration_mode/scope_codes
-│   │   └── _inputs/             ← 표준원문·법규·해설서·As-Is (현 _inputs/ 패턴)
+│   │   └── _inputs/             ← 표준원문·법규·해설서·As-Is
 │   ├── iso27001/
-│   └── ...                      ← 현재 L1 9종 + L2 8종 + L3 1종 지원
+│   └── ...                      ← L1 9종 + L2 8종 + L3 1종 (총 18종)
 ├── templates/                   ← T03~T15 템플릿 (현 vault/99_템플릿/)
-│   └── wi_steps_schema.yaml     ← steps.yaml 생성 스키마 (차원 2 Agent 실행 정의)
+│   └── wi_steps_schema.yaml     ← steps.yaml Pydantic 스키마
+├── utils/                       ← Phase 4.5 유틸리티
+│   ├── business_days_kr.py      ← 한국 영업일 계산기
+│   ├── pcb_quorum.py            ← quorum 4 모드
+│   └── auto_trend_mermaid.py    ← Mermaid 자동 트렌드
 ├── api/                         ← FastAPI 엔드포인트
 ├── cli/                         ← typer CLI (spx build-standard ISO9001)
 ├── web/                         ← Next.js 대시보드 (선택)
@@ -229,21 +257,24 @@ spx/                              ← 프레임워크 패키지명 예시 (SPX=S
 
 ## 9. 후속 심화 검토 주제
 
-> **범례**: ✅ 하네스에서 검증됨 (포팅 패턴 명확) · [ ] 미착수 (Python 포팅 시 신규 설계 필요)
+### 9-A. 미착수 — Python 포팅 시 신규 설계 필요
 
 - [ ] (A) Phase 1 MVP 코드베이스 골격 생성 (디렉터리·주요 파일 스캐폴딩)
 - [ ] (B) Claude Agent SDK vs LangGraph 상세 비교 + 의사결정
 - [ ] (C) 멀티테넌트 SaaS 아키텍처 상세 (DB 스키마·격리 전략)
-- [ ] (D) 지식팩(표준 카탈로그·RAG) 구조 설계 — 현 `07_표준분류레지스트리.md` + `_inputs/` 패턴을 YAML 스키마로 정형화하는 것이 출발점
+- [ ] (D) 지식팩(표준 카탈로그·RAG) 구조 설계 — `07_표준분류레지스트리.md` + `_inputs/` 패턴을 YAML 스키마로 정형화하는 것이 출발점
 - [ ] (E) 감사증적 + HITL 워크플로우 Python 포팅 상세
 - [ ] (F) 사업화 연계 (사업 모델 문서와 이 설계안의 접점)
-- ✅ (G) 계층 번호 생성기 설계 — POL→PRO→WI cascading update, 번호 충돌 탐지, REC 버전 예외 처리 *(하네스 패턴 확립. 포팅 시 Python 클래스로 이식)*
-- ✅ (H) Integration Mode 별 테스트 케이스 — hls_merge/quasi_hls_merge/interface_only/reference_only 각 1종 이상 E2E 검증 *(하네스에서 18종 표준 커버. 포팅 시 pytest E2E 정의 필요)*
-- ✅ (I) WI steps.yaml 스키마 — field types(text/enum/person/date/boolean), required_if 조건식, HITL approver_role, TMP 필드 매핑 규칙 *(하네스 검증됨. Pydantic 스키마로 정형화 대상)*
-- ✅ (J) Process Execution Agent — steps.yaml 로드 → 대화 세션 관리 → 멀티턴 완료 시 REC 생성 흐름 *(차원 2 하네스 8 진입 모드로 검증됨. Python 포팅 대상)*
-- ✅ (K) Audit Agent — REC↔PRO/WI 대조·NCR·KPI 대시보드·independence-guard *(차원 3 하네스 9 에이전트 검증됨. Python 포팅 대상)*
-- ✅ (L) Act Agent — RCA·PCB quorum·차원 1 재트리거·폐쇄 루프 PoC *(차원 4 하네스 4 에이전트 + 폐쇄 루프 실증됨. Python 포팅 대상)*
 - [ ] (M) Phase 4.5 외부 연동 Python 구현 — OIDC/SCIM 통합, Slack/Jira webhook, 한국 영업일 라이브러리 선정
+
+### 9-B. 하네스 검증 완료 — 포팅 패턴 확립됨
+
+- ✅ (G) 계층 번호 생성기 — POL→PRO→WI cascading update, 번호 충돌 탐지, REC 버전 예외 처리 → Python 클래스로 이식
+- ✅ (H) Integration Mode 별 E2E 검증 — hls_merge/quasi_hls_merge/interface_only/reference_only 18종 표준 커버 → 포팅 시 pytest E2E 정의
+- ✅ (I) WI steps.yaml 스키마 — field types, required_if, HITL approver_role, TMP 필드 매핑 → Pydantic 스키마로 정형화
+- ✅ (J) Process Execution Agent — steps.yaml 로드·멀티턴·REC 생성 (차원 2 하네스 8 진입 모드 검증)
+- ✅ (K) Audit Agent — REC↔PRO/WI 대조·NCR·KPI 대시보드·independence-guard (차원 3 하네스 9 에이전트 검증)
+- ✅ (L) Act Agent — RCA·PCB quorum·차원 1 재트리거·폐쇄 루프 (차원 4 하네스 + PoC 실증)
 
 ---
 
