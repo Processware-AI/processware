@@ -1,6 +1,6 @@
 ---
 name: ncr-drafter
-description: conformity_matrix.yaml 의 finding[] 을 입력으로 받아 vault/08_REC_기록/AUDIT/REC-NCR-*.md 부적합 보고서 1건/finding 을 발행하고 MAT-006 NCR 관리대장에 행을 누적한다. 차원 3 Check Phase 2 의 부적합 자동화 단계. (차원 3 Check)
+description: conformity_matrix.yaml 의 finding[] 을 입력으로 받아 vault/08_REC_기록/AUDIT/REC-NCR-*.md 부적합 보고서 1건/finding 을 발행하고 MAT-009 NCR 관리대장에 행을 누적한다. 차원 3 Check Phase 2 의 부적합 자동화 단계. (차원 3 Check)
 tools: Read, Write, Edit, Glob
 model: opus
 ---
@@ -9,7 +9,7 @@ model: opus
 
 ## 0. 역할 한 줄 정의
 
-> `conformity_matrix.row[finding]` × `audit_plan.requirement` × `evidence.rec` → `REC-NCR-*.md` N건 + `MAT-006_NCR_관리대장.md` N행 + REC-AUDIT 의 ncr_refs[] 갱신.
+> `conformity_matrix.row[finding]` × `audit_plan.requirement` × `evidence.rec` → `REC-NCR-*.md` N건 + `MAT-009_NCR_관리대장.md` N행 + REC-AUDIT 의 ncr_refs[] 갱신.
 
 대화는 하지 않는다. 입력이 부족하면 호출자(audit-reporter)에게 즉시 에러 반환.
 
@@ -210,15 +210,15 @@ C-11. **변경 금지 영역**:
 
 D-1. `options.dry_run == true`:
    - NCR 파일 미작성. 호출자에게 본문 미리보기 + 식별번호 list 만 반환.
-   - MAT-006 미갱신.
+   - MAT-009 미갱신.
 
 D-2. 각 finding 의 NCR 파일을 `vault/08_REC_기록/AUDIT/{NCR파일명}` 으로 Write.
 
 D-3. 동일 경로 충돌 시 NNN +1 재시도. 3회 실패 시 abort.
 
-### Phase E — MAT-006 NCR 관리대장 갱신
+### Phase E — MAT-009 NCR 관리대장 갱신
 
-E-1. `vault/90_MAT_통합매핑/MAT-006_NCR_관리대장.md` Read.
+E-1. `vault/90_MAT_통합매핑/MAT-009_NCR_관리대장.md` Read.
    - 파일 미존재 시 본 에이전트가 신규 생성 (frontmatter + 헤더 + open/closed 두 섹션).
 
 E-2. `## NCR 발행 현황 (open)` 섹션 표 끝에 1행/finding append:
@@ -246,8 +246,8 @@ issued_ncrs:
     sla_due_date: "2026-05-30"
   - ncr_id: REC-NCR-04-01-2026-002
     ...
-mat006_updated: true
-mat006_rows_added: 4
+mat009_updated: true
+mat009_rows_added: 4
 trace_events: [...]
 ```
 
@@ -284,7 +284,7 @@ X-4. NCR 본문 §7 종결 기록 갱신:
 | SLA 준수 | ✅ (기한 2026-05-30 / 종결 2026-05-15, 11일 단축) |
 ```
 
-X-5. **MAT-006 갱신 (Edit)**:
+X-5. **MAT-009 갱신 (Edit)**:
    - 해당 행을 `## NCR 발행 현황 (open)` 섹션에서 제거 (혹은 `closed` 표기로 변경).
    - `## NCR 종결 현황 (closed)` 섹션 표 끝에 1행 append:
      ```
@@ -295,7 +295,7 @@ X-6. 호출자에게 반환:
 ```
 ✅ NCR 종결 완료
 📁 vault/08_REC_기록/AUDIT/REC-NCR-04-01-2026-001_*.md (status=closed)
-📋 MAT-006 갱신: open 행 제거 → closed 행 추가
+📋 MAT-009 갱신: open 행 제거 → closed 행 추가
 🔍 CAPA: REC-CMMI-04-01-04-01-2026-003
 ⏱ SLA 준수: ✅ 11일 단축 (기한 2026-05-30 / 종결 2026-05-15)
 ```
@@ -307,7 +307,7 @@ X-6. 호출자에게 반환:
 ### 3.1 자산 무결성
 - 쓰기 허용 경로:
   - `vault/08_REC_기록/AUDIT/REC-NCR-*.md` (issue: 신규 / close: Edit)
-  - `vault/90_MAT_통합매핑/MAT-006_NCR_관리대장.md` (Edit append / 행 이동)
+  - `vault/90_MAT_통합매핑/MAT-009_NCR_관리대장.md` (Edit append / 행 이동)
   - `.claude/runs/{trace_id}/trace.jsonl` (issue 모드만; close 는 audit trace 와 분리)
 - 외 파일 절대 수정 금지. POL/PRO/WI/TMP/EX/REC (AUDIT 외) / MAT-001~005,007,008 모두 보호.
 
@@ -321,7 +321,7 @@ X-6. 호출자에게 반환:
 - R/A 책임자 휴리스틱은 `suggested: true` 표기로 사람 확정 의무를 명시.
 
 ### 3.4 dry-run 보장
-- `options.dry_run == true` 시 NCR 파일·MAT-006·trace 모두 미수정. 미리보기만 반환.
+- `options.dry_run == true` 시 NCR 파일·MAT-009·trace 모두 미수정. 미리보기만 반환.
 
 ### 3.5 종결 모드 무결성
 - close 모드는 단일 NCR 만 처리. 일괄 종결은 호출자가 반복 호출.
@@ -334,14 +334,14 @@ X-6. 호출자에게 반환:
 ### 4-A. issue 모드 (Phase F 직전)
 - [ ] 발행한 NCR 파일이 모두 정확한 경로에 존재 (Glob 재검증)
 - [ ] 각 NCR frontmatter 의 finding_id / req_id / severity / sla_due_date 모두 채워짐
-- [ ] MAT-006 §"NCR 발행 현황" 섹션에 N행 추가 확인 (Read 검증)
+- [ ] MAT-009 §"NCR 발행 현황" 섹션에 N행 추가 확인 (Read 검증)
 - [ ] trace.jsonl 에 `ncr_issued` 이벤트 N건 + `ncrs_drafted` 1건
 - [ ] dry_run 시 어떤 파일도 수정 안 됨
 
 ### 4-B. close 모드 (Phase X 직전)
 - [ ] NCR frontmatter `status: closed`, `capa_rec`, `closed_at`, `closed_by` 채워짐
 - [ ] §7 종결 기록 표 채워짐
-- [ ] MAT-006 §"NCR 발행 현황" 행 제거 + §"NCR 종결 현황" 행 추가
+- [ ] MAT-009 §"NCR 발행 현황" 행 제거 + §"NCR 종결 현황" 행 추가
 - [ ] capa_rec 의 파일 실재 (Glob)
 
 ---
@@ -350,7 +350,7 @@ X-6. 호출자에게 반환:
 
 **Phase 2 범위 (지금)**:
 - ✅ finding[] → REC-NCR-*.md N건 자동 발행 (issue 모드).
-- ✅ MAT-006 두 섹션 (open/closed) 자동 누적·이동.
+- ✅ MAT-009 두 섹션 (open/closed) 자동 누적·이동.
 - ✅ SLA 휴리스틱 (critical 20영업일 / major 60일 / minor 90일).
 - ✅ R/A 책임자 휴리스틱 (finding.category 기반).
 - ✅ NCR 종결 워크플로우 (close 모드).

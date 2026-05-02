@@ -95,7 +95,7 @@ MAT-005 §실행기록 의 본 PRO 관련 REC 3건 중 final 2 (REC-...03-001, R
 | Finding | F-002 (run-a1c2d3e4) |
 | 위반 요건 | REQ-007 (PRO-CMMI-04-01 §7 KPI) |
 | 연계 NCR | [[REC-NCR-04-01-2026-001_REQ-005_critical_종결추적]] (F-001 — root cause) |
-| MAT-006 인덱스 | [[MAT-006_NCR_관리대장]] |
+| MAT-009 인덱스 | [[MAT-009_NCR_관리대장]] |
 | 차원 4 인계 | (대기 — KPI 측정 절차 명문화 → /build-standard --from write 후보) |
 
 ## 7. 종결 기록

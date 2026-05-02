@@ -41,7 +41,7 @@
 {"ts":"2026-05-02T10:06:27+09:00","event":"ncr_issued","ncr_id":"REC-NCR-04-01-2026-002","finding_id":"F-002","req_id":"REQ-007","severity":"major","sla_due_date":"2026-07-01"}
 {"ts":"2026-05-02T10:06:28+09:00","event":"ncr_issued","ncr_id":"REC-NCR-04-01-2026-003","finding_id":"F-003","req_id":"REQ-009","severity":"minor","sla_due_date":"2026-07-31"}
 {"ts":"2026-05-02T10:06:29+09:00","event":"ncr_issued","ncr_id":"REC-NCR-04-01-2026-004","finding_id":"F-004","req_id":"REQ-010","severity":"critical","sla_due_date":"2026-05-30"}
-{"ts":"2026-05-02T10:06:30+09:00","event":"mat006_ncr_issued","rows_added":4,"section":"NCR 발행 현황 (open)"}
+{"ts":"2026-05-02T10:06:30+09:00","event":"mat009_ncr_issued","rows_added":4,"section":"NCR 발행 현황 (open)"}
 {"ts":"2026-05-02T10:06:30+09:00","event":"ncrs_drafted","issued_count":4,"by_severity":{"critical":2,"major":1,"minor":1}}
 {"ts":"2026-05-02T10:06:33+09:00","event":"act_trigger_invoked","mode":"from_audit","issued_ncrs":4,"recommendations":3}
 {"ts":"2026-05-02T10:06:35+09:00","event":"act_queue_created","queue_id":"queue-qa1b2c3d4","kind":"ncr_capa","priority":"critical","ncr_id":"REC-NCR-04-01-2026-001"}

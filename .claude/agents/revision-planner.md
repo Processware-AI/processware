@@ -98,7 +98,7 @@ recommended_actions:
   - step: 5
     action_type: close_ncr
     command: "/audit --close-ncr REC-NCR-04-01-2026-001 --capa <개정판 PRO 의 후속 REC>"
-    expected_output: "MAT-006 §발행 → §종결 행 이동"
+    expected_output: "MAT-009 §발행 → §종결 행 이동"
   - step: 6
     action_type: re_kpi
     command: "/audit --kpi start CMMI-DEV-ML3 --period <다음 분기>"

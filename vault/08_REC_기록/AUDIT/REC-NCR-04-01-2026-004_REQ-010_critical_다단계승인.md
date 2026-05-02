@@ -96,7 +96,7 @@ tags: [REC, NCR, CMMI, PQA, F-004, critical, approval]
 | Finding | F-004 (run-a1c2d3e4) |
 | 위반 요건 | REQ-010 (WI-CMMI-04-01-04 §2·§5) |
 | 증적 REC | REC-CMMI-04-01-04-01-2026-002 (반려) / REC-CMMI-04-01-04-01-2026-001 (정상 — 대조) |
-| MAT-006 인덱스 | [[MAT-006_NCR_관리대장]] |
+| MAT-009 인덱스 | [[MAT-009_NCR_관리대장]] |
 | 차원 4 인계 | WI-04-01-04 v1.1 개정 트리거 후보 (Phase 4 자동화 시 차원 4 큐) |
 
 ## 7. 종결 기록

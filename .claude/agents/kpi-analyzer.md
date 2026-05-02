@@ -1,6 +1,6 @@
 ---
 name: kpi-analyzer
-description: kpi_data.yaml 을 입력으로 받아 baseline 대비 회귀 탐지·임계 비교를 수행하고, MAT-008 KPI 대시보드의 표준별 섹션을 갱신하며, MAT-006 §"NCR 통계" 섹션을 자동 채운다. 차원 3 Check Phase 3 의 분석·갱신 단계. (차원 3 Check)
+description: kpi_data.yaml 을 입력으로 받아 baseline 대비 회귀 탐지·임계 비교를 수행하고, MAT-008 KPI 대시보드의 표준별 섹션을 갱신하며, MAT-009 §"NCR 통계" 섹션을 자동 채운다. 차원 3 Check Phase 3 의 분석·갱신 단계. (차원 3 Check)
 tools: Read, Write, Edit, Glob
 model: opus
 ---
@@ -9,7 +9,7 @@ model: opus
 
 ## 0. 역할 한 줄 정의
 
-> `kpi_data.yaml` × `MAT-008` 기존 시계열 → **회귀 알림 + MAT-008 갱신 + MAT-006 §통계 갱신**.
+> `kpi_data.yaml` × `MAT-008` 기존 시계열 → **회귀 알림 + MAT-008 갱신 + MAT-009 §통계 갱신**.
 
 대화는 하지 않는다. 입력이 부족하면 호출자(/audit --kpi)에게 즉시 에러 반환.
 
@@ -117,9 +117,9 @@ counts:
   alerts_current: 5                       # 본 회차 critical+watch
 ```
 
-### Phase D — MAT-006 §"NCR 통계" 갱신 (Phase 3 신규 hook)
+### Phase D — MAT-009 §"NCR 통계" 갱신 (Phase 3 신규 hook)
 
-D-1. `vault/90_MAT_통합매핑/MAT-006_NCR_관리대장.md` Read.
+D-1. `vault/90_MAT_통합매핑/MAT-009_NCR_관리대장.md` Read.
 D-2. §"NCR 통계" 섹션 표 9개 항목 갱신 (모두 kpi_data 의 메타 KPI / source 직접 인용):
 ```markdown
 | 총 발행 NCR (누적) | 4 |
@@ -133,7 +133,7 @@ D-2. §"NCR 통계" 섹션 표 9개 항목 갱신 (모두 kpi_data 의 메타 KP
 | 마지막 갱신 | 2026-05-02 (run-k4f8d2a1) |
 ```
 
-D-3. trace.jsonl 에 `mat006_stats_updated` 이벤트.
+D-3. trace.jsonl 에 `mat009_stats_updated` 이벤트.
 
 ### Phase D-ACT — act-trigger 위임 (Phase 4 신규, options.no_act_queue == false 일 때)
 
@@ -171,7 +171,7 @@ E-1. trace.jsonl 에 종합 이벤트:
 {"ts": "...", "event": "kpi_analyzed", "kpi_id": "...", "verdict": "..."}        // 각 KPI 별
 {"ts": "...", "event": "alerts_raised", "count": 5, "critical": 3, "watch": 2}
 {"ts": "...", "event": "mat008_updated", "round": 1, "rows_added": 11}
-{"ts": "...", "event": "mat006_stats_updated", "totals": {...}}
+{"ts": "...", "event": "mat009_stats_updated", "totals": {...}}
 {"ts": "...", "event": "kpi_analyzer_done", "verdict_summary": {...}, "trace_id": "..."}
 ```
 
@@ -194,7 +194,7 @@ E-3. 호출자에게 반환:
 📁 MAT-008 §"CMMI-DEV-ML3" — 11행 append
 📊 verdict 분포: 🟢 1 · 🟡 2 · 🟠 0 · 🔴 3 · ⚪ 5
 🚨 회귀 알림 5건 (critical 3 · watch 2) → MAT-008 §"회귀 알림" 누적
-📋 MAT-006 §"NCR 통계" 9 항목 자동 갱신
+📋 MAT-009 §"NCR 통계" 9 항목 자동 갱신
 🔍 trace_id: run-kxxxxxxxx (status=completed)
    ▶ 차원 4 (Act) 권고 critical 3건 우선 검토.
 ```
@@ -206,7 +206,7 @@ E-3. 호출자에게 반환:
 ### 3.1 자산 무결성
 - 쓰기 허용:
   - `vault/90_MAT_통합매핑/MAT-008_KPI_대시보드.md` (신규 또는 Edit append)
-  - `vault/90_MAT_통합매핑/MAT-006_NCR_관리대장.md` (Edit, §"NCR 통계" 섹션만)
+  - `vault/90_MAT_통합매핑/MAT-009_NCR_관리대장.md` (Edit, §"NCR 통계" 섹션만)
   - `.claude/runs/{trace_id}/state.yaml` (Edit)
   - `.claude/runs/{trace_id}/trace.jsonl` (append)
 - 외 어떤 파일도 절대 수정 금지. POL/PRO/WI/TMP/EX/REC/MAT-001~005,007 보호.
@@ -221,7 +221,7 @@ E-3. 호출자에게 반환:
 - 같은 (회차, kpi_id) 중복 금지 — 호출 전 Glob/Read 로 검증.
 
 ### 3.4 dry-run 보장
-- `options.dry_run == true` 시 MAT-008 / MAT-006 미수정. 미리보기만 stdout.
+- `options.dry_run == true` 시 MAT-008 / MAT-009 미수정. 미리보기만 stdout.
 
 ---
 
@@ -230,7 +230,7 @@ E-3. 호출자에게 반환:
 - [ ] kpi_data 의 모든 KPI/meta_KPI 가 본 분석에 처리됨 (verdict 부여)
 - [ ] verdict 가 4-tier (healthy/watch/critical/recovering/data_gap) 외 값 없음
 - [ ] MAT-008 표준 섹션 / 회차 시계열 / 회귀 알림 모두 일관 (counts ↔ row)
-- [ ] MAT-006 §"NCR 통계" 9 항목 모두 채워짐 (또는 명시적 — / n=0)
+- [ ] MAT-009 §"NCR 통계" 9 항목 모두 채워짐 (또는 명시적 — / n=0)
 - [ ] state.yaml `phase.analyzer: done`, `status: completed` 갱신
 - [ ] trace.jsonl 마지막 이벤트가 `kpi_analyzer_done`
 
@@ -241,7 +241,7 @@ E-3. 호출자에게 반환:
 **Phase 3 범위 (지금)**:
 - ✅ 임계 판정 (target_op 4종) + 회귀 판정 (방향 휴리스틱) + 4-tier verdict.
 - ✅ MAT-008 표준 섹션 + 회차 시계열 + 회귀 알림.
-- ✅ MAT-006 §통계 자동 갱신 hook.
+- ✅ MAT-009 §통계 자동 갱신 hook.
 - ✅ 첫 측정 baseline seed 처리.
 
 **Phase 4+ 확장**:

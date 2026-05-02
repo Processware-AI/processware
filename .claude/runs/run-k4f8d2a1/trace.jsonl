@@ -30,7 +30,7 @@
 {"ts":"2026-05-02T11:03:14+09:00","event":"kpi_analyzed","kpi_id":"META-NCR-SLA","verdict":"data_gap"}
 {"ts":"2026-05-02T11:03:30+09:00","event":"alerts_raised","count":4,"critical":4,"watch":0,"healthy":3,"data_gap":4}
 {"ts":"2026-05-02T11:04:05+09:00","event":"mat008_updated","round":1,"rows_added":11,"section":"CMMI-DEV-ML3"}
-{"ts":"2026-05-02T11:04:12+09:00","event":"mat006_stats_updated","totals":{"발행":4,"종결":0,"open":4,"종결율":"0.0%","SLA준수율":"— (n=0)","평균종결기간":"— (n=0)","등급별":"2/1/1"}}
+{"ts":"2026-05-02T11:04:12+09:00","event":"mat009_stats_updated","totals":{"발행":4,"종결":0,"open":4,"종결율":"0.0%","SLA준수율":"— (n=0)","평균종결기간":"— (n=0)","등급별":"2/1/1"}}
 {"ts":"2026-05-02T11:04:18+09:00","event":"kpi_analyzer_done","verdict_summary":{"healthy":3,"watch":0,"recovering":0,"critical":4,"data_gap":4},"trace_id":"run-k4f8d2a1"}
 {"ts":"2026-05-02T11:04:20+09:00","event":"act_trigger_invoked","mode":"from_kpi","critical_alerts":4}
 {"ts":"2026-05-02T11:04:21+09:00","event":"act_queue_merged","kpi_id":"KPI-CMMI-04-01-02","into_queue":"queue-qa1b2c3d4","reason":"related_ncrs:[NCR-001,NCR-002] root cause 동일 — NCR-001 큐의 kpi_alerts[] 통합"}

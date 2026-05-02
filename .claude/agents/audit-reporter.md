@@ -232,7 +232,7 @@ C-NCR-3. ncr-drafter 반환 처리:
    - state.yaml `counts.ncr_issued: N` 갱신.
    - trace.jsonl 에 `ncrs_drafted` 종합 이벤트 (ncr-drafter 가 별도로 ncr_issued N건 + ncrs_drafted 1건 기록).
 
-C-NCR-4. ncr-drafter 가 에러 반환 시 (예: MAT-006 손상) 본 reporter 도 abort. REC-AUDIT 미작성 (정합성 우선).
+C-NCR-4. ncr-drafter 가 에러 반환 시 (예: MAT-009 손상) 본 reporter 도 abort. REC-AUDIT 미작성 (정합성 우선).
 
 ### Phase C-ACT — act-trigger 위임 (Phase 4 신규, options.no_act_queue == false 일 때)
 
@@ -375,7 +375,7 @@ F-2. trace.jsonl 에 `audit_drafted` → `audit_finalized` 이벤트 (2개).
 - ✅ §6 권고 사항 (차원 4 인계 단서).
 
 **Phase 2 범위 (지금)**:
-- ✅ Finding 별 NCR 자동 발행 (`ncr-drafter` 위임) — REC-NCR-*.md + MAT-006 갱신.
+- ✅ Finding 별 NCR 자동 발행 (`ncr-drafter` 위임) — REC-NCR-*.md + MAT-009 갱신.
 - ✅ frontmatter `ncr_refs[]` + §4 finding 블록의 NCR 링크 자동 삽입.
 - ✅ `options.no_ncr` 옵션 (NCR 발행 보류 — 보고서만 작성).
 

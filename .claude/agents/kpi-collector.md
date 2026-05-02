@@ -1,6 +1,6 @@
 ---
 name: kpi-collector
-description: PRO/WI 본문의 §KPI / §통제점 표를 자동 추출하고 REC + MAT-005 §실행기록 + MAT-006 §발행/종결 현황 에서 측정값을 ingest 하여 kpi_data.yaml 을 생성한다. 차원 3 Check Phase 3 KPI 대시보드의 첫 번째 단계. (차원 3 Check)
+description: PRO/WI 본문의 §KPI / §통제점 표를 자동 추출하고 REC + MAT-005 §실행기록 + MAT-009 §발행/종결 현황 에서 측정값을 ingest 하여 kpi_data.yaml 을 생성한다. 차원 3 Check Phase 3 KPI 대시보드의 첫 번째 단계. (차원 3 Check)
 tools: Read, Grep, Glob, Write
 model: opus
 ---
@@ -9,7 +9,7 @@ model: opus
 
 ## 0. 역할 한 줄 정의
 
-> 표준 자산 (PRO/WI §KPI) × 실 증적 (REC / MAT-005 / MAT-006) → `kpi_data.yaml`. 어떤 분석·판정도 하지 않는다.
+> 표준 자산 (PRO/WI §KPI) × 실 증적 (REC / MAT-005 / MAT-009) → `kpi_data.yaml`. 어떤 분석·판정도 하지 않는다.
 
 분석은 `kpi-analyzer` 의 책임. 본 에이전트는 **추출·매핑 전용**.
 
@@ -80,7 +80,7 @@ B-2. **MAT-005 §실행 기록** 기반 측정:
      - HITL 결과 분포 (approved / rejected) → 절차 동작 안정성.
      - WI 별 실행 빈도 → "감사 계획 준수율" 단서 (계획 vs 실행).
 
-B-3. **MAT-006 §"NCR 발행/종결 현황"** 기반 측정 (Phase 3 신규):
+B-3. **MAT-009 §"NCR 발행/종결 현황"** 기반 측정 (Phase 3 신규):
    - **NCR 종결율** = 종결 행 수 / (발행 행 수 + 종결 행 수)
      - 단, "종결 현황" 섹션은 발행 시점에서 행 이동된 결과이므로, 정확 계산:
        종결 = `§종결 현황` 행 수, 발행 = `§발행 현황` + `§종결 현황` 행 수 (총 발행 누적).
@@ -178,7 +178,7 @@ meta_kpi:
     measurement:
       value: 0.0
       samples: { open: 4, closed: 0 }
-      sources: [{ mat: "MAT-006" }]
+      sources: [{ mat: "MAT-009" }]
   - kpi_id: META-NCR-SLA
     name: "NCR SLA 준수율"
     measurement:
@@ -252,7 +252,7 @@ counts:
 
 **Phase 3 범위 (지금)**:
 - ✅ PRO/WI §KPI 표 자동 추출 (5개 카테고리, target 비교 연산자 파싱).
-- ✅ MAT-005/MAT-006 ingest 로 메타 KPI 측정 (Coverage / Findings density / Independence / NCR 종결율 / SLA 준수율).
+- ✅ MAT-005/MAT-009 ingest 로 메타 KPI 측정 (Coverage / Findings density / Independence / NCR 종결율 / SLA 준수율).
 - ✅ 단위·기간 정규화.
 - ✅ data_gap 명시.
 

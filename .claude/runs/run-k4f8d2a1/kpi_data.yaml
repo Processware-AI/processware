@@ -87,7 +87,7 @@ kpi:
       sample_size: 0
       data_gap_reason: "종결 완료 부적합 0건 (NCR 4건 모두 open) — 다음 분기 종결 발생 후 측정 가능"
       sources:
-        - mat: "MAT-006 §NCR 종결 현황"
+        - mat: "MAT-009 §NCR 종결 현황"
 
   - kpi_id: KPI-CMMI-04-01-04
     source: PRO-CMMI-04-01
@@ -234,8 +234,8 @@ meta_kpi:
         total_issued: 4
       sample_size: 4
       sources:
-        - mat: "MAT-006 §NCR 발행 현황 (open)"
-        - mat: "MAT-006 §NCR 종결 현황 (closed)"
+        - mat: "MAT-009 §NCR 발행 현황 (open)"
+        - mat: "MAT-009 §NCR 종결 현황 (closed)"
 
   - kpi_id: META-NCR-SLA
     name: "NCR SLA 준수율"
@@ -251,4 +251,4 @@ meta_kpi:
       sample_size: 0
       data_gap_reason: "종결 NCR 0건 — n=0 으로 SLA 비교 불가. 다음 측정부터 가능."
       sources:
-        - mat: "MAT-006 §NCR 종결 현황 (closed)"
+        - mat: "MAT-009 §NCR 종결 현황 (closed)"

@@ -102,7 +102,7 @@ tags: [REC, NCR, CMMI, PQA, F-001, critical]
 | Finding | F-001 (run-a1c2d3e4) |
 | 위반 요건 | REQ-005 (PRO-CMMI-04-01 §5-6) |
 | 증적 REC | REC-CMMI-04-01-03-01-2026-001, REC-CMMI-04-01-04-01-2026-002 |
-| MAT-006 인덱스 | [[MAT-006_NCR_관리대장]] §"NCR 발행 현황 (open)" |
+| MAT-009 인덱스 | [[MAT-009_NCR_관리대장]] §"NCR 발행 현황 (open)" |
 | 차원 4 인계 | (대기 — Phase 4 자동화 시 차원 4 큐) |
 
 ## 7. 종결 기록 (closed)

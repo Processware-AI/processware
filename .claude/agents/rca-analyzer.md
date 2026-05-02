@@ -266,5 +266,5 @@ merged_root_cause:                               # batch 모드 통합 결과
 ```
 
 **Phase 3+ 확장**:
-- 시계열 분석 — 동일 root cause 의 재발 패턴 (MAT-006 §"반복 부적합" 와 cross-ref).
+- 시계열 분석 — 동일 root cause 의 재발 패턴 (MAT-009 §"반복 부적합" 와 cross-ref).
 - 외부 표준 비교 — root cause 가 표준 원문 자체의 결함이면 외부 표준 (ISO/CMMI 원문) 인용 보강.

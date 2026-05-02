@@ -48,7 +48,7 @@ kpi:
       sample_size: 2
       sources:
         - mat: "MAT-005 §실행기록"
-        - mat: "MAT-006 §NCR 발행/종결 현황"
+        - mat: "MAT-009 §NCR 발행/종결 현황"
 
   - kpi_id: KPI-CMMI-04-01-03
     name: "부적합 평균 종결 기간"
@@ -67,7 +67,7 @@ kpi:
           business_days: 9              # 5/2(토) ~ 5/15(금), 평일 9일 (5/5 어린이날 제외)
       sample_size: 1
       sources:
-        - mat: "MAT-006 §NCR 종결 현황"
+        - mat: "MAT-009 §NCR 종결 현황"
       note: "PRO v1.1 §5-6 SLA 적용 후 첫 측정 — 목표 20영업일 대비 11일 단축"
 
   - kpi_id: KPI-CMMI-04-01-04
@@ -98,7 +98,7 @@ kpi:
           note: "NCR-001 종결 후 PRO v1.1 적용으로 재발 없음"
       sample_size: 4                    # round 1 의 4 NCR
       sources:
-        - mat: "MAT-006 §NCR 발행/종결 현황"
+        - mat: "MAT-009 §NCR 발행/종결 현황"
 
   - kpi_id: KPI-WI-04-01-03-01
     name: "산출물 품질 점수"
@@ -167,8 +167,8 @@ meta_kpi:
         total_issued: 4
       sample_size: 4
       sources:
-        - mat: "MAT-006 §NCR 발행 현황 (open)"
-        - mat: "MAT-006 §NCR 종결 현황 (closed)"
+        - mat: "MAT-009 §NCR 발행 현황 (open)"
+        - mat: "MAT-009 §NCR 종결 현황 (closed)"
 
   - kpi_id: META-NCR-SLA
     name: "NCR SLA 준수율"
@@ -185,4 +185,4 @@ meta_kpi:
           within_sla: true
           buffer_days: 15
       sample_size: 1
-      sources: [{ mat: "MAT-006 §NCR 종결 현황" }]
+      sources: [{ mat: "MAT-009 §NCR 종결 현황" }]

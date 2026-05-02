@@ -1,6 +1,6 @@
 ---
 type: MAT
-doc_id: MAT-006
+doc_id: MAT-009
 title: NCR (부적합) 관리대장
 version: "0.1"
 owner: "QMR"
@@ -11,7 +11,7 @@ retention: "심사 종료 후 5년"
 tags: [MAT, ncr, audit-evidence]
 ---
 
-# MAT-006 NCR 관리대장
+# MAT-009 NCR 관리대장
 
 > 차원 3 (Check) `/audit` 하네스 + `ncr-drafter` 가 자동 발행한 부적합(NCR) 의 전사 인덱스. 자동 갱신 — 사람이 직접 수정 금지.
 >
@@ -96,7 +96,7 @@ tags: [MAT, ncr, audit-evidence]
 
 | 지표 | 값 | source |
 |---|---|---|
-| 총 발행 NCR (누적) | 4 | MAT-006 §"발행 현황" + §"종결 현황" 합계 |
+| 총 발행 NCR (누적) | 4 | MAT-009 §"발행 현황" + §"종결 현황" 합계 |
 | 종결 완료 (CAPA 첨부) | 1 | §"종결 현황" 행 수 (NCR-001 — 차원 4 폐쇄 루프 PoC) |
 | 미종결 (open) | 3 | §"발행 현황" 행 수 (NCR-002/003/004) |
 | 종결율 (= 종결 / 발행) | 25.0% | META-NCR-CLOSURE — 🟠 recovering (round 1 → 2: 0% → 25%, +25%p) |
@@ -104,7 +104,7 @@ tags: [MAT, ncr, audit-evidence]
 | 평균 종결 기간 (영업일) | 약 9 영업일 (n=1, 2026-05-02 → 05-15 = 13일 ≈ 9 영업일) | KPI-CMMI-04-01-03 — 🟢 healthy (목표 ≤ 20 영업일) |
 | 등급별 누적 (critical / major / minor) | 2 / 1 / 1 (그 중 종결: critical 1) | §"발행 현황" + §"종결 현황" 등급 컬럼 |
 | 반복 부적합 TOP (동일 PRO·Req 의 재발) | 0건 (회차 2 — 재발 없음) | KPI-CMMI-04-01-05 — 🟢 healthy |
-| 마지막 갱신 | 2026-05-16 (run-k7d2e8f3 — KPI round 2) | trace.jsonl mat006_stats_updated |
+| 마지막 갱신 | 2026-05-16 (run-k7d2e8f3 — KPI round 2) | trace.jsonl mat009_stats_updated |
 
 ---
 
