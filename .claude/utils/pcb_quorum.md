@@ -66,7 +66,7 @@ options:
 ## 4. 응답 처리 (gate_response Phase 2.5)
 
 ```yaml
-# 위원별 응답 — 각 위원의 /act --approve / --reject 호출이 누적
+# 위원별 응답 — 각 위원의 /act-process --approve / --reject 호출이 누적
 pcb_responses:
   - member: "박상무 (Sponsor)"
     decision: approved

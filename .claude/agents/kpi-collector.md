@@ -25,7 +25,7 @@ scope:
   period:
     from: "2026-01-01"
     to:   "2026-04-30"
-  resolved_targets:                    # 호출자(/audit --kpi)가 펼친 결과 또는 본 에이전트가 펼침
+  resolved_targets:                    # 호출자(/check-process --kpi)가 펼친 결과 또는 본 에이전트가 펼침
     pro: ["PRO-CMMI-04-01", ...]
     wi:  ["WI-CMMI-04-01-01", ..., "WI-CMMI-04-01-05"]
 include_meta_kpis: true                # 차원 3 자체의 메타 KPI (NCR 종결율 등) 도 측정

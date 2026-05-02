@@ -11,7 +11,7 @@ model: opus
 
 > `conformity_matrix.yaml` (+ audit_plan + evidence) → `REC-AUDIT-*.md` 보고서 1건 + MAT-005 §심사 이력 1행 + state/trace 마감.
 
-대화는 하지 않는다. 입력이 부족하면 호출자(/audit)에게 즉시 에러 반환.
+대화는 하지 않는다. 입력이 부족하면 호출자(/check-process)에게 즉시 에러 반환.
 
 ---
 
@@ -176,7 +176,7 @@ C-7. **§4 부적합 상세** — finding 별 1블록:
 **확정 상태**: ✅ 심사원 확정 (또는 인정 거부 시 ❌ rejected by auditor — reason)
 
 **📌 NCR 발행 (Phase 2)**: [[REC-NCR-04-01-2026-001_REQ-005_critical_종결추적]] (status: open / SLA 기한 2026-05-30)
-> ncr-drafter 가 자동 발행. 시정조치 종결: `/audit --close-ncr REC-NCR-04-01-2026-001 --capa <REC>`
+> ncr-drafter 가 자동 발행. 시정조치 종결: `/check-process --close-ncr REC-NCR-04-01-2026-001 --capa <REC>`
 ```
 
 > 각 finding 마다 동일 양식으로 반복. NCR 발행 줄은 `options.no_ncr == false` 일 때만 (Phase 2 default).
@@ -191,7 +191,7 @@ C-8. **§5 미평가 항목 (Coverage Gap)** — 표:
 
 C-9. **§6 권고 사항** (LLM 종합):
 - 1~3개 항목으로 차원 4 (Act) 인계 시 우선 검토할 개정 후보 제안.
-- 예: "WI-04-01-04 의 SLA 정의 보완 (F-001 근본 원인) — 차원 4 부분 재실행 (`/build-process --from write`) 후보."
+- 예: "WI-04-01-04 의 SLA 정의 보완 (F-001 근본 원인) — 차원 4 부분 재실행 (`/plan-process --from write`) 후보."
 
 C-10. **§7 결재** — 표:
 | 작성 (AI) | 검토 (심사원) | 승인 (QMR) |
@@ -202,8 +202,8 @@ C-11. **변경 금지 영역** — 본문 마지막:
 ```
 ---
 > 본 심사 보고서는 자동 생성되었으며, 심사 증적 무결성을 위해 직접 수정하지 마십시오.
-> 정정이 필요하면 신규 REC-AUDIT 발행 (`/audit start ...` 재실행).
-> 부적합 시정조치 종결: `/audit --close-ncr <ncr_id> --capa <REC>` (Phase 2 지원 예정).
+> 정정이 필요하면 신규 REC-AUDIT 발행 (`/check-process start ...` 재실행).
+> 부적합 시정조치 종결: `/check-process --close-ncr <ncr_id> --capa <REC>` (Phase 2 지원 예정).
 ```
 
 ### Phase C-NCR — ncr-drafter 위임 (Phase 2 신규, options.no_ncr == false 일 때)
@@ -263,7 +263,7 @@ C-ACT-3. act-trigger 반환 처리:
    - 본 reporter 의 보고서 §6 권고 사항 끝에 다음 줄 자동 추가:
      ```
      > 본 권고 사항은 Phase 4 act-trigger 가 차원 4 (Act) 인계 큐로 자동 push 했습니다 (큐 N건).
-     > 큐 조회: `/audit --act-queue list --status pending`
+     > 큐 조회: `/check-process --act-queue list --status pending`
      ```
    - trace.jsonl 에 `act_trigger_invoked` + `act_trigger_done` (act-trigger 본체가 큐별 이벤트도 함께 기록).
 

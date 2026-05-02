@@ -1,5 +1,5 @@
 ---
-description: 표준 프로세스 실행 (차원 2 Do) — WI 이행·REC 작성 + HITL 정지/재개/승인/반려. 사용: /do <WI번호> | --resume <trace> | --approve <trace> | --reject <trace> --reason "..."
+description: 표준 프로세스 실행 (차원 2 Do) — WI 이행·REC 작성 + HITL 정지/재개/승인/반려. 사용: /do-process <WI번호> | --resume <trace> | --approve <trace> | --reject <trace> --reason "..."
 argument-hint: "<WI번호 | 자연어> | --resume <trace_id> | --approve <trace_id> | --reject <trace_id> --reason \"...\" | --status <trace_id> | --check-approvals  [+ --dry-run | --executor <이름> | --auto-approve]"
 ---
 
@@ -7,7 +7,7 @@ argument-hint: "<WI번호 | 자연어> | --resume <trace_id> | --approve <trace_
 
 대상 입력: **$ARGUMENTS**
 
-본 커맨드는 `/build-process` 가 만들어 놓은 자산(WI/TMP/EX/PRO/POL)을 **계약서**로 삼아, AI Agent 가 사람과 대화하며 절차를 이행하고 REC(기록본)를 자동 작성한다.
+본 커맨드는 `/plan-process` 가 만들어 놓은 자산(WI/TMP/EX/PRO/POL)을 **계약서**로 삼아, AI Agent 가 사람과 대화하며 절차를 이행하고 REC(기록본)를 자동 작성한다.
 
 상위 설계: `docs/표준프로세스_AI관리체계_4차원PDCA.md` §3 "차원 2 — DO" / §5.3 "WI 이중 포맷"
 
@@ -20,7 +20,7 @@ argument-hint: "<WI번호 | 자연어> | --resume <trace_id> | --approve <trace_
 - **MAT-005 만 갱신**: 추적성은 MAT-005 의 `## 실행 기록 (운영 인스턴스)` 섹션에 1행 append.
 - **모든 입력·LLM 출력 전수 로그**: `.claude/runs/{trace_id}/trace.jsonl` (심사 증적).
 - **환각 방지**: TMP 필드에 직접 매핑 가능한 값만 REC 에 기록한다. 매핑 불가능한 자유 서술이 필요하면 사람에게 추가 질문.
-- **HITL 강제 정지·재개**: WI §5.3 "완료 조건" 에 "승인" 표현이 있거나, WI §2 "수행 주체" 의 "승인자" 역할이 있으면 반드시 사람 승인 게이트 발동. Phase 2 부터 진짜 정지 (`pending_approval`) + 외부 채널 drop-out + `/do --approve|--reject` 응답 후 재개.
+- **HITL 강제 정지·재개**: WI §5.3 "완료 조건" 에 "승인" 표현이 있거나, WI §2 "수행 주체" 의 "승인자" 역할이 있으면 반드시 사람 승인 게이트 발동. Phase 2 부터 진짜 정지 (`pending_approval`) + 외부 채널 drop-out + `/do-process --approve|--reject` 응답 후 재개.
 
 ---
 
@@ -30,10 +30,10 @@ argument-hint: "<WI번호 | 자연어> | --resume <trace_id> | --approve <trace_
 
 ### 1-1. `start` 모드 — 신규 실행
 ```
-/do WI-CMMI-04-01-03                 # 직접 doc_id
-/do WI-CMMI-04-01-03_작업산출물_평가_v1.0    # 직접 파일명
-/do 작업산출물 평가                   # 자연어 (Phase 3) — process-router 위임
-/do 공급자 평가                       # 자연어 + 후보 제시 모드 가능
+/do-process WI-CMMI-04-01-03                 # 직접 doc_id
+/do-process WI-CMMI-04-01-03_작업산출물_평가_v1.0    # 직접 파일명
+/do-process 작업산출물 평가                   # 자연어 (Phase 3) — process-router 위임
+/do-process 공급자 평가                       # 자연어 + 후보 제시 모드 가능
 ```
 → 인자 파싱:
 - 인자가 `WI-` / `PRO-` 접두사 + doc_id 패턴이면 **직접 매칭** → Phase A 진입.
@@ -42,9 +42,9 @@ argument-hint: "<WI번호 | 자연어> | --resume <trace_id> | --approve <trace_
   - `candidates_presented` → 후보 표 출력 + 사용자 선택 대기.
   - `no_match` → 구체화 요청 메시지 후 종료.
 
-### 1-2. `resume` 모드 — `/do --resume <trace_id>`
+### 1-2. `resume` 모드 — `/do-process --resume <trace_id>`
 ```
-/do --resume run-a3f9c2b1
+/do-process --resume run-a3f9c2b1
 ```
 → `state.yaml` Read · `status` 확인:
   - `pending_approval` → "승인 대기 중" 안내 + `approval_request.md` 경로 출력 + 종료 (사용자가 응답할 차례).
@@ -52,44 +52,44 @@ argument-hint: "<WI번호 | 자연어> | --resume <trace_id> | --approve <trace_
   - `running` (전 세션 비정상 종료) → 마지막 step 부터 재개.
   - `completed` → "이미 완료된 trace" 안내 + REC 경로 출력.
 
-### 1-3. `approve` 모드 — `/do --approve <trace_id> [--approver <이름>]`
+### 1-3. `approve` 모드 — `/do-process --approve <trace_id> [--approver <이름>]`
 ```
-/do --approve run-a3f9c2b1
-/do --approve run-a3f9c2b1 --approver "박팀장"
+/do-process --approve run-a3f9c2b1
+/do-process --approve run-a3f9c2b1 --approver "박팀장"
 ```
 → `hitl-gatekeeper` `gate_response` 모드 호출 (decision: approved). 응답 처리 후 자동으로 process-executor 재개 → rec-writer 위임.
 
-### 1-4. `reject` 모드 — `/do --reject <trace_id> --reason "..." [--approver <이름>]`
+### 1-4. `reject` 모드 — `/do-process --reject <trace_id> --reason "..." [--approver <이름>]`
 ```
-/do --reject run-a3f9c2b1 --reason "표본 부족 — 재수집 필요"
+/do-process --reject run-a3f9c2b1 --reason "표본 부족 — 재수집 필요"
 ```
 → `--reason` 누락 시 에러. 반려 처리 후 rec-writer 가 REC `status: rejected` 로 마감 + MAT-005 ❌ 반려 표기.
 
-### 1-5. `status` 모드 — `/do --status <trace_id>`
+### 1-5. `status` 모드 — `/do-process --status <trace_id>`
 ```
-/do --status run-a3f9c2b1
+/do-process --status run-a3f9c2b1
 ```
 → `hitl-gatekeeper` `gate_query` 모드. 정지된 trace 의 현재 상태·승인자·경과 시간 출력.
 
-### 1-6. `check-approvals` 모드 — `/do --check-approvals`
+### 1-6. `check-approvals` 모드 — `/do-process --check-approvals`
 ```
-/do --check-approvals
+/do-process --check-approvals
 ```
 → 모든 `.claude/runs/run-*/approval_request.md` 의 frontmatter 를 스캔. `status: approved/rejected` 인 drop-in 응답이 있으면 자동으로 처리 (외부 채널 사용자가 파일을 직접 편집한 경우의 일괄 회수).
 
-### 1-7-bis. `check-timeouts` 모드 — `/do --check-timeouts [--dry-run]`
+### 1-7-bis. `check-timeouts` 모드 — `/do-process --check-timeouts [--dry-run]`
 ```
-/do --check-timeouts                # 모든 pending_approval trace 의 타임아웃 검출 + 에스컬레이션
-/do --check-timeouts --dry-run      # 검출만, 발송 안 함
+/do-process --check-timeouts                # 모든 pending_approval trace 의 타임아웃 검출 + 에스컬레이션
+/do-process --check-timeouts --dry-run      # 검출만, 발송 안 함
 ```
 → `escalation-coordinator` `scan` 모드 호출. 타임아웃 만료 trace 의 `escalate_to[]` 에 따라 다음 승인자에게 drop-out 재발송. 체인 소진 시 `escalation_exhausted` 상태 + 사용자 보고.
 
-권장 운영: 외부 cron 으로 30분 또는 1시간 주기 실행 (예: `*/30 * * * * /do --check-timeouts`).
+권장 운영: 외부 cron 으로 30분 또는 1시간 주기 실행 (예: `*/30 * * * * /do-process --check-timeouts`).
 
-### 1-7. `rebuild-catalog` 모드 — `/do --rebuild-catalog [--scope <영역>]`
+### 1-7. `rebuild-catalog` 모드 — `/do-process --rebuild-catalog [--scope <영역>]`
 ```
-/do --rebuild-catalog                # 전체 표준 재인덱싱
-/do --rebuild-catalog --scope CMMI   # CMMI 만
+/do-process --rebuild-catalog                # 전체 표준 재인덱싱
+/do-process --rebuild-catalog --scope CMMI   # CMMI 만
 ```
 → `traceability-mapper` 를 **catalog-rebuild 모드** 로 호출. 모든 PRO/WI 의 frontmatter + §1 업무목적 + §2 수행주체 + §5 절차 를 스캔해 MAT-007 의 trigger·alias·event_triggers·hitl_required 를 재추출. 사람이 `manual_override: true` 표시한 행은 보존.
 
@@ -150,7 +150,7 @@ B-1. 서브에이전트 `process-executor` 를 다음 컨텍스트로 호출:
 B-2. process-executor 가 `state.status: ready_to_finalize` 로 만들면 Phase C 로.
 B-3. **HITL 게이트 만나면 `state.status: pending_approval` 로 정지 → 종료** (사용자가 응답할 차례).
    - `hitl-gatekeeper` 가 `approval_request.md` 를 drop-out.
-   - 사용자에게 응답 명령 (`/do --approve` / `/do --reject`) 안내.
+   - 사용자에게 응답 명령 (`/do-process --approve` / `/do-process --reject`) 안내.
    - 본 커맨드는 종료. 응답 시 `approve`/`reject` 모드로 재진입.
 
 #### Phase C. rec-writer 위임
@@ -187,7 +187,7 @@ AR-2. `hitl-gatekeeper` `gate_response` 모드 호출:
 - decision: approved | rejected
 - approver_name: <--approver 옵션 또는 시스템 사용자>
 - reason: <--reason, reject 시 필수>
-- input_source: "/do --approve" or "/do --reject"
+- input_source: "/do-process --approve" or "/do-process --reject"
 ```
 AR-3. gate_response 처리 완료 후 (`status: ready_to_finalize`):
    - `decision == approved`: process-executor 마지막 step 마무리 (derivation) → rec-writer 위임.
@@ -295,7 +295,7 @@ finalized_at: null
 | Phase | 포함 | 제외 |
 |---|---|---|
 | 1 | 직접 WI 지정 / 단일 step 대화 / TMP 매핑 / REC 1건 생성 / MAT-005 1행 / trace 로그 / HITL `--auto-approve` 모킹 | 자연어 라우팅 / HITL 정식 / 멀티턴 재개 |
-| 2 | HITL 정지(`pending_approval`) / 외부 채널 drop-out / `/do --resume\|--approve\|--reject\|--status\|--check-approvals` / 반려 처리 (REC.status: rejected) / 6개 진입 모드 | 자연어 라우팅 / 타임아웃·에스컬레이션 / 외부 IdP 인증 / 다단계 승인 |
+| 2 | HITL 정지(`pending_approval`) / 외부 채널 drop-out / `/do-process --resume\|--approve\|--reject\|--status\|--check-approvals` / 반려 처리 (REC.status: rejected) / 6개 진입 모드 | 자연어 라우팅 / 타임아웃·에스컬레이션 / 외부 IdP 인증 / 다단계 승인 |
 | 3 | process-router / MAT-007 카탈로그 / 자연어 매칭 / `--rebuild-catalog` / `--auto-threshold` | 외부 시스템 연동 / 다국어 / RAG |
 | 4 | wi-tmp-writer 확장 (steps.yaml 정식 출력) / steps.yaml ↔ MD 동기화 / qa-reviewer §11-A | — |
 | **2.5 (지금)** | escalation-coordinator / 다단계 승인 (review→approve→final) / 타임아웃·에스컬레이션 체인 / `--check-timeouts` / 외부 IdP 인터페이스 hook | 외부 cron 실연동 / 이메일·Slack 실연동 / IdP 실연동 |

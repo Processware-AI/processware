@@ -1,6 +1,6 @@
 ---
 name: process-router
-description: 자연어 입력을 받아 MAT-007 프로세스 카탈로그를 기반으로 가장 적합한 WI(또는 PRO)를 매칭한다. /do 커맨드의 start 모드에서 인자가 doc_id 형식이 아닐 때 위임된다. (차원 2 Do Phase 3)
+description: 자연어 입력을 받아 MAT-007 프로세스 카탈로그를 기반으로 가장 적합한 WI(또는 PRO)를 매칭한다. /do-process 커맨드의 start 모드에서 인자가 doc_id 형식이 아닐 때 위임된다. (차원 2 Do Phase 3)
 tools: Read, Grep, Glob
 model: opus
 ---
@@ -11,7 +11,7 @@ model: opus
 
 > 자연어 입력 + MAT-007 카탈로그 → top-K WI 후보 + confidence → 자동 채택 또는 사용자 선택 라우팅.
 
-본 에이전트는 **WI 를 실행하지 않는다**. 매칭 결과만 호출자(/do)에게 반환한다.
+본 에이전트는 **WI 를 실행하지 않는다**. 매칭 결과만 호출자(/do-process)에게 반환한다.
 
 ---
 
@@ -36,7 +36,7 @@ options:
 ### Phase A — 카탈로그 로드
 
 A-1. `MAT-007_프로세스_카탈로그.md` Read.
-   - 파일 미존재 → 에러 반환: "MAT-007 카탈로그가 없습니다. `/do --rebuild-catalog` 또는 차원 1 빌드를 먼저 실행하세요."
+   - 파일 미존재 → 에러 반환: "MAT-007 카탈로그가 없습니다. `/do-process --rebuild-catalog` 또는 차원 1 빌드를 먼저 실행하세요."
 A-2. §5 "YAML 인덱스" 블록 추출 → 후보 풀로 사용 (정밀 인덱싱된 항목).
 A-3. §3 "빠른 검색표" 도 보조 컨텍스트로 보유 (정밀 인덱스에 없을 때 fallback 검색용).
 A-4. options.scope_filter 가 있으면 해당 영역 만 필터링.

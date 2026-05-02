@@ -36,7 +36,7 @@ A-3. **자산 의존성 검색**:
    - PRO 가 영향이면 그 PRO 의 자식 WI 들도 잠재 영향 (frontmatter `child_wi`).
    - WI 가 영향이면 부모 PRO + 형제 WI 검토 (정합성).
    - POL 이 영향이면 모든 자식 PRO 영향 (대규모).
-   - REC 만 영향이면 자산 개정 불필요 (`/do --reissue` 또는 후속 REC 만).
+   - REC 만 영향이면 자산 개정 불필요 (`/do-process --reissue` 또는 후속 REC 만).
 
 A-4. **MAT-007 / MAT-005 cross-ref**:
    - MAT-007 프로세스 카탈로그 — 자연어 라우팅 의 alias 영향 검토 (PRO 개정 시 alias 갱신 필요할 수 있음).
@@ -52,7 +52,7 @@ B-1. 4차원PDCA.md §5.4 표 적용:
 | 단일 WI 의 §개정 (조항 추가·R/A 변경) | `--from write --target {WI}` | wi-tmp-writer 만 재실행 |
 | PRO 의 §추가·체계 변경 | `--from design --target {PRO}` | process-designer + wi-tmp-writer 재실행 |
 | POL 또는 표준 원문 자체 변경 | `--restart` | standard-analyzer 부터 전체 재실행 |
-| REC 보완만 (자산 개정 없음) | rec_only | `/do {WI} --reissue {REC}` (Phase 2.5 지원 예정) |
+| REC 보완만 (자산 개정 없음) | rec_only | `/do-process {WI} --reissue {REC}` (Phase 2.5 지원 예정) |
 
 B-2. 본 PoC 의 큐별 매핑:
 - ncr_capa critical (root cause = method, PRO §5-6 SLA 미정의) → `--from write --target PRO-CMMI-04-01`
@@ -85,11 +85,11 @@ recommended_actions:
     note: "기존 자산 v1.0 의 git tag 또는 별도 백업"
   - step: 2
     action_type: rebuild
-    command: "/build-process CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01"
+    command: "/plan-process CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01"
     expected_output: "PRO-CMMI-04-01_v1.1.md (개정판) + 자식 WI 정합 검증"
   - step: 3
     action_type: validate
-    command: "qa-reviewer 자동 호출 — /build-process 내부에서 처리"
+    command: "qa-reviewer 자동 호출 — /plan-process 내부에서 처리"
     expected_output: "§11-A WI ↔ steps.yaml 일치 + Phase 4.5 의 §11-D 개정 정합 검증"
   - step: 4
     action_type: register
@@ -97,11 +97,11 @@ recommended_actions:
     expected_output: "PRO-CMMI-04-01 v1.0 → v1.1 행 추가"
   - step: 5
     action_type: close_ncr
-    command: "/audit --close-ncr REC-NCR-04-01-2026-001 --capa <개정판 PRO 의 후속 REC>"
+    command: "/check-process --close-ncr REC-NCR-04-01-2026-001 --capa <개정판 PRO 의 후속 REC>"
     expected_output: "MAT-009 §발행 → §종결 행 이동"
   - step: 6
     action_type: re_kpi
-    command: "/audit --kpi start CMMI-DEV-ML3 --period <다음 분기>"
+    command: "/check-process --kpi start CMMI-DEV-ML3 --period <다음 분기>"
     expected_output: "회차 2 측정 — KPI 회복 검증 (recovering 또는 healthy 전환 기대)"
 ```
 
@@ -148,7 +148,7 @@ revision_scope:
 
 rebuild_mode: "--from write"
 rebuild_target: "PRO-CMMI-04-01"
-rebuild_command: "/build-process CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01"
+rebuild_command: "/plan-process CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01"
 estimated_impact: medium
 estimated_effort_hours: 8                # LLM 추정 — 사람 검증 권장
 
@@ -229,7 +229,7 @@ revision_summary:
 
 ### 3.4 환각 방지
 - estimated_effort_hours / risk_factors 는 LLM 추정 — 가이드에 "사람 검증 필수" 표기.
-- recommended_actions 의 명령은 표준화된 슬래시 (/build-process / /do / /audit) 만.
+- recommended_actions 의 명령은 표준화된 슬래시 (/plan-process / /do-process / /check-process) 만.
 
 ---
 
@@ -263,7 +263,7 @@ graph TD
   Q1[queue-qe5f6a7b8<br/>NCR-002 major<br/>KPI 종결율] --> R[merged_root_cause<br/>PRO §7 측정 시점 정의 분리]
   Q2[queue-q9d8c7b6a<br/>recommendation major<br/>KPI 측정 명문화] --> R
   R --> A[PRO-CMMI-04-01 §7 개정<br/>v1.1 → v1.2 예정]
-  A --> B[/build-process --from write --target PRO-CMMI-04-01]
+  A --> B[/plan-process --from write --target PRO-CMMI-04-01]
   B --> C[v1.2 산출 + qa-reviewer §11-A]
   C --> D[NCR-002 close + queue-q9d8c7b6a done]
   D --> E[KPI round 3 — 종결율 75%, 측정 절차 healthy 기대]
@@ -295,7 +295,7 @@ dependency_graph_mermaid: |
     Q2[queue-q9d8c7b6a] --> R
     R --> A[PRO-CMMI-04-01 §7]
 
-rebuild_command: "/build-process CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01"
+rebuild_command: "/plan-process CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01"
                  # 단일 명령 — 두 큐 동시 처리
 
 per_queue_summary:

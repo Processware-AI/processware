@@ -71,14 +71,14 @@ S-3. 일반 모드: 자기 phase `trace` 를 `status: running` + `started` 로 E
    - **갱신 이력 §6 에 1행 추가**: 버전 +0.1, 변경 내용 요약, 담당("traceability-mapper auto-update").
    - 카탈로그 파일 미존재 시 신규 생성 (vault/90_MAT_통합매핑/MAT-007_프로세스_카탈로그.md, T09 템플릿 변형 또는 인라인 작성).
 
-### B-2. catalog-rebuild 모드 (Phase 3 — `/do --rebuild-catalog` 호출)
+### B-2. catalog-rebuild 모드 (Phase 3 — `/do-process --rebuild-catalog` 호출)
 
 본 모드는 차원 1 빌드와 무관하게 본 에이전트를 호출할 수 있는 단독 진입점:
 
 CR-1. `_state.yaml` 검사 생략 (차원 1 의존 없음).
 CR-2. 입력: `mode: catalog-rebuild`, `scope: <영역|전체>`.
 CR-3. 위 §B 11-B 의 추출·갱신 절차만 실행. 다른 MAT (001~006) 은 건드리지 않음.
-CR-4. 완료 후 결과 표 호출자(/do)에게 반환:
+CR-4. 완료 후 결과 표 호출자(/do-process)에게 반환:
 ```
 ✅ MAT-007 카탈로그 갱신 완료
    인덱싱: PRO N / WI M (정밀 K + 자동 (M-K))

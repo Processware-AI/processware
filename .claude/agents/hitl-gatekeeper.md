@@ -39,10 +39,10 @@ trace_id: run-xxxxxxxx
 decision: "approved" | "rejected"
 approver_name: "박팀장"        # 응답자 신원 (기본은 system user)
 reason: "..."                  # rejected 시 필수
-input_source: "/do --approve" | "/do --reject" | "approval_request.md drop-in"
+input_source: "/do-process --approve" | "/do-process --reject" | "approval_request.md drop-in"
 ```
 
-### 1-3. `gate_query` — 정지된 trace 의 현재 상태 조회 (`/do --status` 등)
+### 1-3. `gate_query` — 정지된 trace 의 현재 상태 조회 (`/do-process --status` 등)
 ```yaml
 mode: gate_query
 trace_id: run-xxxxxxxx
@@ -95,12 +95,12 @@ status: pending
 
 **승인**:
 ```
-/do --approve run-xxxxxxxx
+/do-process --approve run-xxxxxxxx
 ```
 
 **반려**:
 ```
-/do --reject run-xxxxxxxx --reason "<사유>"
+/do-process --reject run-xxxxxxxx --reason "<사유>"
 ```
 
 또는 본 파일의 frontmatter `status` 를 `approved` / `rejected` 로 변경하고
@@ -112,7 +112,7 @@ status: pending
 
 E-4. trace.jsonl 에 `hitl_request` 이벤트 기록 (approver_role, request_path).
 
-E-5. **호출자(/do 또는 process-executor) 에게 정지 신호 반환**:
+E-5. **호출자(/do-process 또는 process-executor) 에게 정지 신호 반환**:
 ```
 ⏸ HITL Gate — pending_approval
 
@@ -121,8 +121,8 @@ E-5. **호출자(/do 또는 process-executor) 에게 정지 신호 반환**:
 trace_id:  run-xxxxxxxx
 
 응답 방법:
-  /do --approve run-xxxxxxxx
-  /do --reject run-xxxxxxxx --reason "<사유>"
+  /do-process --approve run-xxxxxxxx
+  /do-process --reject run-xxxxxxxx --reason "<사유>"
 
 본 실행은 정지됨. 응답 도달 시 자동 재개.
 ```
@@ -200,9 +200,9 @@ Q-3. 다음 trace_id 가 존재하지 않으면 에러 반환.
 
 ## 3. drop-in 응답 처리 (외부 채널 모킹)
 
-사용자가 `/do --approve` 명령 대신 `approval_request.md` 파일을 직접 편집해서 응답하는 경우:
+사용자가 `/do-process --approve` 명령 대신 `approval_request.md` 파일을 직접 편집해서 응답하는 경우:
 
-D-1. `/do` 커맨드의 `--check-approvals` 옵션 또는 호출자가 본 에이전트의 `gate_response` 모드 대신 본 절차로 진입할 수 있다.
+D-1. `/do-process` 커맨드의 `--check-approvals` 옵션 또는 호출자가 본 에이전트의 `gate_response` 모드 대신 본 절차로 진입할 수 있다.
 
 D-2. 절차:
    a. `Glob ".claude/runs/run-*/approval_request.md"` 로 모든 pending 요청 수집.
@@ -235,7 +235,7 @@ D-3. drop-in 응답 시 `input_source: "approval_request.md drop-in"` 로 trace.
 - `input_source` 는 항상 명시 (감사 시 응답 출처 추적 가능해야 함).
 
 ### 4.4 승인자 신원
-- `/do --approve` 단독 사용 시 `approver_name` 은 시스템 사용자명 (Phase 2 한도). 실제 본인 인증은 Phase 3 이후 외부 IdP 연동 시점.
+- `/do-process --approve` 단독 사용 시 `approver_name` 은 시스템 사용자명 (Phase 2 한도). 실제 본인 인증은 Phase 3 이후 외부 IdP 연동 시점.
 - drop-in 시 `approver_name` 은 사용자가 파일에 직접 기재한 값.
 - approver_name 이 누락되면 `"(unverified)"` 로 기록 + trace 에 `unverified_approver` 메모.
 

@@ -1,5 +1,5 @@
 ---
-description: 표준 프로세스 심사 (차원 3 Check) — REC ↔ PRO/WI 요건 자동 대조 + 부적합 탐지 + 심사 보고서 발행. ISO §9.2 독립성 강제. 사용 ./audit start <PRO|WI|범위> --auditor "이름" | --confirm <trace> | --status <trace>
+description: 표준 프로세스 심사 (차원 3 Check) — REC ↔ PRO/WI 요건 자동 대조 + 부적합 탐지 + 심사 보고서 발행. ISO §9.2 독립성 강제. 사용 ./check-process start <PRO|WI|범위> --auditor "이름" | --confirm <trace> | --status <trace>
 argument-hint: "start <PRO|WI|범위> --auditor \"이름\" | --resume <trace_id> | --confirm <trace_id> [--auditor \"이름\"] | --reject-finding <ncr_id> --reason \"...\" | --status <trace_id> | --list-ncr [--status open|closed] | --close-ncr <ncr_id> --capa <REC> [+ --dry-run | --override-independence (PoC만) | --period <from..to> | --strictness strict|normal|lenient]"
 ---
 
@@ -7,7 +7,7 @@ argument-hint: "start <PRO|WI|범위> --auditor \"이름\" | --resume <trace_id>
 
 대상 입력: **$ARGUMENTS**
 
-본 커맨드는 차원 2 (`/do`) 가 누적한 **REC + trace.jsonl + MAT-005** 를 입력으로, AI 심사원이 **PRO/WI 요건 ↔ REC 충족 여부**를 자동 대조하여 **심사 보고서·부적합·KPI** 를 산출한다.
+본 커맨드는 차원 2 (`/do-process`) 가 누적한 **REC + trace.jsonl + MAT-005** 를 입력으로, AI 심사원이 **PRO/WI 요건 ↔ REC 충족 여부**를 자동 대조하여 **심사 보고서·부적합·KPI** 를 산출한다.
 
 상위 설계: `docs/표준프로세스_AI관리체계_4차원PDCA.md` §3 "차원 3 — CHECK" / §5.2 "AI 독립성 보장" / `docs/AI-Driven CMMI Operating Platform.md` Layer 2 회귀 방지
 
@@ -18,7 +18,7 @@ argument-hint: "start <PRO|WI|범위> --auditor \"이름\" | --resume <trace_id>
 - **자산은 읽기 전용**: POL/PRO/WI/TMP/EX/REC/MAT-001~005,007 은 본 커맨드가 절대 수정하지 않는다.
 - **신규 산출물만 생성**: 심사 보고서·부적합 → `vault/08_REC_기록/AUDIT/REC-AUDIT-*.md` 와 `vault/08_REC_기록/AUDIT/REC-NCR-*.md` (Phase 2). NCR 관리대장은 `vault/90_MAT_통합매핑/MAT-009_NCR_관리대장.md` (Phase 2).
 - **MAT-005 §심사 이력 만 갱신**: 차원 2 가 §실행 기록 을 누적하듯, 차원 3 은 §심사 이력 섹션에 1행 append.
-- **독립성 강제 (ISO 9.2)**: `/audit start` 진입 시 `--auditor` 이름과 대상 trace 들의 `executed_by` 가 1건이라도 일치하면 즉시 abort. PoC 한정 `--override-independence` 만 허용 (Phase 1 만, Phase 4 에서 제거).
+- **독립성 강제 (ISO 9.2)**: `/check-process start` 진입 시 `--auditor` 이름과 대상 trace 들의 `executed_by` 가 1건이라도 일치하면 즉시 abort. PoC 한정 `--override-independence` 만 허용 (Phase 1 만, Phase 4 에서 제거).
 - **대화는 차원 2 보다 적다**: 차원 3 은 "사후 검토" 라 사람과의 대화는 매트릭스 확정 1회 (HITL gate) + 부적합 등급 조정 (Phase 2) 정도. 차원 2 의 step-by-step 대화 모델과 다르다.
 - **모든 입력·LLM 출력 전수 로그**: `.claude/runs/{trace_id}/trace.jsonl` (심사 증적의 증적).
 - **환각 방지**: 충족 판정은 REC 본문에 명시된 값·증적 매트릭스의 trace_id 만 근거로 한다. REC 에 없는 값은 임의로 채우지 않는다.
@@ -31,10 +31,10 @@ argument-hint: "start <PRO|WI|범위> --auditor \"이름\" | --resume <trace_id>
 
 ### 1-1. `start` 모드 — 신규 심사
 ```
-/audit start PRO-CMMI-04-01 --auditor "이감사"            # 단일 PRO 범위
-/audit start WI-CMMI-04-01-03 --auditor "이감사"           # 단일 WI 범위 (좁은 심사)
-/audit start CMMI-DEV-ML3 --auditor "이감사"               # 표준 전체 범위 (넓은 심사)
-/audit start PRO-CMMI-04-01 --auditor "이감사" --period 2026-01-01..2026-04-30
+/check-process start PRO-CMMI-04-01 --auditor "이감사"            # 단일 PRO 범위
+/check-process start WI-CMMI-04-01-03 --auditor "이감사"           # 단일 WI 범위 (좁은 심사)
+/check-process start CMMI-DEV-ML3 --auditor "이감사"               # 표준 전체 범위 (넓은 심사)
+/check-process start PRO-CMMI-04-01 --auditor "이감사" --period 2026-01-01..2026-04-30
 ```
 → 인자 파싱:
 - 첫 인자가 `PRO-` / `WI-` / 표준 코드 패턴이면 직접 매칭.
@@ -42,58 +42,58 @@ argument-hint: "start <PRO|WI|범위> --auditor \"이름\" | --resume <trace_id>
 - `--period` 누락 시 기본값: 지난 분기 (오늘 기준 90일).
 - trace_id 생성 (예: `run-a` + 8자 hex), `.claude/runs/{trace_id}/state.yaml` 초기화.
 
-### 1-2. `resume` 모드 — `/audit --resume <trace_id>`
+### 1-2. `resume` 모드 — `/check-process --resume <trace_id>`
 ```
-/audit --resume run-a1c2d3e4
+/check-process --resume run-a1c2d3e4
 ```
 → `state.yaml` Read · `status` 분기:
   - `pending_confirmation` → "심사원 확정 대기" 안내 + `confirmation_request.md` 경로 출력 + 종료 (사용자가 응답할 차례).
   - `running` (전 세션 중단) → 마지막 단계부터 재개.
   - `completed` → "이미 발행된 심사 보고서" 안내 + `final_audit_path` 출력 + 종료.
 
-### 1-3. `confirm` 모드 — `/audit --confirm <trace_id> [--auditor <이름>] [--adjust-finding <id>=<grade>]`
+### 1-3. `confirm` 모드 — `/check-process --confirm <trace_id> [--auditor <이름>] [--adjust-finding <id>=<grade>]`
 ```
-/audit --confirm run-a1c2d3e4
-/audit --confirm run-a1c2d3e4 --auditor "이감사"
-/audit --confirm run-a1c2d3e4 --adjust-finding F-002=minor
+/check-process --confirm run-a1c2d3e4
+/check-process --confirm run-a1c2d3e4 --auditor "이감사"
+/check-process --confirm run-a1c2d3e4 --adjust-finding F-002=minor
 ```
 → `pending_confirmation` 인 trace 의 매트릭스를 확정. 등급 조정이 있으면 적용. `audit-reporter` 위임 → REC-AUDIT 발행.
 
-### 1-4. `reject-finding` 모드 — `/audit --reject-finding <finding_id> --reason "..." [--trace <trace_id>]`
+### 1-4. `reject-finding` 모드 — `/check-process --reject-finding <finding_id> --reason "..." [--trace <trace_id>]`
 ```
-/audit --reject-finding F-002 --reason "AI 오탐 — REC §3 에 시정 권고 이미 기재" --trace run-a1c2d3e4
+/check-process --reject-finding F-002 --reason "AI 오탐 — REC §3 에 시정 권고 이미 기재" --trace run-a1c2d3e4
 ```
 → AI 가 부적합으로 판정한 항목을 심사원이 인정하지 않음 (오탐 제거). 매트릭스에서 해당 row 의 `human_override: rejected` 로 마크. `--reason` 필수.
 
-### 1-5. `status` 모드 — `/audit --status <trace_id>`
+### 1-5. `status` 모드 — `/check-process --status <trace_id>`
 ```
-/audit --status run-a1c2d3e4
+/check-process --status run-a1c2d3e4
 ```
 → trace 의 진행 단계·발견 부적합 수·소요 시간 출력.
 
-### 1-6. `list-ncr` 모드 — `/audit --list-ncr [--status open|closed|all] [--standard <코드>] [--severity critical|major|minor] [--overdue]`
+### 1-6. `list-ncr` 모드 — `/check-process --list-ncr [--status open|closed|all] [--standard <코드>] [--severity critical|major|minor] [--overdue]`
 ```
-/audit --list-ncr                                      # open 인 NCR 모두 (기본)
-/audit --list-ncr --status all                         # open + closed 모두
-/audit --list-ncr --status closed --standard CMMI-DEV-ML3
-/audit --list-ncr --severity critical --overdue        # SLA 기한 경과한 critical NCR
+/check-process --list-ncr                                      # open 인 NCR 모두 (기본)
+/check-process --list-ncr --status all                         # open + closed 모두
+/check-process --list-ncr --status closed --standard CMMI-DEV-ML3
+/check-process --list-ncr --severity critical --overdue        # SLA 기한 경과한 critical NCR
 ```
 → `vault/90_MAT_통합매핑/MAT-009_NCR_관리대장.md` 의 두 섹션을 Read · 필터 적용 후 표 출력.
 - 각 행에 NCR_ID, 등급, 제목, R/A, SLA 기한, 잔여일 (open 만), 상태, 모(母) 심사 wikilink 포함.
 - `--overdue` : open 인 NCR 중 `today > sla_due_date` 인 것.
 - 출력은 stdout (파일 미생성, 미수정).
 
-### 1-7-K. `kpi` 모드 (Phase 3) — `/audit --kpi <subcommand> [...]`
+### 1-7-K. `kpi` 모드 (Phase 3) — `/check-process --kpi <subcommand> [...]`
 
 KPI 측정·시계열 누적·회귀 탐지를 담당하는 단일 진입점. 4 subcommand.
 
 ```
-/audit --kpi start CMMI-DEV-ML3 --period 2026-01-01..2026-04-30
-/audit --kpi start PRO-CMMI-04-01 --period 2026-01-01..2026-04-30 --baseline auto
-/audit --kpi show CMMI-DEV-ML3                                   # MAT-008 표준 섹션 stdout 출력
-/audit --kpi show CMMI-DEV-ML3 --round 2                         # 특정 회차만
-/audit --kpi update CMMI-DEV-ML3                                 # 별칭 — start 와 동일 (period 미지정 시 자동 분기)
-/audit --kpi check-regressions                                   # 모든 표준의 critical+watch 알림 출력 + --overdue 가능
+/check-process --kpi start CMMI-DEV-ML3 --period 2026-01-01..2026-04-30
+/check-process --kpi start PRO-CMMI-04-01 --period 2026-01-01..2026-04-30 --baseline auto
+/check-process --kpi show CMMI-DEV-ML3                                   # MAT-008 표준 섹션 stdout 출력
+/check-process --kpi show CMMI-DEV-ML3 --round 2                         # 특정 회차만
+/check-process --kpi update CMMI-DEV-ML3                                 # 별칭 — start 와 동일 (period 미지정 시 자동 분기)
+/check-process --kpi check-regressions                                   # 모든 표준의 critical+watch 알림 출력 + --overdue 가능
 ```
 
 **4 subcommand 동작**:
@@ -117,38 +117,38 @@ KPI 측정·시계열 누적·회귀 탐지를 담당하는 단일 진입점. 4 
   3. `--overdue` : 회귀 알림 중 NCR 이 SLA 경과한 항목만 표기 (MAT-009 cross-ref).
   4. 출력은 stdout (파일 미수정).
 
-### 1-7-AQ. `act-queue` 모드 (Phase 4) — `/audit --act-queue <subcommand> [...]`
+### 1-7-AQ. `act-queue` 모드 (Phase 4) — `/check-process --act-queue <subcommand> [...]`
 
 차원 4 인계 큐를 조회·관리하는 단일 진입점. 4 subcommand.
 
 ```
-/audit --act-queue list                                          # 모든 큐 (status: pending 이 default)
-/audit --act-queue list --status all                             # 전체
-/audit --act-queue list --priority critical --kind ncr_capa
-/audit --act-queue show queue-q3a8f2c1                           # 단일 큐 상세
-/audit --act-queue dispatch queue-q3a8f2c1 --to "박팀장"          # process_owner 등에게 dispatch
-/audit --act-queue done queue-q3a8f2c1 --capa REC-CMMI-...       # 차원 4 완료 후 종결
+/check-process --act-queue list                                          # 모든 큐 (status: pending 이 default)
+/check-process --act-queue list --status all                             # 전체
+/check-process --act-queue list --priority critical --kind ncr_capa
+/check-process --act-queue show queue-q3a8f2c1                           # 단일 큐 상세
+/check-process --act-queue dispatch queue-q3a8f2c1 --to "박팀장"          # process_owner 등에게 dispatch
+/check-process --act-queue done queue-q3a8f2c1 --capa REC-CMMI-...       # 차원 4 완료 후 종결
 ```
 
 **4 subcommand 동작**:
-- `list`: `Glob ".claude/queues/act/queue-q*.yaml"` 전수 스캔 + 필터 적용 후 표 stdout.
+- `list`: `Glob ".claude/queues/act-process/queue-q*.yaml"` 전수 스캔 + 필터 적용 후 표 stdout.
 - `show <queue_id>`: 해당 큐 yaml 본문 stdout.
 - `dispatch <queue_id> --to <이름>`: 큐 status: pending → in_progress, dispatched_to / dispatched_at 채움. RBAC 검증: dispatch 는 process_owner 또는 qmr 권한 필요.
-- `done <queue_id> --capa <REC>`: 큐 status: in_progress → done, done_at / done_capa_rec 채움. 본 큐가 NCR 연계면 NCR 도 자동 close 권장 (별도 `/audit --close-ncr` 호출 안내).
+- `done <queue_id> --capa <REC>`: 큐 status: in_progress → done, done_at / done_capa_rec 채움. 본 큐가 NCR 연계면 NCR 도 자동 close 권장 (별도 `/check-process --close-ncr` 호출 안내).
 
-### 1-7-RC. `rbac-check` 모드 (Phase 4) — `/audit --rbac-check --action <id> [--target <id>]`
+### 1-7-RC. `rbac-check` 모드 (Phase 4) — `/check-process --rbac-check --action <id> [--target <id>]`
 
 ```
-/audit --rbac-check --action audit.start --target PRO-CMMI-04-01
-/audit --rbac-check --action audit.close-ncr --target REC-NCR-04-01-2026-001
+/check-process --rbac-check --action audit.start --target PRO-CMMI-04-01
+/check-process --rbac-check --action audit.close-ncr --target REC-NCR-04-01-2026-001
 ```
 → `independence-guard` 를 `rbac_check` 모드로 호출. 현재 사용자의 권한이 해당 action 을 허용하는지 검증 후 결과 stdout.
 사용 시점: 운영 자동화 스크립트가 작업 전에 권한 사전 검증할 때, 또는 사용자가 자기 권한 확인할 때.
 
-### 1-7. `close-ncr` 모드 — `/audit --close-ncr <ncr_id> --capa <REC> [--closed-by <이름>] [--reason "..."]`
+### 1-7. `close-ncr` 모드 — `/check-process --close-ncr <ncr_id> --capa <REC> [--closed-by <이름>] [--reason "..."]`
 ```
-/audit --close-ncr REC-NCR-04-01-2026-001 --capa REC-CMMI-04-01-04-01-2026-003
-/audit --close-ncr REC-NCR-04-01-2026-001 --capa REC-CMMI-04-01-04-01-2026-003 --closed-by "박팀장" --reason "SLA 정의 + 재실행 정상 승인"
+/check-process --close-ncr REC-NCR-04-01-2026-001 --capa REC-CMMI-04-01-04-01-2026-003
+/check-process --close-ncr REC-NCR-04-01-2026-001 --capa REC-CMMI-04-01-04-01-2026-003 --closed-by "박팀장" --reason "SLA 정의 + 재실행 정상 승인"
 ```
 → `ncr-drafter` 를 `close` 모드로 호출:
 - NCR frontmatter `status: closed` + `capa_rec` / `closed_at` / `closed_by` / `closed_reason` 채움.
@@ -264,7 +264,7 @@ D-1. 서브에이전트 `compliance-checker` 호출:
 - state.yaml status: pending_confirmation
 ```
 
-D-2. 매트릭스 작성 완료 → state.status: `pending_confirmation` + `confirmation_request.md` drop-out (심사원에게 매트릭스 미리보기 + `/audit --confirm` 안내).
+D-2. 매트릭스 작성 완료 → state.status: `pending_confirmation` + `confirmation_request.md` drop-out (심사원에게 매트릭스 미리보기 + `/check-process --confirm` 안내).
 
 D-3. **본 커맨드는 종료** (사용자가 응답할 차례).
 
@@ -299,7 +299,7 @@ CF-4. **audit-reporter 위임**:
 - MAT-005 §"심사 이력" 섹션 1행 append
 - (no_ncr=false 일 때) ncr-drafter 자동 위임 → REC-NCR-*.md N건 + MAT-009 N행
 - (no_ncr=false 일 때) 보고서 frontmatter ncr_refs[] + §4 finding 블록의 NCR 링크 채움
-- (no_act_queue=false 일 때, Phase 4) act-trigger 자동 위임 → .claude/queues/act/queue-q*.yaml N건 + MAT-008 §"차원 4 인계" 갱신
+- (no_act_queue=false 일 때, Phase 4) act-trigger 자동 위임 → .claude/queues/act-process/queue-q*.yaml N건 + MAT-008 §"차원 4 인계" 갱신
 - state.yaml status: completed + final_audit_path + ncr_count + act_queue_count
 - trace.jsonl 마지막 라인 audit_finalized
 ```
@@ -365,7 +365,7 @@ KA-5. **kpi-analyzer 위임**:
 ```
 KA-6. **act-trigger 자동 위임 (Phase 4, options.no_act_queue == false 일 때)**:
    - kpi-analyzer 의 verdict==critical KPI 들을 `from_kpi` 모드로 act-trigger 에 인계.
-   - .claude/queues/act/queue-q*.yaml N건 발행 + MAT-008 §"차원 4 인계" 표 갱신.
+   - .claude/queues/act-process/queue-q*.yaml N건 발행 + MAT-008 §"차원 4 인계" 표 갱신.
 KA-7. 종결 보고.
 
 #### 2-K-S. `show`
@@ -480,8 +480,8 @@ finalized_at: null
 |---|---|---|
 | 1 | start / resume / confirm / reject-finding / status / 4 에이전트 (planner+collector+checker+reporter) / 단일 PRO PoC / 독립성 inline 가드 / `vault/08_REC_기록/AUDIT/` 산출 / MAT-005 §심사이력 자동 누적 | NCR 자동 발행 / KPI 대시보드 / RBAC 정식 / 다국어 / 외부 시스템 |
 | 2 | **ncr-drafter** / NCR 일련번호 (`REC-NCR-{POL2}-{PRO2}-{YYYY}-{NNN}`) / **MAT-009** NCR 관리대장 / `--list-ncr`·`--close-ncr` / 시정조치 종결 워크플로우 / SLA 휴리스틱 (critical 20영업일 / major 60일 / minor 90일) / R/A 휴리스틱 (카테고리 → 책임자) / `--no-ncr` 옵션 / confirm 시 NCR 자동 발행 | KPI / 외부 시스템 / RBAC 정식 / 책임자 R/A 정식 매핑 |
-| 3 | **kpi-collector** / **kpi-analyzer** / **MAT-008** KPI 대시보드 / `/audit --kpi start\|show\|update\|check-regressions` / PRO/WI §KPI 표 자동 추출 / 메타 KPI 5종 (Coverage / Findings density / Independence / NCR 종결율 / NCR SLA) / 4-tier verdict (healthy/watch/recovering/critical/data_gap) / baseline seed + 회귀 임계 (default ±5%p) / MAT-009 §통계 자동 갱신 hook | RBAC 정식 / 외부 시스템 / 차원 4 자동 트리거 / 시계열 시각화 |
-| **4 (지금)** | **independence-guard** 정식 분리 (independence_check + rbac_check 2 모드) / **RBAC** policy.yaml 6 역할 / **act-trigger** 에이전트 / 차원 4 인계 큐 (.claude/queues/act/queue-q*.yaml) / `--act-queue list\|show\|dispatch\|done` / `--rbac-check` / `--no-act-queue` 옵션 / MAT-008 §"차원 4 인계" 자동 누적 / Mermaid 시계열 시각화 (PoC) / 영업일 계산기 명세 (가이드 부록 B, 휴리스틱 28일 유지) | 외부 인증기관 보고서 (XLSX/PDF) → Phase 4.5 / 외부 IdP 연동 → Phase 4.5 / 큐 dispatch 외부 시스템 알림 → Phase 4.5 |
+| 3 | **kpi-collector** / **kpi-analyzer** / **MAT-008** KPI 대시보드 / `/check-process --kpi start\|show\|update\|check-regressions` / PRO/WI §KPI 표 자동 추출 / 메타 KPI 5종 (Coverage / Findings density / Independence / NCR 종결율 / NCR SLA) / 4-tier verdict (healthy/watch/recovering/critical/data_gap) / baseline seed + 회귀 임계 (default ±5%p) / MAT-009 §통계 자동 갱신 hook | RBAC 정식 / 외부 시스템 / 차원 4 자동 트리거 / 시계열 시각화 |
+| **4 (지금)** | **independence-guard** 정식 분리 (independence_check + rbac_check 2 모드) / **RBAC** policy.yaml 6 역할 / **act-trigger** 에이전트 / 차원 4 인계 큐 (.claude/queues/act-process/queue-q*.yaml) / `--act-queue list\|show\|dispatch\|done` / `--rbac-check` / `--no-act-queue` 옵션 / MAT-008 §"차원 4 인계" 자동 누적 / Mermaid 시계열 시각화 (PoC) / 영업일 계산기 명세 (가이드 부록 B, 휴리스틱 28일 유지) | 외부 인증기관 보고서 (XLSX/PDF) → Phase 4.5 / 외부 IdP 연동 → Phase 4.5 / 큐 dispatch 외부 시스템 알림 → Phase 4.5 |
 
 ---
 
@@ -494,7 +494,7 @@ finalized_at: null
   - `vault/90_MAT_통합매핑/MAT-005_*.md` (Edit append, §심사 이력 섹션만)
   - `vault/90_MAT_통합매핑/MAT-009_*.md` (Phase 2 — Edit append / 행 이동, 두 섹션 운영 / Phase 3 — §"NCR 통계" Edit)
   - `vault/90_MAT_통합매핑/MAT-008_*.md` (Phase 3 — 신규 또는 Edit append, 표준별 §섹션 / §회차 시계열 / §회귀 알림 / Phase 4 — §"차원 4 인계" 추가)
-  - `.claude/queues/act/queue-q*.yaml` (Phase 4 — 신규 / dispatch / done 시 Edit)
+  - `.claude/queues/act-process/queue-q*.yaml` (Phase 4 — 신규 / dispatch / done 시 Edit)
   - `.claude/runs/{trace_id}/*` (전체) — audit trace `run-a*` / kpi trace `run-k*` 분리
 - **읽기만**: `.claude/rbac/policy.yaml` — 본 커맨드는 절대 수정 안 함 (admin 권한 사용자가 직접 편집).
 - 동일 (scope, 회차, 연도) 조합의 REC-AUDIT 일련번호 충돌 절대 금지 — Glob 재검증 후 Write.
@@ -511,8 +511,8 @@ finalized_at: null
 👤 심사원: 이감사
 📊 요건 12 / 충족 4 · 부분 2 · 부적합 2 · 미평가 4
 
-▶ 다음: /audit --confirm run-a1c2d3e4
-   또는 부적합 인정 거부: /audit --reject-finding F-002 --reason "..." --trace run-a1c2d3e4
+▶ 다음: /check-process --confirm run-a1c2d3e4
+   또는 부적합 인정 거부: /check-process --reject-finding F-002 --reason "..." --trace run-a1c2d3e4
 ```
 
 ### 6-2. confirm 종료 시 (completed)
@@ -528,8 +528,8 @@ finalized_at: null
 ⏱ 소요 시간: 6분 24초
 
 ▶ 다음 (시정조치 종결):
-  /audit --close-ncr REC-NCR-04-01-2026-001 --capa <시정조치 REC>
-  /audit --list-ncr --overdue            # SLA 경과 NCR 점검
+  /check-process --close-ncr REC-NCR-04-01-2026-001 --capa <시정조치 REC>
+  /check-process --list-ncr --overdue            # SLA 경과 NCR 점검
 ```
 
 ### 6-3. list-ncr 출력 예시
@@ -568,9 +568,9 @@ finalized_at: null
 ⏱ 소요 시간: 4분 18초
 
 ▶ 다음:
-  /audit --kpi show CMMI-DEV-ML3              # 결과 확인
-  /audit --kpi check-regressions              # 전사 알림 모음
-  /audit --kpi start CMMI-DEV-ML3 --period 2026-04-01..2026-06-30   # 2회차 (baseline 비교 자동)
+  /check-process --kpi show CMMI-DEV-ML3              # 결과 확인
+  /check-process --kpi check-regressions              # 전사 알림 모음
+  /check-process --kpi start CMMI-DEV-ML3 --period 2026-04-01..2026-06-30   # 2회차 (baseline 비교 자동)
 ```
 
 ### 6-6. kpi check-regressions 출력 예시

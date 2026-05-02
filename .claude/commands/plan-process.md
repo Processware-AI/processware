@@ -1,5 +1,5 @@
 ---
-description: 프로세스 모듈 1건을 구성원칙과 8종 문서유형(POL/PRO/WI/TMP/EX/REC/MAT/REF)에 맞춰 Obsidian vault에 구축. 입력은 표준 코드·PA 그룹·자연어 요건 기술 모두 수용. 체크포인트/재개·자가수정 루프 지원. 사용: /build-process "프로젝트 계획·추정·리스크 관리"
+description: 프로세스 모듈 1건을 구성원칙과 8종 문서유형(POL/PRO/WI/TMP/EX/REC/MAT/REF)에 맞춰 Obsidian vault에 구축. 입력은 표준 코드·PA 그룹·자연어 요건 기술 모두 수용. 체크포인트/재개·자가수정 루프 지원. 사용: /plan-process "프로젝트 계획·추정·리스크 관리"
 argument-hint: "<모듈_또는_요건> [--restart] [--resume] [--from <phase>] [--skip-qa] [--cross] [--max-attempts N]"
 ---
 

@@ -48,9 +48,9 @@ cd vault/02_표준/
 cp -R _scaffold ISO27001        # 5개 카테고리 폴더 + README 즉시 복사
 # 그 다음 각 카테고리에 파일 투하
 claude
-> /build-process ISO27001
+> /plan-process ISO27001
 ```
-또는 `_scaffold/` 없이 바로 `/build-process` 실행하면 `standard-analyzer` 가 자동 복사.
+또는 `_scaffold/` 없이 바로 `/plan-process` 실행하면 `standard-analyzer` 가 자동 복사.
 
 ## 무엇이 들어가나
 - 표준 개요 (00_*)
@@ -67,7 +67,7 @@ claude
 ## 사용 흐름
 ```
 1. 수동: mkdir 02_표준/{표준코드}/_inputs + 입력자료 배치
-2. 자동: /build-process {표준코드} 실행
+2. 자동: /plan-process {표준코드} 실행
 3. 결과: 00_*, 01_*, 02_* 자동 생성 + 유형 폴더에 산출물 발행
 ```
 

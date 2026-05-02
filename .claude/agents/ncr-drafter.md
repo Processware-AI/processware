@@ -32,7 +32,7 @@ options:
   skip_overridden: true              # human_override.decision==rejected 인 finding 은 건너뜀 (default true)
 ```
 
-### 1-2. `close` 모드 (시정조치 종결 — `/audit --close-ncr`)
+### 1-2. `close` 모드 (시정조치 종결 — `/check-process --close-ncr`)
 ```yaml
 mode: close
 ncr_id: REC-NCR-04-01-2026-001
@@ -180,10 +180,10 @@ C-7. **§4 시정조치 권고 (CAPA — Corrective Action Plan)**:
 C-8. **§5 종결 조건 (Definition of Closed)**:
 | 항목 | 충족 기준 |
 |---|---|
-| 시정조치 완료 | 후속 REC (`/do {WI번호}` 또는 `/build-process --from write`) 발행 |
+| 시정조치 완료 | 후속 REC (`/do-process {WI번호}` 또는 `/plan-process --from write`) 발행 |
 | 증적 첨부 | 본 NCR 의 `capa_rec` 필드에 후속 REC doc_id 명시 |
 | 책임자 종결 합의 | A 역할 (PM 또는 Process Owner) 의 종결 응답 |
-| 종결 명령 | `/audit --close-ncr REC-NCR-04-01-2026-001 --capa <REC>` |
+| 종결 명령 | `/check-process --close-ncr REC-NCR-04-01-2026-001 --capa <REC>` |
 
 C-9. **§6 추적성**:
 | 단계 | 식별자 |
@@ -203,7 +203,7 @@ C-11. **변경 금지 영역**:
 ```
 ---
 > 본 NCR 은 자동 발행되었으며, 심사 증적 무결성을 위해 직접 수정하지 마십시오.
-> 종결: `/audit --close-ncr REC-NCR-04-01-2026-001 --capa <REC>`
+> 종결: `/check-process --close-ncr REC-NCR-04-01-2026-001 --capa <REC>`
 ```
 
 ### Phase D — 파일 저장 + 매 finding 반복
