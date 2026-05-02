@@ -1,120 +1,303 @@
-# 전사 표준 프로세스 구축 하네스 (Claude Code + Obsidian)
+# 4차원 PDCA AI 자동화 플랫폼 (Claude Code + Obsidian)
 
-국제/국내 표준(ISO·IEC·KS·IATF 등)을 **하나씩 순차 편입**하여 전사 표준 프로세스 체계를 MD로 구축하고, Obsidian 볼트로 관리하는 에이전트 하네스.
+국제/국내 표준(ISO·IEC·KS·IATF 등)의 **수립(Plan) → 이행(Do) → 심사(Check) → 제·개정(Act)** 4 차원 전체를 AI 에이전트로 자동화하는 플랫폼. **4차원 PDCA 폐쇄 루프** PoC 검증 완료 (Plan→Do→Check→Act→Plan' 사이클로 KPI 회복 실증).
+
+> 상위 개념: `AI-Driven CMMI Operating Platform.md` (Layer 1/2/3 비전) · `표준프로세스_AI관리체계_4차원PDCA.md` (4차원 PDCA 설계)
+> 차원별 운영 가이드: `표준_빌드_워크플로우_가이드.md` (1) · `표준_프로세스_실행_가이드.md` (2) · `표준_프로세스_심사_가이드.md` (3) · `표준_프로세스_제개정_가이드.md` (4)
+
+## 4차원 자동화 매트릭스
+
+| 차원 | 슬래시 | 에이전트 | 핵심 산출물 |
+|---|---|---|---|
+| **1 (Plan)** 표준 수립 | `/build-standard` | standard-analyzer · process-designer · wi-tmp-writer · qa-reviewer · traceability-mapper (5) | POL / PRO / WI / TMP / EX / MAT / REF |
+| **2 (Do)** 프로세스 실행 | `/do` | process-router · process-executor · hitl-gatekeeper · rec-writer · escalation-coordinator (5) | REC + MAT-005 §실행기록 + MAT-007 카탈로그 |
+| **3 (Check)** 심사·KPI | `/audit` (`--kpi` `--act-queue` `--rbac-check`) | audit-planner · evidence-collector · compliance-checker · audit-reporter · ncr-drafter · kpi-collector · kpi-analyzer · independence-guard · act-trigger (9) | REC-AUDIT / REC-NCR + MAT-008 KPI 대시보드 + MAT-009 NCR 관리대장 + act queue |
+| **4 (Act)** 제·개정 | `/act` | rca-analyzer · revision-planner · pcb-gatekeeper · act-coordinator (4) | As-Is 입력 + MAT-001 §개정이력 + 차원 1 재트리거 명령 |
+
+**총 23 에이전트 / 4 슬래시** — 모든 차원이 단일 브랜치(main, ed853b1)에 통합되어 운영.
 
 ## 특징
+
+### 차원 1 (Plan) — 표준 수립
 - **8종 문서 유형 체계**: POL / PRO / WI / TMP / EX / REC / MAT / REF
 - **유형별 엄격한 분리**: 템플릿↔기록↔예시 분리, 정책↔절차↔지침 분리
 - **계층 번호 체계**: `POL-{영역}-{###}` → `PRO-{P}{##}` → `WI-{POL}-{PRO}-{##}` 계보 추적
-- **통합 MAT 6종**: 문서관리대장·규제대조표·산출물목록·RACI통합·심사증적·문서계층추적
+- **통합 MAT 9종 운영** (10 슬롯 중 9 운영, 1 예약)
 - **표준 분류 레지스트리**: Layer(L1/L2/L3)·Structure·Integration Mode 3축 분류
 - **자동차/의료기기 도메인 지원**: 8개 도메인 전용 표준 (IATF 16949, ASPICE, ISO 26262, ISO/SAE 21434, ISO 13485, ISO 14971, IEC 62304, IEC 81001-5-1)
 - **표준-프로세스 양방향 추적성** + `source_citation` 기반 감사증적
-- **Claude Code subagent 파이프라인** + Obsidian 볼트 자동 구성
 - **체크포인트/재개** (`_state.yaml`): 실패 지점부터 이어 실행
 - **자가수정 루프**: QA Fail → 담당 에이전트 자동 재호출 (max 3 attempts)
 - **골든샘플**: POL/PRO/WI 품질 하한선 참조
 
+### 차원 2 (Do) — 프로세스 실행
+- **WI 이중 포맷**: WI MD (사람용) + WI steps.yaml (Agent 실행용) 짝 자동 생성
+- **HITL 다단계 승인**: review → approve → final 자동 chain (WI §2 RACI 자동 추출)
+- **타임아웃·에스컬레이션**: SLA 만료 시 escalate_to[] 체인 자동 발송
+- **자연어 라우팅**: "작업산출물 평가" → WI-CMMI-04-01-03 자동 매칭 (MAT-007 프로세스 카탈로그)
+- **반려 처리**: REC.status: rejected + MAT-005 ❌ 표기 + 시정조치 후 재실행 흐름
+
+### 차원 3 (Check) — 심사·KPI·NCR
+- **REC ↔ PRO/WI 요건 자동 대조**: 4-tier verdict (conformant / partial / nonconformant / not_assessed)
+- **NCR 자동 발행**: finding 별 REC-NCR + SLA 휴리스틱 (critical 20영업일 / major 60일 / minor 90일) + R/A 자동 추정
+- **KPI 대시보드**: PRO/WI §KPI 자동 추출 + 메타 KPI 5종 + 회귀 탐지 (default ±5%p) + Mermaid 시계열 시각화
+- **ISO §9.2 독립성 강제**: independence-guard 가 audit 진입 시 auditor ≠ trace.executed_by 자동 검증
+- **RBAC 6 역할**: auditor / executor / process_owner / qmr / admin / viewer
+
+### 차원 4 (Act) — 제·개정
+- **5-Why / Fishbone RCA**: queue → primary_root_cause + confidence + secondary
+- **개정 범위 결정**: 5종 rebuild_mode (manual_edit / rec_only / `--from write` / `--from design` / `--restart`)
+- **PCB 승인 게이트**: HITL drop-out + Phase 4.5 다단계 quorum (4 모드)
+- **차원 1 재트리거 인계**: As-Is 입력 파일 자동 작성 → 사용자가 `/build-standard --from write` 실행
+- **다중 큐 일괄** (Phase 2): merged_root_cause + Mermaid 의존성 그래프 + 통합 As-Is
+
+### 폐쇄 루프 (4차원 통합)
+- **act queue 자동 발행**: 차원 3 의 NCR + critical KPI → `.claude/queues/act/queue-q*.yaml` 자동 push
+- **차원 4 인계 큐**: act-trigger 가 confirm/kpi-finalize 직후 자동 발행 (NCR/KPI 통합 휴리스틱)
+- **PoC 실증**: queue-qa1b2c3d4 (NCR-001 critical) → PRO v1.0 → v1.1 → CAPA REC → NCR close → KPI round 2 회복 (critical 4→1, healthy 3→6, recovering 0→2)
+
+### Phase 4.5 명세 (외부 인프라 연동 준비)
+- **RBAC extensions**: external_idp (OIDC) + delegation + audit_log + external_notifications (이메일/Slack/Jira)
+- **한국 영업일 계산기** (`.claude/utils/business_days_kr.md`): 공휴일 14개 + add_business_days 알고리즘
+- **PCB 다단계 quorum** (`.claude/utils/pcb_quorum.md`): simple_majority / supermajority / unanimous / chair_veto
+- **자동 트렌드 Mermaid** (`.claude/utils/auto_trend_mermaid.md`): round ≥ 2 부터 라인/bar/graph TD 자동 생성
+
 ## 디렉터리 구조
 ```
-Standard_Process/
+STD_Process_Builder/
 ├── README.md
-├── 전용AI에이전트_프레임워크_설계안.md  ← 독립 프레임워크 승격 설계안 (draft)
-├── .claude/
-│   ├── agents/                      ← Claude Code 서브에이전트
-│   │   ├── standard-analyzer.md
+├── AI-Driven CMMI Operating Platform.md     ← Layer 1/2/3 비전 (ML3→ML4→ML5)
+├── 표준프로세스_AI관리체계_4차원PDCA.md      ← 4차원 PDCA 설계
+├── 전용AI에이전트_프레임워크_설계안.md       ← 차원 1 독립 제품화 설계 (Python/SDK)
+├── 표준_빌드_워크플로우_가이드.md           ← 차원 1 운영 가이드 (worktree 정책)
+├── 표준_프로세스_실행_가이드.md             ← 차원 2 운영 가이드 (Phase 1~4 + 2.5/3.5)
+├── 표준_프로세스_심사_가이드.md             ← 차원 3 운영 가이드 (Phase 1~4 + 4.5 명세)
+├── 표준_프로세스_제개정_가이드.md           ← 차원 4 운영 가이드 (Phase 1~2 + 4.5 명세)
+├── .claude/                                 ← 4차원 자동화 인프라
+│   ├── commands/                            ← 슬래시 커맨드 (4)
+│   │   ├── build-standard.md                ← 차원 1
+│   │   ├── do.md                            ← 차원 2 (8 진입 모드)
+│   │   ├── audit.md                         ← 차원 3 (--kpi, --act-queue, --rbac-check)
+│   │   └── act.md                           ← 차원 4 (7 진입 모드 + --batch)
+│   ├── agents/                              ← 23 에이전트 (차원별 5/5/9/4)
+│   │   ├── standard-analyzer.md             ← 차원 1
 │   │   ├── process-designer.md
 │   │   ├── wi-tmp-writer.md
+│   │   ├── qa-reviewer.md
 │   │   ├── traceability-mapper.md
-│   │   └── qa-reviewer.md
-│   └── commands/
-│       └── build-standard.md        ← 오케스트레이터 슬래시 커맨드
-└── vault/                           ← Obsidian Vault 루트
-    ├── 00_공통관리/                 ← 문서체계·번호체계·용어집·레지스트리
-    ├── 00_MOC/                      ← 인덱스(Map of Content)
-    ├── 01_구성원칙/                 ← 최상위 기준
-    ├── 02_표준/                     ← 표준별 작업 공간
-    │   └── _scaffold/               ← 새 표준 편입용 스캐폴드 템플릿
-    │       └── _inputs/             ← 카테고리별 입력자료 투하 폴더
-    ├── 03_POL_정책/                 ← POL-*
-    ├── 04_PRO_절차/                 ← PRO-*
-    ├── 05_WI_업무지침/              ← WI-*
-    ├── 06_TMP_템플릿/               ← TMP-*
-    ├── 07_EX_작성예시/              ← EX-*
-    ├── 08_REC_기록/                 ← REC-* (운영 단계 생성)
-    ├── 09_REF_참고자료/             ← REF-*
-    ├── 90_MAT_통합매핑/             ← MAT-001~010 전사 공통 + MAT-011~ 표준별 추적성
-    ├── 99_템플릿/                   ← Obsidian Templates (T03~T15)
-    │   └── _골든샘플/               ← POL/PRO/WI 품질 하한선 참조 예시
-    ├── 99_폐기_보관/                ← 만료/폐지 문서 아카이브
-    └── _inputs_common/              ← 복수 표준 공통 입력자료 (법규·해설서 등)
+│   │   ├── process-router.md                ← 차원 2 (Phase 3 자연어 라우팅)
+│   │   ├── process-executor.md              ← 차원 2 (Phase 4 steps.yaml 우선순위)
+│   │   ├── hitl-gatekeeper.md               ← 차원 2 (Phase 2/2.5 다단계)
+│   │   ├── rec-writer.md
+│   │   ├── escalation-coordinator.md        ← 차원 2 Phase 2.5
+│   │   ├── audit-planner.md                 ← 차원 3 Phase 1
+│   │   ├── evidence-collector.md
+│   │   ├── compliance-checker.md
+│   │   ├── audit-reporter.md
+│   │   ├── ncr-drafter.md                   ← 차원 3 Phase 2 (issue / close)
+│   │   ├── kpi-collector.md                 ← 차원 3 Phase 3
+│   │   ├── kpi-analyzer.md
+│   │   ├── independence-guard.md            ← 차원 3 Phase 4 (ISO §9.2 + RBAC)
+│   │   ├── act-trigger.md                   ← 차원 3 → 4 인계 큐 발행
+│   │   ├── rca-analyzer.md                  ← 차원 4 Phase 1 (5-Why / Fishbone)
+│   │   ├── revision-planner.md              ← 차원 4 Phase 2 (Mermaid 의존성 그래프)
+│   │   ├── pcb-gatekeeper.md                ← 차원 4 Phase 1 (HITL + 4.5 quorum)
+│   │   └── act-coordinator.md               ← 차원 4 Phase 1 (As-Is + MAT-001)
+│   ├── rbac/
+│   │   └── policy.yaml                      ← 6 역할 + Phase 4.5 extensions 4종
+│   ├── queues/
+│   │   └── act/                             ← 차원 4 인계 큐 (queue-q*)
+│   ├── runs/                                ← 실행 trace (4 prefix)
+│   │   ├── run-{hex}/                       ← 차원 2 do trace
+│   │   ├── run-a*/                          ← 차원 3 audit trace
+│   │   ├── run-k*/                          ← 차원 3 kpi trace
+│   │   └── run-c*/                          ← 차원 4 act trace
+│   └── utils/                               ← Phase 4.5 명세 (3)
+│       ├── business_days_kr.md              ← 한국 영업일 (KST 공휴일 14개)
+│       ├── pcb_quorum.md                    ← PCB 다단계 quorum (4 모드)
+│       └── auto_trend_mermaid.md            ← round ≥ 2 자동 트렌드
+└── vault/                                   ← Obsidian Vault 루트 (영구 자산)
+    ├── 00_공통관리/                         ← 문서체계·번호체계·용어집·레지스트리
+    ├── 00_MOC/                              ← 인덱스(Map of Content)
+    ├── 01_구성원칙/                         ← 최상위 기준
+    ├── 02_표준/                             ← 표준별 작업 공간
+    │   ├── _scaffold/                       ← 새 표준 편입용 스캐폴드 템플릿
+    │   │   └── _inputs/                     ← 카테고리별 입력자료 투하 폴더
+    │   └── CMMI-DEV-ML3/                    ← (예시) 첫 편입 표준
+    │       └── _inputs/04_AsIs/             ← 차원 4 As-Is 입력 (queue-q*.md 추적)
+    ├── 03_POL_정책/                         ← POL-*
+    ├── 04_PRO_절차/                         ← PRO-*
+    ├── 05_WI_업무지침/                      ← WI-* + .cache/ steps.yaml fallback
+    ├── 06_TMP_템플릿/                       ← TMP-*
+    ├── 07_EX_작성예시/                      ← EX-*
+    ├── 08_REC_기록/                         ← REC-* (차원 2 do 산출)
+    │   └── AUDIT/                           ← REC sub-type AUDIT/NCR (차원 3 산출)
+    ├── 09_REF_참고자료/                     ← REF-*
+    ├── 90_MAT_통합매핑/                     ← MAT-001~010 전사 공통 + MAT-011~ 표준별
+    ├── 99_템플릿/                           ← Obsidian Templates
+    │   └── _골든샘플/                       ← POL/PRO/WI 품질 하한선 참조 예시
+    ├── 99_폐기_보관/                        ← 만료/폐지 문서 아카이브
+    └── _inputs_common/                      ← 복수 표준 공통 입력자료
 ```
 
-## 에이전트 파이프라인
+## 4차원 PDCA 폐쇄 루프 흐름 (전체)
+
 ```
-/build-standard ISO9001
-        │
-        ▼
-┌──────────────────┐   표준개요/요구사항분해/REF/MAT-002
-│ standard-analyzer│─────────────────────────────────▶ 02_표준/, 09_REF/, 90_MAT/
-└──────────────────┘
-        │
-        ▼
-┌──────────────────┐   POL / PRO / MAT-003
-│ process-designer │─────────────────────────────────▶ 03_POL_정책/, 04_PRO_절차/
-└──────────────────┘
-        │
-        ▼
-┌──────────────────┐   WI / TMP / EX + MAT-001 등록  (전수 생성 강제)
-│  wi-tmp-writer   │─────────────────────────────────▶ 05_WI/, 06_TMP/, 07_EX/
-└──────────────────┘
-        │
-        ▼
-┌──────────────────┐   MAT-{011~}_{표준코드}_추적성 + MAT-001·003·004·005·006 갱신
-│traceability-mapper│────────────────────────────────▶ 90_MAT_통합매핑/
-└──────────────────┘
-        │
-        ▼
-┌──────────────────┐   8종 유형 분리·링크 정합성 감사
-│   qa-reviewer    │─────────────────────────────────▶ 02_표준/{코드}/99_QA리포트_*
-└──────────────────┘
-        │
-        ▼
-     MOC 갱신 + 완료 보고
+[차원 1 Plan]                        [차원 2 Do]                       [차원 3 Check]
+/build-standard ISO9001              /do WI-XXX                        /audit start <PRO|WI|표준>
+        │                                    │                                  │
+        ▼                                    ▼                                  ▼
+┌──────────────────┐                ┌──────────────────┐              ┌──────────────────┐
+│ standard-analyzer│ → REF/MAT-002  │  process-router  │ ← MAT-007    │  audit-planner   │ → audit_plan
+│ process-designer │ → POL/PRO       │ process-executor │ → REC payload│evidence-collector│ → evidence
+│  wi-tmp-writer   │ → WI/TMP/EX    │  hitl-gatekeeper │ → 정지/승인  │compliance-checker│ → conformity
+│  qa-reviewer     │ → §11-A 검증   │   rec-writer     │ → REC + MAT-005│ audit-reporter   │ → REC-AUDIT
+│traceability-mapper│ → MAT-001~011 │escalation-coord. │ → 타임아웃   │  ncr-drafter     │ → REC-NCR + MAT-009
+└──────────────────┘                └──────────────────┘              │  kpi-collector   │ → kpi_data
+        │                                    │                       │  kpi-analyzer    │ → MAT-008
+        ▼                                    ▼                       │independence-guard│ → ISO §9.2
+   POL/PRO/WI/TMP/EX/MAT/REF              REC + MAT-005 §실행기록   │   act-trigger    │ → queue-q*
+                                                                     └──────────────────┘
+                                                                              │
+                                                                              ▼
+                                                             REC-AUDIT + REC-NCR + MAT-008 + queue-q*
+                                                                              │
+                                                            ┌─────────────────┴────────────┐
+                                                            │                              │
+                                                            ▼                              ▼
+                                                   [차원 4 Act]                  [Phase 4.5 외부 알림]
+                                                   /act start queue-q...         (이메일/Slack/Jira hook)
+                                                            │
+                                                            ▼
+                                                   ┌──────────────────┐
+                                                   │  rca-analyzer    │ → root_cause (5-Why / Fishbone)
+                                                   │revision-planner  │ → revision_plan (Mermaid)
+                                                   │ pcb-gatekeeper   │ → PCB HITL 승인
+                                                   │ act-coordinator  │ → As-Is 입력 + MAT-001
+                                                   └──────────────────┘
+                                                            │
+                                                            ▼
+                                                vault/02_표준/{표준}/_inputs/04_AsIs/queue-q*.md
+                                                            │
+                                                            ▼
+                                                   [차원 1 재실행 (사용자 명시 실행)]
+                                                   /build-standard --from write --target {asset}
+                                                            │
+                                                            ▼
+                                                       개정판 (v1.1) → 다음 사이클
 ```
+
+> Plan→Do→Check→Act→Plan' 폐쇄 루프 PoC 검증 (run-c4f8a1b2 / queue-qa1b2c3d4 → PRO v1.0→v1.1 → KPI round 2 회복).
+> **23 에이전트 / 4 슬래시 / 10 trace / 6 act queue / MAT 9종 운영**.
 
 ## 사용법
+
+### 0. 사전 준비
 1. Obsidian 에서 `vault/` 폴더를 **Open folder as vault** 로 열기.
 2. **입력자료 배치 (권장)** — `vault/02_표준/{표준코드}/_inputs/` 에 표준원문·법규·해설서·As-Is 투하. 상세 규칙: `vault/00_공통관리/05_입력자료_규칙.md`
-3. Claude Code 대화창에서:
-   ```
-   /build-standard ISO9001
-   ```
-4. 여러 표준 순차 편입:
-   ```
-   /build-standard ISO9001
-   /build-standard ISO/IEC_27001
-   /build-standard ISO14001
-   ```
-5. 교차 표준 통합 분석:
-   ```
-   /build-standard ISO/IEC_27001 --cross
-   ```
 
-6. 중단된 실행 이어가기:
-   ```
-   /build-standard ISO9001 --resume       # 현재 phase 부터 자동 재개
-   /build-standard ISO9001 --from design   # design phase 부터 강제 재시작
-   /build-standard ISO9001 --restart       # 기존 state 폐기하고 처음부터
-   ```
+### 1. 차원 1 (Plan) — 표준 수립
+```bash
+/build-standard ISO9001                                       # 단일 표준 편입
+/build-standard ISO/IEC_27001 --cross                         # 교차 표준 통합 분석
+/build-standard ISO9001 --resume                              # 현재 phase 부터 재개
+/build-standard ISO9001 --from design                          # design phase 부터 강제 재시작
+/build-standard ISO9001 --restart                              # 기존 state 폐기 후 처음부터
+/build-standard ISO9001 --from write --target PRO-CMMI-04-01   # 차원 4 인계 후 부분 재실행
+/build-standard ISO9001 --max-attempts 5 --skip-qa            # 자가수정·QA 옵션
+```
 
-7. 자가수정 루프 조정:
-   ```
-   /build-standard ISO9001 --max-attempts 5   # 자가수정 최대 횟수
-   /build-standard ISO9001 --skip-qa          # QA·자가수정 생략
-   ```
+> 상세: `표준_빌드_워크플로우_가이드.md`
 
-**주의**: `_inputs/` 없이 실행하면 LLM 추정 모드로 동작하여 **감사 방어력이 낮습니다**. 프로덕션 용도는 반드시 입력자료를 배치하세요.
+### 2. 차원 2 (Do) — 프로세스 실행
+```bash
+/do WI-CMMI-04-01-03                                           # 직접 WI 지정
+/do "작업산출물 평가"                                          # 자연어 라우팅 (process-router)
+/do --resume run-a3f9c2b1                                      # 정지된 trace 재개
+/do --approve run-a3f9c2b1 --approver "박팀장"                 # HITL 승인
+/do --reject run-a3f9c2b1 --reason "표본 부족"                 # HITL 반려
+/do --status run-a3f9c2b1                                      # 상태 조회
+/do --check-approvals                                          # drop-out 응답 일괄 회수
+/do --check-timeouts                                           # SLA 만료·에스컬레이션 (cron 권장)
+/do --rebuild-catalog --scope CMMI                             # MAT-007 카탈로그 재구축
+```
+
+> 상세: `표준_프로세스_실행_가이드.md`
+
+### 3. 차원 3 (Check) — 심사·NCR·KPI
+```bash
+# 심사 (PRO/WI/표준 단위)
+/audit start PRO-CMMI-04-01 --auditor "이감사"
+/audit start CMMI-DEV-ML3 --auditor "이감사" --period 2026-01-01..2026-04-30
+/audit --confirm run-a1c2d3e4                                  # 매트릭스 확정 + NCR + 차원 4 큐 자동 발행
+/audit --confirm run-a1c2d3e4 --no-ncr --no-act-queue          # 보고서만 (NCR/큐 보류)
+/audit --reject-finding F-002 --reason "오탐" --trace run-a1c2d3e4
+
+# NCR 관리 (Phase 2)
+/audit --list-ncr [--status open|closed] [--severity critical] [--overdue]
+/audit --close-ncr REC-NCR-04-01-2026-001 --capa REC-CMMI-04-01-04-01-2026-003
+
+# KPI 대시보드 (Phase 3)
+/audit --kpi start CMMI-DEV-ML3 --period 2026-01-01..2026-04-30 [--baseline auto]
+/audit --kpi show CMMI-DEV-ML3 [--round 2]
+/audit --kpi check-regressions [--overdue]
+
+# 차원 4 인계 큐 (Phase 4)
+/audit --act-queue list [--priority critical] [--kind ncr_capa]
+/audit --act-queue show queue-qa1b2c3d4
+/audit --act-queue dispatch queue-qa1b2c3d4 --to "박팀장"
+/audit --act-queue done queue-qa1b2c3d4 --capa REC-CMMI-...
+
+# RBAC 권한 사전 검증 (Phase 4)
+/audit --rbac-check --action audit.confirm --target REC-AUDIT-...
+```
+
+> 상세: `표준_프로세스_심사_가이드.md`
+
+### 4. 차원 4 (Act) — 제·개정
+```bash
+/act start queue-qa1b2c3d4                                     # 단일 큐
+/act start queue-qa1b2c3d4 --rca-method both                   # 5-Why + Fishbone 모두
+/act start queue-qa1b2c3d4 --auto-approve                      # PCB 즉시 승인 (PoC 한정)
+/act start --batch queue-qe5f6a7b8,queue-q9d8c7b6a             # Phase 2 다중 큐 일괄
+/act start --batch-related queue-qa1b2c3d4                     # related_to[] 자동 펼침
+/act --resume run-c4f8a1b2
+/act --approve run-c4f8a1b2 --approver "박상무 (PCB위원장)"     # PCB 승인 응답
+/act --reject  run-c4f8a1b2 --reason "..."
+/act --trigger-rebuild run-c4f8a1b2                             # 차원 1 재트리거 명령 stdout
+/act --status run-c4f8a1b2
+/act --list [--status pending|completed|...]
+```
+
+> 상세: `표준_프로세스_제개정_가이드.md`
+
+### 5. 폐쇄 루프 시나리오 (PoC 검증된 흐름)
+```bash
+# Plan: 표준 수립
+/build-standard CMMI-DEV-ML3
+
+# Do: WI 실행 → REC + MAT-005 §실행기록 자동
+/do WI-CMMI-04-01-03                       # → REC-CMMI-04-01-03-01-2026-001
+
+# Check: 심사 → NCR + KPI + 차원 4 큐 자동
+/audit start PRO-CMMI-04-01 --auditor "이감사"
+/audit --confirm run-a1c2d3e4              # → REC-AUDIT + NCR 4건 + queue 6건
+/audit --kpi start CMMI-DEV-ML3            # → MAT-008 round 1 (baseline seed)
+
+# Act: 큐 처리 → As-Is 입력 + 차원 1 재트리거 명령
+/act start queue-qa1b2c3d4 --auto-approve  # → vault/02_표준/.../_inputs/04_AsIs/queue-qa1b2c3d4.md
+
+# Plan' (재실행): 차원 1 재트리거
+/build-standard CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01
+                                            # → PRO v1.0 → v1.1 (As-Is 자동 read)
+
+# Do (개정판 운영) + Check (NCR 종결 + KPI round 2)
+/do WI-CMMI-04-01-04                       # → REC-...-2026-003 (CAPA)
+/audit --close-ncr REC-NCR-04-01-2026-001 --capa REC-CMMI-04-01-04-01-2026-003
+/audit --kpi start CMMI-DEV-ML3 --period 2026-04-01..06-30   # → KPI 회복 (verdict critical 4→1)
+```
+
+**주의**: `_inputs/` 없이 차원 1 실행 시 LLM 추정 모드로 동작하여 **감사 방어력이 낮습니다**. 프로덕션 용도는 반드시 입력자료를 배치하세요.
 
 ## 체크포인트·자가수정 (자동)
 각 표준 편입 시 `vault/02_표준/{표준코드}/_state.yaml` 이 자동 생성·갱신됩니다.
@@ -152,17 +335,21 @@ POL-{영역}-{###}
 
 예: `POL-QMS-001_품질방침_v1.0.md` → `PRO-QMS-101_품질기획_절차_v1.0.md` → `WI-QMS-001-01-02_문서_검토_및_승인_v1.0.md`
 
-## 통합 MAT 6종 (상세: `vault/00_공통관리/02_문서번호체계.md` §MAT 번호 할당 원칙)
+## 통합 MAT 9종 (현 운영, 상세: `vault/00_공통관리/02_문서번호체계.md` §MAT 번호 할당 원칙)
 
-| 번호 | 문서 | 역할 |
-|---|---|---|
-| MAT-001 | 문서관리대장 | 전사 문서 인벤토리 |
-| MAT-002 | 규제요구사항 대조표 | 법규·표준 조항 매핑 |
-| MAT-003 | 산출물 목록표 | 표준별 산출물 현황 |
-| MAT-004 | RACI 통합표 | 역할·책임 매트릭스 |
-| MAT-005 | 심사증적 인덱스 | 감사 증빙 인덱스 |
-| MAT-006 | 문서 계층 추적 매트릭스 | POL→PRO→WI→TMP→EX 경로 완결성 |
-| MAT-011~ | 표준별 추적성 | 표준 편입 순서대로 순차 부여 |
+| 번호 | 문서 | 도입 차원 | 역할 |
+|---|---|---|---|
+| MAT-001 | 문서관리대장 | 1 + 4 (§개정 이력) | 전사 문서 인벤토리 + 차원 4 자동 누적 |
+| MAT-002 | 규제요구사항 대조표 | 1 | 법규·표준 조항 매핑 |
+| MAT-003 | 산출물 목록표 | 1 | 표준별 산출물 현황 |
+| MAT-004 | RACI 통합표 | 1 | 역할·책임 매트릭스 |
+| MAT-005 | 심사증적 인덱스 | 1 + 2 (§실행기록) + 3 (§심사이력) | 감사 증빙 인덱스 + 차원 2/3 자동 누적 |
+| MAT-006 | 문서 계층 추적 매트릭스 | 1 | POL→PRO→WI→TMP→EX 경로 완결성 |
+| MAT-007 | 프로세스 카탈로그 | 2 (Phase 3) | 자연어 → WI 라우팅 인덱스 |
+| MAT-008 | KPI 대시보드 | 3 (Phase 3) + 4 (§차원 4 인계) | 표준별 KPI 시계열·회귀 알림 + act queue 인덱스 |
+| MAT-009 | NCR 관리대장 | 3 (Phase 2) | NCR 발행/종결 두 섹션 + §통계 자동 |
+| MAT-010 | (예약) | — | 미사용 |
+| MAT-011~ | 표준별 추적성 | 1 | 표준 편입 순서대로 순차 부여 |
 
 ## 지원 표준 (상세: `vault/00_공통관리/07_표준분류레지스트리.md`)
 
@@ -194,6 +381,55 @@ POL-{영역}-{###}
 - Templates (코어) → `vault/99_템플릿/` 지정
 - Dataview → MAT-001 문서관리대장 자동 수집
 - Graph view → POL-PRO-WI-TMP 연결 시각화
+- Mermaid → MAT-008 §시계열 시각화 (차원 3 KPI gantt + Phase 4.5 자동 트렌드 라인/bar/graph TD)
+
+## RBAC (`.claude/rbac/policy.yaml`)
+
+차원 3 Phase 4 부터 RBAC 정책으로 작업 권한을 강제. 6 역할 + Phase 4.5 extensions 4종.
+
+| 역할 | 핵심 권한 | 적용 차원 |
+|---|---|---|
+| **auditor** | audit.start / confirm / reject-finding (ISO §9.2 독립성 강제 — 자기 업무 심사 불가) | 3 |
+| **executor** | do.start / resume (audit / act 쓰기 deny) | 2 |
+| **process_owner** | audit.close-ncr / act-queue.dispatch / build-standard.start (자기 PRO 한정) | 3, 4, 1 (재실행) |
+| **qmr** | audit.* + 모니터링 + RBAC read | 전 차원 |
+| **admin** | * (모든 작업, 감사 로그 필수) | 전 차원 |
+| **viewer** | *.start / write 모두 deny, 조회 전용 | 전 차원 (read-only) |
+
+Phase 4.5 extensions (명세 활성화):
+- `external_idp` — SAML/OIDC 연동 (group → role 매핑)
+- `delegation` — 한시 권한 위임 (max 30일)
+- `audit_log` — RBAC 거부/허용/위임 5년 보존
+- `external_notifications` — 이메일/Slack/Jira 자동 알림 (PCB 회의·NCR·KPI 회귀)
+
+## 폐쇄 루프 PoC 검증 결과
+
+**시나리오**: NCR-001 critical (PRO §5-6 종결 추적 SLA 미정의) → 차원 4 사이클 → 차원 1 재실행 → KPI round 2
+
+| Round | critical | watch | recovering | healthy | data_gap | 합계 |
+|---|---|---|---|---|---|---|
+| 1 (baseline seed) | 4 | 0 | 0 | 3 | 4 | 11 |
+| 2 (PoC 결과) | **1** | 0 | **2** | **6** | **2** | 11 |
+| 변화 | -3 | — | +2 | +3 | -2 | — |
+
+단일 차원 4 사이클 (queue-qa1b2c3d4 → run-c4f8a1b2 → PRO v1.0→v1.1 → CAPA REC-003 → NCR-001 close) 로 critical 3건 회복 + data_gap 2건 해소.
+
+상세: `표준_프로세스_심사_가이드.md` §7-C / `표준_프로세스_제개정_가이드.md` §6-A
 
 ## 독립 프레임워크 설계 (참고)
+
 현재 Claude Code 하네스로 검증된 개념을 Python 기반 독립 실행 프레임워크로 승격하는 설계안이 `전용AI에이전트_프레임워크_설계안.md` 에 있습니다. Claude Agent SDK + LangGraph 하이브리드 구성을 1순위로 권장하며, 4단계 MVP 로드맵(Phase 1 : CLI 포팅 → Phase 4 : SaaS)이 제시되어 있습니다.
+
+본 README 의 4 차원 자동화 (차원 2~4) 까지 포함한 전체 플랫폼은 Phase 5 (외부 시스템 실 연동) 시점에 독립 제품화 검토.
+
+## 누적 통계 (main, ed853b1 기준)
+
+- **총 commits**: 49
+- **Tracked 파일**: ~722
+- **에이전트**: 23 (차원별 5/5/9/4)
+- **슬래시 커맨드**: 4 (`/build-standard`, `/do`, `/audit`, `/act`)
+- **운영 MAT**: 9 / 10 슬롯 (MAT-001~009 운영, MAT-010 예약)
+- **PoC trace**: 10 (do 5, audit 1, kpi 2, act 2)
+- **act queue**: 6 (3 done — 1 단일 + 2 batch / 3 pending)
+- **가이드 문서**: 4 (빌드 / 실행 / 심사 / 제·개정)
+- **Phase 4.5 명세**: 3 utils (영업일 / PCB quorum / 자동 트렌드) + RBAC extensions 4종
