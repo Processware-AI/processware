@@ -15,7 +15,17 @@ model: opus
 
 ---
 
-## 1. 입력 — 2가지 모드
+## 1. 입력 — 3가지 모드
+
+### 1-0. `backfill` 모드 (레거시 문서 → REC 변환)
+```yaml
+mode: backfill
+trace_id: run-bXXXXXXXX
+payload_path: .claude/runs/{trace_id}/payloads/{파일}.yaml
+options:
+  dry_run: false
+```
+→ Phase BF (백필 전용 절차) 로 점프. finalize/rejected 흐름과 완전 분리.
 
 ### 1-1. `finalize` 모드 (HITL 승인 후 또는 HITL 무관 정상 마감)
 ```yaml
@@ -44,8 +54,52 @@ options:
 ### Phase 0 — 모드 분기
 
 0-1. 입력 `mode` 확인.
-0-2. **`finalize` 모드** → Phase A 부터 정상 진행.
-0-3. **`rejected` 모드** → Phase R (반려 전용 절차) 로 점프.
+0-2. **`backfill` 모드** → Phase BF (백필 전용 절차) 로 점프.
+0-3. **`finalize` 모드** → Phase A 부터 정상 진행.
+0-4. **`rejected` 모드** → Phase R (반려 전용 절차) 로 점프.
+
+### Phase BF — 백필 마감 절차 (backfill 모드 전용)
+
+BF-1. `payload_path` Read. 다음 필드 모두 존재 확인:
+   - `source_doc`, `source_hash`, `wi_id`, `wi_path`, `tmp_id`, `tmp_path`
+   - `backfiller`, `backfill_date`, `fields`
+BF-2. **REC 번호 산출** — Phase B 와 동일 로직 (같은 일련번호 풀 사용).
+BF-3. **REC frontmatter 구성** — finalize 와 다른 필드:
+```yaml
+status: backfilled
+verdict_type: legacy_evidence
+source_doc: sources/sprint_review_2026Q1.docx
+source_hash: sha256:<hash>
+backfiller: "홍길동"
+backfill_date: "2026-03"
+executed_at: null          # 원본 실행일 미확인
+executed_by: null          # 백필자와 원래 실행자가 다를 수 있음
+backfilled_at: "<ISO8601 now>"
+trace_id: run-bXXXXXXXX
+hitl: null                 # 백필 REC 는 HITL 없음
+```
+BF-4. **본문 합성** — Phase C 와 동일하게 TMP 구조 따르되, 첫머리에 경고 박스 삽입:
+```
+> **⚠ 본 기록은 레거시 문서로부터 백필 변환된 기록입니다.**
+> 원본 파일: {source_doc}
+> 백필 담당자: {backfiller} ({backfill_date})
+> 추적 ID: {trace_id}
+>
+> verdict_type: legacy_evidence — /process-check 심사 시 partial 로 계산됩니다.
+```
+BF-5. **MAT-005 갱신** — Phase E 와 동일하되 행 형식:
+```
+| {backfill_date} | run-bXXXXXXXX | {표준} | [[WI-...]] | [[REC-...]] | {backfiller} | ⚠️ 백필 | backfilled |
+```
+BF-6. **state·trace 마감**:
+   - `vault/08_REC_기록/{REC파일명}.md` Write.
+   - trace.jsonl `backfill_rec_generated` 이벤트.
+BF-7. **호출자(process-backfill)에게 반환**:
+```
+✅ REC 백필 생성 — {REC번호}
+📁 vault/08_REC_기록/{REC파일명}.md  (backfilled, legacy_evidence)
+📋 MAT-005 §실행기록 1행 추가 (⚠️ 백필)
+```
 
 ### Phase R — 반려 마감 절차 (rejected 모드 전용)
 

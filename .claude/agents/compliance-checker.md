@@ -45,14 +45,21 @@ B-1. **증적 후보 추출**:
    - `requirement.expected_evidence_type` 의 `rec_field` / `rec_section` / `trace_event` 단서를 사용해 evidence 에서 매칭 후보 추림.
    - 후보가 0건이면 → 후보 부재로 진행 (B-3 의 미평가 분기).
 
-B-2. **LLM 매칭 판정** — 다음 4-tier 판정 휴리스틱:
+B-2. **LLM 매칭 판정** — 다음 5-tier 판정 휴리스틱:
 
    | 판정 | 조건 | 예 |
    |---|---|---|
    | **conformant** | 후보 증적이 요건을 명확히 충족 — REC 본문에 해당 필드/섹션이 존재하고 값이 요건 statement 와 일치 | "결재.승인" 칸에 PM 서명 + 날짜 → REQ-001 (RACI 승인자) 충족 |
    | **partial** | 후보 증적은 있으나 요건 일부만 충족 — 누락·미기재·자동 채움 표기 | DoD "부적합 종결" ❌ 표시 → REQ-007 (DoD 충족) 부분 충족 |
    | **nonconformant** | 후보 증적이 요건과 명백히 어긋남 — 거부·반려·잘못된 값·강제 누락 | hitl.decision=rejected → REQ-001 (승인자 결재) 미충족 / REC 본문에 §3 트레이서빌리티 누락 명시 → REQ (output) 미충족 |
+   | **legacy_evidence** | 증적 REC 의 `verdict_type: legacy_evidence` — 백필 변환된 레거시 기록 | `/process-backfill` 로 변환된 REC. 원본 품질 보장 불가 → 부분 충족으로 처리 |
    | **not_assessed** | 후보 증적이 0건 — 본 심사 기간 내 이행 자체가 없음 | wi_without_rec 의 WI 가 적용 대상인 요건 |
+
+   **`legacy_evidence` 처리 규칙**:
+   - 증적 REC 의 `verdict_type == "legacy_evidence"` 이면 이 판정 적용.
+   - **기본**: `partial` 로 계산 (conformant 로 집계되지 않음).
+   - **오버라이드**: audit 호출 시 `options.treat_legacy_as: conformant` 이면 conformant 로 집계.
+   - finding_id 는 부여하지 않음 (NCR 미발행). 보고서에 `⚠️ legacy_evidence` 별도 표시.
 
 B-3. **strictness 적용**:
    - `strict`: partial 을 nonconformant 로 격상 (보수적).
@@ -87,13 +94,15 @@ generated_at: "ISO8601"
 generated_by: "compliance-checker (claude-opus-4-7)"
 options:
   strictness: normal
+  treat_legacy_as: partial   # partial | conformant
 counts:
   total: 12
   conformant: 8
-  partial: 2
+  partial: 2                 # legacy_evidence 기본 포함
   nonconformant: 2
   not_assessed: 0
-findings_count: 4         # partial + nonconformant
+  legacy_evidence: 1         # legacy_evidence 별도 집계 (partial 에 포함됨)
+findings_count: 4         # partial(non-legacy) + nonconformant
 findings_by_severity:
   critical: 1
   major: 2
@@ -122,6 +131,17 @@ row:
     judgement: not_assessed
     rationale: "[REQ-005] WI-CMMI-04-01-01 부적합 식별 — 본 심사 기간(2026-01-01..2026-04-30) 내 해당 WI 의 REC 0건 (evidence.yaml.coverage_hint.wi_without_rec). 이행 자체 부재 → not_assessed."
     evidence_refs: []
+
+  - req_id: REQ-008
+    judgement: legacy_evidence    # verdict_type: legacy_evidence REC 발견
+    severity: minor
+    finding_id: null              # legacy_evidence 는 finding/NCR 미발행
+    legacy_note: "⚠️ REC-CMMI-04-01-03-01-2026-002 는 backfill 변환 기록. 원본 품질 보장 불가."
+    evidence_refs:
+      - rec_id: REC-CMMI-04-01-03-01-2026-002
+        rec_path: vault/08_REC_기록/REC-CMMI-04-01-03-01-2026-002_작업산출물_평가표.md
+        verdict_type: legacy_evidence
+    rationale: "[REQ-008] WI-CMMI-04-01-03 이행 — REC-CMMI-04-01-03-01-2026-002 존재하나 verdict_type=legacy_evidence (backfill 변환). partial 로 계산, NCR 미발행."
 ```
 
 C-2. trace.jsonl 에 `checker_done` 이벤트:
@@ -231,8 +251,10 @@ D-2. trace.jsonl 에 `confirmation_requested` 이벤트.
 
 - [ ] row[] 개수 == audit_plan.requirement[] 개수 (1:1)
 - [ ] 모든 row 에 judgement / rationale 채움
-- [ ] partial / nonconformant 인 row 에는 finding_id 와 severity 부여
-- [ ] partial / nonconformant 인 row 에 evidence_refs 1건 이상
+- [ ] partial / nonconformant 인 row 에는 finding_id 와 severity 부여 (legacy_evidence 제외)
+- [ ] partial(non-legacy) / nonconformant 인 row 에 evidence_refs 1건 이상
+- [ ] legacy_evidence row 에 `finding_id: null` + `legacy_note` 명시
+- [ ] counts.legacy_evidence 합계 == legacy_evidence 판정 row 수
 - [ ] counts 합계 == row 개수
 - [ ] state.yaml `status: pending_confirmation` 갱신
 - [ ] confirmation_request.md drop-out 됨

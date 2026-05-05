@@ -1,0 +1,224 @@
+---
+description: 'REC 백필 (기존 산출물 → REC 변환) — 레거시 문서(DOCX/XLSX/PDF 등)를 WI 자동 매칭 후 표준 REC 로 변환. 배치·단건 모두 지원. 사용: /process-backfill <path> | --confirm <trace> | --resume <trace> | --status <trace> | --list'
+argument-hint: "<파일|폴더> [--wi WI-XX] [--backfiller <이름>] [--date YYYY-MM] [--dry-run] | --confirm <trace_id> | --resume <trace_id> | --status <trace_id> | --list"
+---
+
+# REC 백필 하네스
+
+대상 입력: **$ARGUMENTS**
+
+레거시 문서(Word·Excel·PDF 등)를 MAT-007 기반 자동 매칭 후 표준 REC 로 변환한다.  
+생성된 REC 는 `verdict_type: legacy_evidence` 로 마킹되어 `/process-check` 심사 시 별도 처리된다.
+
+---
+
+## 0. 실행 원칙
+
+- **기존 자산 절대 수정 금지**: POL/PRO/WI/TMP/EX/MAT 파일 읽기 전용.
+- **REC 만 신규 생성**: `vault/08_REC_기록/` 에만 쓴다.
+- **legacy_evidence 명시**: 모든 백필 REC 의 frontmatter 에 `status: backfilled` + `verdict_type: legacy_evidence` 기록.
+- **75% 임계값**: confidence < 75% 는 ⚠️ 경고 표시 + 사람 확정 필수.
+- **매칭 불가 파일**: ❌ 표시 후 제외. 강제 진행하지 않는다.
+- **배치 HITL 단일화**: 파일별 HITL 반복 없이 전체 결과를 한 테이블로 한 번만 제시.
+
+---
+
+## 1. 진입 모드
+
+### 1-1. `start` 모드
+
+```
+/process-backfill sources/old_docs/                        # 배치 (폴더)
+/process-backfill sources/sprint_review.docx               # 단건
+/process-backfill sources/old_docs/ --backfiller "홍길동" --date 2026-03
+/process-backfill sources/old.docx --wi WI-CMMI-04-01-03   # 단건 + 수동 WI 지정
+/process-backfill sources/old_docs/ --dry-run              # 미리보기 (파일 미생성)
+```
+
+`--wi` 는 단건 전용. 폴더 배치 시 `--wi` 지정은 무시하고 자동 매칭 적용.
+
+→ Phase 1 진입.
+
+### 1-2. `confirm` 모드 — `/process-backfill --confirm <trace_id>`
+
+HITL 확정 후 Phase 5 (Map) 부터 재개.  
+`state.yaml.status == pending_hitl_confirmation` 인 trace 에만 적용.
+
+### 1-3. `resume` 모드 — `/process-backfill --resume <trace_id>`
+
+중단된 trace 이어 실행. state.yaml 의 last_phase 부터 재개.
+
+### 1-4. `status` 모드 — `/process-backfill --status <trace_id>`
+
+trace 진행 상태·결과 조회.
+
+### 1-5. `list` 모드 — `/process-backfill --list`
+
+`.claude/runs/run-b*/state.yaml` Glob → 백필 이력 테이블 출력.
+
+---
+
+## 2. 파이프라인 (7 Phase)
+
+### Phase 1 — Scan
+
+1-1. 입력 경로가 폴더인 경우: `DOCX / XLSX / PDF / PPTX / PPT / XLS / DOC` 확장자 재귀 수집.  
+1-2. 단건인 경우: 해당 파일 1건 목록.  
+1-3. 지원 확장자 외 파일은 목록에서 제외하고 로그.  
+1-4. trace_id 생성: `run-b{8자리 hex}`.  
+1-5. `.claude/runs/{trace_id}/state.yaml` 초기화:
+
+```yaml
+trace_id: run-bXXXXXXXX
+type: backfill
+status: running
+last_phase: scan
+source_path: <입력 경로>
+backfiller: <--backfiller 값 또는 "unknown">
+backfill_date: <--date 값 또는 오늘 날짜 YYYY-MM>
+options:
+  dry_run: false
+  forced_wi: null     # --wi 지정 시 채움
+files: []             # Phase 1 완료 후 채워짐
+```
+
+1-6. 파일 목록을 state.yaml `files[]` 에 저장 (path, size, extension).
+
+### Phase 2 — Extract
+
+2-1. 각 파일에서 텍스트 추출:
+
+| 확장자 | 처리 방식 |
+|---|---|
+| DOCX / DOC | XML 파싱 → 단락·표 추출 |
+| XLSX / XLS | 시트별 셀 값 추출 |
+| PPTX / PPT | 슬라이드별 텍스트 추출 |
+| PDF | 텍스트 레이어 추출 (이미지 기반 PDF 감지 시 해당 파일 ❌ 제외 + 로그) |
+
+2-2. 추출 결과를 `.claude/runs/{trace_id}/extracts/{파일명}.txt` 에 저장.  
+2-3. 추출 실패 파일은 state.yaml `files[].status: extract_failed` 로 표시 + 제외.
+
+### Phase 3 — Match
+
+3-1. `backfill-matcher` 에이전트 위임:
+```yaml
+trace_id: run-bXXXXXXXX
+extracts_dir: .claude/runs/{trace_id}/extracts/
+forced_wi: <--wi 값 또는 null>
+confidence_threshold: 75
+```
+
+3-2. backfill-matcher 가 반환한 `mapping_draft.yaml` 을 `.claude/runs/{trace_id}/` 에 저장.  
+3-3. state.yaml `last_phase: match` 갱신.
+
+### Phase 4 — HITL
+
+4-1. `mapping_draft.yaml` 읽어 테이블 구성:
+
+```
+[Back-fill 매핑 검토] — run-bXXXXXXXX
+총 {N}건 | 자동 매칭 {n1}건 | ⚠️ 저신뢰도 {n2}건 | ❌ 매칭 불가 {n3}건
+
+No. 파일                              추천 WI               confidence
+────────────────────────────────────────────────────────────────────
+1.  sprint_review_2026Q1.docx       WI-CMMI-04-01-03     87%  ✅
+2.  peer_review_api.xlsx            WI-CMMI-04-01-05     72%  ⚠️
+3.  test_report_2026-03.docx        WI-CMMI-04-02-01     65%  ⚠️
+4.  meeting_kick_off.docx           (매칭 불가)           --   ❌
+
+❌ 항목(4번)은 자동 제외됩니다.
+⚠️ 항목은 WI 수정 권장. 수정: "2=WI-CMMI-04-01-04" 형식.
+그대로 진행: "확정"
+```
+
+4-2. 사용자 응답 파싱:
+- `"확정"` → state.yaml `status: pending_hitl_confirmation` + 확정 내용 반영.
+- `"2=WI-XX, 3 제외"` 등 → mapping_draft.yaml 수정 후 테이블 재출력.
+- `"전체 취소"` → state.yaml `status: cancelled` 후 종료.
+
+4-3. ❌ 항목은 `state.yaml files[].status: excluded_no_match` 로 기록 (REC 미생성).
+
+4-4. 확정 완료 시:
+```
+✅ 매핑 확정 — {n}건 진행, {m}건 제외
+▶ /process-backfill --confirm run-bXXXXXXXX
+```
+
+state.yaml `status: pending_hitl_confirmation` 으로 정지.
+
+### Phase 5 — Map (confirm 후 진입)
+
+5-1. 확정된 매핑 목록 순회.  
+5-2. 각 파일 + 대응 WI 의 TMP 읽기.  
+5-3. extract 텍스트에서 TMP 필드에 매핑 가능한 값 추출 (LLM):
+   - 필드명·섹션명과 extract 내용을 대조하여 최적 값 매핑.
+   - 매핑 불가 필드는 `"(원본 미확인)"` 으로 채움.
+5-4. 파일별 `backfill_payload.yaml` 을 `.claude/runs/{trace_id}/payloads/` 에 저장:
+
+```yaml
+source_doc: sources/sprint_review_2026Q1.docx
+source_hash: sha256:<hash>
+wi_id: WI-CMMI-04-01-03
+wi_path: vault/05_WI_업무지침/WI-CMMI-04-01-03_*.md
+tmp_id: TMP-CMMI-04-01-03-01
+tmp_path: vault/06_TMP_템플릿/TMP-CMMI-04-01-03-01_*.md
+backfiller: 홍길동
+backfill_date: "2026-03"
+fields:
+  평가대상: "API 모듈 v2.3"
+  평가일: "2026-03-14"
+  평가자: "(원본 미확인)"
+  ...
+```
+
+### Phase 6 — Generate
+
+6-1. 각 `backfill_payload.yaml` 에 대해 `rec-writer` 에이전트를 `mode: backfill` 로 위임:
+
+```yaml
+mode: backfill
+trace_id: run-bXXXXXXXX
+payload_path: .claude/runs/{trace_id}/payloads/{파일}.yaml
+options:
+  dry_run: <--dry-run 여부>
+```
+
+6-2. dry_run 이면 미리보기 출력 후 종료.
+
+### Phase 7 — Index
+
+7-1. 생성된 모든 REC 에 대해 MAT-005 `## 실행 기록` 섹션에 1행 append:
+
+```
+| {backfill_date} | run-bXXXXXXXX | {표준} | [[WI-...]] | [[REC-...]] | {backfiller} | ⚠️ 백필 | backfilled |
+```
+
+7-2. trace.jsonl 에 `backfill_complete` 이벤트.  
+7-3. state.yaml `status: completed` 갱신.
+
+---
+
+## 3. 완료 보고
+
+```
+✅ REC 백필 완료 — run-bXXXXXXXX
+
+📁 생성된 REC ({n}건):
+   vault/08_REC_기록/REC-CMMI-04-01-03-01-2026-001_작업산출물_평가표.md  (backfilled)
+   vault/08_REC_기록/REC-CMMI-04-01-05-01-2026-001_동료검토_결과표.md   (backfilled)
+
+❌ 제외 ({m}건):
+   meeting_kick_off.docx — 매칭 불가
+
+📋 MAT-005 §실행기록 {n}행 추가
+⚠️  verdict_type: legacy_evidence — /process-check 심사 시 partial 로 계산됨
+```
+
+---
+
+## 4. 강제 규칙
+
+- `vault/08_REC_기록/` 과 `vault/90_MAT_통합매핑/MAT-005_*.md` 외 쓰기 금지.
+- 매칭 불가 파일은 절대 강제 진행하지 않는다.
+- `verdict_type: legacy_evidence` 누락 금지 — 백필 REC 임을 항상 명시.
+- source_hash 기록 필수 — 원본 문서 추적성 보장.

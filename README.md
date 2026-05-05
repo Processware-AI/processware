@@ -12,11 +12,12 @@
 | **0 (Ingest)** 표준 전처리 | `/process-ingest` | flow-proposer (1) | inputs/ 요건 패키지 (requirements.yaml · structure.yaml) + business_flow.yaml |
 | **1 (Plan)** 표준 수립 | `/process-plan` | standard-analyzer · process-designer · wi-tmp-writer · qa-reviewer · traceability-mapper · flow-mapper (6) | POL / PRO / WI / TMP / EX / MAT / REF + MAT-010 프로세스 플로우맵 |
 | **2 (Do)** 프로세스 실행 | `/process-do` | process-router · process-executor · hitl-gatekeeper · rec-writer · escalation-coordinator (5) | REC + MAT-005 §실행기록 + MAT-007 카탈로그 |
+| **2 (Backfill)** 레거시 변환 | `/process-backfill` | backfill-matcher · rec-writer (2) | REC (verdict_type: legacy_evidence) + MAT-005 §실행기록 |
 | **3 (Check)** 이행 심사·KPI | `/process-check` (`--kpi` `--act-queue` `--rbac-check`) | audit-planner · evidence-collector · compliance-checker · audit-reporter · ncr-drafter · kpi-collector · kpi-analyzer · independence-guard · act-trigger (9) | REC-AUDIT / REC-NCR + MAT-008 KPI 대시보드 + MAT-009 NCR 관리대장 + act queue |
 | **3 (Audit)** 외부 표준 GAP | `/process-audit` | gap-analyzer · gap-reporter (2) | REC-GAP + MAT-002 §GAP 분석 |
 | **4 (Act)** 제·개정 | `/process-act` | rca-analyzer · revision-planner · pcb-gatekeeper · act-coordinator (4) | As-Is 입력 + MAT-001 §개정이력 + 차원 1 재트리거 명령 |
 
-**총 27 에이전트 / 6 슬래시** — 모든 차원이 단일 브랜치(main)에 통합되어 운영.
+**총 28 에이전트 / 7 슬래시** — 모든 차원이 단일 브랜치(main)에 통합되어 운영.
 
 ## 특징
 
@@ -46,6 +47,13 @@
 - **타임아웃·에스컬레이션**: SLA 만료 시 escalate_to[] 체인 자동 발송
 - **자연어 라우팅**: "작업산출물 평가" → WI-CMMI-04-01-03 자동 매칭 (MAT-007 프로세스 카탈로그)
 - **반려 처리**: REC.status: rejected + MAT-005 ❌ 표기 + 시정조치 후 재실행 흐름
+
+### 차원 2B (Backfill) — 레거시 REC 변환
+- **자동 WI 매칭**: DOCX/XLSX/PDF/PPT → MAT-007 기반 4-신호 유사도 분석 (키워드·산출물유형·제목·표헤더)
+- **confidence 임계값**: ≥75% ✅ 자동 확정 / 50~74% ⚠️ HITL 수정 권장 / <50% ❌ 제외
+- **배치 HITL 단일화**: 전체 파일 결과를 한 테이블로 한 번만 제시
+- **legacy_evidence 마킹**: 모든 백필 REC 에 `verdict_type: legacy_evidence` 자동 기록
+- **심사 연동**: `/process-check` 에서 legacy_evidence = partial 로 계산, NCR 미발행, 별도 집계
 
 ### 차원 3 (Check) — 심사·KPI·NCR
 - **REC ↔ PRO/WI 요건 자동 대조**: 4-tier verdict (conformant / partial / nonconformant / not_assessed)
@@ -84,14 +92,15 @@ STD_Process_Builder/
 ├── 표준_프로세스_심사_가이드.md             ← 차원 3 운영 가이드 (Phase 1~4 + 4.5 명세)
 ├── 표준_프로세스_제개정_가이드.md           ← 차원 4 운영 가이드 (Phase 1~2 + 4.5 명세)
 ├── .claude/                                 ← 4차원 자동화 인프라
-│   ├── commands/                            ← 슬래시 커맨드 (6)
+│   ├── commands/                            ← 슬래시 커맨드 (7)
 │   │   ├── process-ingest.md               ← 차원 0 (9 Phase + flow-proposer)
 │   │   ├── process-plan.md                 ← 차원 1 (Phase 3.5 + --flow 포함)
 │   │   ├── process-do.md                   ← 차원 2 (8 진입 모드)
+│   │   ├── process-backfill.md             ← 차원 2B (레거시 → REC 백필, 7 Phase)
 │   │   ├── process-check.md                ← 차원 3 (--kpi, --act-queue, --rbac-check)
 │   │   ├── process-audit.md                ← 차원 3 Audit (외부 표준 GAP 분석)
 │   │   └── process-act.md                  ← 차원 4 (7 진입 모드 + --batch)
-│   ├── agents/                              ← 27 에이전트 (차원별 1/6/5/9+2/4)
+│   ├── agents/                              ← 28 에이전트 (차원별 1/6/5+2/9+2/4)
 │   │   ├── flow-proposer.md                 ← 차원 0 Phase 9 (시나리오 도출 HITL → business_flow.yaml)
 │   │   ├── standard-analyzer.md             ← 차원 1
 │   │   ├── process-designer.md
@@ -102,8 +111,9 @@ STD_Process_Builder/
 │   │   ├── process-router.md                ← 차원 2 (Phase 3 자연어 라우팅)
 │   │   ├── process-executor.md              ← 차원 2 (Phase 4 steps.yaml 우선순위)
 │   │   ├── hitl-gatekeeper.md               ← 차원 2 (Phase 2/2.5 다단계)
-│   │   ├── rec-writer.md
+│   │   ├── rec-writer.md                    ← 차원 2 + 차원 2B (backfill 모드 포함)
 │   │   ├── escalation-coordinator.md        ← 차원 2 Phase 2.5
+│   │   ├── backfill-matcher.md              ← 차원 2B Phase 3 (MAT-007 기반 WI 자동 매칭)
 │   │   ├── audit-planner.md                 ← 차원 3 Phase 1
 │   │   ├── evidence-collector.md
 │   │   ├── compliance-checker.md
@@ -237,6 +247,17 @@ STD_Process_Builder/
 ```
 
 > 상세: `표준_빌드_워크플로우_가이드.md`
+
+### 1-1. 차원 2B (Backfill) — 레거시 REC 변환
+```bash
+/process-backfill sources/old_docs/                                    # 배치 (폴더)
+/process-backfill sources/sprint_review.docx                           # 단건 (자동 매칭)
+/process-backfill sources/old.docx --wi WI-CMMI-04-01-03               # 단건 + 수동 WI 지정
+/process-backfill sources/old_docs/ --backfiller "홍길동" --date 2026-03
+/process-backfill --confirm run-b3f9c2b1                               # HITL 확정 → REC 생성
+/process-backfill --resume run-b3f9c2b1                                # 중단된 trace 재개
+/process-backfill --list                                               # 백필 이력
+```
 
 ### 2. 차원 2 (Do) — 프로세스 실행
 ```bash
@@ -453,8 +474,8 @@ Phase 4.5 extensions (명세 활성화):
 
 ## 누적 통계 (main 기준)
 
-- **에이전트**: 27 (차원별 1/6/5/9+2/4)
-- **슬래시 커맨드**: 6 (`/process-ingest`, `/process-plan`, `/process-do`, `/process-check`, `/process-audit`, `/process-act`)
+- **에이전트**: 28 (차원별 1/6/5+2/9+2/4)
+- **슬래시 커맨드**: 7 (`/process-ingest`, `/process-plan`, `/process-do`, `/process-backfill`, `/process-check`, `/process-audit`, `/process-act`)
 - **운영 MAT**: 10 슬롯 (MAT-001~009 + MAT-010 프로세스 플로우맵)
 - **PoC trace**: 10 (do 5, audit 1, kpi 2, act 2)
 - **act queue**: 6 (3 done — 1 단일 + 2 batch / 3 pending)
