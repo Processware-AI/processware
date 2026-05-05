@@ -1,6 +1,6 @@
 ---
 name: act-coordinator
-description: PCB 승인 후 차원 4 사이클의 마지막 단계 — As-Is 입력 파일 (vault/02_표준/{표준}/_inputs/04_AsIs/queue-q*.md) 작성, MAT-001 §개정 이력 행 추가, 큐 status: done 전환, /process-plan 재트리거 명령 stdout 출력. (차원 4 Act)
+description: PCB 승인 후 차원 4 사이클의 마지막 단계 — As-Is 입력 파일 (inputs/04_AsIs/queue-q*.md) 작성, MAT-001 §개정 이력 행 추가, 큐 status: done 전환, /process-plan 재트리거 명령 stdout 출력. (차원 4 Act)
 tools: Read, Write, Edit, Glob
 model: opus
 ---
@@ -44,7 +44,7 @@ B-1. 표준 코드 추출:
    - queue.source.audit_rec 또는 revision_plan.revision_scope.primary_asset.id 의 표준 코드.
    - 예: PRO-CMMI-04-01 → CMMI-DEV-ML3 (POL-CMMI-04 의 standards[0] 인용).
 
-B-2. 파일 경로: `vault/02_표준/{표준코드}/_inputs/04_AsIs/{queue_id}.md`
+B-2. 파일 경로: `inputs/04_AsIs/{queue_id}.md`
    - 디렉터리 미존재 시 신규 생성.
    - 동일 경로 충돌 시 abort (이미 처리된 큐 — 중복 발행 방지).
 
@@ -193,7 +193,7 @@ D-1. queue.yaml Edit:
 ```yaml
 status: in_progress → done
 done_at: "ISO8601"                       # now
-done_capa_rec: "vault/02_표준/CMMI-DEV-ML3/_inputs/04_AsIs/queue-qa1b2c3d4.md"
+done_capa_rec: "inputs/04_AsIs/queue-qa1b2c3d4.md"
 done_reason: "PCB 승인 완료 — As-Is 파일 작성 + MAT-001 §개정 이력 행 추가. 차원 1 재트리거 대기 (사용자 실행)."
 ```
 
@@ -210,7 +210,7 @@ E-1. state.yaml 갱신:
 status: completed
 phase:
   coordinator: done
-final_asis_path: "vault/02_표준/CMMI-DEV-ML3/_inputs/04_AsIs/queue-qa1b2c3d4.md"
+final_asis_path: "inputs/04_AsIs/queue-qa1b2c3d4.md"
 final_mat001_row: "PRO-CMMI-04-01 / v1.0 → v1.1 / run-cxxxxxxxx"
 finalized_at: "ISO8601"
 ```
@@ -221,7 +221,7 @@ E-2. trace.jsonl 에 `act_finalized` 이벤트.
 
 ```
 ✅ 차원 4 사이클 완료 — queue-qa1b2c3d4
-📁 As-Is 입력: vault/02_표준/CMMI-DEV-ML3/_inputs/04_AsIs/queue-qa1b2c3d4.md
+📁 As-Is 입력: inputs/04_AsIs/queue-qa1b2c3d4.md
 📋 MAT-001 §"개정 이력" 1행 append (PRO-CMMI-04-01 v1.0 → v1.1 예정)
 🔄 큐 status: in_progress → done
 🔍 trace_id: run-cxxxxxxxx (status=completed)
@@ -242,7 +242,7 @@ E-2. trace.jsonl 에 `act_finalized` 이벤트.
 
 ### 3.1 자산 무결성
 - 쓰기 허용:
-  - `vault/02_표준/{표준}/_inputs/04_AsIs/queue-q*.md` (신규)
+  - `inputs/04_AsIs/queue-q*.md` (신규)
   - `vault/90_MAT_통합매핑/MAT-001_문서관리대장.md` (Edit, §개정 이력 만)
   - `vault/90_MAT_통합매핑/MAT-008_KPI_대시보드.md` (Edit, §"차원 4 인계" 표 status 컬럼만)
   - `.claude/queues/process-act/queue-q*.yaml` (Edit, status / done_* 만)
@@ -251,7 +251,7 @@ E-2. trace.jsonl 에 `act_finalized` 이벤트.
 - POL/PRO/WI/TMP/EX/REC (AUDIT/NCR 외) 모두 보호 — 본 에이전트는 자산 직접 개정 절대 금지. 차원 1 빌드의 책임.
 
 ### 3.2 차원 1 인터페이스 무결성
-- As-Is 파일은 vault/02_표준/{표준}/_inputs/04_AsIs/ 에만 — 다른 _inputs 카테고리 침범 금지.
+- As-Is 파일은 inputs/04_AsIs/ 에만 — 다른 _inputs 카테고리 침범 금지.
 - 파일명은 `{queue_id}.md` 패턴 — 충돌 시 abort (중복 사이클 방지).
 - 본문에 차원 1 빌드 명령 (rebuild_command) 명시 — qa-reviewer 가 빌드 시 검증 가능.
 

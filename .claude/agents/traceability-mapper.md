@@ -23,11 +23,11 @@ S-3. 일반 모드: 자기 phase `trace` 를 `status: running` + `started` 로 E
 - 정상 모드: `phases.trace.status: running`, `started: <now>` Edit.
 
 ### Phase 0. 입력자료 Preflight
-0-1. `vault/02_표준/{표준코드}/_inputs/README.md` 읽어 입력물 인벤토리·라이선스 확인.
-0-2. 요구사항분해의 `source_citation` 이 모두 채워졌는지 검증. 미채움 Req 는 작업노트 이슈로 기록.
+0-1. `inputs/README.md` 읽어 입력물 인벤토리·라이선스 확인.
+0-2. `vault/02_적용요건/{슬러그}/적용요건.md` 의 `source_citation` 이 모두 채워졌는지 검증. 미채움 REQ 는 작업노트 이슈로 기록.
 
 ### A. 표준별 추적성 매트릭스
-1. `vault/02_표준/{표준코드}/01_{표준코드}_요구사항분해.md` 의 모든 Req-ID 수집 (source_citation 포함).
+1. `vault/02_적용요건/{슬러그}/적용요건.md` 의 모든 REQ-ID 수집 (source_citation 포함).
 2. `vault/03_POL_정책`, `04_PRO_절차`, `05_WI_업무지침`, `06_TMP_템플릿` 내 문서의 frontmatter `standards` 및 본문 표준 매핑 섹션을 스캔.
 3. **MAT 번호 부여 규칙** (`[[02_문서번호체계]]` §MAT 번호 할당 원칙):
    - MAT-001~010 은 전사 공통 (최대 10종, 재배정 금지). 현재 운영: 001·002·003·004·005·006. 007·008·009·010 은 예약.
@@ -35,7 +35,7 @@ S-3. 일반 모드: 자기 phase `trace` 를 `status: running` + `started` 로 E
    - `vault/90_MAT_통합매핑/` 에 `ls MAT-*_*_추적성_*.md` 로 기존 번호 스캔 → 현재 최대 번호 +1 을 새 번호로 결정. 기존 번호가 없으면 `011` 부터 시작.
    - 동일 표준 재실행 시에는 기존 번호 유지 (덮어쓰기).
    - 번호는 **3자리 0-padding** (예: `MAT-011`, `MAT-012`, `MAT-099`).
-4. `vault/99_템플릿/T09_매핑표_MAT.md` 로 `vault/90_MAT_통합매핑/MAT-{NNN}_{표준코드}_추적성_v0.1.md` 생성/갱신. 결정된 번호를 파일명·frontmatter `doc_id`·본문 헤더에 일관 반영.
+4. `vault/99_템플릿/T09_매핑표_MAT.md` 로 `vault/90_MAT_통합매핑/MAT-{NNN}_{슬러그}_추적성_v0.1.md` 생성/갱신. 결정된 번호를 파일명·frontmatter `doc_id`·본문 헤더에 일관 반영.
 5. 커버리지 집계:
    - ✅ 반영완료: POL+PRO+WI+TMP+증적경로 모두 링크
    - 🟡 작업중: 일부 누락
@@ -47,7 +47,7 @@ S-3. 일반 모드: 자기 phase `trace` 를 `status: running` + `started` 로 E
 8. **MAT-002 규제요구사항 대조표**: 해당 표준 조항별 POL/PRO/WI 링크 채움
 9. **MAT-003 산출물 목록표**: 해당 표준 Row 의 POL/PRO/WI/TMP/EX 개수 갱신
 10. **MAT-004 RACI 통합표**: 신규 PRO 의 RACI 추출해 Row 추가, Accountable 누락/중복 탐지
-11. **MAT-005 심사증적 인덱스**: 표준 조항 ↔ POL ↔ PRO ↔ WI ↔ TMP ↔ REC(예상경로) + **입력 출처(`_inputs/`)** 연결
+11. **MAT-005 심사증적 인덱스**: REQ ↔ POL ↔ PRO ↔ WI ↔ TMP ↔ REC(예상경로) + **입력 출처(`inputs/`)** 연결
 11-A. **MAT-006 문서 계층 추적 매트릭스**: 해당 표준의 POL → PRO → WI → TMP → EX 5단 계층을 **트리 형식 + 표 형식 두 가지 뷰** 로 append/갱신. 각 말단 경로의 상태(✅ 완전 / 🟡 EX 없음 / ⚠️  unresolved 등)를 기호로 표기. 고아 문서(상위 참조 없음) 탐지·보고.
 
 11-B. **MAT-007 프로세스 카탈로그 (차원 2 자연어 라우팅용)** — Phase 3 신규:

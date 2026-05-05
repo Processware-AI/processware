@@ -9,34 +9,32 @@
 # ==========================================
 # 고객 입력자료 (저작권·기밀)
 # 실데이터는 제외, 구조·README 만 버전 관리
-# _scaffold 는 전체 추적 (템플릿)
 # ==========================================
 
-# 전사 공통: 실데이터 제외, 구조만 추적
-/vault/_inputs_common/**
-!/vault/_inputs_common/
-!/vault/_inputs_common/README.md
-!/vault/_inputs_common/*/
-!/vault/_inputs_common/*/README.md
+# sources/ — ingest 소스 파일 (PDF·DOCX 등, 저작권/기밀)
+/sources/**
+!/sources/
+!/sources/README.md
 
-# 표준별: 실데이터 제외, 구조만 추적
-/vault/02_표준/*/_inputs/**
-!/vault/02_표준/*/_inputs/
-!/vault/02_표준/*/_inputs/README.md
-!/vault/02_표준/*/_inputs/*/
-!/vault/02_표준/*/_inputs/*/README.md
-# 차원 4 (Act) act-cycle 의 As-Is 입력 — 시스템 자동 발행 (마스킹 의무 없음, 추적성 보장 필요)
-!/vault/02_표준/*/_inputs/04_AsIs/queue-q*.md
+# inputs/ — ingest 출력 패키지 (YAML·MD 만, 바이너리 금지)
+/inputs/**
+!/inputs/
+!/inputs/README.md
+!/inputs/*/
+!/inputs/*/README.md
+!/inputs/*/*/
+!/inputs/*/*/*.yaml
+!/inputs/*/*/*.md
 
-# Scaffold 는 전체 추적 (위 패턴 무효화)
-!/vault/02_표준/_scaffold/**
+# 02_적용요건 하위 실데이터 제외 (README만 추적)
+!/vault/02_적용요건/
+!/vault/02_적용요건/README.md
 
 # ==========================================
 # 파이프라인 실행 상태 (인스턴스별)
 # ==========================================
-vault/02_표준/**/_state*.yaml
-vault/02_표준/**/99_QA리포트_*.md
-vault/02_표준/**/02_작업노트.md
+.claude/states/*.yaml
+vault/02_적용요건/**/99_QA리포트_*.md
 
 # ==========================================
 # Obsidian 워크스페이스 (개인 환경)

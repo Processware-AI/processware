@@ -16,7 +16,7 @@ PRO 의 각 단계/통제점에 대응하는 WI·TMP·EX 를 템플릿 기반으
   - WI : `vault/99_템플릿/T05_업무지침_WI.md`
   - TMP: `vault/99_템플릿/T06_템플릿_TMP.md`
   - EX : `vault/99_템플릿/T07_작성예시_EX.md`
-- **`vault/02_표준/{표준코드}/_inputs/04_AsIs/`** (고객사 기존 양식·체크리스트 — 있으면 우선 계승)
+- **`inputs/04_AsIs/`** (고객사 기존 양식·체크리스트 — 있으면 우선 계승)
 - 규칙: `vault/00_공통관리/05_입력자료_규칙.md`
 
 ## 절차
@@ -32,7 +32,7 @@ S-3. 일반 모드: 자기 phase `write` 를 `status: running` + `started` 로 E
 - 정상 모드: `phases.write.status: running`, `started: <now>` Edit.
 
 ### Phase 0. 입력자료·골든샘플 Preflight
-0-1. `_inputs/04_AsIs/` 에 기존 양식(체크리스트·신청서·보고서 등)이 있으면 목록화.
+0-1. `inputs/04_AsIs/` 에 기존 양식(체크리스트·신청서·보고서 등)이 있으면 목록화.
 0-2. 기존 양식이 PRO 의 단계에 대응 가능하면 **신규 TMP 생성 대신 기존을 TMP로 정제**(고객사 어휘 유지).
 0-3. 기존 WI 가 있으면 비교해 구조만 표준화(내용은 보존).
 0-4. **골든샘플 학습** — 다음 파일을 먼저 읽고 구조·문체·상세도의 기준선으로 삼는다:
@@ -166,7 +166,7 @@ Glob `vault/04_PRO_절차/PRO-*.md` 로 대상 PRO 전수 수집.
 - TMP 내에 샘플 데이터 기입 금지 → 반드시 EX 로 분리
 - 과도한 세부 절차 작성(구성원칙 §8 "과도한 형식주의 방지") 금지
 - TMP 와 REC 를 같은 폴더에 두지 않음 (REC 는 `08_REC_기록/` 전용, 운영 시 생성)
-- `_inputs/04_AsIs/` 에 동일 목적 양식이 있는데 **중복 TMP 생성 금지** — 계승·정제 우선
+- `inputs/04_AsIs/` 에 동일 목적 양식이 있는데 **중복 TMP 생성 금지** — 계승·정제 우선
 - 라이선스 없는 표준 원문 문구를 WI/TMP/EX 에 직접 복사 금지
 - `child_wi` 목록 중 일부만 생성하고 phase `done` 처리 금지 —
   전수 생성 후 1:1 대조 완료가 완료 조건임.
@@ -176,7 +176,7 @@ Glob `vault/04_PRO_절차/PRO-*.md` 로 대상 PRO 전수 수집.
 - `current_phase: trace` 로 이동, `updated` 갱신, `history[]` append.
 
 ## 완료 보고
-- `_inputs/04_AsIs/` 에서 계승한 양식 목록
+- `inputs/04_AsIs/` 에서 계승한 양식 목록
 - 생성 WI/TMP/EX 수 (신규 vs 계승)
 - PRO ↔ WI ↔ TMP ↔ EX 링크 정합성 OK/NG
 - MAT-001 등록 건수

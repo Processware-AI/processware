@@ -1,5 +1,5 @@
 ---
-description: '프로세스 모듈 1건을 구성원칙과 8종 문서유형(POL/PRO/WI/TMP/EX/REC/MAT/REF)에 맞춰 Obsidian vault에 구축. 입력은 표준 코드·PA 그룹·자연어 요건 기술 모두 수용. 체크포인트/재개·자가수정 루프 지원. 사용: /process-plan "프로젝트 계획·추정·리스크 관리"'
+description: '적용요건 정의 + 프로세스 모듈 구축 (차원 1 Plan) — inputs/ 분석 → 02_적용요건/{명칭}/적용요건.md 생성 → POL/PRO/WI/TMP/EX/MAT Obsidian vault 구축. 입력은 자유 명칭·표준코드·자연어 모두 수용. 체크포인트/재개·자가수정 루프 지원. 사용: /process-plan "OOO사 품질경영체계"'
 argument-hint: "<모듈_또는_요건> [--restart] [--resume] [--from <phase>] [--skip-qa] [--cross] [--max-attempts N]"
 ---
 
@@ -62,14 +62,14 @@ git checkout -b feat/{모듈슬러그}-output
 ### −2-3. 작업 도중 commit 정책
 
 각 phase 종료 시 **선택적 중간 commit** (사용자 옵션 `--commit-per-phase` 시):
-- analyze 종료: `feat({표준코드}): analyze 완료 — 요구사항 분해 N건`
-- design 종료: `feat({표준코드}): design 완료 — POL N / PRO M`
-- write 종료: `feat({표준코드}): write 완료 — WI/TMP/EX N×3`
-- trace 종료: `chore({표준코드}): MAT 갱신 + MAT-{NNN} 신규`
-- qa 종료: `chore({표준코드}): QA attempt N — Pass/Fail 통계`
+- analyze 종료: `feat({슬러그}): analyze 완료 — 적용요건 REQ N건`
+- design 종료: `feat({슬러그}): design 완료 — POL N / PRO M`
+- write 종료: `feat({슬러그}): write 완료 — WI/TMP/EX N×3`
+- trace 종료: `chore({슬러그}): MAT 갱신 + MAT-{NNN} 신규`
+- qa 종료: `chore({슬러그}): QA attempt N — Pass/Fail 통계`
 
 기본은 **종료 시 일괄 4개 분할 commit**:
-1. `feat({표준코드}): 표준 산출물 + 입력자료 (POL/PRO/WI/TMP/EX/REF)`
+1. `feat({슬러그}): 산출물 + 적용요건 (POL/PRO/WI/TMP/EX/REF)`
 2. `chore(MAT): MAT-001~006 갱신 + MAT-{NNN} 신규`
 3. `docs(MOC): 전체표준·추적성매트릭스 인덱스 갱신`
 4. (필요 시) `fix({표준코드}): self-heal 후속 보정`
@@ -78,7 +78,7 @@ git checkout -b feat/{모듈슬러그}-output
 
 `overall_status: done` 도달 시:
 ```bash
-git push -u origin feat/{표준코드}-output
+git push -u origin feat/{슬러그}-output
 ```
 
 main 에 merge 는 사용자 결정 사항. PR 생성 안내만 출력 (`gh pr create` 명령 예시).
@@ -94,7 +94,7 @@ main 에 merge 는 사용자 결정 사항. PR 생성 안내만 출력 (`gh pr c
 ## Phase −1: State 결정 (가장 먼저)
 
 ### −1-1. `_state.yaml` 탐색
-경로: `vault/02_표준/{표준코드}/_state.yaml`
+경로: `.claude/states/{슬러그}_state.yaml`
 
 | 상황 | 기본 동작 | 플래그 override |
 |---|---|---|
@@ -104,7 +104,7 @@ main 에 merge 는 사용자 결정 사항. PR 생성 안내만 출력 (`gh pr c
 | `overall_status: running` (전 세션 중단) | 현재 `current_phase` 부터 재개 제안 | `--resume` 자동 / `--from <phase>` 지정 |
 
 ### −1-2. `--restart` 처리
-기존 `_state.yaml` 을 `_state_{YYYYMMDD_HHMM}.yaml` 으로 rename 보존 → 신규 상태 파일 생성.
+기존 `{슬러그}_state.yaml` 을 `{슬러그}_state_{YYYYMMDD_HHMM}.yaml` 으로 rename 보존 → 신규 상태 파일 생성.
 
 ### −1-3. 진행 결정 보고
 사용자에게 현재 attempt·다음 실행 phase·생략될 phase 를 요약 보고 후 진행.
@@ -115,19 +115,17 @@ main 에 merge 는 사용자 결정 사항. PR 생성 안내만 출력 (`gh pr c
 
 (Fresh 시작 또는 `--from preflight` 시에만 실행. 재개 시엔 state 에서 done 이면 생략.)
 
-0-1. `vault/02_표준/{표준코드}/_inputs/` 존재 확인
-   - 없으면 폴더 + `_inputs/README.md` 스텁 생성 후 사용자에게:
+0-1. `inputs/` 존재 확인
+   - 없으면 사용자에게:
      ```
-     [Preflight 경고] {표준코드}/_inputs/ 에 입력자료가 없습니다.
+     [Preflight 경고] inputs/ 에 입력자료가 없습니다.
      옵션:
        A) 지금 입력자료를 배치하고 재실행 (권장)
        B) LLM 추정만으로 진행 (정확도·감사 방어력 낮음)
      ```
    - B 선택 시에만 다음 단계 진행.
 
-0-2. `vault/_inputs_common/` 선택 스캔.
-
-0-3. 입력물 인벤토리 요약 보고(파일 수·카테고리·라이선스 상태).
+0-2. 입력물 인벤토리 요약 보고(파일 수·카테고리·라이선스 상태).
 
 0-4. **골든샘플 3종 선행 로드** (`vault/99_템플릿/_골든샘플/`): GS-POL-QMS-002 / GS-PRO-QMS-102 / GS-WI-102-04.
 
@@ -140,7 +138,10 @@ main 에 merge 는 사용자 결정 사항. PR 생성 안내만 출력 (`gh pr c
 각 에이전트는 **Phase −1(자체 Prerequisite 확인)** 을 실행하고, 완료 시 **done-marker 갱신** 을 한다 (상태규약 §4).
 
 1. **Analyze** — Agent `standard-analyzer`
-   - 출력: `02_표준/{표준코드}/` 개요·요구사항분해·작업노트, `09_REF_참고자료/`, `90_MAT/MAT-002`
+   - 1-0. `vault/02_적용요건/{슬러그}/적용요건.md` 존재 확인
+     - **있으면**: 기존 적용요건.md 를 requirements baseline 으로 로드 → Phase 2(design) 로
+     - **없으면**: standard-analyzer 가 `inputs/` 분석 → 적용요건.md 생성 후 → Phase 2(design) 로
+   - 출력: `02_적용요건/{슬러그}/적용요건.md` (신규 생성 시), `09_REF_참고자료/`, `90_MAT/MAT-002`
    - done-marker 로 `phases.analyze` 완료 기록
 
 2. **Design** — Agent `process-designer`
@@ -156,7 +157,7 @@ main 에 merge 는 사용자 결정 사항. PR 생성 안내만 출력 (`gh pr c
    - done-marker: `phases.trace`
 
 5. **QA** — Agent `qa-reviewer` (옵션 `--skip-qa` 시 생략)
-   - 리포트: `02_표준/{표준코드}/99_QA리포트_{YYYYMMDD}_attempt{N}.md`
+   - 리포트: `02_적용요건/{슬러그}/99_QA리포트_{YYYYMMDD}_attempt{N}.md`
    - done-marker + `qa_failures[]` (Fail 있을 때)
 
 ---
@@ -232,7 +233,8 @@ R-6. QA 결과로 루프 재평가.
 
 ## 최종 보고
 - 🧭 state 요약 (attempts, 최종 overall_status, 각 phase 소요 시간)
-- 📥 `_inputs/` 활용 요약
+- 📥 `inputs/` 활용 요약
+- 📋 적용요건.md 경로 (`vault/02_적용요건/{슬러그}/적용요건.md`) + REQ 수
 - 🔄 자가수정 루프 요약 (attempt 별 Pass/Fail, 수정 건수)
 - ✅ 생성 파일 트리
 - 📊 요구사항 커버리지
