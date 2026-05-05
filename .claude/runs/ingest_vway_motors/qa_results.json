@@ -1,0 +1,15 @@
+{
+  "issues": [],
+  "warnings": [],
+  "compound_requirements": [],
+  "stats": {
+    "total_processes": 32,
+    "total_requirements": 407,
+    "normative": 407,
+    "process_requirement": 275,
+    "record_requirement": 58,
+    "issues_count": 0,
+    "warnings_count": 0,
+    "compound_count": 0
+  }
+}

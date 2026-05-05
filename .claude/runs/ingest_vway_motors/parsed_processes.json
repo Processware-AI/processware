@@ -1,0 +1,2229 @@
+{
+  "ACQ.4": {
+    "id": "ACQ.4",
+    "name": "Supplier Monitoring",
+    "group": "ACQ",
+    "purpose": "The purpose is to track and assess the performance of an external contract-based supplier company against agreed commitments.",
+    "outcomes": [
+      "Joint activities, as agreed between the customer and the supplier, are performed.",
+      "All information, agreed upon for exchange, is communicated regularly between the customer and the supplier.",
+      "Performance of the supplier is monitored against the agreements.",
+      "Changes to the agreement, if needed, are negotiated between the customer and the supplier and documented in the agreement."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "ACQ.4.BP1",
+        "title": "Agree on and maintain joint activities, joint interfaces, and information to be exchanged",
+        "full_text": "Agree on and maintain joint activities, joint interfaces, and information to be exchanged. Establish and maintain an agreement on information to be exchanged, on joint activities, joint interfaces, responsibilities, type and frequency of joint activities, communications, meetings, status reports, and reviews."
+      },
+      {
+        "bp_id": "ACQ.4.BP2",
+        "title": "Exchange all agreed information",
+        "full_text": "Exchange all agreed information. Use the defined joint interfaces between customer and supplier for the exchange of all agreed information."
+      },
+      {
+        "bp_id": "ACQ.4.BP3",
+        "title": "Review development work products with the supplier",
+        "full_text": "Review development work products with the supplier. Review development work products with the supplier on the agreed regular basis, covering technical aspects, problems and risks. Track open measures. Note 1: see SUP.9 for management of problems"
+      },
+      {
+        "bp_id": "ACQ.4.BP4",
+        "title": "Review progress of the supplier",
+        "full_text": "Review progress of the supplier. Review progress of the supplier regarding schedule, quality, and cost on the agreed regular basis. Track open measures to closure and perform risk mitigation activities. Note 2: see MAN.5 for management of risks"
+      },
+      {
+        "bp_id": "ACQ.4.BP5",
+        "title": "Act to correct deviations",
+        "full_text": "Act to correct deviations. Take action when agreed objectives are not achieved. Negotiate changes to objectives and document them in the agreements."
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "02-01",
+        "name": "Commitment/Agreement"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication evidence"
+      },
+      {
+        "id": "13-09",
+        "name": "Meeting support evidence"
+      },
+      {
+        "id": "13-14",
+        "name": "Progress status"
+      },
+      {
+        "id": "13-16",
+        "name": "Change request"
+      },
+      {
+        "id": "13-19",
+        "name": "Review evidence"
+      },
+      {
+        "id": "14-02",
+        "name": "Corrective action"
+      },
+      {
+        "id": "15-51",
+        "name": "Analysis results"
+      }
+    ]
+  },
+  "SPL.2": {
+    "id": "SPL.2",
+    "name": "Product Release",
+    "group": "SPL",
+    "purpose": "The purpose is to control the release of a product to the intended customer.",
+    "outcomes": [
+      "The contents of the product releases are determined.",
+      "The release package is assembled from configured items.",
+      "The release documentation is defined and produced.",
+      "Release approval is performed against defined criteria.",
+      "The release package is made available to the intended customer."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "SPL.2.BP1",
+        "title": "Define the functional content of releases",
+        "full_text": "Define the functional content of releases. Define the functionality to be included and the release criteria for each release. Note 1: This may include the hardware elements, software elements, and extra application parameter files (influencing the identified system functionality) that are needed for the release."
+      },
+      {
+        "bp_id": "SPL.2.BP2",
+        "title": "Define release package",
+        "full_text": "Define release package. Define the release as well as supporting tools and information. Note 2: The release package may include also programming tools."
+      },
+      {
+        "bp_id": "SPL.2.BP3",
+        "title": "Ensure unique identification of releases",
+        "full_text": "Ensure unique identification of releases. Ensure a unique identification of the release based upon the intended purpose and expectations of the release. Note 3: Unique identification may be realized by a classification and numbering scheme for product releases."
+      },
+      {
+        "bp_id": "SPL.2.BP4",
+        "title": "Build the release from items under configuration control",
+        "full_text": "Build the release from items under configuration control. Build the release from items under configuration control to ensure integrity. Note 4: This practice may be supported by the SUP.8 Configuration Management Process."
+      },
+      {
+        "bp_id": "SPL.2.BP5",
+        "title": "Ensure release approval before delivery",
+        "full_text": "Ensure release approval before delivery. Criteria for the release are satisfied before delivery takes place."
+      },
+      {
+        "bp_id": "SPL.2.BP6",
+        "title": "Provide a release note",
+        "full_text": "Provide a release note. A release is accompanied by information detailing key characteristics of the release. Note 5: The release note may include information about legal aspects like relevant target markets, legislation that is considered etc. See also VAL.1 Validation. SPL2.BP7: Communicate the type, service level and duration of support for a release. Identify and communicate the type, service level and duration of support for a release."
+      },
+      {
+        "bp_id": "SPL.2.BP8",
+        "title": "Deliver the release package to the intended customer",
+        "full_text": "Deliver the release package to the intended customer. Deliver the release package to the intended customer. Note 6: The intended customer may be an internal organizational unit or an external organization. SPL.2 Product Release"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "11-03",
+        "name": "Release note"
+      },
+      {
+        "id": "11-04",
+        "name": "Product release package"
+      },
+      {
+        "id": "13-06",
+        "name": "Delivery evidence"
+      },
+      {
+        "id": "13-13",
+        "name": "Product release approval"
+      },
+      {
+        "id": "18-06",
+        "name": "Product release criteria"
+      }
+    ]
+  },
+  "SYS.1": {
+    "id": "SYS.1",
+    "name": "Requirements Elicitation",
+    "group": "SYS",
+    "purpose": "The purpose is to gather, analyze, and track evolving stakeholder needs and requirements throughout the lifecycle of the product and/or service to establish a set of agreed requirements.",
+    "outcomes": [
+      "Continuing communication with the stakeholder is established.",
+      "Stakeholder expectations are understood, and requirements are defined and agreed.",
+      "Stakeholder requirements changes arising from stakeholder needs are analyzed to enable associated risk assessment and impact management.",
+      "Determination of stakeholder requirements status is ensured for all affected parties."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "SYS.1.BP1",
+        "title": "Obtain stakeholder expectations and requests",
+        "full_text": "Obtain stakeholder expectations and requests. Obtain and define stakeholder expectations and requests through direct solicitation of stakeholder input, and through review of stakeholder business proposals (where relevant) and other documents containing inputs to stakeholder requirements, and consideration of the target operating and hardware environment. Note 1: Documenting the stakeholder, or the source of a stakeholder requirement, supports stakeholder requirements agreement and change analysi"
+      },
+      {
+        "bp_id": "SYS.1.BP2",
+        "title": "Agree on requirements",
+        "full_text": "Agree on requirements. Formalize the stakeholder’s expectations and requests into requirements. Reach a common understanding of the set of stakeholder requirements among affected parties by obtaining an explicit agreement from all affected parties. Note 2: Examples of affected parties are customers, suppliers, design partners, joint venture partners, or outsourcing parties. Note 3: The agreed stakeholder requirements may be based on feasibility studies and/or cost and schedule impact analysis."
+      },
+      {
+        "bp_id": "SYS.1.BP3",
+        "title": "Analyze stakeholder requirements changes",
+        "full_text": "Analyze stakeholder requirements changes. Analyze all changes made to the stakeholder requirements against the agreed stakeholder requirements. Assess the impact and risks, and initiate appropriate change control and mitigation actions. Note 4: Requirements changes may arise from different sources as for instance changing technology, stakeholder needs, or legal constraints. Note 5: Refer to SUP.10 Change Request Management, if required."
+      },
+      {
+        "bp_id": "SYS.1.BP4",
+        "title": "Communicate requirements status",
+        "full_text": "Communicate requirements status. Ensure all affected parties can be aware of the status and disposition of their requirements including changes and can communicate necessary information and data. SYS.1 Requirements Elicitation"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "15-51",
+        "name": "Analysis Results"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication Evidence"
+      },
+      {
+        "id": "17-00",
+        "name": "Requirement"
+      },
+      {
+        "id": "17-54",
+        "name": "Requirement Attribute"
+      }
+    ]
+  },
+  "SYS.2": {
+    "id": "SYS.2",
+    "name": "System Requirements Analysis",
+    "group": "SYS",
+    "purpose": "The purpose is to establish a structured and analyzed set of system requirements consistent with the stakeholder requirements.",
+    "outcomes": [
+      "System requirements are specified.",
+      "System requirements are structured and prioritized.",
+      "System requirements are analyzed for correctness and technical feasibility.",
+      "The impact of system requirements on the operating environment is analyzed.",
+      "Consistency and bidirectional traceability are established between system requirements and stakeholder requirements.",
+      "The system requirements are agreed and communicated to all affected parties."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "SYS.2.BP1",
+        "title": "Specify system requirements",
+        "full_text": "Specify system requirements. Use the stakeholder requirements to identify and document the functional and non-functional requirements for the system according to defined characteristics for requirements. Note 1: Characteristics of requirements are defined in standards such as ISO IEEE 29148, ISO 26262-8:2018, or the INCOSE Guide For Writing Requirements. Note 2: Examples for defined characteristics of requirements shared by technical standards are verifiability (i.e., verification criteria being"
+      },
+      {
+        "bp_id": "SYS.2.BP2",
+        "title": "Structure system requirements",
+        "full_text": "Structure system requirements. Structure and prioritize the system requirements. Note 3: Examples for structuring criteria can be grouping (e.g., by functionality) or product variants identification. Note 4: Prioritization can be done according to project or stakeholder needs via e.g., definition of release scopes. Please refer to SPL.2.BP1."
+      },
+      {
+        "bp_id": "SYS.2.BP3",
+        "title": "Analyze system requirements",
+        "full_text": "Analyze system requirements. Analyze the specified system requirements including their interdependencies to ensure correctness, technical feasibility, and to support project management regarding project estimates. Note 5: See MAN.3.BP3 for project feasibility and MAN.3.BP5 for project estimates. Note 6: Technical feasibility can be evaluated based on e.g., platform or product line, or by means of prototype development or product demonstrators."
+      },
+      {
+        "bp_id": "SYS.2.BP4",
+        "title": "Analyze the impact on the system context",
+        "full_text": "Analyze the impact on the system context. Analyze the impact that the system requirements will have on elements in the relevant system context."
+      },
+      {
+        "bp_id": "SYS.2.BP5",
+        "title": "Ensure consistency and establish bidirectional traceability",
+        "full_text": "Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between system requirements and stakeholder requirements. Note 7: Bidirectional traceability supports consistency, facilitates impact analyses of change requests, and supports the demonstration of coverage of stakeholder requirements. Traceability alone, e.g., the existence of links, does not necessarily mean that the information is consistent with each other. Note 8: There ma"
+      },
+      {
+        "bp_id": "SYS.2.BP6",
+        "title": "Communicate agreed system requirements and impact on the system context",
+        "full_text": "Communicate agreed system requirements and impact on the system context. Communicate the agreed system requirements, and results of the impact analysis on the system context, to all affected parties. SYS.2 System Requirements Analysis"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "17-00",
+        "name": "Requirement"
+      },
+      {
+        "id": "17-54",
+        "name": "Requirement Attribute"
+      },
+      {
+        "id": "15-51",
+        "name": "Analysis Results"
+      },
+      {
+        "id": "13-51",
+        "name": "Consistency Evidence"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication Evidence"
+      }
+    ]
+  },
+  "SYS.3": {
+    "id": "SYS.3",
+    "name": "System Architectural Design",
+    "group": "SYS",
+    "purpose": "The purpose is to establish an analyzed system architecture, comprising static and dynamic aspects, consistent with the system requirements.",
+    "outcomes": [
+      "A system architecture is designed including a definition of the system elements with their behavior, their interfaces, their relationships, and their interactions.",
+      "The system architecture is analyzed against defined criteria, and special characteristics are identified.",
+      "Consistency and bidirectional traceability are established between system architecture and system requirements.",
+      "The agreed system architecture and the special characteristics are communicated to all affected parties."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "SYS.3.BP1",
+        "title": "Specify static aspects of the system architecture",
+        "full_text": "Specify static aspects of the system architecture. Specify and document the static aspects of the system architecture with respect to the functional and non-functional system requirements, including external interfaces and a defined set of system elements with their interfaces and relationships."
+      },
+      {
+        "bp_id": "SYS.3.BP2",
+        "title": "Specify dynamic aspects of the system architecture",
+        "full_text": "Specify dynamic aspects of the system architecture. Specify and document the dynamic aspects of the system architecture with respect to the functional and non-functional system requirements including the behavior of the system elements and their interaction in different system modes. Note 1: Examples of interactions of system elements are timing diagrams reflecting inertia of mechanical components, processing times of ECUs, and signal propagation times of bus systems."
+      },
+      {
+        "bp_id": "SYS.3.BP3",
+        "title": "Analyze system architecture",
+        "full_text": "Analyze system architecture. Analyze the system architecture regarding relevant technical design aspects related to the product lifecycle, and to support project management regarding project estimates, and derive special characteristics for non-software system elements. Document a rationale for the system architectural design decisions. Note 2: See MAN.3.BP3 for project feasibility and MAN.3.BP5 for project estimates. Note 3: Examples for product lifecycle phases are production, maintenance & re"
+      },
+      {
+        "bp_id": "SYS.3.BP4",
+        "title": "Ensure consistency and establish bidirectional traceability",
+        "full_text": "Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between the elements of the system architecture and the system requirements that represent properties or characteristics of the physical end product. Note 7: Bidirectional traceability further supports consistency, and facilitates impact analysis of change requests, and demonstration of verification coverage. Traceability alone, e.g., the existence of links, does not necessari"
+      },
+      {
+        "bp_id": "SYS.3.BP5",
+        "title": "Communicate agreed system architecture",
+        "full_text": "Communicate agreed system architecture. Communicate the agreed system architecture, including the special characteristics, to all affected parties. SYS.3 System Architectural Design"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "04-06",
+        "name": "System Architecture"
+      },
+      {
+        "id": "13-51",
+        "name": "Consistency Evidence"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication Evidence"
+      },
+      {
+        "id": "15-51",
+        "name": "Analysis Results"
+      },
+      {
+        "id": "17-57",
+        "name": "Special Characteristics"
+      }
+    ]
+  },
+  "SYS.4": {
+    "id": "SYS.4",
+    "name": "System Integration and Integration Verification",
+    "group": "SYS",
+    "purpose": "The purpose is to integrate systems elements and verify that the integrated system elements are consistent with the system architecture.",
+    "outcomes": [
+      "Verification measures are specified for system integration verification of the integrated system elements based on the system architecture, including the interfaces of, and interactions between, system elements.",
+      "System elements are integrated up to a complete integrated system consistent with the release scope.",
+      "Verification measures are selected according to the release scope considering criteria, including criteria for regression verification.",
+      "Integrated system elements are verified using the selected verification measures, and the results of the system integration verification are recorded.",
+      "Consistency and bidirectional traceability are established between verification measures and the elements of the system architecture.",
+      "Bidirectional traceability between verification results and verification measures is established.",
+      "Results of the system integration and integration verification are summarized and communicated to all affected parties."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "SYS.4.BP1",
+        "title": "Specify verification measures for system integration",
+        "full_text": "Specify verification measures for system integration. Specify the verification measures, based on a defined sequence and preconditions for the integration of system elements against the system static and dynamic aspects of the system architecture, including • techniques for the verification measures, • pass/fail criteria for verification measures, • a definition of entry and exit criteria for the verification measures, and • the required verification infrastructure and environment setup. Note 1:"
+      },
+      {
+        "bp_id": "SYS.4.BP2",
+        "title": "Select verification measures",
+        "full_text": "Select verification measures. Document the selection of verification measures for each integration step considering selection criteria including criteria for regression verification. The documented selection of verification measures shall have sufficient coverage according to the release scope. Note 2: Examples for selection criteria can be prioritization of requirements, the need for regression verification (due to e.g., changes to the system architectural design or to system components), or th"
+      },
+      {
+        "bp_id": "SYS.4.BP3",
+        "title": "Integrate system elements and perform integration verification",
+        "full_text": "Integrate system elements and perform integration verification. Integrate the system elements until the system is fully integrated according to the specified interfaces and interactions between the system elements, and according to the defined sequence and defined preconditions. Perform the selected system integration verification measures. Record the verification measure data including pass/fail status and corresponding verification measure data. Note 3: Examples for preconditions for starting "
+      },
+      {
+        "bp_id": "SYS.4.BP4",
+        "title": "Ensure consistency and establish bidirectional traceability",
+        "full_text": "Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between verification measures and the system architecture. Establish bidirectional traceability between verification results and verification measures. Note 5: Bidirectional traceability supports consistency, and facilitates impact analysis of change requests, and demonstration of verification coverage. Traceability alone, e.g., the existence of links, does not necessarily mea"
+      },
+      {
+        "bp_id": "SYS.4.BP5",
+        "title": "Summarize and communicate results",
+        "full_text": "Summarize and communicate results. Summarize the system integration and integration verification results and communicate them to all affected parties. Note 6: Providing all necessary information from the test case execution in a summary enables other parties to judge the consequences. SYS.4 System Integration and Integration Verification"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "08-60",
+        "name": "Verification Measure"
+      },
+      {
+        "id": "06-50",
+        "name": "Integration Sequence Instruction"
+      },
+      {
+        "id": "03-50",
+        "name": "Verification Measure Data"
+      },
+      {
+        "id": "08-58",
+        "name": "Verification Measure Selection Set"
+      },
+      {
+        "id": "15-52",
+        "name": "Verification Results"
+      },
+      {
+        "id": "13-51",
+        "name": "Consistency Evidence"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication Evidence"
+      },
+      {
+        "id": "11-06",
+        "name": "Integrated System"
+      }
+    ]
+  },
+  "SYS.5": {
+    "id": "SYS.5",
+    "name": "System Verification",
+    "group": "SYS",
+    "purpose": "The purpose is to ensure that the system is verified to be consistent with the system requirements.",
+    "outcomes": [
+      "Verification measures are specified for system verification of the system based on the system requirements.",
+      "Verification measures are selected according to the release scope considering criteria, including criteria for regression verification.",
+      "The integrated system is verified using the selected verification measures and the results of system verification are recorded.",
+      "Consistency and bidirectional traceability are established between verification measures and system requirements.",
+      "Bidirectional traceability is established between verification results and verification measures.",
+      "Verification results are summarized and communicated to all affected parties."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "SYS.5.BP1",
+        "title": "Specify verification measures for system verification",
+        "full_text": "Specify verification measures for system verification. Specify the verification measures for system verification suitable to provide evidence for compliance with the functional and non-functional information in the system requirements, including • techniques for the verification measures, • pass/fail criteria for verification measures, • a definition of entry and exit criteria for the verification measures, • necessary sequence of verification measures, and • the required verification infrastruc"
+      },
+      {
+        "bp_id": "SYS.5.BP2",
+        "title": "Select verification measures",
+        "full_text": "Select verification measures. Document the selection of verification measures considering selection criteria including criteria for regression verification. The selection of verification measures shall have sufficient coverage according to the release scope. Note 2: Examples for criteria for selection can be prioritization of requirements, the need for regression verification (due to e.g., changes to the system requirements), the intended use of the delivered product release (test bench, test tr"
+      },
+      {
+        "bp_id": "SYS.5.BP3",
+        "title": "Perform verification of the integrated system",
+        "full_text": "Perform verification of the integrated system. Perform the verification of the integrated system using the selected verification measures. Record the verification results including pass/fail status and corresponding verification measure data. Note 3: See SUP.9 for handling verification results that deviate from expected results"
+      },
+      {
+        "bp_id": "SYS.5.BP4",
+        "title": "Ensure consistency and establish bidirectional traceability",
+        "full_text": "Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between verification measures and system requirements. Establish bidirectional traceability between verification results and verification measures. Note 4: Bidirectional traceability supports consistency, and facilitates impact analysis of change requests, and demonstration of verification coverage. Traceability alone, e.g., the existence of links, does not necessarily mean th"
+      },
+      {
+        "bp_id": "SYS.5.BP5",
+        "title": "Summarize and communicate results",
+        "full_text": "Summarize and communicate results. Summarize the system verification results and communicate them to all affected parties. Note 5: Providing all necessary information from the test case execution in a summary enables other parties to judge the consequences. SYS.5 System Verification Output Information Item 08-60 Verification Measure 03-50 Verification Measure Data 08-58 Verification Measure Selection Set 15-52 Verification Results 13-51 Consistency Evidence 13-52 Communication Evidence Base Prac"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "17-00",
+        "name": "Requirement"
+      },
+      {
+        "id": "17-54",
+        "name": "Requirement Attribute"
+      },
+      {
+        "id": "15-51",
+        "name": "Analysis Results"
+      },
+      {
+        "id": "13-51",
+        "name": "Consistency Evidence"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication Evidence"
+      }
+    ]
+  },
+  "SWE.1": {
+    "id": "SWE.1",
+    "name": "Software Requirements Analysis",
+    "group": "SWE",
+    "purpose": "The purpose is to establish a structured and analyzed set of software requirements consistent with the system requirements, and the system architecture.",
+    "outcomes": [
+      "Software requirements are specified.",
+      "Software requirements are structured and prioritized.",
+      "Software requirements are analyzed for correctness and technical feasibility.",
+      "The impact of software requirements on the operating environment is analyzed.",
+      "Consistency and bidirectional traceability are established between software requirements and system requirements.",
+      "Consistency and bidirectional traceability are established between software requirements and system architecture.",
+      "The software requirements are agreed and communicated to all affected parties."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "SWE.1.BP1",
+        "title": "Specify software requirements",
+        "full_text": "Specify software requirements. Use the system requirements and the system architecture to identify and document the functional and non-functional requirements for the software according to defined characteristics for requirements. Note 1: Characteristics of requirements are defined in standards such as ISO IEEE 29148, ISO 26262-8:2018, or the INCOSE Guide for Writing Requirements. Note 2: Examples for defined characteristics of requirements shared by technical standards are verifiability (i.e., "
+      },
+      {
+        "bp_id": "SWE.1.BP2",
+        "title": "Structure software requirements",
+        "full_text": "Structure software requirements. Structure and prioritize the software requirements. Note 5: Examples for structuring criteria can be grouping (e.g., by functionality) or expressing product variants. Note 6: Prioritization can be done according to project or stakeholder needs via e.g., definition of release scopes. Refer to SPL.2.BP1."
+      },
+      {
+        "bp_id": "SWE.1.BP3",
+        "title": "Analyze software requirements",
+        "full_text": "Analyze software requirements. Analyze the specified software requirements including their interdependencies to ensure correctness, technical feasibility, and to support project management regarding project estimates. Note 7: See MAN.3.BP3 for project feasibility and MAN.3.BP5 for project estimates. Note 8: Technical feasibility can be evaluated based on e.g., platform or product line, or by prototyping."
+      },
+      {
+        "bp_id": "SWE.1.BP4",
+        "title": "Analyze the impact on the operating environment",
+        "full_text": "Analyze the impact on the operating environment. Analyze the impact that the software requirements will have on elements in the operating environment."
+      },
+      {
+        "bp_id": "SWE.1.BP5",
+        "title": "Ensure consistency and establish bidirectional traceability",
+        "full_text": "Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between software requirements and system architecture. Ensure consistency and establish bidirectional traceability between software requirements and system requirements. Note 9: Redundant traceability is not intended. Note 10: There may be non-functional system requirements that the software requirements do not trace to. Examples are process requirements or requirements relate"
+      },
+      {
+        "bp_id": "SWE.1.BP6",
+        "title": "Communicate agreed software requirements and impact on the operating environment",
+        "full_text": "Communicate agreed software requirements and impact on the operating environment. Communicate the agreed software requirements, and the results of the analysis of impact on the operating environment, to all affected parties. SWE.1 Software Requirements Analysis"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "17-00",
+        "name": "Requirement"
+      },
+      {
+        "id": "17-54",
+        "name": "Requirement Attribute"
+      },
+      {
+        "id": "15-51",
+        "name": "Analysis Results"
+      },
+      {
+        "id": "13-51",
+        "name": "Consistency Evidence"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication Evidence"
+      }
+    ]
+  },
+  "SWE.2": {
+    "id": "SWE.2",
+    "name": "Software Architectural Design",
+    "group": "SWE",
+    "purpose": "The purpose is to establish an analyzed software architecture, comprising static and dynamic aspects, consistent with the software requirements.",
+    "outcomes": [
+      "A software architecture is designed including static and dynamic aspects.",
+      "The software architecture is analyzed against defined criteria.",
+      "Consistency and bidirectional traceability are established between software architecture and software requirements.",
+      "The software architecture is agreed and communicated to all affected parties."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "SWE.2.BP1",
+        "title": "Specify static aspects of the software architecture",
+        "full_text": "Specify static aspects of the software architecture. Specify and document the static aspects of the software architecture with respect to the functional and non-functional software requirements, including external interfaces and a defined set of software components with their interfaces and relationships. Note 1: The hardware-software-interface (HSI) definition puts in context the hardware design and therefore is an aspect of system design (SYS.3)."
+      },
+      {
+        "bp_id": "SWE.2.BP2",
+        "title": "Specify dynamic aspects of the software architecture",
+        "full_text": "Specify dynamic aspects of the software architecture. Specify and document the dynamic aspects of the software architecture with respect to the functional and non- functional software requirements, including the behavior of the software components and their interaction in different software modes, and concurrency aspects. Note 2: Examples for concurrency aspects are application-relevant interrupt handling, preemptive processing, multi-threading. Note 3: Examples for behavioral descriptions are n"
+      },
+      {
+        "bp_id": "SWE.2.BP3",
+        "title": "Analyze software architecture",
+        "full_text": "Analyze software architecture. Analyze the software architecture regarding relevant technical design aspects and to support project management regarding project estimates. Document a rationale for the software architectural design decision. Note 4: See MAN.3.BP3 for project feasibility and MAN.3.BP5 for project estimates. Note 5: The analysis may include the suitability of pre-existing software components for the current application. Note 6: Examples of methods suitable for analyzing technical a"
+      },
+      {
+        "bp_id": "SWE.2.BP4",
+        "title": "Ensure consistency and establish bidirectional traceability",
+        "full_text": "Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between the software architecture and the software requirements. Note 9: There may be non-functional software requirements that the software architectural design does not trace to. Examples are development process requirements. Such requirements are still subject to verification. Note 10: Bidirectional traceability supports consistency, and facilitates impact analysis of chang"
+      },
+      {
+        "bp_id": "SWE.2.BP5",
+        "title": "Communicate agreed software architecture",
+        "full_text": "Communicate agreed software architecture. Communicate the agreed software architecture to all affected parties. SWE.2 Software Architectural Design"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "04-04",
+        "name": "Software Architecture"
+      },
+      {
+        "id": "13-51",
+        "name": "Consistency Evidence"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication Evidence"
+      },
+      {
+        "id": "15-51",
+        "name": "Analysis Results"
+      }
+    ]
+  },
+  "SWE.3": {
+    "id": "SWE.3",
+    "name": "Software Detailed Design and Unit Construction",
+    "group": "SWE",
+    "purpose": "The purpose is to establish a software detailed design, comprising static and dynamic aspects, consistent with the software architecture, and to construct software units consistent with the software detailed design.",
+    "outcomes": [
+      "A detailed design is specified including static and dynamic aspects.",
+      "Software units as specified in the software detailed design are produced.",
+      "Consistency and bidirectional traceability are established between software detailed design and software architecture; and consistency and bidirectional traceability are established between source code and software detailed design; and consistency and bidirectional traceability are established between the software detailed design and the software requirements.",
+      "The source code and the agreed software detailed design are communicated to all affected parties."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "SWE.3.BP1",
+        "title": "Specify the static aspects of the detailed design",
+        "full_text": "Specify the static aspects of the detailed design. For each software component specify the behavior of its software units, their static structure and relationships, their interfaces including • valid data value ranges for inputs and outputs (from the application domain perspective), and • physical or measurement units applicable to inputs and outputs (from the application domain perspective). Note 1: The boundary of a software unit is independent from the software unit’s representation in the so"
+      },
+      {
+        "bp_id": "SWE.3.BP2",
+        "title": "Specify dynamic aspects of the detailed design",
+        "full_text": "Specify dynamic aspects of the detailed design. Specify and document the dynamic aspects of the detailed design with respect to the software architecture, including the interactions between relevant software units to fulfill the component’s dynamic behavior. Note 6: Examples for behavioral descriptions are natural language or semi-formal notation (e.g, SysML, UML)."
+      },
+      {
+        "bp_id": "SWE.3.BP3",
+        "title": "Develop software units",
+        "full_text": "Develop software units. Develop and document the software units consistent with the detailed design, and according to coding principles. Note 7: Examples for coding principles at capability level 1 are not to use implicit type conversions, only one entry and one exit point in subroutines, and range checks (design-by-contract, defensive programming). Further examples see e.g, ISO 26262-6 clause 8.4.5 together with table 6."
+      },
+      {
+        "bp_id": "SWE.3.BP4",
+        "title": "Ensure consistency and establish bidirectional traceability",
+        "full_text": "Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between the software detailed design and the software architecture. Ensure consistency and establish bidirectional traceability between the developed software units and the software detailed design. Ensure consistency and establish traceability between the software detailed design and the software requirements. Note 8: Redundancy should be avoided by establishing a combination"
+      },
+      {
+        "bp_id": "SWE.3.BP5",
+        "title": "Communicate agreed software detailed design and developed software units",
+        "full_text": "Communicate agreed software detailed design and developed software units. Communicate the agreed software detailed design and developed software units to all affected parties. SWE.3 Software Detailed Design and Unit Construction"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "04-05",
+        "name": "Software Detailed Design"
+      },
+      {
+        "id": "11-05",
+        "name": "Software Unit"
+      },
+      {
+        "id": "13-51",
+        "name": "Consistency Evidence"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication Evidence"
+      }
+    ]
+  },
+  "SWE.4": {
+    "id": "SWE.4",
+    "name": "Software Unit Verification",
+    "group": "SWE",
+    "purpose": "The purpose is to verify that software units are consistent with the software detailed design.",
+    "outcomes": [
+      "Verification measures for software unit verification are specified.",
+      "Software unit verification measures are selected according to the release scope, including criteria for regression verification.",
+      "Software units are verified using the selected verification measures, and results are recorded.",
+      "Consistency and bidirectional traceability are established between verification measures and software units; and bidirectional traceability is established between verification results and verification measures.",
+      "Results of the software unit verification are summarized and communicated to all affected parties."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "SWE.4.BP1",
+        "title": "Specify software unit verification measures",
+        "full_text": "Specify software unit verification measures. Specify verification measures for each software unit defined in the software detailed design, including • pass/fail criteria for verification measures, • entry and exit criteria for verification measures, and • the required verification infrastructure. Note 1: Examples for unit verification measures are static analysis, code reviews, and unit testing. Note 2: Static analysis can be done based on MISRA rulesets and other coding standards."
+      },
+      {
+        "bp_id": "SWE.4.BP2",
+        "title": "Select software unit verification measures",
+        "full_text": "Select software unit verification measures. Document the selection of verification measures considering selection criteria including criteria for regression verification. The documented selection of verification measures shall have sufficient coverage according to the release scope."
+      },
+      {
+        "bp_id": "SWE.4.BP3",
+        "title": "Verify software units",
+        "full_text": "Verify software units. Perform software unit verification using the selected verification measures. Record the verification results including pass/fail status and corresponding verification measure data. Note 3: See SUP.9 for handling of verification results that deviate from expected results."
+      },
+      {
+        "bp_id": "SWE.4.BP4",
+        "title": "Ensure consistency and establish bidirectional traceability",
+        "full_text": "Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between verification measures and the software units defined in the detailed design. Establish bidirectional traceability between the verification results and the verification measures. Note 4: Bidirectional traceability supports consistency, and facilitates impact analysis of change requests, and demonstration of verification coverage. Traceability alone, e.g., the existence "
+      },
+      {
+        "bp_id": "SWE.4.BP5",
+        "title": "Summarize and communicate results",
+        "full_text": "Summarize and communicate results. Summarize the results of software unit verification and communicate them to all affected parties. Note 5: Providing all necessary information from the test case execution in a summary enables other parties to judge the consequences. SWE.4 Software Unit Verification"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "08-60",
+        "name": "Verification Measure"
+      },
+      {
+        "id": "03-50",
+        "name": "Verification Measure Data"
+      },
+      {
+        "id": "08-58",
+        "name": "Verification Measure Selection Set"
+      },
+      {
+        "id": "15-52",
+        "name": "Verification Results"
+      },
+      {
+        "id": "13-51",
+        "name": "Consistency Evidence"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication Evidence"
+      }
+    ]
+  },
+  "SWE.5": {
+    "id": "SWE.5",
+    "name": "Software Component Verification and Integration Verification",
+    "group": "SWE",
+    "purpose": "PUBLIC The purpose is to verify that software components are consistent with the software architectural design, and to integrate software elements and verify that the integrated software elements are consistent with the software architecture and software detailed design.",
+    "outcomes": [
+      "Verification measures are specified for software integration verification of the integrated software elements based on the software architecture and detailed design, including the interfaces of, and interactions between, the software components.",
+      "Verification measures for software components are specified to provide evidence for compliance of the software components with the software components’ behavior and interfaces.",
+      "Software elements are integrated up to a complete integrated software.",
+      "Verification measures are selected according to the release scope considering criteria, including criteria for regression verification.",
+      "Software components are verified using the selected verification measures, and the results of the integration verification are recorded.",
+      "Integrated software elements are verified using the selected verification measures, and the results of the integration verification are recorded.",
+      "Consistency and bidirectional traceability are established between verification measures and the software architecture and detailed design; and bidirectional traceability is established between verification results and verification measures.",
+      "The results of software component verification and software elements integration verification are summarized and communicated to all affected parties"
+    ],
+    "base_practices": [
+      {
+        "bp_id": "SWE.5.BP1",
+        "title": "Specify software integration verification measures",
+        "full_text": "Specify software integration verification measures. Specify verification measures, based on a defined sequence and preconditions for the integration of software elements, against the defined static and dynamic aspects of the software architecture, including • techniques for the verification measures, • pass/fail criteria for verification measures, • entry and exit criteria for verification measures, and • the required verification infrastructure and environment setup. Note 1: Examples on which t"
+      },
+      {
+        "bp_id": "SWE.5.BP2",
+        "title": "Specify verification measures for verifying software component behavior",
+        "full_text": "Specify verification measures for verifying software component behavior. Specify verification measures for software component verification against the defined software components’ behavior and their interfaces in the software architecture, including • techniques for the verification measures, • entry and exit criteria for verification measures, • pass/fail criteria for verification measures, and • the required verification infrastructure and environment setup. Note 3: Verification measures are r"
+      },
+      {
+        "bp_id": "SWE.5.BP3",
+        "title": "Select verification measures",
+        "full_text": "Select verification measures. Document the selection of integration verification measures for each integration step considering selection criteria including criteria for regression verification. The documented selection of verification measures shall have sufficient coverage according to the release scope. Note 4: Examples for selection criteria can be the need for continuous integration /continuous development regression verification (due to e.g, changes to the software architectural or detaile"
+      },
+      {
+        "bp_id": "SWE.5.BP4",
+        "title": "Integrate software elements and perform integration verification",
+        "full_text": "Integrate software elements and perform integration verification. Integrate the software elements until the software is fully integrated according to the specified interfaces and interactions between the Software elements, and according to the defined sequence and defined preconditions. Perform the selected integration verification measures. Record the verification measure data including pass/fail status and corresponding verification measure data. Note 5: Examples for preconditions for starting"
+      },
+      {
+        "bp_id": "SWE.5.BP5",
+        "title": "Perform software component verification",
+        "full_text": "Perform software component verification. Perform the selected verification measures for verifying software component behavior. Record the verification results including pass/fail status and corresponding verification measure data. Note 8: See SUP.9 for handling verification results that deviate from expected results."
+      },
+      {
+        "bp_id": "SWE.5.BP6",
+        "title": "Ensure consistency and establish bidirectional traceability",
+        "full_text": "Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between verification measures and the static and dynamic aspects of the software architecture and detailed design. Establish bidirectional traceability between verification results and verification measures. Note 9: Bidirectional traceability supports consistency, and facilitates impact analysis of change requests, and demonstration of verification coverage. Traceability alone"
+      },
+      {
+        "bp_id": "SWE.5.BP7",
+        "title": "Summarize and communicate results",
+        "full_text": "Summarize and communicate results. Summarize the software component verification and the software integration verification results and communicate them to all affected parties. Note 10: Providing all necessary information from the test case execution in a summary enables other parties to judge the consequences. 1 e m o c t u O 2 e m o c t u O X X SWE.5 Software Component Verification and Integration Verification"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "08-60",
+        "name": "Verification Measure"
+      },
+      {
+        "id": "06-50",
+        "name": "Integration Sequence Instruction"
+      },
+      {
+        "id": "03-50",
+        "name": "Verification Measure Data"
+      },
+      {
+        "id": "08-58",
+        "name": "Verification Measure Selection Set"
+      },
+      {
+        "id": "15-52",
+        "name": "Verification Results"
+      },
+      {
+        "id": "13-51",
+        "name": "Consistency Evidence"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication Evidence"
+      },
+      {
+        "id": "01-03",
+        "name": "Software Component"
+      },
+      {
+        "id": "01-50",
+        "name": "Integrated Software"
+      }
+    ]
+  },
+  "SWE.6": {
+    "id": "SWE.6",
+    "name": "Software Verification",
+    "group": "SWE",
+    "purpose": "The purpose of the Software Verification process is to ensure that the integrated software is verified to be consistent with the software requirements.",
+    "outcomes": [
+      "Verification measures are specified for software verification of the software based on the software requirements.",
+      "Verification measures are selected according to the release scope considering criteria, including criteria for regression verification.",
+      "The integrated software is verified using the selected verification measures and the results of software verification are recorded.",
+      "Consistency and bidirectional traceability are established between verification measures and software requirements; and bidirectional traceability is established between verification results and verification measures.",
+      "Results of the software verification are summarized and communicated to all affected parties."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "SWE.6.BP1",
+        "title": "Specify verification measures for software verification",
+        "full_text": "Specify verification measures for software verification. Specify the verification measures for software verification suitable to provide evidence for compliance of the integrated software with the functional and non-functional information in the software requirements, including • techniques for the verification measures, • pass/fail criteria for verification measures, • a definition of entry and exit criteria for the verification measures, • necessary sequence of verification measures, and • the"
+      },
+      {
+        "bp_id": "SWE.6.BP2",
+        "title": "Select verification measures",
+        "full_text": "Select verification measures. Document the selection of verification measures considering selection criteria including criteria for regression verification. The documented selection of verification measures shall have sufficient coverage according to the release scope. Note 2: Examples for selection criteria can be prioritization of requirements, continuous development, the need for regression verification (due to e.g., changes to the software requirements), or the intended use of the delivered "
+      },
+      {
+        "bp_id": "SWE.6.BP3",
+        "title": "Verify the integrated software",
+        "full_text": "Verify the integrated software. Perform the verification of the integrated software using the selected verification measures. Record the verification results including pass/fail status and corresponding verification measure data. Note 3: See SUP.9 for handling verification results that deviate from expected results."
+      },
+      {
+        "bp_id": "SWE.6.BP4",
+        "title": "Ensure consistency and establish bidirectional traceability",
+        "full_text": "Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between verification measures and software requirements. Establish bidirectional traceability between verification results and verification measures. Note 4: Bidirectional traceability supports consistency, and facilitates impact analysis of change requests, and demonstration of verification coverage. Traceability alone, e.g., the existence of links, does not necessarily mean "
+      },
+      {
+        "bp_id": "SWE.6.BP5",
+        "title": "Summarize and communicate results",
+        "full_text": "Summarize and communicate results. Summarize the software verification results and communicate them to all affected parties. Note 5: Providing all necessary information from the test case execution in a summary enables other parties to judge the consequences. SWE.6 Software Verification"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "08-60",
+        "name": "Verification Measure"
+      },
+      {
+        "id": "03-50",
+        "name": "Verification Measure Data"
+      },
+      {
+        "id": "08-58",
+        "name": "Verification Measure Selection Set"
+      },
+      {
+        "id": "15-52",
+        "name": "Verification Results"
+      },
+      {
+        "id": "13-51",
+        "name": "Consistency Evidence"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication Evidence"
+      }
+    ]
+  },
+  "VAL.1": {
+    "id": "VAL.1",
+    "name": "Validation",
+    "group": "VAL",
+    "purpose": "The purpose is to provide evidence that the end product, allowing direct end user interaction, satisfies the intended use expectations in its operational target environment.",
+    "outcomes": [
+      "Validation measures are selected considering criteria for regression verification.",
+      "The product is validated using the selected validation measures and the results of validation are recorded.",
+      "Consistency and unidirectional traceability are established between validation measures and stakeholder requirements; and consistency and bidirectional traceability is established between validation results and validation measures.",
+      "Results of the validation are summarized and communicated to all affected parties."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "VAL.1.BP1",
+        "title": "Specify validation measures for product validation",
+        "full_text": "Specify validation measures for product validation. Specify the validation measures for the end product based on the stakeholder requirements to provide evidence that it fulfills its intended use expectations in its operational target environment, and • techniques for the validation measures, • pass/fail criteria for validation measures, • a definition of entry and exit criteria for the validation measures, • necessary sequence of validation measures, and • the required validation infrastructure"
+      },
+      {
+        "bp_id": "VAL.1.BP2",
+        "title": "Select validation measures",
+        "full_text": "Select validation measures. Document the selection of validation measures considering selection criteria including criteria for regression validation. The documented selection of validation measures shall have sufficient coverage according to the release scope. Note 4: Examples for criteria for selection can be the release purpose of the delivered product (such as test bench, test track, validation on public roads, field use by end users), homologation/ type approval, confirmation of requirement"
+      },
+      {
+        "bp_id": "VAL.1.BP3",
+        "title": "Perform validation and evaluate results",
+        "full_text": "Perform validation and evaluate results. Perform the validation of the integrated end product using the selected validation measures. Record the validation results including pass/fail status. Evaluate the validation results. Note 5: Validation results can be used as a means for identifying stakeholder or system requirements e.g, in the case of mock-ups or concept studies. Note 6: See SUP.9 for handling verification results that deviate from expected results"
+      },
+      {
+        "bp_id": "VAL.1.BP4",
+        "title": "Ensure consistency and establish bidirectional traceability",
+        "full_text": "Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability from validation measures to the stakeholder requirements from which they are derived. Establish bidirectional traceability between validation results and validation measures. Note 7: Examples of sources of validation measures from which they can be derived are legal requirements, homologation requirements, results of technical risk analyses, or stakeholder and system requireme"
+      },
+      {
+        "bp_id": "VAL.1.BP5",
+        "title": "Summarize and communicate results",
+        "full_text": "Summarize and communicate results. Summarize the validation results and communicate them to all affected parties. Note 10: Providing all necessary information from the test case execution in a summary enables other parties to judge the consequences. VAL.1 Validation"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "08-59",
+        "name": "Validation Measure"
+      },
+      {
+        "id": "08-57",
+        "name": "Validation Measure Selection Set"
+      },
+      {
+        "id": "13-24",
+        "name": "Validation Results"
+      },
+      {
+        "id": "13-51",
+        "name": "Consistency Evidence"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication Evidence"
+      }
+    ]
+  },
+  "MLE.1": {
+    "id": "MLE.1",
+    "name": "Machine Learning Requirements Analysis",
+    "group": "MLE",
+    "purpose": "The purpose is to refine the machine learning-related software requirements into a set of ML requirements.",
+    "outcomes": [
+      "The ML requirements including ML data requirements are identified and specified based on the software requirements and the components of the software architecture.",
+      "ML requirements are structured and prioritized.",
+      "ML requirements are analyzed for correctness and verifiability.",
+      "The impact of ML requirements on the ML operating environment is analyzed.",
+      "Consistency and bidirectional traceability are established between ML requirements and software requirements, and between ML requirements and software architecture.",
+      "The ML requirements are agreed and communicated to all affected parties."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "MLE.1.BP1",
+        "title": "Specify ML requirements",
+        "full_text": "Specify ML requirements. Use the software requirements and the software architecture to identify and specify functional and non-functional ML requirements, as well as ML data requirements specifying data characteristics (e.g., gender, weather conditions, street conditions within the ODD) and their expected distributions. Note 1: Non-functional requirements may include relevant characteristics of the ODD and KPIs as robustness, performance, and level of trustworthiness. Note 2: The ML data requir"
+      },
+      {
+        "bp_id": "MLE.1.BP2",
+        "title": "Structure ML requirements",
+        "full_text": "Structure ML requirements. Structure and prioritize the ML requirements. Note 4: Examples for structuring criteria can be grouping (e.g., by functionality) or variants identification. Note 5: Prioritization can be done according to project or stakeholder needs via e.g., definition of release scopes. Refer to SPL.2.BP1."
+      },
+      {
+        "bp_id": "MLE.1.BP3",
+        "title": "Analyze ML requirements",
+        "full_text": "Analyze ML requirements. Analyze the specified ML requirements including their interdependencies to ensure correctness, technical feasibility, and ability for machine learning model testing, and to support project management regarding project estimates. Note 6: See MAN.3.BP3 for project feasibility and MAN.3.BP5 for project estimates."
+      },
+      {
+        "bp_id": "MLE.1.BP4",
+        "title": "Analyze the impact on the ML operating environment",
+        "full_text": "Analyze the impact on the ML operating environment. Analyze the impact that the ML requirements will have on interfaces of software components and the ML operating environment. Note 7: The ML operating environment is defined as the infrastructure and information which both the trained ML model and the deployed ML model need for execution."
+      },
+      {
+        "bp_id": "MLE.1.BP5",
+        "title": "Ensure consistency and establish bidirectional traceability",
+        "full_text": "Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between ML requirements and software requirements and between ML requirements and the software architecture. Note 8: Bidirectional traceability supports consistency, facilitates impact analyses of change requests, and verification coverage demonstration. Traceability alone, e.g., the existence of links, does not necessarily mean that the information is consistent with each oth"
+      },
+      {
+        "bp_id": "MLE.1.BP6",
+        "title": "Communicate agreed ML requirements and impact on the operating environment",
+        "full_text": "Communicate agreed ML requirements and impact on the operating environment. Communicate the agreed ML requirements, and the results of the impact analysis on the ML operating environment to all affected parties. MLE.1 Machine Learning Requirements Analysis"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "17-00",
+        "name": "Requirement"
+      },
+      {
+        "id": "17-54",
+        "name": "Requirement attribute"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication evidence"
+      },
+      {
+        "id": "13-51",
+        "name": "Consistency evidence"
+      },
+      {
+        "id": "15-51",
+        "name": "Analysis results"
+      }
+    ]
+  },
+  "MLE.2": {
+    "id": "MLE.2",
+    "name": "Machine Learning Architecture",
+    "group": "MLE",
+    "purpose": "The purpose is to establish an ML architecture supporting training and deployment, consistent with the ML requirements, and to evaluate the ML architecture against defined criteria.",
+    "outcomes": [
+      "A ML architecture is developed.",
+      "Hyperparameter ranges and initial values are determined as a basis for the training.",
+      "Evaluation of ML architectural elements is conducted.",
+      "Interfaces of the ML architectural elements are defined.",
+      "Resource consumption objectives for the ML architectural elements are defined.",
+      "Consistency and bidirectional traceability are established between the ML architectural elements and the ML requirements.",
+      "The ML architecture is agreed and communicated to all affected parties."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "MLE.2.BP1",
+        "title": "Develop ML architecture",
+        "full_text": "Develop ML architecture. Develop and document the ML architecture that specifies ML architectural elements including details of the ML model, pre- and postprocessing, and hyperparameters which are required to create, train, test, and deploy the ML model. Note 1: Necessary details of the ML model may include layers, activation functions, and backpropagation. The level of detail of the ML model may not need to cover aspects like single neurons. Note 2: The details of the ML model may differ betwee"
+      },
+      {
+        "bp_id": "MLE.2.BP2",
+        "title": "Determine hyperparameter ranges and initial values",
+        "full_text": "Determine hyperparameter ranges and initial values. Determine and document the hyperparameter ranges and the initial values as a basis for the training."
+      },
+      {
+        "bp_id": "MLE.2.BP3",
+        "title": "Analyze ML architectural elements",
+        "full_text": "Analyze ML architectural elements. Define criteria for analysis of the ML architectural elements. Analyze ML architectural elements according to the defined criteria. Note 3: Trustworthiness and explainability might be criteria for the analysis of the ML architectural elements."
+      },
+      {
+        "bp_id": "MLE.2.BP4",
+        "title": "Define interfaces of the ML architectural elements",
+        "full_text": "Define interfaces of the ML architectural elements. Determine and document the internal and external interfaces of each ML architectural element including its interfaces to related software components."
+      },
+      {
+        "bp_id": "MLE.2.BP5",
+        "title": "Define resource consumption objectives for the ML architectural elements",
+        "full_text": "Define resource consumption objectives for the ML architectural elements. Determine and document the resource consumption objectives for all relevant ML architectural elements during training and deployment."
+      },
+      {
+        "bp_id": "MLE.2.BP6",
+        "title": "Ensure consistency and establish bidirectional traceability",
+        "full_text": "Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between the ML architectural elements and the ML requirements. Note 4: Bidirectional traceability supports consistency, and facilitates impact analyses of change requests, and verification coverage demonstration. Traceability alone, e.g., the existence of links, does not necessarily mean that the information is consistent with each other. Note 5: The bidirectional traceability"
+      },
+      {
+        "bp_id": "MLE.2.BP7",
+        "title": "Communicate agreed ML architecture",
+        "full_text": "Communicate agreed ML architecture. Inform all affected parties about the agreed ML architecture including the details of the ML model and the initial hyperparameter values. MLE.2 Machine Learning Architecture"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "04-51",
+        "name": "ML architecture"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication evidence"
+      },
+      {
+        "id": "13-51",
+        "name": "Consistency evidence"
+      },
+      {
+        "id": "01-54",
+        "name": "Hyperparameter"
+      },
+      {
+        "id": "15-51",
+        "name": "Analysis results"
+      }
+    ]
+  },
+  "MLE.3": {
+    "id": "MLE.3",
+    "name": "Machine Learning Training",
+    "group": "MLE",
+    "purpose": "PUBLIC The purpose is to optimize the ML model to meet the defined ML requirements.",
+    "outcomes": [
+      "A ML training and validation approach is specified.",
+      "The data set for ML training and ML validation is created.",
+      "The ML model, including hyperparameter values, is optimized to meet the defined ML requirements.",
+      "Consistency and bidirectional traceability are established between the ML training and validation data set and the ML data requirements.",
+      "Results of optimization are summarized, and the trained ML model is agreed and communicated to all affected parties."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "MLE.3.BP1",
+        "title": "Specify ML training and validation approach",
+        "full_text": "Specify ML training and validation approach. Specify an approach which supports the training and validation of the ML model to meet the defined ML requirements. The ML training and validation approach includes • entry and exit criteria of the training and validation, • approaches for hyperparameter tuning / optimization, • approach for data set creation and modification, and • training and validation environment Note 1: The ML training and validation approach may include random dropout and other"
+      },
+      {
+        "bp_id": "MLE.3.BP2",
+        "title": "Create ML training and validation data set",
+        "full_text": "Create ML training and validation data set. Select data from the ML data collection provided by SUP.11 and assign them to the data set for training and validation of the ML model according to the specified ML training and validation approach. Note 4: The ML training and validation data set may include corner cases, unexpected cases, and normal cases depending on the ML requirements. Note 5: A separated data set for training and validation might not be required in some cases (e.g., k- fold cross "
+      },
+      {
+        "bp_id": "MLE.3.BP3",
+        "title": "Create and optimize ML model",
+        "full_text": "Create and optimize ML model. Create the ML model according to the ML architecture and train it, using the identified ML training and validation data set according to the ML training and validation approach to meet the defined ML requirements, and training and validation exit criteria."
+      },
+      {
+        "bp_id": "MLE.3.BP4",
+        "title": "Ensure consistency and establish bidirectional traceability",
+        "full_text": "Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between the ML training and validation data set and the ML data requirements. Note 6: Bidirectional traceability supports consistency and facilitates impact analyses of change requests. Traceability alone, e.g., the existence of links, does not necessarily mean that the"
+      },
+      {
+        "bp_id": "MLE.3.BP5",
+        "title": "Summarize and communicate agreed trained ML model",
+        "full_text": "Summarize and communicate agreed trained ML model. Summarize the results of the optimization and inform all affected parties about the agreed trained ML model. MLE.3 Machine Learning Training"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "08-65",
+        "name": "ML training and validation approach"
+      },
+      {
+        "id": "03-51",
+        "name": "ML data set"
+      },
+      {
+        "id": "01-53",
+        "name": "Trained ML model"
+      },
+      {
+        "id": "01-54",
+        "name": "Hyperparameter"
+      },
+      {
+        "id": "13-51",
+        "name": "Consistency evidence"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication evidence"
+      }
+    ]
+  },
+  "MLE.4": {
+    "id": "MLE.4",
+    "name": "Machine Learning Model Testing",
+    "group": "MLE",
+    "purpose": "The purpose is to ensure compliance of the trained ML model and the deployed ML model with the ML requirements.",
+    "outcomes": [
+      "A ML test approach is defined.",
+      "A ML test data set is created.",
+      "The trained ML model is tested.",
+      "The deployed ML model is derived from the trained ML model and tested.",
+      "Consistency and bidirectional traceability are established between the ML test approach and the ML requirements, and the ML test data set and the ML data requirements; and bidirectional traceability is established between the ML test approach and ML test results.",
+      "Results of the ML model testing are summarized and communicated with the deployed ML model to all affected parties."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "MLE.4.BP1",
+        "title": "Specify an ML test approach",
+        "full_text": "Specify an ML test approach. Specify an ML test approach suitable to provide evidence for compliance of the trained ML model and the deployed ML model with the ML requirements. The ML test approach includes • ML test scenarios with distribution of data characteristics (e.g., gender, weather conditions, street conditions within the ODD) defined by ML requirements, • distribution and frequency of each ML test scenario inside the ML test data set, • expected test result per test datum, • entry and "
+      },
+      {
+        "bp_id": "MLE.4.BP2",
+        "title": "Create ML test data set",
+        "full_text": "Create ML test data set. Create the ML test data set needed for testing of the trained ML model and testing of the deployed ML model from the ML data collection provided by SUP.11 considering the ML test approach. The ML test data set shall not be used for training. Note 5: The ML test data set for the trained ML model might differ from the test data set of the deployed ML model. Note 6: Additional data sets might be used for special purposes like assurance of safety, fairness, robustness."
+      },
+      {
+        "bp_id": "MLE.4.BP3",
+        "title": "Test trained ML model",
+        "full_text": "Test trained ML model. Test the trained ML model according to the ML test approach using the created ML test data set. Record and evaluate the ML test results. Note 7: Evaluation of test logs might include pattern analysis of failed test data to support e.g., trustworthiness."
+      },
+      {
+        "bp_id": "MLE.4.BP4",
+        "title": "Derive deployed ML model",
+        "full_text": "Derive deployed ML model. Derive the deployed ML model from the trained ML model according to the ML architecture. The deployed ML model shall be used for testing and delivery to software integration. Note 8: The deployed ML model will be integrated into the target system and may differ from the trained ML model which often requires powerful hardware and uses interpretative languages. MLE4.BP5: Test deployed ML model. Test the deployed ML model according to the ML test approach using the created"
+      },
+      {
+        "bp_id": "MLE.4.BP6",
+        "title": "Ensure consistency and establish bidirectional traceability",
+        "full_text": "Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between the ML test approach and the ML requirements, and the ML test data set and the ML data requirements; and bidirectional traceability is established between the ML test approach and ML test results. Note 9: Bidirectional traceability supports consistency, and facilitates impact analyses of change requests, and verification coverage demonstration. Traceability alone, e.g."
+      },
+      {
+        "bp_id": "MLE.4.BP7",
+        "title": "Summarize and communicate results",
+        "full_text": "Summarize and communicate results. Summarize the ML test results of the ML model. Inform all affected parties about the agreed results and the deployed ML model. MLE.4 Machine Learning Model Testing"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "08-64",
+        "name": "ML test approach"
+      },
+      {
+        "id": "03-51",
+        "name": "ML data set"
+      },
+      {
+        "id": "13-50",
+        "name": "ML test results"
+      },
+      {
+        "id": "11-50",
+        "name": "Deployed ML model"
+      },
+      {
+        "id": "13-51",
+        "name": "Consistency evidence"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication evidence"
+      }
+    ]
+  },
+  "HWE.1": {
+    "id": "HWE.1",
+    "name": "HW Requirements Analysis",
+    "group": "HWE",
+    "purpose": "The purpose is to establish a structured and analyzed set of hardware requirements consistent with the system requirements, and the system architectural design.",
+    "outcomes": [
+      "Hardware requirements are specified.",
+      "Hardware requirements are structured and prioritized.",
+      "Hardware requirements are analyzed for correctness and technical feasibility.",
+      "The impact of hardware requirements on the operating environment is analyzed.",
+      "Consistency and bidirectional traceability are established between hardware requirements and system requirements.",
+      "Consistency and bidirectional traceability are established between hardware requirements and system architectural design.",
+      "The hardware requirements are agreed and communicated to all affected parties."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "HWE.1.BP1",
+        "title": "Specify hardware requirements",
+        "full_text": "Specify hardware requirements. Use the system requirements, and the system architecture including interface definitions, to identify and document the functional and non- functional requirements of the hardware according to defined characteristics for requirements. Note 1: Characteristics of requirements are defined in standards such as ISO IEEE 29148, ISO/IEC IEEE 24765, ISO 26262-8:2018, or the INCOSE Guide For Writing Requirements. Note 2: Examples for defined characteristics of requirements s"
+      },
+      {
+        "bp_id": "HWE.1.BP2",
+        "title": "Structure hardware requirements",
+        "full_text": "Structure hardware requirements. Structure and prioritize the hardware requirements. Note 5: Examples for structuring criteria can be grouping (e.g., by functionality) or variants identification. Note 6: Prioritization can be done according to project or stakeholder needs via e.g., definition of release scopes. Refer to SPL.2.BP1."
+      },
+      {
+        "bp_id": "HWE.1.BP3",
+        "title": "Analyze hardware requirements",
+        "full_text": "Analyze hardware requirements. Analyze the specified hardware requirements including their interdependencies to ensure correctness, technical feasibility, and to support project management regarding project estimates. Note 7: See MAN.3.BP3 for project feasibility and MAN.3.BP5 for project estimates. Note 8: The analyses of technical feasibility can be done based on a given hardware design (e.g., platform) or by prototype development."
+      },
+      {
+        "bp_id": "HWE.1.BP4",
+        "title": "Analyze the impact on the operating environment",
+        "full_text": "Analyze the impact on the operating environment. Identify the interfaces between the specified hardware and other elements of the operating environment. Analyze the impact that the hardware requirements will have on these interfaces and the operating environment."
+      },
+      {
+        "bp_id": "HWE.1.BP5",
+        "title": "Ensure consistency and establish bidirectional traceability",
+        "full_text": "Ensure consistency and establish bidirectional traceability. Ensure consistency and establish traceability between hardware requirements and the system architecture. Ensure consistency and establish traceability between hardware requirements and system requirements. Note 9: Redundant traceability is not intended. Note 10: There may be non-functional hardware requirements that the hardware design does not trace to. Examples are development process requirements. Such requirements are still subject"
+      },
+      {
+        "bp_id": "HWE.1.BP6",
+        "title": "Communicate agreed hardware requirements and impact on the operating environment",
+        "full_text": "Communicate agreed hardware requirements and impact on the operating environment. Communicate the agreed hardware requirements and results of the analysis of impact on the operating environment to all affected parties. HWE.1 Hardware Requirements Analysis"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "13-52",
+        "name": "Communication Evidence"
+      },
+      {
+        "id": "13-51",
+        "name": "Consistency Evidence"
+      },
+      {
+        "id": "17-00",
+        "name": "Requirement"
+      }
+    ]
+  },
+  "HWE.2": {
+    "id": "HWE.2",
+    "name": "HW Design",
+    "group": "HWE",
+    "purpose": "The purpose is to provide an analyzed design, including dynamic aspects, that is consistent with the hardware requirements and suitable for manufacturing, and to derive production-relevant data.",
+    "outcomes": [
+      "A hardware architecture and hardware detailed design is developed that identifies the elements of the hardware and describes their behavior as well as their interfaces, and the dynamic interactions of the hardware elements.",
+      "The hardware architecture and the hardware detailed design is analyzed, and special characteristics are identified.",
+      "Consistency and bidirectional traceability are established between hardware requirements and hardware design.",
+      "Hardware production data is derived from the hardware detailed design and communicated to all affected parties.",
+      "Information for production test is derived from the hardware detailed design and communicated to all affected parties.",
+      "The hardware architecture and hardware detailed design and the special characteristics are agreed and communicated to all affected parties."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "HWE.2.BP1",
+        "title": "Specify the hardware architecture",
+        "full_text": "Specify the hardware architecture. Develop the hardware architecture that identifies the hardware components. Document the rationale for the defined hardware architecture. Note 1: Examples for aspects reflected in the hardware architecture are ground concept, supply concept, EMC concept. Note 2: Examples for a design rationale can be implied by the reuse of a standard hardware, platform, or product line, respectively, or by a make-or-buy decision, or found in an evolutionary way."
+      },
+      {
+        "bp_id": "HWE.2.BP2",
+        "title": "Specify the hardware detailed design",
+        "full_text": "Specify the hardware detailed design. Based on components identified in the hardware architecture, specify the detailed design description and the schematics for the intended hardware variants, including the interfaces between the hardware elements. Derive the hardware layout, the hardware bill of materials, and the production data. Note 3: The identification of hardware parts and their suppliers in the hardware bill of materials may be subject to a pre-defined repository (see also IATF 16949:20"
+      },
+      {
+        "bp_id": "HWE.2.BP3",
+        "title": "Specify dynamic aspects",
+        "full_text": "Specify dynamic aspects. Evaluate and document the dynamic behavior of the relevant hardware elements and the interaction between them. Note 5: Not all hardware elements have dynamic behavior that needs to be described."
+      },
+      {
+        "bp_id": "HWE.2.BP4",
+        "title": "Analyze the hardware architecture and the hardware detailed design",
+        "full_text": "Analyze the hardware architecture and the hardware detailed design. Analyze the hardware architecture and hardware detailed design regarding relevant technical aspects, and support project management regarding project estimates. Identify special characteristics. Note 6: Examples for technical aspects are manufacturability for production, suitability of pre-existing hardware components to be reused, or availability of hardware elements. Note 7: Examples of methods suitable for analyzing technical"
+      },
+      {
+        "bp_id": "HWE.2.BP5",
+        "title": "Ensure consistency and establish bidirectional traceability",
+        "full_text": "Ensure consistency and establish bidirectional traceability. Ensure consistency and establish traceability between hardware elements and hardware requirements. Ensure consistency and establish traceability between the hardware detailed design and components of the hardware architecture. Note 8: There may be non-functional hardware requirements that the hardware design does not trace to. Examples are development process requirements. Such requirements are still subject to verification. Note 9: Bi"
+      },
+      {
+        "bp_id": "HWE.2.BP6",
+        "title": "Communicate agreed hardware architecture and hardware detailed design",
+        "full_text": "Communicate agreed hardware architecture and hardware detailed design. Communicate the agreed hardware architecture and the hardware detailed design, including the special characteristics and relevant production data, to all affected parties."
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "04-52",
+        "name": "Hardware Architecture"
+      },
+      {
+        "id": "04-53",
+        "name": "Hardware Detailed Design"
+      },
+      {
+        "id": "15-51",
+        "name": "Analysis Results"
+      },
+      {
+        "id": "13-51",
+        "name": "Consistency Evidence"
+      },
+      {
+        "id": "17-57",
+        "name": "Special Characteristics"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication Evidence"
+      },
+      {
+        "id": "04-54",
+        "name": "Hardware Schematics"
+      },
+      {
+        "id": "14-54",
+        "name": "Hardware Bill of Materials"
+      },
+      {
+        "id": "04-55",
+        "name": "Hardware Layout"
+      },
+      {
+        "id": "03-54",
+        "name": "Hardware Production Data"
+      },
+      {
+        "id": "04-56",
+        "name": "Hardware Element Interface"
+      }
+    ]
+  },
+  "HWE.3": {
+    "id": "HWE.3",
+    "name": "Verification against Hardware Design",
+    "group": "HWE",
+    "purpose": "The purpose is to ensure that the production data compliant hardware is verified to provide evidence for compliance with the hardware design.",
+    "outcomes": [
+      "Verification measures are specified for verification of the hardware against the hardware design, including the interfaces between hardware elements and the dynamic aspects.",
+      "Verification measures are selected according to the release scope considering criteria, including criteria for regression verification.",
+      "Verification is performed on production data compliant samples using the selected verification measures, and verification results are recorded.",
+      "Consistency and bidirectional traceability are established between hardware elements and verification measures.",
+      "Bidirectional traceability is established between verification measures and verification results.",
+      "Verification results are summarized and communicated to all affected parties."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "HWE.3.BP1",
+        "title": "Specify verification measures for the verification against hardware design",
+        "full_text": "Specify verification measures for the verification against hardware design. Specify the verification measures suitable to provide evidence for compliance of the hardware with the hardware design and its dynamic aspects. This includes • techniques for the verification measures, • pass/fail criteria for the verification measures, • a definition of entry and exit criteria for the verification measures, • necessary sequence of the verification measures, and • the required verification infrastructure"
+      },
+      {
+        "bp_id": "HWE.3.BP2",
+        "title": "Ensure use of compliant samples",
+        "full_text": "Ensure use of compliant samples. Ensure that the samples used for verification against hardware design are compliant with the corresponding production data, including special characteristics. Ensure that deviations are documented and that they do not alter verification results. Note 3: Examples of compliance are sample reports, record of visual inspection, ICT report."
+      },
+      {
+        "bp_id": "HWE.3.BP3",
+        "title": "Select verification measures",
+        "full_text": "Select verification measures. Document the selection of verification measures considering selection criteria including regression criteria. The documented selection of verification measures shall have sufficient coverage according to the release scope. Note 4: Examples for selection criteria can be prioritization of requirements, the need for regression due to changes to the hardware design, or the intended use of the delivered hardware release (e.g., test bench, test track, public road etc.)"
+      },
+      {
+        "bp_id": "HWE.3.BP4",
+        "title": "Verify hardware design",
+        "full_text": "Verify hardware design. Verify the hardware design using the selected verification measures. Record the verification results including pass/fail status and corresponding verification measure output data. Note 5: See SUP.9 for handling of non-conformances."
+      },
+      {
+        "bp_id": "HWE.3.BP5",
+        "title": "Ensure consistency and establish bidirectional traceability",
+        "full_text": "Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between hardware elements and the verification measures. Establish bidirectional traceability between the verification measures and verification results. Note 6: Bidirectional traceability supports consistency, and facilitates impact analysis of change requests, and demonstration of verification coverage. Traceability alone, e.g., the existence of links, does not necessarily m"
+      },
+      {
+        "bp_id": "HWE.3.BP6",
+        "title": "Summarize and communicate results",
+        "full_text": "Summarize and communicate results. Summarize the verification results and communicate them to all affected parties. Note 7: Providing all necessary information from the test case execution in a summary enables other parties to judge the consequences. 1 e m o c t u O X HWE.3 Verification against Hardware Design"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "08-60",
+        "name": "Verification Measure"
+      },
+      {
+        "id": "03-50",
+        "name": "Verification Measure Data"
+      },
+      {
+        "id": "08-58",
+        "name": "Verification Measure Selection Set"
+      },
+      {
+        "id": "15-52",
+        "name": "Verification Results"
+      },
+      {
+        "id": "13-51",
+        "name": "Consistency Evidence"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication Evidence"
+      }
+    ]
+  },
+  "HWE.4": {
+    "id": "HWE.4",
+    "name": "Verification against HW Requirements",
+    "group": "HWE",
+    "purpose": "PUBLIC 76 The purpose is to ensure that the complete hardware is verified to be consistent with the hardware requirements.",
+    "outcomes": [
+      "Verification measures are specified for verification of the hardware against the hardware requirements.",
+      "Verification measures are selected considering criteria, including criteria for regression verification.",
+      "Verification is performed, if applicable on production data compliant samples, using the selected verification measures, and verification results are recorded.",
+      "Consistency and bidirectional traceability are established between verification measures and hardware requirements.",
+      "Bidirectional traceability is established between verification measures and verification results.",
+      "Verification results are summarized and communicated to all affected parties."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "HWE.4.BP1",
+        "title": "Specify verification measures for the verification against hardware requirements",
+        "full_text": "Specify verification measures for the verification against hardware requirements. Specify the verification measure to provide evidence for compliance with the hardware requirements. This includes • techniques for the verification measures, • pass/fail criteria for the verification measures, • a definition of entry and exit criteria for the verification measures, • necessary sequence of verification the measures, and • the required verification infrastructure and environment setup Note 1: The ver"
+      },
+      {
+        "bp_id": "HWE.4.BP2",
+        "title": "Ensure use of compliant samples",
+        "full_text": "Ensure use of compliant samples. Ensure that the samples used for the verification against hardware requirements are compliant with the corresponding production data, including special characteristics, provided by hardware design. Note 2: Examples of compliance are sample reports, record of visual inspection, ICT report."
+      },
+      {
+        "bp_id": "HWE.4.BP3",
+        "title": "Select verification measures",
+        "full_text": "Select verification measures. Document the selection of verification measures considering selection criteria including regression criteria. The documented selection of verification measures shall have sufficient coverage according to the release scope. Note 3: Examples for selection criteria can be prioritization of requirements, the need for regression due to changes to the hardware requirements, or the intended use of the delivered hardware release (e.g, test bench, test track, public road etc"
+      },
+      {
+        "bp_id": "HWE.4.BP4",
+        "title": "Verify the compliant hardware samples",
+        "full_text": "Verify the compliant hardware samples. Verify the compliant hardware samples using the selected verification measures. Record the verification results including pass/fail status and corresponding verification measure output data. Note 4: See SUP.9 for handling of non-conformances."
+      },
+      {
+        "bp_id": "HWE.4.BP5",
+        "title": "Ensure consistency and establish bidirectional traceability",
+        "full_text": "Ensure consistency and establish bidirectional traceability. Ensure consistency between hardware requirements and verification measures. Establish bidirectional traceability between hardware requirements and verification measures. Establish bidirectional traceability between verification measures and verification results. Note 5: Bidirectional traceability supports consistency, and facilitates impact analysis of change requests, and demonstration of verification coverage. Traceability alone, e.g"
+      },
+      {
+        "bp_id": "HWE.4.BP6",
+        "title": "Summarize and communicate results",
+        "full_text": "Summarize and communicate results. Summarize the verification results and communicate them to all affected parties. Note 6: Providing all necessary information from the test case execution in a summary enables other parties to judge the consequences. HWE.4 Verification against Hardware Requirements"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "08-60",
+        "name": "Verification Measure"
+      },
+      {
+        "id": "03-50",
+        "name": "Verification Measure Data"
+      },
+      {
+        "id": "08-58",
+        "name": "Verification Measure Selection Set"
+      },
+      {
+        "id": "15-52",
+        "name": "Verification Results"
+      },
+      {
+        "id": "13-51",
+        "name": "Consistency Evidence"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication Evidence"
+      }
+    ]
+  },
+  "SUP.1": {
+    "id": "SUP.1",
+    "name": "Quality Assurance",
+    "group": "SUP",
+    "purpose": "The purpose of the Quality Assurance Process is to provide independent and objective assurance that work products and processes comply with defined criteria and that non- conformances are resolved and further prevented.",
+    "outcomes": [
+      "Quality assurance is performed independently and objectively without conflicts of interest.",
+      "Criteria for the quality of work products and process performance are defined.",
+      "Conformance of work products and process performance with the defined criteria and targets is verified, documented and communicated to the relevant parties.",
+      "Non-conformances are tracked, resolved, and further prevented.",
+      "Non-conformances are escalated to appropriate levels of management.",
+      "Management ensures that escalated non-conformances are resolved."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "SUP.1.BP1",
+        "title": "Ensure independence of quality assurance",
+        "full_text": "Ensure independence of quality assurance. Ensure that quality assurance is performed independently and objectively without conflicts of interest. Note 1: Possible inputs for evaluating the independence may be assignment to financial and/or organizational structure as well as responsibility for processes that are subject to quality assurance (no self-monitoring)."
+      },
+      {
+        "bp_id": "SUP.1.BP2",
+        "title": "Define criteria for quality assurance",
+        "full_text": "Define criteria for quality assurance. Define quality criteria for work products as well as for process tasks and their performance. Note 2: Quality criteria may consider internal and external inputs such as customer requirements, standards, milestones, etc."
+      },
+      {
+        "bp_id": "SUP.1.BP3",
+        "title": "Assure quality of work products",
+        "full_text": "Assure quality of work products. Identify work products subject to quality assurance according to the quality criteria. Perform appropriate activities to evaluate the work products against the defined quality criteria and document the results. Note 3: Quality assurance activities may include reviews, problem analysis and lessons learned that improve the work products for further use."
+      },
+      {
+        "bp_id": "SUP.1.BP4",
+        "title": "Assure quality of process activities",
+        "full_text": "Assure quality of process activities. Identify processes subject to quality assurance according to the quality criteria. Perform appropriate activities to evaluate the processes against their defined quality criteria and associated target values and document the results. NOTE 4: Quality assurance activities may include process assessments, problem analysis, regular check of methods, tools, and the adherence to defined processes, and consideration of lessons learned."
+      },
+      {
+        "bp_id": "SUP.1.BP5",
+        "title": "Summarize and communicate quality assurance activities and results",
+        "full_text": "Summarize and communicate quality assurance activities and results. Regularly report performance, non-conformances, and trends of quality assurance activities to all affected parties."
+      },
+      {
+        "bp_id": "SUP.1.BP6",
+        "title": "Ensure resolution of non-conformances",
+        "full_text": "Ensure resolution of non-conformances. Analyze, track, correct, resolve, and further prevent non-conformances found in quality assurance activities. NOTE 5: Non-conformances detected in work products may be entered into the problem resolution management process (SUP.9). NOTE 6: Non-conformances detected in the process definition or implementation may be entered into a process improvement process (PIM.3)."
+      },
+      {
+        "bp_id": "SUP.1.BP7",
+        "title": "Escalate non-conformances",
+        "full_text": "Escalate non-conformances. Escalate relevant non-conformances to appropriate levels of management and other relevant stakeholders to facilitate their resolution. NOTE 7: The decision whether to escalate non-conformances may be based on criteria such as delay of resolution, urgency, and risk. SUP.1 Quality Assurance"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "16-50",
+        "name": "Organizational structure"
+      },
+      {
+        "id": "18-52",
+        "name": "Escalation path"
+      },
+      {
+        "id": "18-07",
+        "name": "Quality criteria"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication evidence"
+      },
+      {
+        "id": "13-18",
+        "name": "Quality conformance evidence"
+      },
+      {
+        "id": "13-19",
+        "name": "Review evidence"
+      },
+      {
+        "id": "14-02",
+        "name": "Corrective action"
+      }
+    ]
+  },
+  "SUP.8": {
+    "id": "SUP.8",
+    "name": "Configuration Management",
+    "group": "SUP",
+    "purpose": "The purpose of the Configuration Management Process is to establish and maintain the integrity of relevant configuration items and baselines, and make them available to affected parties.",
+    "outcomes": [
+      "Selection criteria for configuration items are defined and applied.",
+      "Configuration item properties are defined.",
+      "Configuration management is established.",
+      "Modifications are controlled.",
+      "Baselining is applied.",
+      "The status of the configuration items is recorded and reported.",
+      "The completeness and consistency of the baselines is ensured.",
+      "The availability of backup and recovery mechanisms is verified."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "SUP.8.BP1",
+        "title": "Identify configuration items",
+        "full_text": "Identify configuration items. Define selection criteria for identifying relevant work products to be subject to configuration management. Identify and document configuration items according to the defined selection criteria. NOTE 1: Configuration items are representing work products or group of work products which are subject to configuration management as a single entity. NOTE 2: Configuration items may vary in complexity, size, and type, ranging from an entire system including all system, hard"
+      },
+      {
+        "bp_id": "SUP.8.BP2",
+        "title": "Define configuration item properties",
+        "full_text": "Define configuration item properties. Define the necessary properties needed for the modification and control of configuration items. NOTE 4: The configuration item properties may be defined for single configuration items or a group of items. NOTE 5: Configuration item properties may include a status model (e.g., Under Work, Tested, Released, etc.), storage location, access rights, etc. NOTE 6: The application of properties may be implemented by attributes of configuration items."
+      },
+      {
+        "bp_id": "SUP.8.BP3",
+        "title": "Establish configuration management",
+        "full_text": "Establish configuration management. Establish configuration management mechanisms for control of identified configuration items including the configuration item properties, including mechanisms for controlling parallel modifications of configuration items. NOTE 7: This may include specific mechanisms for different configuration item types, such as branch and merge management, or checkout control."
+      },
+      {
+        "bp_id": "SUP.8.BP4",
+        "title": "Control modifications",
+        "full_text": "Control modifications. Control modifications using the configuration management mechanisms. NOTE 8: This may include the application of a defined status model for configuration items."
+      },
+      {
+        "bp_id": "SUP.8.BP5",
+        "title": "Establish baselines",
+        "full_text": "Establish baselines. Define and establish baselines for internal purposes, and for external product delivery, for all relevant configuration items."
+      },
+      {
+        "bp_id": "SUP.8.BP6",
+        "title": "Summarize and communicate configuration status",
+        "full_text": "Summarize and communicate configuration status. Record, summarize, and communicate the status of configuration items and established baselines to affected parties in order to support the monitoring of progress and status. NOTE 9: Regular communication of the configuration status, e.g., based on a defined status model supports project management, quality activities, and dedicated project phases such as software integration."
+      },
+      {
+        "bp_id": "SUP.8.BP7",
+        "title": "Ensure completeness and consistency",
+        "full_text": "Ensure completeness and consistency. Ensure that the information about configuration items is correct and complete including configuration item properties. Ensure the completeness and consistency of baselines. NOTE 10: Completeness and consistency of a baseline means that all required configuration items are included and consistent, and have the required status. This can be used to support e.g., project gate approval."
+      },
+      {
+        "bp_id": "SUP.8.BP8",
+        "title": "Verify backup and recovery mechanisms availability",
+        "full_text": "Verify backup and recovery mechanisms availability. Verify the availability of appropriate backup and recovery mechanisms for the configuration management including the controlled configuration items. Initiate measures in case of insufficient backup and recovery mechanisms. NOTE 11: Backup and recovery mechanisms may be defined and implemented by organizational units outside the project team. This may include references to corresponding procedures or regulations. SUP.8 Configuration Management"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "18-53",
+        "name": "Configuration item selection criteria"
+      },
+      {
+        "id": "01-52",
+        "name": "Configuration item list"
+      },
+      {
+        "id": "16-03",
+        "name": "Configuration management system"
+      },
+      {
+        "id": "13-08",
+        "name": "Baseline"
+      }
+    ]
+  },
+  "SUP.9": {
+    "id": "SUP.9",
+    "name": "Problem Resolution Management",
+    "group": "SUP",
+    "purpose": "The purpose of the Problem Resolution Management Process is to ensure that problems are identified, recorded, analyzed, and their resolution is managed and controlled.",
+    "outcomes": [
+      "Problems are uniquely identified, recorded and classified.",
+      "Problems are analyzed and assessed to determine an appropriate solution.",
+      "Problem resolution is initiated.",
+      "Problems are tracked to closure.",
+      "The status of problems including trends identified are reported to stakeholders."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "SUP.9.BP1",
+        "title": "Identify and record the problem",
+        "full_text": "Identify and record the problem. Each problem is uniquely identified, described and recorded. A status is assigned to each problem to facilitate tracking. Supporting information is provided to reproduce and diagnose the problem. NOTE 1: Problems may relate to e.g., product, resources, or methods. NOTE 2: Example values for the problem status are “new”, “solved”, “closed”, etc. NOTE 3: Supporting information may include e.g, the origin of the problem, how it can be reproduced, environmental infor"
+      },
+      {
+        "bp_id": "SUP.9.BP2",
+        "title": "Determine the cause and the impact of the problem",
+        "full_text": "Determine the cause and the impact of the problem. Analyze the problem, determine its cause, including common causes if existing, and impact. Involve relevant parties. Categorize the problem. NOTE 5: Problem categorization (e.g., light, medium, severe) may be based on severity, criticality, urgency, etc."
+      },
+      {
+        "bp_id": "SUP.9.BP3",
+        "title": "Authorize urgent resolution action",
+        "full_text": "Authorize urgent resolution action. Obtain authorization for immediate action if a problem requires an urgent resolution according to the categorization."
+      },
+      {
+        "bp_id": "SUP.9.BP4",
+        "title": "Raise alert notifications",
+        "full_text": "Raise alert notifications. If according to the categorization the problem has a high impact on other systems or other affected parties, an alert notification needs to be raised accordingly."
+      },
+      {
+        "bp_id": "SUP.9.BP5",
+        "title": "Initiate problem resolution",
+        "full_text": "Initiate problem resolution. Initiate appropriate actions according to the categorization to resolve the problem long-term, including review of those actions or initiate a change request. This includes synchronization and consistency with short-term urgent resolution actions, if applicable."
+      },
+      {
+        "bp_id": "SUP.9.BP6",
+        "title": "Track problems to closure",
+        "full_text": "Track problems to closure. Track the status of problems to closure including all related change requests. The closure of problems is accepted by relevant stakeholders."
+      },
+      {
+        "bp_id": "SUP.9.BP7",
+        "title": "Report the status of problem resolution activities",
+        "full_text": "Report the status of problem resolution activities. Collect and analyze problem resolution management data, identify trends, and initiate related actions. Regularly report the results of data analysis, the identified trends and the status of problem resolution activities to relevant stakeholders. NOTE 6: Collected data may contain information about where the problems occurred, how and when they were found, what their impacts were, etc. SUP.9 Problem Resolution Management"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "13-07",
+        "name": "Problem"
+      },
+      {
+        "id": "15-55",
+        "name": "Problem analysis evidence"
+      }
+    ]
+  },
+  "SUP.10": {
+    "id": "SUP.10",
+    "name": "Change Request Management",
+    "group": "SUP",
+    "purpose": "The purpose of the Change Request Management Process is to ensure that change requests are recorded, analyzed, tracked, approved, and implemented.",
+    "outcomes": [
+      "Requests for changes are recorded and identified.",
+      "Change requests are analyzed, dependencies and relationships to other change requests are identified, and the impact is estimated.",
+      "Change requests are approved before implementation and prioritized accordingly.",
+      "Bidirectional traceability is established between change requests and affected work products.",
+      "Implementation of change requests is confirmed.",
+      "Change requests are tracked to closure and status of change requests is communicated to affected parties."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "SUP.10.BP1",
+        "title": "Identify and record the change requests",
+        "full_text": "Identify and record the change requests. The scope for application of change requests is identified. Each change request is uniquely identified, described, and recorded, including the initiator and reason of the change request. A status is assigned to each change request to facilitate tracking. NOTE 1: Change requests may be used for changes related to e.g., product, process, methods. NOTE 2: Example values for the change request status are “open”, “under investigation”, “implemented”, etc. NOTE"
+      },
+      {
+        "bp_id": "SUP.10.BP2",
+        "title": "Analyze and assess change requests",
+        "full_text": "Analyze and assess change requests. Change requests are analyzed by relevant parties according to analysis criteria. Work products affected by the change request and dependencies to other change requests are determined. The impact of the change requests is assessed. NOTE 4: Examples for analysis criteria are: resource requirements, scheduling issues, risks, benefits, etc."
+      },
+      {
+        "bp_id": "SUP.10.BP3",
+        "title": "Approve change requests before implementation",
+        "full_text": "Approve change requests before implementation. Change requests are prioritized and approved for implementation based on analysis results and availability of resources. NOTE 5: A Change Control Board (CCB) is an example mechanism used to approve change requests. NOTE 6: Prioritization of change requests may be done by allocation to releases."
+      },
+      {
+        "bp_id": "SUP.10.BP4",
+        "title": "Establish bidirectional traceability",
+        "full_text": "Establish bidirectional traceability. Establish bidirectional traceability between change requests and work products affected by the change requests. In case that the change request is initiated by a problem, establish bidirectional traceability between change requests and the corresponding problem reports."
+      },
+      {
+        "bp_id": "SUP.10.BP5",
+        "title": "Confirm the implementation of change requests",
+        "full_text": "Confirm the implementation of change requests. The implementation of change requests is confirmed before closure by relevant stakeholders."
+      },
+      {
+        "bp_id": "SUP.10.BP6",
+        "title": "Track change requests to closure",
+        "full_text": "Track change requests to closure. Change requests are tracked to closure. The status of change requests is communicated to all affected parties. NOTE 7: Examples for informing affected parties can be daily standup meetings or tool-supported workflows. SUP.10 Change Request Management"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "18-57",
+        "name": "Change analysis criteria"
+      },
+      {
+        "id": "13-16",
+        "name": "Change request"
+      },
+      {
+        "id": "13-51",
+        "name": "Consistency evidence"
+      }
+    ]
+  },
+  "SUP.11": {
+    "id": "SUP.11",
+    "name": "Machine Learning Data Management",
+    "group": "SUP",
+    "purpose": "The purpose is to define and align ML data with ML data requirements, maintain the integrity and quality of the ML data, and make them available to affected parties.",
+    "outcomes": [
+      "A ML data management system including an ML data lifecycle is established.",
+      "A ML data quality approach is developed including ML data quality criteria.",
+      "Collected ML data are processed for consistency with ML data requirements.",
+      "ML data are verified against defined ML data quality criteria and updated as needed.",
+      "ML data are agreed and communicated to all affected parties."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "SUP.11.BP1",
+        "title": "Establish an ML data management system",
+        "full_text": "Establish an ML data management system. Establish an ML data management system which supports • ML data management activities, • relevant sources of ML data, • ML data life cycle including a status model, and • interfaces to affected parties. Note 1: Supported ML data management activities may include data collection, labeling/annotation, and structuring."
+      },
+      {
+        "bp_id": "SUP.11.BP2",
+        "title": "Develop an ML data quality approach",
+        "full_text": "Develop an ML data quality approach. Develop an approach to ensure that the quality of ML data is analyzed based on defined ML data quality criteria and activities are performed to support avoidance of biases of data. Note 2: Examples of ML data quality criteria are relevant data sources, reliability and consistency of labelling, completeness against ML data requirements. Note 3: The ML data management system should support the quality criteria and activities of the ML data quality approach. Not"
+      },
+      {
+        "bp_id": "SUP.11.BP3",
+        "title": "Collect ML data",
+        "full_text": "Collect ML data. Relevant sources for raw data are identified and continuously monitored for changes. The raw data is collected according to the ML data requirements. Note 6: The identification and collection of ML data might be an organizational responsibility. Note 7: Continuous monitoring should include the ODD and may lead to changes of the ML requirements."
+      },
+      {
+        "bp_id": "SUP.11.BP4",
+        "title": "Process ML data",
+        "full_text": "Process ML data. The raw data are processed (annotated, analyzed, and structured) according to the ML data requirements."
+      },
+      {
+        "bp_id": "SUP.11.BP5",
+        "title": "Assure quality of ML data",
+        "full_text": "Assure quality of ML data. Perform the activities according to the ML data quality approach to ensure that the ML data meets the defined ML data quality criteria. Note 8: These activities may include sample-based reviews or statistical methods."
+      },
+      {
+        "bp_id": "SUP.11.BP6",
+        "title": "Communicate agreed processed ML data",
+        "full_text": "Communicate agreed processed ML data. Inform all affected parties about the agreed processed ML data and provide them to the affected parties. SUP.11 Machine Learning Data Management"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "16-52",
+        "name": "ML data management system"
+      },
+      {
+        "id": "19-50",
+        "name": "ML data quality approach"
+      },
+      {
+        "id": "03-53",
+        "name": "ML data"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication evidence"
+      }
+    ]
+  },
+  "MAN.3": {
+    "id": "MAN.3",
+    "name": "Project Management",
+    "group": "MAN",
+    "purpose": "The purpose is to identify and control the activities, and establish resources necessary for a project to develop a product, in the context of the project’s requirements and constraints.",
+    "outcomes": [
+      "The scope of the work for the project is defined.",
+      "The feasibility of achieving the goals of the project with available resources and constraints is evaluated.",
+      "The activities and resources necessary to complete the work are sized and estimated.",
+      "Interfaces within the project, and with other projects and organizational units, are identified and monitored.",
+      "Plans for the execution of the project are developed, implemented and maintained.",
+      "Progress of the project is monitored and reported.",
+      "Adjustment is performed when project goals are not achieved."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "MAN.3.BP1",
+        "title": "Define the scope of work",
+        "full_text": "Define the scope of work. Identify the project's goals, motivation and boundaries."
+      },
+      {
+        "bp_id": "MAN.3.BP2",
+        "title": "Define project life cycle",
+        "full_text": "Define project life cycle. Define the life cycle for the project, which is appropriate to the scope, context, and complexity of the project. Define a release scope for relevant milestones. Note 1: This may include the alignment of the project life cycle with the customer's development process."
+      },
+      {
+        "bp_id": "MAN.3.BP3",
+        "title": "Evaluate feasibility of the project",
+        "full_text": "Evaluate feasibility of the project. Evaluate the feasibility of achieving the goals of the project with respect to time, project estimates, and available resources. Note 2: The evaluation of feasibility may consider technical constraints of the project."
+      },
+      {
+        "bp_id": "MAN.3.BP4",
+        "title": "Define and monitor work packages",
+        "full_text": "Define and monitor work packages. Define and monitor work packages and their dependencies according to defined project life cycle and estimations. Note 3: The structure and the size of the work packages support an adequate progress monitoring. Note 4: Work packages may be organized in a work breakdown structure."
+      },
+      {
+        "bp_id": "MAN.3.BP5",
+        "title": "Define and monitor project estimates and resources",
+        "full_text": "Define and monitor project estimates and resources. Define and monitor project estimates of effort and resources based on project's goals, project risks, motivation and boundaries. Note 5: Examples of necessary resources are budget, people, product samples, or infrastructure Note 6: Project risks (using MAN.5) may be considered. Note 7: Estimations and resources may include engineering, management and supporting processes."
+      },
+      {
+        "bp_id": "MAN.3.BP6",
+        "title": "Define and monitor required skills, knowledge, and experience",
+        "full_text": "Define and monitor required skills, knowledge, and experience. Identify and monitor the required skills, knowledge, and experience for the project in line with the estimates and work packages. Note 8: Training, mentoring or coaching of individuals may be applied to resolve deviations from required skills and knowledge."
+      },
+      {
+        "bp_id": "MAN.3.BP7",
+        "title": "Define and monitor project interfaces and agreed commitments",
+        "full_text": "Define and monitor project interfaces and agreed commitments. Identify and agree interfaces of the project with affected stakeholders and monitor agreed commitments. Define an escalation mechanism for commitments that are not fulfilled. Note 9: Affected stakeholders may include other projects, organizational units, sub-contractors, and service providers."
+      },
+      {
+        "bp_id": "MAN.3.BP8",
+        "title": "Define and monitor project schedule",
+        "full_text": "Define and monitor project schedule. Allocate resources to work packages and schedule each activity of the project. Monitor the performance of activities against schedule."
+      },
+      {
+        "bp_id": "MAN.3.BP9",
+        "title": "Ensure consistency",
+        "full_text": "Ensure consistency. Regularly adjust estimates, resources, skills, work packages and their dependencies, schedules, plans, interfaces, and commitments for the project to ensure consistency with the scope of work. Note 10: This may include the consideration of critical dependencies, that are an input for risk management."
+      },
+      {
+        "bp_id": "MAN.3.BP10",
+        "title": "Review and report progress of the project",
+        "full_text": "Review and report progress of the project. Regularly review and report the status of the project and the fulfillment of work packages against estimated effort and duration to all affected parties. Prevent recurrence of identified problems. Note 11: Project reviews may be executed at regular intervals by the management. Project reviews may contribute to identify best practices and lessons learned. Note 12: Refer to SUP.9 for resolution of problems MAN.3 Project Management"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "08-53",
+        "name": "Scope of work"
+      },
+      {
+        "id": "08-54",
+        "name": "Feasibility analysis"
+      },
+      {
+        "id": "14-10",
+        "name": "Work package"
+      }
+    ]
+  },
+  "MAN.5": {
+    "id": "MAN.5",
+    "name": "Risk Management",
+    "group": "MAN",
+    "purpose": "The purpose is to Regularly identify, analyze, treat and monitor process related risks and product related risks.",
+    "outcomes": [
+      "The sources of risks are identified and regularly updated.",
+      "Potential undesirable events are identified as they develop during the conduct of the project.",
+      "Risks are analyzed and the priority in which to apply resources to treatment of these risks is determined.",
+      "Risk measures are defined, applied, and assessed to determine changes in the status of risk and the progress of the risk treatment activities.",
+      "Appropriate treatment is taken to correct or avoid the impact of risk based on its priority, probability, and consequence or other defined risk threshold."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "MAN.5.BP1",
+        "title": "Identify sources of risks",
+        "full_text": "Identify sources of risks. Identify and regularly update the sources of risks with affected parties. Note 1: Risks may include technical, economical, and schedule risks. Note 2: Risks may include the suppliers’ deliverables and services. Note 3: The risk sources may vary across the entire project life cycle."
+      },
+      {
+        "bp_id": "MAN.5.BP2",
+        "title": "Identify potential undesirable events",
+        "full_text": "Identify potential undesirable events. Identify potential undesirable events within the scope of the risk management for the project."
+      },
+      {
+        "bp_id": "MAN.5.BP3",
+        "title": "Determine risks",
+        "full_text": "Determine risks. Determine the probability and severity of the undesirable events to support priorities for the mitigation of the risks. Note 4: Different methods may be used to analyze technical risks of a system, for example, functional analysis, simulation, FMEA, FTA etc."
+      },
+      {
+        "bp_id": "MAN.5.BP4",
+        "title": "Define risk treatment options",
+        "full_text": "Define risk treatment options. For each risk select a treatment option to accept, mitigate, avoid, or share (transfer) the risk."
+      },
+      {
+        "bp_id": "MAN.5.BP5",
+        "title": "Define and perform risk treatment activities",
+        "full_text": "Define and perform risk treatment activities. Define and perform risk activities for risk treatment options."
+      },
+      {
+        "bp_id": "MAN.5.BP6",
+        "title": "Monitor risks",
+        "full_text": "Monitor risks. Regularly re-evaluate the risk related to the identified potential undesirable events to determine changes in the status of a risk and to evaluate the progress of the risk treatment activities. Note 5: Risks of high priority may need to be communicated to and monitored by higher levels of management."
+      },
+      {
+        "bp_id": "MAN.5.BP7",
+        "title": "Take corrective action",
+        "full_text": "Take corrective action. When risk treatment activities are not effective, take appropriate corrective action. Note 6: Corrective actions may involve reevaluation of risks, developing and implementing new mitigation concepts or adjusting the existing concepts. MAN.5 Risk Management"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "15-51",
+        "name": "Analysis results"
+      },
+      {
+        "id": "15-09",
+        "name": "Risk status"
+      },
+      {
+        "id": "08-55",
+        "name": "Risk measure"
+      }
+    ]
+  },
+  "MAN.6": {
+    "id": "MAN.6",
+    "name": "Measurement",
+    "group": "MAN",
+    "purpose": "The purpose is to Collect and analyze data relating to the development results and processes implemented within the organization and its projects, to support effective management of the processes.",
+    "outcomes": [
+      "The measurement information needs that are necessary to evaluate the achievement of process objectives and the achievement of desired work products are identified.",
+      "An appropriate set of metrics, driven by the information needs are identified and/or developed.",
+      "Measurement activities are identified and performed.",
+      "The required metrics are collected, stored, analyzed, and the results interpreted.",
+      "Metrics are used to support decisions and provide an objective basis for communication."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "MAN.6.BP1",
+        "title": "Identify information needs",
+        "full_text": "Identify information needs. Identify the measurement information needs that are necessary to evaluate the achievement of process objectives and work products. Note 1: Information needs may change over time. Therefore, the measurement process may be used in an iterative way."
+      },
+      {
+        "bp_id": "MAN.6.BP2",
+        "title": "Specify metrics",
+        "full_text": "Specify metrics. Identify and develop an appropriate set of metrics based on measurement information needs. Note 2: Metrics may be related to processes or development results."
+      },
+      {
+        "bp_id": "MAN.6.BP3",
+        "title": "Collect and store metrics",
+        "full_text": "Collect and store metrics. Collect and store both base and derived metrics, including any context information necessary to verify and understand the metrics. Note 3: Base metrics in the context of this process are directly gathered metrics like “number of defects found” or “number of lines of code”, where derived metrics are two or more metrics that are brought in relation to each other like “number of defects found per line of code”."
+      },
+      {
+        "bp_id": "MAN.6.BP4",
+        "title": "Analyze collected metrics",
+        "full_text": "Analyze collected metrics. Analyze, interpret and review measured values to support decision-making."
+      },
+      {
+        "bp_id": "MAN.6.BP5",
+        "title": "Communicate analysis results",
+        "full_text": "Communicate analysis results. Communicate analysis results to all affected parties."
+      },
+      {
+        "bp_id": "MAN.6.BP6",
+        "title": "Use metrics for decision-making",
+        "full_text": "Use metrics for decision-making. Make accessible and use information from collected metrics and analysis results for any decision-making process for which it is relevant. MAN.6 Measurement"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "03-03",
+        "name": "Benchmarking data"
+      },
+      {
+        "id": "03-04",
+        "name": "Customer satisfaction data"
+      },
+      {
+        "id": "03-06",
+        "name": "Process performance information"
+      },
+      {
+        "id": "07-51",
+        "name": "Measurement result"
+      },
+      {
+        "id": "15-51",
+        "name": "Analysis results"
+      }
+    ]
+  },
+  "PIM.3": {
+    "id": "PIM.3",
+    "name": "Process Improvement",
+    "group": "PIM",
+    "purpose": "The purpose is to continually improve the organization’s effectiveness and efficiency through the processes used and ensure alignment of the processes with the business needs.",
+    "outcomes": [
+      "Commitment is established to provide resources to sustain improvement measures.",
+      "Issues arising from the organization's internal or external environment are identified as improvement opportunities and justified as reasons for change.",
+      "Analysis of the current status of the existing process is performed.",
+      "Improvement goals are identified and prioritized, and consequent changes to the process are defined, documented and implemented.",
+      "The effects of process implementation are monitored, measured and confirmed against the identified improvement goals.",
+      "Knowledge gained from the improvement is communicated within the organization."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "PIM.3.BP1",
+        "title": "Establish commitment",
+        "full_text": "Establish commitment. Establish commitment to support the process improvement staff, to provide resources and further enablers to sustain improvement actions. Note 1: The process improvement process is a generic process, which can be used at all levels (e.g, organizational level, process level, project level, etc.) and which can be used to improve all processes. Note 2: Commitment at all levels of management may support process improvement. Note 3: Enablers for improvement measures may include t"
+      },
+      {
+        "bp_id": "PIM.3.BP2",
+        "title": "Identify improvement measures",
+        "full_text": "Identify improvement measures. Identify issues from the analysis of process performance and derive improvement opportunities with justified reasons for change. Note 4: Analysis may include problem report trend analysis (see SUP.9), analysis from Quality Assurance and Verification results and records (see SUP.1), validation results and records, and product quality metrics like defect rate. Note 5: Issues and improvement suggestions may be addressed by the customer. Note 6: Sources for identificat"
+      },
+      {
+        "bp_id": "PIM.3.BP3",
+        "title": "Establish process improvement goals",
+        "full_text": "Establish process improvement goals. Analyze the current status of the existing processes and establish improvement goals."
+      },
+      {
+        "bp_id": "PIM.3.BP4",
+        "title": "Prioritize improvements",
+        "full_text": "Prioritize improvements. Prioritize the improvement goals and improvement measures."
+      },
+      {
+        "bp_id": "PIM.3.BP5",
+        "title": "Define process improvement measures",
+        "full_text": "Define process improvement measures. Process improvement measures are defined. Note 8: Improvements may be documented in incremental steps."
+      },
+      {
+        "bp_id": "PIM.3.BP6",
+        "title": "Implement process improvement measures",
+        "full_text": "Implement process improvement measures. Implement and apply the improvements to the processes. Update the Process documentation and train people as needed. Note 9: Process application can be supported by establishing policies, adequate process infrastructure, process training, process coaching and tailoring processes to local needs. Note 10: Improvements may be piloted before roll out within the organization."
+      },
+      {
+        "bp_id": "PIM.3.BP7",
+        "title": "Confirm process improvement",
+        "full_text": "Confirm process improvement. The effects of process implementation are monitored and measured, and the achievement of defined improvement goals is confirmed."
+      },
+      {
+        "bp_id": "PIM.3.BP8",
+        "title": "Communicate results of improvement",
+        "full_text": "Communicate results of improvement. Knowledge gained from the improvements and progress of the improvement implementation is communicated to affected parties. PIM.3 Process Improvement"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "02-01",
+        "name": "Commitment/agreement"
+      },
+      {
+        "id": "06-04",
+        "name": "Training material"
+      },
+      {
+        "id": "07-04",
+        "name": "Process metric"
+      },
+      {
+        "id": "10-00",
+        "name": "Process description"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication evidence"
+      },
+      {
+        "id": "13-16",
+        "name": "Change request"
+      },
+      {
+        "id": "15-51",
+        "name": "Analysis result"
+      },
+      {
+        "id": "15-13",
+        "name": "Assessment/audit report"
+      },
+      {
+        "id": "15-16",
+        "name": "Improvement opportunity"
+      },
+      {
+        "id": "16-06",
+        "name": "Process repository"
+      }
+    ]
+  },
+  "REU.2": {
+    "id": "REU.2",
+    "name": "Management of Products for Reuse",
+    "group": "REU",
+    "purpose": "The purpose is to ensure that reused work products are analyzed, verified, and approved for their target context.",
+    "outcomes": [
+      "Products for reuse are selected using defined criteria.",
+      "Products for reuse are analyzed for portability and interoperability.",
+      "Limitations for reuse are defined and communicated.",
+      "Products for reuse are verified.",
+      "Products for reuse are provided to affected parties.",
+      "Communication mechanism is established with the reuse product provider."
+    ],
+    "base_practices": [
+      {
+        "bp_id": "REU.2.BP1",
+        "title": "Select products for reuse",
+        "full_text": "Select products for reuse. Select the products to be reused using defined criteria. Note 1: Products for reuse may be systems, hardware or software components, third party components or legacy components."
+      },
+      {
+        "bp_id": "REU.2.BP2",
+        "title": "Analyze the reuse capability of the product",
+        "full_text": "Analyze the reuse capability of the product. Analyze the designated target architecture and the product to be reused to determine its applicability in the target architecture according to relevant criteria. Note 2: Examples for criteria can be requirements compliance, verifiability of the product to be reused in the target architecture, or portability/interoperability."
+      },
+      {
+        "bp_id": "REU.2.BP3",
+        "title": "Define limitations for reuse",
+        "full_text": "Define limitations for reuse. Define and communicate limitations for the products to be reused. Note 3: Limitations may address parameters of operational environment."
+      },
+      {
+        "bp_id": "REU.2.BP4",
+        "title": "Ensure qualification of products for reuse",
+        "full_text": "Ensure qualification of products for reuse. Provide evidence that the product for reuse is qualified for the intended use of the deliverable. Note 4: Qualification may be demonstrated by verification evidence. Note 5: Verification may include the appropriateness of documentation."
+      },
+      {
+        "bp_id": "REU.2.BP5",
+        "title": "Provide products for reuse",
+        "full_text": "Provide products for reuse. Make available the product to be reused to affected parties. Note 6: Refer to HWE.3, SWE.5 or SYS.4 for more information on integration of hardware, software, or system components."
+      },
+      {
+        "bp_id": "REU.2.BP6",
+        "title": "Communicate information about effectiveness of reuse activities",
+        "full_text": "Communicate information about effectiveness of reuse activities. Establish communication and notification mechanism about experiences and technical outcomes to the provider of reused products. Note 7: The communication with the provider of a reused product may depend on whether the product is under development or not. REU.2 Management of Products for Reuse"
+      }
+    ],
+    "output_information_items": [
+      {
+        "id": "04-02",
+        "name": "Domain architecture"
+      },
+      {
+        "id": "12-03",
+        "name": "Reuse candidate"
+      },
+      {
+        "id": "13-52",
+        "name": "Communication evidence"
+      },
+      {
+        "id": "15-07",
+        "name": "Reuse analysis evidence"
+      },
+      {
+        "id": "13-53",
+        "name": "Qualification evidence"
+      }
+    ]
+  }
+}
