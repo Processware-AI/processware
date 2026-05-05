@@ -9,7 +9,7 @@ model: opus
 
 ## 목적
 
-`extracts/{파일}.txt` 의 내용과 MAT-007 카탈로그의 WI 설명을 대조하여  
+`sources/legacy/{파일}.md` 의 내용과 MAT-007 카탈로그의 WI 설명을 대조하여  
 파일별 최적 WI 후보 + confidence score 를 담은 `mapping_draft.yaml` 을 생성한다.
 
 ---
@@ -18,7 +18,7 @@ model: opus
 
 ```yaml
 trace_id: run-bXXXXXXXX
-extracts_dir: .claude/runs/{trace_id}/extracts/
+legacy_dir: sources/legacy/
 forced_wi: null          # --wi 지정 시 채워짐 (단건 전용)
 confidence_threshold: 75
 ```
@@ -35,15 +35,16 @@ confidence_threshold: 75
    - 없으면 `vault/05_WI_업무지침/WI-*.md` Glob → frontmatter `keywords` / `title` 직접 수집.
 1-3. 카탈로그 항목이 0건이면 에러 반환 (차원 1 미구축 상태).
 
-### Phase 2. 추출 텍스트 수집
+### Phase 2. 레거시 MD 수집
 
-2-1. `Glob {extracts_dir}/*.txt` 로 모든 추출 파일 목록 확보.  
-2-2. 각 파일 Read → 내용 저장.  
+2-1. `Glob sources/legacy/*.md` 로 파일 목록 확보. state.yaml `files[]` 와 교차 확인하여 현재 trace 대상 파일만 처리.  
+2-2. 각 파일 Read → frontmatter + 본문 파싱.  
 2-3. 파일별 특징 추출:
-   - **문서 제목** (파일명 + 첫 줄 heading)
-   - **주요 키워드** (동사구, 명사구 — 상위 10개)
-   - **표 헤더** (표가 있는 문서인 경우)
-   - **산출물 유형 신호** ("평가서", "검토표", "계획서", "보고서", "회의록" 등)
+   - **문서 제목**: 본문 H1 heading. 없으면 파일명.
+   - **주요 키워드**: 본문 단락·표 셀에서 동사구·명사구 상위 10개.
+   - **표 헤더**: MD 표의 헤더 행. 구조가 보존되어 있어 평문 대비 신뢰도 높음.
+   - **산출물 유형 신호**: frontmatter `doc_type_signals[]` 우선 사용. 없으면 제목·본문에서 재추출 ("평가서", "검토표", "계획서", "보고서", "회의록" 등).
+   - **메타데이터**: frontmatter `metadata.date/author/approver` — 매핑 품질 참고용.
 
 ### Phase 3. WI 매칭 (파일별)
 
@@ -104,7 +105,7 @@ summary:
   no_match: 1           # < 50%
 
 mappings:
-  - file: extracts/sprint_review_2026Q1.txt
+  - file: sources/legacy/sprint_review_2026Q1.md
     source_doc: sources/sprint_review_2026Q1.docx
     status: high_confidence      # high_confidence | low_confidence | no_match
     best:
@@ -122,7 +123,7 @@ mappings:
       - wi_id: WI-CMMI-04-01-05
         confidence: 38
 
-  - file: extracts/meeting_kick_off.txt
+  - file: sources/legacy/meeting_kick_off.md
     source_doc: sources/meeting_kick_off.docx
     status: no_match
     best: null

@@ -132,7 +132,42 @@ files: []             # Phase 1 완료 후 채워짐
 
   2-OCR-4. OCR 성공 파일: `files[].ocr_processed: true` 마킹.
 
-2-3. 추출 결과를 `.claude/runs/{trace_id}/extracts/{파일명}.txt` 에 저장.  
+2-3. 추출 결과를 `sources/legacy/{파일명}.md` 에 저장. `sources/legacy/` 폴더 없으면 자동 생성.
+
+  **MD 형식 (Obsidian 호환)**:
+
+  ```markdown
+  ---
+  source_doc: sources/{원본파일명}
+  source_hash: sha256:<hash>
+  extracted_at: "<ISO8601>"
+  doc_type_signals: [<평가서|검토표|회의록|보고서 등>]
+  metadata:
+    date: "<추출된 날짜 또는 미확인>"
+    author: "<추출된 작성자 또는 미확인>"
+    approver: "<추출된 승인자 또는 미확인>"
+  ocr_processed: <true|false>
+  status: pending_confirm
+  ---
+
+  # {문서 제목}
+
+  ## {섹션 제목}
+  {단락 내용}
+
+  | {표 헤더1} | {표 헤더2} | ... |
+  |---|---|---|
+  | {셀} | {셀} | ... |
+  ```
+
+  추출 규칙:
+  - DOCX: XML 파싱 → H1(문서 제목) + H2/H3(단락 제목) + MD 표(표 구조) 보존.
+  - XLSX: 시트별 H2 제목 + MD 표.
+  - PPTX: 슬라이드별 H2(슬라이드 제목) + 내용.
+  - PDF: 텍스트 레이어 → 페이지 구조 최대한 보존.
+  - `doc_type_signals`: 문서 제목·첫 heading 에서 유형 키워드 추출 (평가서, 검토표, 회의록, 보고서, 계획서, 결과서 등).
+  - `metadata.date/author/approver`: 본문·표에서 날짜·작성자·승인자 추출. 불명확하면 `"(미확인)"`.
+
 2-4. 추출 실패(OCR 외 오류) 파일은 `files[].status: extract_failed` 로 표시 + 제외.
 
 ### Phase 3 — Match
@@ -140,7 +175,7 @@ files: []             # Phase 1 완료 후 채워짐
 3-1. `backfill-matcher` 에이전트 위임:
 ```yaml
 trace_id: run-bXXXXXXXX
-extracts_dir: .claude/runs/{trace_id}/extracts/
+legacy_dir: sources/legacy/
 forced_wi: <--wi 값 또는 null>
 confidence_threshold: 75
 ```
@@ -178,6 +213,11 @@ No. 파일                              추천 WI               confidence
 4-4. 확정 완료 시:
 ```
 ✅ 매핑 확정 — {n}건 진행, {m}건 제외
+
+📂 sources/legacy/ 에 추출된 MD 파일이 생성되었습니다.
+   Obsidian 에서 내용을 검토·수정한 후 아래 명령으로 계속 진행하세요.
+   (수정 없이 그대로 진행해도 됩니다.)
+
 ▶ /process-backfill --confirm run-bXXXXXXXX
 ```
 
@@ -187,8 +227,10 @@ state.yaml `status: pending_hitl_confirmation` 으로 정지.
 
 5-1. 확정된 매핑 목록 순회.  
 5-2. 각 파일 + 대응 WI 의 TMP 읽기.  
-5-3. extract 텍스트에서 TMP 필드에 매핑 가능한 값 추출 (LLM):
-   - 필드명·섹션명과 extract 내용을 대조하여 최적 값 매핑.
+5-3. `sources/legacy/{파일명}.md` 에서 TMP 필드 값 추출 (LLM):
+   - frontmatter `metadata` (date/author/approver) 우선 추출.
+   - 필드명·섹션명과 MD 본문·표를 대조하여 최적 값 매핑.
+   - 사용자가 Obsidian 에서 수정한 내용이 그대로 반영됨.
    - 매핑 불가 필드는 `"(원본 미확인)"` 으로 채움.
 5-4. 파일별 `backfill_payload.yaml` 을 `.claude/runs/{trace_id}/payloads/` 에 저장:
 
@@ -255,8 +297,8 @@ options:
 
 ## 4. 강제 규칙
 
-- `vault/08_REC_기록/` 과 `vault/90_MAT_통합매핑/MAT-005_*.md` 외 쓰기 금지.
-- OCR 임시 파일은 `.claude/runs/{trace_id}/ocr/` 에만 저장. `sources/` 에 절대 쓰지 않는다.
+- 쓰기 허용 경로: `sources/legacy/` (추출 MD), `vault/08_REC_기록/` (REC), `vault/90_MAT_통합매핑/MAT-005_*.md` (인덱스). 그 외 쓰기 금지.
+- OCR 임시 PDF는 `.claude/runs/{trace_id}/ocr/` 에만 저장. OCR'd PDF를 `sources/` 에 직접 쓰지 않는다.
 - 매칭 불가 파일은 절대 강제 진행하지 않는다.
 - `verdict_type: legacy_evidence` 누락 금지 — 백필 REC 임을 항상 명시.
 - source_hash 기록 필수 — 원본 문서 추적성 보장.
