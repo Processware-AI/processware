@@ -1,7 +1,7 @@
 ---
 type: moc
 title: 전체 표준 인덱스
-updated: 2026-04-29
+updated: 2026-05-06
 tags: [moc, index]
 ---
 
@@ -13,6 +13,7 @@ tags: [moc, index]
 | 영역코드 | 표준 | 개요 | POL | PRO | WI | TMP | EX | 추적성(MAT) | 상태 |
 |---|---|---|---|---|---|---|---|---|---|
 | **CMMI** | **CMMI-DEV v3.0 (ML3)** | [[00_CMMI-DEV-ML3_표준개요]] | 5 | 20 | 142 | 142 | 142 | [[MAT-011_CMMI-DEV-ML3_추적성_v1.0]] | **✅** |
+| **SPICE** | **Automotive SPICE 4.0** | [[ASPICE4_표준개요]] | 1 | 11 | 21 | 12 | 12 | [[MAT-011_VWAY_Motors_추적성]] | **✅** |
 | QMS | ISO 9001 |  |  |  |  |  |  |  | ⛔ |
 | ISMS | ISO/IEC 27001 |  |  |  |  |  |  |  | ⛔ |
 | PIMS | ISO/IEC 27701 |  |  |  |  |  |  |  | ⛔ |

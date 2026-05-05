@@ -22,6 +22,8 @@
 !/inputs/README.md
 !/inputs/*/
 !/inputs/*/README.md
+!/inputs/*/*.yaml
+!/inputs/*/*.md
 !/inputs/*/*/
 !/inputs/*/*/*.yaml
 !/inputs/*/*/*.md
