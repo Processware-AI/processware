@@ -132,7 +132,15 @@ files: []             # Phase 1 완료 후 채워짐
 
   2-OCR-4. OCR 성공 파일: `files[].ocr_processed: true` 마킹.
 
-2-3. 추출 결과를 `sources/legacy/{파일명}.md` 에 저장. `sources/legacy/` 폴더 없으면 자동 생성.
+2-3. 추출 결과를 `sources/legacy/{상대경로}.md` 에 저장. 상대경로는 입력 루트 기준으로 계산한다.
+
+  **경로 계산 규칙**:
+  - 폴더 입력: 입력 루트(`source_path`)를 기준으로 상대경로 보존.
+    - 예: 입력 `sources/old_docs/`, 파일 `sources/old_docs/2024/Q1/sprint.docx`
+    - → `sources/legacy/2024/Q1/sprint.md`
+  - 단건 입력: 파일명만 사용.
+    - 예: 입력 `sources/sprint.docx` → `sources/legacy/sprint.md`
+  - 중간 디렉토리는 자동 생성한다.
 
   **MD 형식 (Obsidian 호환)**:
 

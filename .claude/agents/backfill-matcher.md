@@ -37,7 +37,7 @@ confidence_threshold: 75
 
 ### Phase 2. 레거시 MD 수집
 
-2-1. `Glob sources/legacy/*.md` 로 파일 목록 확보. state.yaml `files[]` 와 교차 확인하여 현재 trace 대상 파일만 처리.  
+2-1. `Glob sources/legacy/**/*.md` 로 파일 목록 재귀 수집. state.yaml `files[]` 와 교차 확인하여 현재 trace 대상 파일만 처리 (다른 trace 의 파일 혼입 방지).  
 2-2. 각 파일 Read → frontmatter + 본문 파싱.  
 2-3. 파일별 특징 추출:
    - **문서 제목**: 본문 H1 heading. 없으면 파일명.
@@ -105,8 +105,8 @@ summary:
   no_match: 1           # < 50%
 
 mappings:
-  - file: sources/legacy/sprint_review_2026Q1.md
-    source_doc: sources/sprint_review_2026Q1.docx
+  - file: sources/legacy/2026/Q1/sprint_review_2026Q1.md
+    source_doc: sources/old_docs/2026/Q1/sprint_review_2026Q1.docx
     status: high_confidence      # high_confidence | low_confidence | no_match
     best:
       wi_id: WI-CMMI-04-01-03
@@ -123,8 +123,8 @@ mappings:
       - wi_id: WI-CMMI-04-01-05
         confidence: 38
 
-  - file: sources/legacy/meeting_kick_off.md
-    source_doc: sources/meeting_kick_off.docx
+  - file: sources/legacy/2026/Q1/meeting_kick_off.md
+    source_doc: sources/old_docs/2026/Q1/meeting_kick_off.docx
     status: no_match
     best: null
     alternatives: []
