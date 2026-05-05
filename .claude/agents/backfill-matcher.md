@@ -98,6 +98,25 @@ scope_explicit: null     # --scope 지정 시 채워짐
    이유: OCR 텍스트는 오인식으로 키워드 오버랩 정확도가 낮음.
    `mapping_draft.yaml` 에 `ocr_penalty_applied: true` 기록.
 
+3-7. **자동 그룹핑**:
+
+   WI 매칭 완료 후 전체 파일 목록을 순회하여 그룹을 결정한다.
+
+   **그룹핑 기준** (두 조건 모두 충족):
+   - 동일 폴더 (immediate parent directory 일치)
+   - 동일 best WI (wi_id 일치)
+   - confidence ≥ 30% (no_match 파일은 그룹핑 제외)
+
+   **그룹 할당**:
+   - 기준 충족 파일들 → `group_id: G{순번}` 부여 (G1, G2, ...)
+   - 단일 파일 (그룹핑 대상 없음) → `group_id: G{순번}`, `is_singleton: true`
+   - 그룹 내 `primary`: confidence 최고 파일. 동점 시 파일명 사전순 첫 번째.
+   - 그룹 내 나머지: `role: supplementary`
+
+   **그룹핑 불가 예외**:
+   - 같은 폴더에 WI가 다른 파일이 섞인 경우 → WI 별로 서브그룹 분리.
+   - no_match 파일은 그룹핑하지 않음 (별도 처리).
+
 3-6. **confidence 등급**:
    | 범위 | 등급 | 표시 |
    |---|---|---|
@@ -122,12 +141,16 @@ summary:
   high_confidence: 2    # ≥ 75%
   low_confidence: 2     # 50–74%
   no_match: 1           # < 50%
+  groups: 2             # 자동 그룹 수 (싱글턴 포함)
+  grouped_files: 3      # 2개 이상 파일 그룹에 속한 파일 수
 
 mappings:
-  - file: sources/legacy/2026/Q1/sprint_review_2026Q1.md
-    source_doc: sources/old_docs/2026/Q1/sprint_review_2026Q1.docx
+  - file: sources/legacy/2026/Q1/sprint-01/review.md
+    source_doc: sources/old_docs/2026/Q1/sprint-01/review.docx
     scope: "project-A"
-    status: high_confidence      # high_confidence | low_confidence | no_match
+    group_id: G1
+    role: primary         # primary | supplementary
+    status: high_confidence
     best:
       wi_id: WI-CMMI-04-01-03
       wi_title: "작업산출물 평가"
@@ -140,15 +163,46 @@ mappings:
     alternatives:
       - wi_id: WI-CMMI-04-01-04
         confidence: 52
-      - wi_id: WI-CMMI-04-01-05
-        confidence: 38
+
+  - file: sources/legacy/2026/Q1/sprint-01/eval.md
+    source_doc: sources/old_docs/2026/Q1/sprint-01/eval.xlsx
+    scope: "project-A"
+    group_id: G1
+    role: supplementary
+    status: high_confidence
+    best:
+      wi_id: WI-CMMI-04-01-03
+      confidence: 85
+      match_signals:
+        keyword_overlap: 88
+        output_type: 80
+        title_similarity: 70
+        table_header: 90
+    alternatives: []
 
   - file: sources/legacy/2026/Q1/meeting_kick_off.md
     source_doc: sources/old_docs/2026/Q1/meeting_kick_off.docx
+    scope: "(미지정)"
+    group_id: null
+    role: null
     status: no_match
     best: null
     alternatives: []
-    reason: "회의록 형식 — WI 산출물 유형 불일치. 캐딱로그에 매칭 후보 없음."
+    reason: "회의록 형식 — WI 산출물 유형 불일치."
+
+groups:
+  - group_id: G1
+    folder: sources/legacy/2026/Q1/sprint-01/
+    wi_id: WI-CMMI-04-01-03
+    is_singleton: false
+    suggested_by: auto   # auto | user
+    files:
+      - file: sources/legacy/2026/Q1/sprint-01/review.md
+        role: primary
+        confidence: 87
+      - file: sources/legacy/2026/Q1/sprint-01/eval.md
+        role: supplementary
+        confidence: 85
 ```
 
 ### Phase 5. 완료 보고
@@ -160,6 +214,7 @@ mappings:
    ✅ 고신뢰 (≥75%): {n1}건
    ⚠️  저신뢰 (50~74%): {n2}건
    ❌ 매칭 불가: {n3}건
+   📦 자동 그룹: {g}개 ({gf}건 → {g}개 REC로 병합)
 📁 .claude/runs/{trace_id}/mapping_draft.yaml
 ```
 

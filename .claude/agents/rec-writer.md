@@ -61,32 +61,75 @@ options:
 ### Phase BF — 백필 마감 절차 (backfill 모드 전용)
 
 BF-1. `payload_path` Read. 다음 필드 모두 존재 확인:
-   - `source_doc`, `source_hash`, `wi_id`, `wi_path`, `tmp_id`, `tmp_path`
-   - `backfiller`, `backfill_date`, `fields`
+   - `group_id`, `is_group`, `wi_id`, `wi_path`, `tmp_id`, `tmp_path`
+   - `backfiller`, `backfill_date`, `scope`, `fields`
+   - `is_group: true` → `source_primary`, `sources_supplementary[]` 확인.
+   - `is_group: false` → `source_primary` 만 확인 (supplementary 없음).
 BF-2. **REC 번호 산출** — Phase B 와 동일 로직 (같은 일련번호 풀 사용).
-BF-3. **REC frontmatter 구성** — finalize 와 다른 필드:
-```yaml
-status: backfilled
-verdict_type: legacy_evidence
-source_doc: sources/sprint_review_2026Q1.docx
-source_hash: sha256:<hash>
-backfiller: "홍길동"
-backfill_date: "2026-03"
-executed_at: null          # 원본 실행일 미확인
-executed_by: null          # 백필자와 원래 실행자가 다를 수 있음
-backfilled_at: "<ISO8601 now>"
-trace_id: run-bXXXXXXXX
-hitl: null                 # 백필 REC 는 HITL 없음
-```
-BF-4. **본문 합성** — Phase C 와 동일하게 TMP 구조 따르되, 첫머리에 경고 박스 삽입:
-```
-> **⚠ 본 기록은 레거시 문서로부터 백필 변환된 기록입니다.**
-> 원본 파일: {source_doc}
-> 백필 담당자: {backfiller} ({backfill_date})
-> 추적 ID: {trace_id}
->
-> verdict_type: legacy_evidence — /process-check 심사 시 partial 로 계산됩니다.
-```
+BF-3. **REC frontmatter 구성** — `is_group` 여부에 따라 분기:
+
+  **단일 소스 (`is_group: false`)**:
+  ```yaml
+  status: backfilled
+  verdict_type: legacy_evidence
+  scope: "<scope 레이블>"
+  source_doc: <source_primary.source_doc>
+  source_hash: <source_primary.hash>
+  backfiller: "<backfiller>"
+  backfill_date: "<backfill_date>"
+  executed_at: null
+  executed_by: null
+  backfilled_at: "<ISO8601 now>"
+  trace_id: run-bXXXXXXXX
+  hitl: null
+  ```
+
+  **멀티 소스 그룹 (`is_group: true`)**:
+  ```yaml
+  status: backfilled
+  verdict_type: legacy_evidence
+  scope: "<scope 레이블>"
+  sources:
+    - doc: <source_primary.source_doc>
+      hash: <source_primary.hash>
+      role: primary
+    - doc: <sources_supplementary[0].source_doc>
+      hash: <sources_supplementary[0].hash>
+      role: supplementary
+    # ... 나머지 supplementary
+  backfiller: "<backfiller>"
+  backfill_date: "<backfill_date>"
+  executed_at: null
+  executed_by: null
+  backfilled_at: "<ISO8601 now>"
+  trace_id: run-bXXXXXXXX
+  group_id: <group_id>
+  hitl: null
+  ```
+BF-4. **본문 합성** — TMP 구조 따르되, 첫머리에 경고 박스 삽입:
+
+  **단일 소스**:
+  ```
+  > **⚠ 본 기록은 레거시 문서로부터 백필 변환된 기록입니다.**
+  > 원본 파일: {source_primary.source_doc}
+  > 범위(scope): {scope}
+  > 백필 담당자: {backfiller} ({backfill_date})
+  > 추적 ID: {trace_id}
+  >
+  > verdict_type: legacy_evidence — /process-check 심사 시 partial 로 계산됩니다.
+  ```
+
+  **멀티 소스 그룹**:
+  ```
+  > **⚠ 본 기록은 {N}개 레거시 문서로부터 병합 백필된 기록입니다.**
+  > 주 원본: {source_primary.source_doc}  (primary)
+  > 보조 원본: {sources_supplementary[*].source_doc}  (supplementary)
+  > 범위(scope): {scope}  |  그룹 ID: {group_id}
+  > 백필 담당자: {backfiller} ({backfill_date})
+  > 추적 ID: {trace_id}
+  >
+  > verdict_type: legacy_evidence — /process-check 심사 시 partial 로 계산됩니다.
+  ```
 BF-5. **MAT-005 갱신** — Phase E 와 동일하되 행 형식:
 ```
 | {backfill_date} | run-bXXXXXXXX | {표준} | [[WI-...]] | [[REC-...]] | {backfiller} | ⚠️ 백필 | backfilled |

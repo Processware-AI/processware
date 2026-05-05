@@ -211,14 +211,18 @@ scope_explicit: <--scope 값 또는 null>
 [Back-fill 매핑 검토] — run-bXXXXXXXX
 총 {N}건 | 자동 매칭 {n1}건 | ⚠️ 저신뢰도 {n2}건 | ❌ 매칭 불가 {n3}건
 
-No. 파일                              scope          추천 WI               confidence
-──────────────────────────────────────────────────────────────────────────────────
-1.  sprint_review_2026Q1.docx       project-A      WI-CMMI-04-01-03     87%  ✅
-2.  peer_review_api.xlsx            project-A      WI-CMMI-04-01-05     72%  ⚠️
-3.  test_report_2026-03.docx        project-B      WI-CMMI-04-02-01     65%  ⚠️
-4.  meeting_kick_off.docx           hr             (매칭 불가)           --   ❌
+No. 파일                              scope      그룹   추천 WI               confidence
+────────────────────────────────────────────────────────────────────────────────────────
+1.  sprint-01/review.docx           project-A  [G1]★  WI-CMMI-04-01-03     87%  ✅
+2.  sprint-01/eval.xlsx             project-A  [G1]   WI-CMMI-04-01-03     85%  ✅
+3.  sprint-01/sign_off.pdf          project-A  [G1]   WI-CMMI-04-01-03     78%  ✅
+4.  sprint-02/review.docx           project-A  [G2]★  WI-CMMI-04-01-03     88%  ✅
+5.  hr/training_2024.xlsx           hr         [G3]★  WI-HR-02-01          78%  ✅
+6.  meeting_kick_off.docx           hr         -      (매칭 불가)           --   ❌
 
-❌ 항목(4번)은 자동 제외됩니다.
+★ = 그룹 primary (TMP 필드 주 출처)
+💡 자동 그룹핑: 같은 폴더 + 같은 WI → 1개 REC. 총 3개 REC 생성 예정.
+❌ 항목(6번)은 자동 제외됩니다.
 ⚠️ 항목은 WI 수정 권장. 수정: "2=WI-CMMI-04-01-04" 형식.
 그대로 진행: "확정"
 ```
@@ -230,6 +234,9 @@ No. 파일                              scope          추천 WI               c
 | `"확정"` | 현재 매핑 그대로 진행 |
 | `"2=WI-CMMI-04-01-04"` | 2번 파일의 WI 수정 |
 | `"3 scope=전사-품질"` | 3번 파일의 scope 수정 |
+| `"1+2+6 group"` | 1·2·6번 파일을 하나의 REC로 수동 그룹핑 |
+| `"2 ungroup"` | 2번 파일을 그룹에서 분리 (독립 REC) |
+| `"G1 primary=2"` | G1 그룹의 primary를 2번 파일로 변경 |
 | `"3 제외"` | 3번 파일 제외 (REC 미생성) |
 | `"2=WI-CMMI-04-01-04, 3 scope=전사-품질"` | 복합 수정 |
 | `"전체 취소"` | 작업 중단 |
@@ -237,6 +244,9 @@ No. 파일                              scope          추천 WI               c
 - `"확정"` → state.yaml `status: pending_hitl_confirmation` + 확정 내용 반영.
 - `"2=WI-XX, 3 제외"` 등 → mapping_draft.yaml 수정 후 테이블 재출력.
 - `"3 scope=..."` → mapping_draft.yaml 해당 파일의 scope 필드 수정 후 테이블 재출력.
+- `"N+M+... group"` → 해당 번호 파일을 하나의 그룹으로 묶음. 가장 높은 confidence 파일이 primary 자동 지정.
+- `"N ungroup"` → N번 파일을 그룹에서 제거. 해당 파일은 싱글턴 그룹(독립 REC)이 됨.
+- `"GX primary=N"` → GX 그룹의 primary를 N번 파일로 수동 지정.
 - `"전체 취소"` → state.yaml `status: cancelled` 후 종료.
 
 4-3. ❌ 항목은 `state.yaml files[].status: excluded_no_match` 로 기록 (REC 미생성).
@@ -256,42 +266,62 @@ state.yaml `status: pending_hitl_confirmation` 으로 정지.
 
 ### Phase 5 — Map (confirm 후 진입)
 
-5-1. 확정된 매핑 목록 순회.  
-5-2. 각 파일 + 대응 WI 의 TMP 읽기.  
-5-3. `sources/legacy/{파일명}.md` 에서 TMP 필드 값 추출 (LLM):
-   - frontmatter `metadata` (date/author/approver) 우선 추출.
-   - 필드명·섹션명과 MD 본문·표를 대조하여 최적 값 매핑.
-   - 사용자가 Obsidian 에서 수정한 내용이 그대로 반영됨.
-   - 매핑 불가 필드는 `"(원본 미확인)"` 으로 채움.
-5-4. 파일별 `backfill_payload.yaml` 을 `.claude/runs/{trace_id}/payloads/` 에 저장:
+5-1. `mapping_draft.yaml` 의 `groups[]` 를 기준으로 순회 (파일 단위 아닌 그룹 단위).
+5-2. 각 그룹의 WI 의 TMP 읽기.
+5-3. **그룹별 TMP 필드 병합 (LLM)**:
+   - **primary 파일 먼저**: `sources/legacy/{primary 경로}.md` 에서 TMP 전 필드 추출.
+     - frontmatter `metadata` (date/author/approver) 우선.
+     - 필드명·섹션명과 MD 본문·표 대조.
+   - **supplementary 파일 순차 보완**: primary 에서 `"(원본 미확인)"` 인 필드만 대상.
+     - confidence 높은 순서로 시도.
+     - 값 발견 시 채움 + `source: {파일명}` 주석 기록.
+   - 최종적으로도 미확인인 필드: `"(원본 미확인)"` 유지.
+5-4. 그룹별 `backfill_payload.yaml` 을 `.claude/runs/{trace_id}/payloads/` 에 저장:
 
 ```yaml
-source_doc: sources/sprint_review_2026Q1.docx
-source_hash: sha256:<hash>
+group_id: G1
+is_group: true           # 단일 파일 싱글턴은 false
 wi_id: WI-CMMI-04-01-03
 wi_path: vault/05_WI_업무지침/WI-CMMI-04-01-03_*.md
 tmp_id: TMP-CMMI-04-01-03-01
 tmp_path: vault/06_TMP_템플릿/TMP-CMMI-04-01-03-01_*.md
 backfiller: 홍길동
 backfill_date: "2026-03"
+scope: "project-A"
+source_primary:
+  doc: sources/legacy/sprint-01/review.md
+  source_doc: sources/sprint-01/review.docx
+  hash: sha256:<hash>
+  confidence: 87
+sources_supplementary:
+  - doc: sources/legacy/sprint-01/eval.md
+    source_doc: sources/sprint-01/eval.xlsx
+    hash: sha256:<hash>
+    confidence: 85
+  - doc: sources/legacy/sprint-01/sign_off.md
+    source_doc: sources/sprint-01/sign_off.pdf
+    hash: sha256:<hash>
+    confidence: 78
 fields:
   평가대상: "API 모듈 v2.3"
-  평가일: "2026-03-14"
-  평가자: "(원본 미확인)"
+  평가일: "2026-03-14"        # source: review.md (primary)
+  평가자: "홍길동"              # source: eval.xlsx (supplementary)
   ...
 ```
 
 ### Phase 6 — Generate
 
-6-1. 각 `backfill_payload.yaml` 에 대해 `rec-writer` 에이전트를 `mode: backfill` 로 위임:
+6-1. 각 그룹의 `backfill_payload.yaml` 에 대해 `rec-writer` 에이전트를 `mode: backfill` 로 위임:
 
 ```yaml
 mode: backfill
 trace_id: run-bXXXXXXXX
-payload_path: .claude/runs/{trace_id}/payloads/{파일}.yaml
+payload_path: .claude/runs/{trace_id}/payloads/{group_id}.yaml
 options:
   dry_run: <--dry-run 여부>
 ```
+
+그룹 수 = 생성될 REC 수. 파일 수와 다를 수 있음.
 
 6-2. dry_run 이면 미리보기 출력 후 종료.
 
