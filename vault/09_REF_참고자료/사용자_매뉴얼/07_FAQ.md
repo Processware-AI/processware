@@ -179,6 +179,76 @@ cp ISO9001_2015.pdf inputs/01_표준원문/    ← ❌
 
 ---
 
+## /process-audit 관련
+
+### Q. process-check와 process-audit의 차이가 뭔가?
+
+**A.** 질문하는 방향이 다르다.
+
+| 구분 | `/process-check` | `/process-audit` |
+|---|---|---|
+| 질문 | "우리가 절차대로 **이행**했는가?" | "우리 **프로세스 설계**가 표준을 커버하는가?" |
+| 기준 | 내부 PRO/WI 요건 vs REC 증적 | 외부 ISO/IEC/KS/법규 조항 vs POL/PRO/WI |
+| 산출 | 심사 보고서 (REC-AUDIT), NCR | GAP 보고서 (REC-GAP) |
+
+### Q. ISO 9001 대비 GAP 분석을 하고 싶다. 어떻게 하나?
+
+**A.** `inputs/`에 ISO 9001 요건 파일이 있으면 바로 실행된다.
+
+```bash
+# 1. 전처리 먼저 (이미 했으면 생략)
+/process-ingest sources/ISO9001_2015.pdf --standard ISO9001 --version 2015
+/process-ingest --confirm ISO9001
+
+# 2. GAP 분석 실행
+/process-audit start --against ISO9001
+
+# 3. 초안 검토 후 확정 (일부 조항 N/A 처리 가능)
+/process-audit --confirm run-gXXXXXXXX \
+  --not-applicable "8.3"="외주 개발 없음"
+
+# 4. 결과 확인
+# vault/08_REC_기록/AUDIT/REC-GAP-ISO9001-2026-001_GAP분석보고서.md
+```
+
+### Q. inputs/에 표준 파일이 없다. GAP 분석이 안 되나?
+
+**A.** `--llm-fallback` 플래그로 LLM 내부 지식 기반으로 실행할 수 있다. 단, 신뢰도가 낮으므로 보고서에 `requirements_source: llm_knowledge`로 표시된다.
+
+```bash
+/process-audit start --against ISO9001 --llm-fallback
+```
+
+정확한 분석을 원하면 `/process-ingest`로 표준 PDF를 먼저 전처리하는 것을 권장한다.
+
+### Q. 커버리지가 낮게 나왔다. 어떻게 해야 하나?
+
+**A.** GAP 보고서의 §5 권고사항을 참고해 해당 모듈을 빌드한다.
+
+```bash
+# GAP 보고서 열기
+open vault/08_REC_기록/AUDIT/REC-GAP-ISO9001-2026-001_GAP분석보고서.md
+
+# 권고된 모듈 빌드
+/process-plan "리스크 관리 절차"
+/process-plan "설계·개발 프로세스"
+
+# 빌드 후 재심사
+/process-audit start --against ISO9001
+```
+
+### Q. 일부 조항은 우리 조직에 해당이 없다. 어떻게 처리하나?
+
+**A.** `--confirm` 시 `--not-applicable` 플래그로 N/A 처리한다. N/A 조항은 커버리지 계산에서 제외된다.
+
+```bash
+/process-audit --confirm run-gXXXXXXXX \
+  --not-applicable "8.3"="자체 설계 없음, 외주 전용" \
+  --not-applicable "8.4.1"="직접 생산만"
+```
+
+---
+
 ## /process-check 관련
 
 ### Q. "독립성 위반" 오류가 난다. 어떻게 해결하나?

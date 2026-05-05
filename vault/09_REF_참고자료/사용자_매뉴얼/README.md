@@ -29,6 +29,7 @@ tags: [manual, index, guide]
 | [[02_프로세스_설계]] | `/process-plan` 상세 — 입력, 단계, 플래그, 자가수정 | 프로세스 설계자 |
 | [[03_프로세스_실행]] | `/process-do` 상세 — 8가지 모드, HITL 승인 흐름 | PM, 실행자 |
 | [[04_프로세스_심사]] | `/process-check` 상세 — 독립성, NCR, KPI | QA, 심사원 |
+| [[04-1_외부표준_GAP분석]] | `/process-audit` 상세 — 외부 표준 부합성 GAP 분석·MAT-002 갱신 | 심사원, QMR |
 | [[05_프로세스_개정]] | `/process-act` 상세 — RCA, PCB 승인, 재빌드 | QMR, Process Owner |
 | [[06_역할별_가이드]] | 역할(PM/QA/QMR/심사원)별 시나리오와 체크리스트 | 역할별 담당자 |
 | [[07_FAQ]] | 자주 막히는 문제 해결 | 문제가 생겼을 때 |
@@ -51,10 +52,15 @@ tags: [manual, index, guide]
 /process-do --approve run-XXXX      # HITL 승인
 /process-do --check-approvals       # 대기 중 승인 일괄 처리
 
-# 프로세스 심사 (Check)
+# 내부 이행 심사 (Check)
 /process-check start PRO-번호 --auditor "이름"
 /process-check --confirm run-XXXX   # 심사 매트릭스 확정
 /process-check --kpi start 모듈코드 # KPI 측정
+
+# 외부 표준 GAP 분석 (Audit)
+/process-audit start --against ISO9001
+/process-audit --confirm run-gXXXX  # GAP 초안 확정 + 보고서 발행
+/process-audit --list               # 과거 GAP 분석 목록
 
 # 프로세스 개정 (Act)
 /process-act start queue-XXXX
