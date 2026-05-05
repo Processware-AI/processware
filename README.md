@@ -17,7 +17,9 @@
 | **3 (Audit)** 외부 표준 GAP | `/process-audit` | gap-analyzer · gap-reporter · gap-exporter (3) | REC-GAP + MAT-002 §GAP 분석 + act queue (critical/major GAP) + exports/ (XLSX·HTML·PDF) |
 | **4 (Act)** 제·개정 | `/process-act` | rca-analyzer · revision-planner · pcb-gatekeeper · act-coordinator (4) | As-Is 입력 + MAT-001 §개정이력 + 차원 1 재트리거 명령 |
 
-**총 29 에이전트 / 7 슬래시** — 모든 차원이 단일 브랜치(main)에 통합되어 운영.
+**총 29 에이전트 / 7 슬래시 + 2 통합 스킬** — 모든 차원이 단일 브랜치(main)에 통합되어 운영.
+
+> **Phase 5 (외부 시스템 연동)**: `/vault-push`, `/workspace-create` — vault → Redmine 단방향 Push 구현 완료. `integrations/redmine/` 참조.
 
 ## 특징
 
@@ -81,6 +83,15 @@
 - **차원 4 인계 큐**: act-trigger 가 confirm/kpi-finalize/gap-confirm 직후 자동 발행 (NCR · KPI · GAP 3종 통합 휴리스틱)
 - **PoC 실증**: queue-qa1b2c3d4 (NCR-001 critical) → PRO v1.0 → v1.1 → CAPA REC → NCR close → KPI round 2 회복 (critical 4→1, healthy 3→6, recovering 0→2)
 
+### Phase 5 (외부 시스템 연동) — Redmine 구현 완료
+
+- **Headless CMS 모델**: vault = 콘텐츠 저장소, Redmine = API 소비자. 단방향 Push (vault SSoT → Redmine, 역방향 없음)
+- **Process Library**: `lib-{scope_code}` Redmine 프로젝트로 구성. PRO별 Library Module (`lib-{scope_code}-{pro_slug}`) 서브프로젝트. vault push 관리, 직접 편집 금지
+- **Workspace**: 현업 업무 단위 가상 공간. `ws-{slug}` 상위 프로젝트 + PRO 단위 서브프로젝트로 구성. Library 복사본이므로 팀 자율 편집 가능
+- **자동화**: git post-commit hook + GitHub Actions (`feat/*-output`, `main` 브랜치 + `vault/**/*.md` 경로 트리거)
+- **sync_map SQLite DB**: vault_doc_id ↔ Redmine resource 매핑, 변경분 추적
+- **이슈 동기화**: REC → Redmine Issue (프로세스기록 Tracker), REC-NCR → Issue (NCR Tracker) + STATUS_MAP/PRIORITY_MAP
+
 ### Phase 4.5 명세 (외부 인프라 연동 준비)
 - **RBAC extensions**: external_idp (OIDC) + delegation + audit_log + external_notifications (이메일/Slack/Jira)
 - **한국 영업일 계산기** (`.claude/utils/business_days_kr.md`): 공휴일 14개 + add_business_days 알고리즘
@@ -99,14 +110,16 @@ STD_Process_Builder/
 ├── 표준_프로세스_심사_가이드.md             ← 차원 3 운영 가이드 (Phase 1~4 + 4.5 명세)
 ├── 표준_프로세스_제개정_가이드.md           ← 차원 4 운영 가이드 (Phase 1~2 + 4.5 명세)
 ├── .claude/                                 ← 4차원 자동화 인프라
-│   ├── commands/                            ← 슬래시 커맨드 (7)
+│   ├── commands/                            ← 슬래시 커맨드 7 + 통합 스킬 2
 │   │   ├── process-ingest.md               ← 차원 0 (9 Phase + flow-proposer)
 │   │   ├── process-plan.md                 ← 차원 1 (Phase 3.5 + --flow 포함)
 │   │   ├── process-do.md                   ← 차원 2 (8 진입 모드)
 │   │   ├── process-backfill.md             ← 차원 2B (레거시 → REC 백필, 7 Phase)
 │   │   ├── process-check.md                ← 차원 3 (--kpi, --act-queue, --rbac-check)
 │   │   ├── process-audit.md                ← 차원 3 Audit (외부 표준 GAP 분석)
-│   │   └── process-act.md                  ← 차원 4 (7 진입 모드 + --batch)
+│   │   ├── process-act.md                  ← 차원 4 (7 진입 모드 + --batch)
+│   │   ├── vault-push.md                   ← Phase 5 (vault → Redmine Library 단방향 Push)
+│   │   └── workspace-create.md             ← Phase 5 (Workspace 생성·동기화·관리)
 │   ├── agents/                              ← 29 에이전트 (차원별 1/6/5+2/9+3/4)
 │   │   ├── flow-proposer.md                 ← 차원 0 Phase 9 (시나리오 도출 HITL → business_flow.yaml)
 │   │   ├── standard-analyzer.md             ← 차원 1
@@ -151,6 +164,21 @@ STD_Process_Builder/
 │       ├── business_days_kr.md              ← 한국 영업일 (KST 공휴일 14개)
 │       ├── pcb_quorum.md                    ← PCB 다단계 quorum (4 모드)
 │       └── auto_trend_mermaid.md            ← round ≥ 2 자동 트렌드
+├── integrations/                            ← Phase 5 외부 시스템 연동
+│   └── redmine/                             ← Redmine 단방향 Push (Headless CMS 모델)
+│       ├── config.yaml                      ← Redmine URL/API KEY + project_mapping + sync_rules
+│       ├── requirements.txt                 ← python-frontmatter, requests, PyYAML
+│       ├── redmine_client.py                ← RedmineClient (project, wiki, issue CRUD)
+│       ├── db.py                            ← sync_map + workspace_map SQLite DB
+│       ├── transformer.py                   ← Obsidian → Redmine 변환 (wikilink, 헤더)
+│       ├── sync.py                          ← 메인 CLI: --setup, --changed, --dry-run 등
+│       ├── library_setup.py                 ← lib-* 프로젝트 계층 자동 생성
+│       ├── issue_sync.py                    ← REC/NCR → Redmine Issue 동기화
+│       ├── workspace.py                     ← Workspace create/sync/list/status
+│       ├── post-commit.hook                 ← git hook (vault/*.md 변경 감지 → 백그라운드 push)
+│       └── install-hook.sh                  ← post-commit hook 설치 스크립트
+├── .github/workflows/
+│   └── vault-push.yml                       ← GitHub Actions (feat/*-output · main + vault/**/*.md)
 └── vault/                                   ← Obsidian Vault 루트 (영구 자산)
     ├── 00_공통관리/                         ← 문서체계·번호체계·용어집·레지스트리
     ├── 00_MOC/                              ← 인덱스(Map of Content)
@@ -330,7 +358,53 @@ STD_Process_Builder/
 
 > 상세: `표준_프로세스_제개정_가이드.md`
 
-### 5. 폐쇄 루프 시나리오 (PoC 검증된 흐름)
+### 5. Phase 5 (외부 시스템 연동) — Redmine
+
+#### 5-A. 최초 설정 (1회)
+```bash
+# 1. 의존성 설치
+pip3 install -r integrations/redmine/requirements.txt
+
+# 2. 환경변수 설정
+export REDMINE_API_KEY=your_api_key
+export REDMINE_URL=https://your-redmine.example.com
+
+# 3. Redmine에 상위 Library 프로젝트 수동 생성 (예: lib-iso27001, lib-cmmi)
+# 4. Library Module 서브프로젝트 자동 생성
+/vault-push --setup               # Redmine 프로젝트 계층 자동 생성
+/vault-push --setup --dry-run     # 생성 예정 미리보기
+
+# 5. git hook 설치 (커밋 시 자동 push)
+bash integrations/redmine/install-hook.sh
+```
+
+#### 5-B. vault → Redmine 동기화
+```bash
+/vault-push                       # vault 전체 → Library 동기화
+/vault-push --changed             # git diff 변경분만 (CI/CD 권장)
+/vault-push WI-ISO27001-001-001-001  # 특정 문서 1건
+/vault-push --type WI             # WI 전체
+/vault-push --scope ISO27001      # 특정 표준 전체
+/vault-push --dry-run             # 실제 전송 없이 미리보기
+/vault-push --status              # 마지막 동기화 상태
+```
+
+#### 5-C. Workspace (현업 업무 단위) 생성·관리
+```bash
+/workspace-create create \
+  --name "제품Alpha 개발" \
+  --slug product-alpha \
+  --modules PRO-ISO27001-001-001,PRO-ISO27001-001-002  # Library → Workspace 복사
+/workspace-create create --dry-run --name "..." --slug "..." --modules "..."  # 미리보기
+
+/workspace-create sync \
+  --workspace ws-product-alpha \
+  --module lib-iso27001-p001-001   # Library 최신 → Workspace 반영
+/workspace-create list             # 전체 Workspace 목록
+/workspace-create status --workspace ws-product-alpha  # 상세 조회
+```
+
+### 6. 폐쇄 루프 시나리오 (PoC 검증된 흐름)
 ```bash
 # Plan: 표준 수립
 /process-plan CMMI-DEV-ML3
@@ -470,14 +544,16 @@ Phase 4.5 extensions (명세 활성화):
 
 현재 Claude Code 하네스로 검증된 개념을 Python 기반 독립 실행 프레임워크로 승격하는 설계안이 `전용AI에이전트_프레임워크_설계안.md` 에 있습니다. Claude Agent SDK + LangGraph 하이브리드 구성을 1순위로 권장하며, 4단계 MVP 로드맵(Phase 1 : CLI 포팅 → Phase 4 : SaaS)이 제시되어 있습니다.
 
-본 README 의 4 차원 자동화 (차원 2~4) 까지 포함한 전체 플랫폼은 Phase 5 (외부 시스템 실 연동) 시점에 독립 제품화 검토.
+본 README 의 4 차원 자동화 (차원 2~4) 및 Phase 5 (외부 시스템 연동 — Redmine 구현 완료) 까지 포함한 전체 플랫폼을 독립 제품화 검토 단계. Phase 6 이상 (Notion/Codebeamer 연동, AI Agent Gateway) 실 구현 시 독립 패키지 분리 예정.
 
 ## 누적 통계 (main 기준)
 
 - **에이전트**: 29 (차원별 1/6/5+2/9+3/4)
 - **슬래시 커맨드**: 7 (`/process-ingest`, `/process-plan`, `/process-do`, `/process-backfill`, `/process-check`, `/process-audit`, `/process-act`)
+- **통합 스킬**: 2 (`/vault-push`, `/workspace-create`) — Phase 5 Redmine 연동
 - **운영 MAT**: 10 슬롯 (MAT-001~009 + MAT-010 프로세스 플로우맵)
 - **PoC trace**: 10 (do 5, audit 1, kpi 2, act 2)
 - **act queue**: 6 (3 done — 1 단일 + 2 batch / 3 pending)
 - **가이드 문서**: 4 (빌드 / 실행 / 심사 / 제·개정)
 - **Phase 4.5 명세**: 3 utils (영업일 / PCB quorum / 자동 트렌드) + RBAC extensions 4종
+- **Phase 5 구현**: integrations/redmine/ (11 파일) + .github/workflows/vault-push.yml + 2 스킬
