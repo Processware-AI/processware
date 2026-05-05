@@ -1,6 +1,6 @@
 ---
-description: '외부 표준 부합성 심사 (GAP 분석) — inputs/ 의 표준 요건 ↔ 내부 POL/PRO/WI 커버리지 대조 → GAP 보고서 발행 + MAT-002 갱신. 사용: /process-audit start --against <표준코드> | --confirm <trace> | --status <trace>'
-argument-hint: 'start --against <표준코드> [--scope <모듈슬러그>] [--strictness strict|normal|lenient] [--llm-fallback] | --confirm <trace_id> [--not-applicable <조항>="사유"] [--adjust-gap <조항>=minor|major|critical] [--no-act-queue] | --status <trace_id> | --list [--status pending|done]'
+description: '외부 표준 부합성 심사 (GAP 분석) — inputs/ 의 표준 요건 ↔ 내부 POL/PRO/WI 커버리지 대조 → GAP 보고서 발행 + MAT-002 갱신. --export <trace_id> 로 외부 인증기관 제출용 XLSX/HTML/PDF 내보내기. 사용: /process-audit start --against <표준코드> | --confirm <trace> | --status <trace> | --export <trace_id> --format xlsx|html|pdf'
+argument-hint: 'start --against <표준코드> [--scope <모듈슬러그>] [--strictness strict|normal|lenient] [--llm-fallback] | --confirm <trace_id> [--not-applicable <조항>="사유"] [--adjust-gap <조항>=minor|major|critical] [--no-act-queue] | --status <trace_id> | --list [--status pending|done] | --export <trace_id> --format xlsx|html|pdf [--template default|iso9001|iso27001|cmmi] [--org "조직명"]'
 ---
 
 # 외부 표준 부합성 심사 하네스 (GAP 분석)
@@ -89,6 +89,22 @@ strictness 별 GAP 판정 범위:
 ```
 
 → `.claude/runs/run-g*/state.yaml` Glob → 표로 출력.
+
+### 1-5. `export` 모드
+
+```
+/process-audit --export run-g1a2b3c4 --format xlsx
+/process-audit --export run-g1a2b3c4 --format html
+/process-audit --export run-g1a2b3c4 --format pdf
+/process-audit --export run-g1a2b3c4 --format xlsx --template iso27001
+/process-audit --export run-g1a2b3c4 --format xlsx --org "OOO 주식회사"
+```
+
+- `status: completed` trace 만 처리. 미완료 시 abort + `/process-audit --confirm {trace_id}` 안내.
+- state.yaml 에서 `coverage_matrix_path` + `report_path` 로드.
+- `gap-exporter` 위임 → `vault/08_REC_기록/AUDIT/exports/` 에 출력.
+- `--template` 기본값: `default`.
+- `--org` 미지정 시 coverage_matrix.scope_slug 사용.
 
 ---
 
@@ -244,7 +260,10 @@ GAP 없거나 (critical + major == 0) `--no-act-queue` 설정 시: 이 Phase 생
 └── trace.jsonl                   # 분석 로그
 
 vault/08_REC_기록/AUDIT/
-└── REC-GAP-{표준코드}-{YYYY}-{NNN}_GAP분석보고서.md
+├── REC-GAP-{표준코드}-{YYYY}-{NNN}_GAP분석보고서.md
+└── exports/
+    ├── {doc_id}_compliance_matrix.py   (--format xlsx)
+    └── {doc_id}_report.html            (--format html|pdf)
 
 vault/90_MAT_통합매핑/
 └── MAT-002_규제요구사항_대조표.md  (Edit — 신규/갱신 행 추가)
@@ -327,6 +346,7 @@ status: issued
 |---|---|---|---|
 | 1 | `gap-analyzer` | requirements_path + applicable_req_paths + vault Glob | coverage_matrix.yaml |
 | 3 | `gap-reporter` | coverage_matrix.yaml + human_overrides | REC-GAP-*.md + MAT-002 Edit |
+| export | `gap-exporter` | coverage_matrix.yaml + REC-GAP-*.md + format/template/org | exports/ 내 XLSX py / HTML |
 
 ---
 
@@ -343,6 +363,9 @@ status: issued
 | `--adjust-gap <조항>=<등급>` | 심각도 override | confirm |
 | `--no-act-queue` | GAP 발견 시에도 act 큐 자동 push 억제 | confirm |
 | `--dry-run` | REC·MAT-002 저장 생략, 미리보기만 | start |
+| `--format xlsx\|html\|pdf` | 내보내기 포맷 (xlsx=Python스크립트, html/pdf=HTML) | export |
+| `--template <id>` | 인증기관 템플릿 (default\|iso9001\|iso27001\|cmmi) | export |
+| `--org "이름"` | 보고서 조직명 명시 | export |
 
 ---
 
@@ -371,6 +394,15 @@ status: issued
 
 # 과거 분석 목록
 /process-audit --list --against ISO9001
+
+# 외부 인증기관 제출용 XLSX 내보내기
+/process-audit --export run-g1a2b3c4 --format xlsx
+
+# HTML 보고서 생성
+/process-audit --export run-g1a2b3c4 --format html --org "OOO 주식회사"
+
+# PDF용 HTML + 변환 명령 안내
+/process-audit --export run-g1a2b3c4 --format pdf --template iso27001
 ```
 
 ---
@@ -392,4 +424,4 @@ status: issued
 
 | Phase | 현재 구현 | 미구현 |
 |---|---|---|
-| 1 (지금) | start / confirm / status / list / 2 에이전트 (gap-analyzer + gap-reporter) / coverage_matrix / REC-GAP / MAT-002 갱신 / HITL 게이트 / llm-fallback 모드 / 자동 /process-act 트리거 | 다국어 보고서 / 외부 인증기관 포맷 (XLSX) |
+| 1 (지금) | start / confirm / status / list / 3 에이전트 (gap-analyzer + gap-reporter + gap-exporter) / coverage_matrix / REC-GAP / MAT-002 갱신 / HITL 게이트 / llm-fallback 모드 / 자동 /process-act 트리거 / 외부 인증기관 포맷 --export (xlsx/html/pdf) | 다국어 보고서 |
