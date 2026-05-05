@@ -15,6 +15,7 @@ import yaml
 from redmine_client import RedmineClient, client_from_config
 from transformer import transform
 from db import init_db, upsert_sync, get_sync, mark_failed, get_status_summary, DEFAULT_DB_PATH
+from library_setup import setup_library, create_wiki_index_pages
 
 VAULT_ROOT = Path(__file__).parents[2] / "vault"
 CONFIG_PATH = Path(__file__).parent / "config.yaml"
@@ -224,6 +225,8 @@ def main():
     parser.add_argument("--scope", dest="scope_filter", help="scope_code 필터 (예: ISO27001)")
     parser.add_argument("--dry-run", action="store_true", help="실제 전송 없이 미리보기")
     parser.add_argument("--status", action="store_true", help="마지막 동기화 상태 출력")
+    parser.add_argument("--setup", action="store_true",
+                        help="Redmine Library 프로젝트 계층 자동 생성 + config.yaml by_pro 갱신")
     args = parser.parse_args()
 
     cfg = load_config()
@@ -242,6 +245,17 @@ def main():
         if not client.ping():
             print("❌ Redmine 접속 실패. URL/API KEY를 확인하세요.", file=sys.stderr)
             sys.exit(1)
+
+    # --setup: 프로젝트 계층 생성 + config.yaml by_pro 갱신
+    if args.setup:
+        mode = "[DRY-RUN]" if args.dry_run else "[SETUP]"
+        print(f"\n{mode} Library 프로젝트 계층 생성\n")
+        result = setup_library(client, cfg, dry_run=args.dry_run)
+        print(f"\n{mode} Wiki 인덱스 페이지 생성\n")
+        create_wiki_index_pages(client, cfg, dry_run=args.dry_run)
+        print(f"\n완료: 신규 {len(result['created'])} / "
+              f"기존 {len(result['existing'])} / 건너뜀 {len(result['skipped'])}")
+        return
 
     files = collect_vault_files(
         changed_only=args.changed,
