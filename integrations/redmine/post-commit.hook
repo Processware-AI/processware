@@ -1,0 +1,54 @@
+#!/usr/bin/env bash
+# vault-redmine-sync: vault/*.md 변경 시 Redmine Library 자동 동기화
+# install-hook.sh 로 .git/hooks/post-commit 에 설치됨
+
+# ── 설정 확인 ────────────────────────────────────────────────────────────────
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+SYNC_SCRIPT="$REPO_ROOT/integrations/redmine/sync.py"
+
+# Redmine API KEY 미설정 시 조용히 스킵
+if [[ -z "${REDMINE_API_KEY:-}" ]]; then
+    exit 0
+fi
+
+# sync.py 없으면 스킵
+if [[ ! -f "$SYNC_SCRIPT" ]]; then
+    exit 0
+fi
+
+# ── 변경 파일 감지 ────────────────────────────────────────────────────────────
+
+CHANGED_VAULT=$(git diff-tree --no-commit-id -r --name-only HEAD \
+    | grep "^vault/.*\.md$" || true)
+
+if [[ -z "$CHANGED_VAULT" ]]; then
+    exit 0
+fi
+
+# ── 동기화 실행 (백그라운드, non-blocking) ───────────────────────────────────
+
+echo ""
+echo "[vault-redmine-sync] vault 변경 감지 — Redmine Library 동기화 시작 (백그라운드)"
+echo "$CHANGED_VAULT" | head -5
+CHANGED_COUNT=$(echo "$CHANGED_VAULT" | wc -l | tr -d ' ')
+if [[ "$CHANGED_COUNT" -gt 5 ]]; then
+    echo "  ... 외 $((CHANGED_COUNT - 5))건"
+fi
+
+(
+    cd "$REPO_ROOT/integrations/redmine"
+    python3 sync.py --changed >> "$REPO_ROOT/.claude/states/redmine_sync.log" 2>&1
+    EXIT_CODE=$?
+    if [[ $EXIT_CODE -eq 0 ]]; then
+        echo "[vault-redmine-sync] ✅ 완료 ($(date '+%Y-%m-%d %H:%M:%S'))" \
+            >> "$REPO_ROOT/.claude/states/redmine_sync.log"
+    else
+        echo "[vault-redmine-sync] ❌ 오류 발생 (exit $EXIT_CODE)" \
+            >> "$REPO_ROOT/.claude/states/redmine_sync.log"
+    fi
+) &
+
+echo "[vault-redmine-sync] 백그라운드 실행 중 (PID: $!)"
+echo "  로그: .claude/states/redmine_sync.log"
+exit 0
