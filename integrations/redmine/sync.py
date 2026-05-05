@@ -16,6 +16,7 @@ from redmine_client import RedmineClient, client_from_config
 from transformer import transform
 from db import init_db, upsert_sync, get_sync, mark_failed, get_status_summary, DEFAULT_DB_PATH
 from library_setup import setup_library, create_wiki_index_pages
+from issue_sync import sync_issue
 
 VAULT_ROOT = Path(__file__).parents[2] / "vault"
 CONFIG_PATH = Path(__file__).parent / "config.yaml"
@@ -134,22 +135,23 @@ def sync_file(path: Path, client: RedmineClient, cfg: dict,
     now = datetime.now(timezone.utc).isoformat()
 
     if is_issue_type(doc_type, cfg):
-        result = _sync_as_issue(doc_id, post, meta, project_id, vault_path,
-                                client, cfg, dry_run, now)
+        # issue_sync 모듈이 DB upsert까지 직접 처리
+        result = sync_issue(doc_id, post, meta, project_id, vault_path,
+                            client, cfg, dry_run)
     else:
         result = _sync_as_wiki(doc_id, post, meta, project_id, vault_path,
                                client, cfg, dry_run, now)
-
-    if not dry_run and result["status"] in ("created", "updated"):
-        upsert_sync(
-            vault_doc_id=doc_id,
-            vault_path=vault_path,
-            redmine_type=result["redmine_type"],
-            redmine_project_id=project_id,
-            redmine_resource=result["redmine_resource"],
-            vault_version=str(meta.get("version", "")),
-            synced_at=now,
-        )
+        # wiki는 여기서 DB upsert
+        if not dry_run and result["status"] in ("created", "updated"):
+            upsert_sync(
+                vault_doc_id=doc_id,
+                vault_path=vault_path,
+                redmine_type=result["redmine_type"],
+                redmine_project_id=project_id,
+                redmine_resource=result["redmine_resource"],
+                vault_version=str(meta.get("version", "")),
+                synced_at=now,
+            )
 
     return result
 
@@ -158,7 +160,8 @@ def _sync_as_wiki(doc_id, post, meta, project_id, vault_path,
                   client, cfg, dry_run, now) -> dict:
     doc_type = meta.get("type", "")
     wiki_title = doc_id.replace(" ", "-")
-    parent_map = {"WI": "WI", "TMP": "TMP", "EX": "EX", "PRO": "PRO", "POL": "POL", "MAT": "MAT"}
+    parent_map = {"WI": "WI", "TMP": "TMP", "EX": "EX", "PRO": "PRO",
+                  "POL": "POL", "MAT": "MAT", "REC-AUDIT": "AUDIT", "REC-GAP": "GAP"}
     parent_title = parent_map.get(doc_type.upper())
 
     body = transform(post.content, meta, vault_path)
@@ -181,38 +184,6 @@ def _sync_as_wiki(doc_id, post, meta, project_id, vault_path,
         "redmine_project": project_id,
         "redmine_resource": wiki_title,
     }
-
-
-def _sync_as_issue(doc_id, post, meta, project_id, vault_path,
-                   client, cfg, dry_run, now) -> dict:
-    doc_type = meta.get("type", "").upper()
-    tracker_name = cfg["issue_trackers"].get(doc_type, cfg["issue_trackers"].get("REC"))
-    subject = f"[{doc_id}] {meta.get('title', doc_id)}"
-    body = transform(post.content, meta, vault_path)
-
-    if dry_run:
-        return {
-            "doc_id": doc_id, "status": "dry-run",
-            "redmine_type": "issue",
-            "redmine_project": project_id,
-            "tracker": tracker_name,
-        }
-
-    tracker_id = client.get_tracker_id(project_id, tracker_name)
-    if not tracker_id:
-        return {"doc_id": doc_id, "status": "error", "reason": f"tracker '{tracker_name}' not found"}
-
-    existing = get_sync(doc_id)
-    if existing and existing["redmine_type"] == "issue":
-        client.update_issue(int(existing["redmine_resource"]), subject=subject, description=body)
-        return {"doc_id": doc_id, "status": "updated",
-                "redmine_type": "issue", "redmine_project": project_id,
-                "redmine_resource": existing["redmine_resource"]}
-    else:
-        issue = client.create_issue(project_id, subject, tracker_id, description=body)
-        return {"doc_id": doc_id, "status": "created",
-                "redmine_type": "issue", "redmine_project": project_id,
-                "redmine_resource": str(issue["id"])}
 
 
 # ── CLI ───────────────────────────────────────────────────────────────────────

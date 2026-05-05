@@ -143,6 +143,14 @@ class RedmineClient:
 
     # ── 유틸 ──────────────────────────────────────────────────
 
+    def get_priority_id(self, name: str) -> Optional[int]:
+        r = self.session.get(f"{self.base}/enumerations/issue_priorities.json")
+        r.raise_for_status()
+        for p in r.json().get("issue_priorities", []):
+            if p["name"] == name:
+                return p["id"]
+        return None
+
     def ping(self) -> bool:
         """접속 확인. True = 성공."""
         try:
