@@ -1,0 +1,32 @@
+standard_id: VWAY_Motors
+version: '4.0'
+annexes:
+- id: Annex A
+  type: informative
+  title: Conformity statements
+  contents:
+  - A.1 Introduction
+  - A.2 Conformance to the requirements for process reference models
+  - A.3 Conformance to the requirements for process assessment models
+  - A.4 Conformance to the requirements for measurement frameworks
+- id: Annex B
+  type: normative
+  title: Information Item Characteristics
+  contents:
+  - Defines the characteristics of work products / information items required by ASPICE processes
+- id: Annex C
+  type: informative
+  title: Key concepts and guidance
+  contents:
+  - C.1 The Plug-in concept
+  - C.2 Element, Component, and Unit
+  - C.3 Integration of Machine Learning Engineering Processes
+  - C.4 Example of an ML Architecture
+  - C.5 Traceability and consistency
+  - C.6 Agree and Summarize and Communicate
+  - C.7 Key Changes in Automotive SPICE 4.0
+- id: Annex D
+  type: informative
+  title: Reference standards
+  contents:
+  - Lists reference standards including ISO/IEC 33020, ISO/IEC 15504-5, ISO 26262, etc.

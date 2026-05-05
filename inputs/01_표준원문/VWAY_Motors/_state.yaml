@@ -1,0 +1,40 @@
+standard_id: VWAY_Motors
+base_standard: Automotive SPICE
+version: '4.0'
+source_file: sources/ASPICE4.pdf
+source_file_corrected_from: source/ASPICE4.pdf
+category: 01_표준원문
+mode: new
+overall_status: done
+current_phase: handoff
+started_at: '2026-05-06T00:00:00'
+source_hash: sha256:d254c8f4c84c6bcc6d644f28472db1475d31b9b42ad0f93f7374c39759543819
+ocr_processed: false
+phases:
+  intake: done
+  extraction: done
+  parsing: done
+  mining: done
+  classification: done
+  traceability: done
+  qa: done
+  handoff: done
+counts:
+  process_groups: 11
+  processes: 32
+  requirements: 407
+  outcomes: 181
+  base_practices: 194
+  normative: 57
+  process_requirement: 275
+  record_requirement: 58
+  evidence_requirement: 17
+  flagged_items: 0
+  definitions: 10
+  annexes: 4
+  flagged_and_reviewed: 5
+notes:
+- 'SUP.2 Verification: 의도적 제외 (ASPICE 4.0에서 삭제됨)'
+- MLE 프로세스 그룹 신규 추가 (MLE.1~4 + SUP.11)
+- 페이지 번호는 추정값
+confirmed_at: '2026-05-06T00:00:00'

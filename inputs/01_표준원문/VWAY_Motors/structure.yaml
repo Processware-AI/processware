@@ -1,0 +1,113 @@
+standard_id: VWAY_Motors
+base_standard: Automotive SPICE
+version: '4.0'
+source_type: process_assessment_model
+document_structure:
+- id: ACQ
+  name: Acquisition Process Group
+  category: Primary life cycle processes
+  processes:
+  - id: ACQ.4
+    name: Supplier Monitoring
+- id: SPL
+  name: Supply Process Group
+  category: Primary life cycle processes
+  processes:
+  - id: SPL.2
+    name: Product Release
+- id: SYS
+  name: System Engineering Process Group
+  category: Primary life cycle processes
+  processes:
+  - id: SYS.1
+    name: Requirements Elicitation
+  - id: SYS.2
+    name: System Requirements Analysis
+  - id: SYS.3
+    name: System Architectural Design
+  - id: SYS.4
+    name: System Integration and Integration Verification
+  - id: SYS.5
+    name: System Verification
+- id: VAL
+  name: Validation Process Group
+  category: Primary life cycle processes
+  processes:
+  - id: VAL.1
+    name: Validation
+- id: SWE
+  name: Software Engineering Process Group
+  category: Primary life cycle processes
+  processes:
+  - id: SWE.1
+    name: Software Requirements Analysis
+  - id: SWE.2
+    name: Software Architectural Design
+  - id: SWE.3
+    name: Software Detailed Design and Unit Construction
+  - id: SWE.4
+    name: Software Unit Verification
+  - id: SWE.5
+    name: Software Component Verification and Integration Verification
+  - id: SWE.6
+    name: Software Verification
+- id: MLE
+  name: Machine Learning Engineering Process Group
+  category: Primary life cycle processes
+  processes:
+  - id: MLE.1
+    name: Machine Learning Requirements Analysis
+  - id: MLE.2
+    name: Machine Learning Architecture
+  - id: MLE.3
+    name: Machine Learning Training
+  - id: MLE.4
+    name: Machine Learning Model Testing
+- id: HWE
+  name: Hardware Engineering Process Group
+  category: Primary life cycle processes
+  processes:
+  - id: HWE.1
+    name: HW Requirements Analysis
+  - id: HWE.2
+    name: HW Design
+  - id: HWE.3
+    name: Verification against Hardware Design
+  - id: HWE.4
+    name: Verification against HW Requirements
+- id: SUP
+  name: Supporting Process Group
+  category: Supporting life cycle processes
+  processes:
+  - id: SUP.1
+    name: Quality Assurance
+  - id: SUP.10
+    name: Change Request Management
+  - id: SUP.11
+    name: Machine Learning Data Management
+  - id: SUP.8
+    name: Configuration Management
+  - id: SUP.9
+    name: Problem Resolution Management
+- id: MAN
+  name: Management Process Group
+  category: Organizational life cycle processes
+  processes:
+  - id: MAN.3
+    name: Project Management
+  - id: MAN.5
+    name: Risk Management
+  - id: MAN.6
+    name: Measurement
+- id: PIM
+  name: Process Improvement Process Group
+  category: Organizational life cycle processes
+  processes:
+  - id: PIM.3
+    name: Process Improvement
+- id: REU
+  name: Reuse Process Group
+  category: Organizational life cycle processes
+  processes:
+  - id: REU.2
+    name: Management of Products for Reuse

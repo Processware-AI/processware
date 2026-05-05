@@ -1,0 +1,1224 @@
+standard_id: VWAY_Motors
+generated_at: '2026-05-06'
+matrix:
+- clause: ACQ.4
+  requirement_ids:
+  - VWAY-ACQ.4-PURPOSE-001
+- clause: ACQ.4.BP1
+  requirement_ids:
+  - VWAY-ACQ.4-BP1-001
+- clause: ACQ.4.BP2
+  requirement_ids:
+  - VWAY-ACQ.4-BP2-001
+- clause: ACQ.4.BP3
+  requirement_ids:
+  - VWAY-ACQ.4-BP3-001
+- clause: ACQ.4.BP4
+  requirement_ids:
+  - VWAY-ACQ.4-BP4-001
+- clause: ACQ.4.BP5
+  requirement_ids:
+  - VWAY-ACQ.4-BP5-001
+- clause: ACQ.4.OC1
+  requirement_ids:
+  - VWAY-ACQ.4-OC01-001
+- clause: ACQ.4.OC2
+  requirement_ids:
+  - VWAY-ACQ.4-OC02-001
+- clause: ACQ.4.OC3
+  requirement_ids:
+  - VWAY-ACQ.4-OC03-001
+- clause: ACQ.4.OC4
+  requirement_ids:
+  - VWAY-ACQ.4-OC04-001
+- clause: HWE.1
+  requirement_ids:
+  - VWAY-HWE.1-PURPOSE-001
+- clause: HWE.1.BP1
+  requirement_ids:
+  - VWAY-HWE.1-BP1-001
+- clause: HWE.1.BP2
+  requirement_ids:
+  - VWAY-HWE.1-BP2-001
+- clause: HWE.1.BP3
+  requirement_ids:
+  - VWAY-HWE.1-BP3-001
+- clause: HWE.1.BP4
+  requirement_ids:
+  - VWAY-HWE.1-BP4-001
+- clause: HWE.1.BP5
+  requirement_ids:
+  - VWAY-HWE.1-BP5-001
+- clause: HWE.1.BP6
+  requirement_ids:
+  - VWAY-HWE.1-BP6-001
+- clause: HWE.1.OC1
+  requirement_ids:
+  - VWAY-HWE.1-OC01-001
+- clause: HWE.1.OC2
+  requirement_ids:
+  - VWAY-HWE.1-OC02-001
+- clause: HWE.1.OC3
+  requirement_ids:
+  - VWAY-HWE.1-OC03-001
+- clause: HWE.1.OC4
+  requirement_ids:
+  - VWAY-HWE.1-OC04-001
+- clause: HWE.1.OC5
+  requirement_ids:
+  - VWAY-HWE.1-OC05-001
+- clause: HWE.1.OC6
+  requirement_ids:
+  - VWAY-HWE.1-OC06-001
+- clause: HWE.1.OC7
+  requirement_ids:
+  - VWAY-HWE.1-OC07-001
+- clause: HWE.2
+  requirement_ids:
+  - VWAY-HWE.2-PURPOSE-001
+- clause: HWE.2.BP1
+  requirement_ids:
+  - VWAY-HWE.2-BP1-001
+- clause: HWE.2.BP2
+  requirement_ids:
+  - VWAY-HWE.2-BP2-001
+- clause: HWE.2.BP3
+  requirement_ids:
+  - VWAY-HWE.2-BP3-001
+- clause: HWE.2.BP4
+  requirement_ids:
+  - VWAY-HWE.2-BP4-001
+- clause: HWE.2.BP5
+  requirement_ids:
+  - VWAY-HWE.2-BP5-001
+- clause: HWE.2.BP6
+  requirement_ids:
+  - VWAY-HWE.2-BP6-001
+- clause: HWE.2.OC1
+  requirement_ids:
+  - VWAY-HWE.2-OC01-001
+- clause: HWE.2.OC2
+  requirement_ids:
+  - VWAY-HWE.2-OC02-001
+- clause: HWE.2.OC3
+  requirement_ids:
+  - VWAY-HWE.2-OC03-001
+- clause: HWE.2.OC4
+  requirement_ids:
+  - VWAY-HWE.2-OC04-001
+- clause: HWE.2.OC5
+  requirement_ids:
+  - VWAY-HWE.2-OC05-001
+- clause: HWE.2.OC6
+  requirement_ids:
+  - VWAY-HWE.2-OC06-001
+- clause: HWE.3
+  requirement_ids:
+  - VWAY-HWE.3-PURPOSE-001
+- clause: HWE.3.BP1
+  requirement_ids:
+  - VWAY-HWE.3-BP1-001
+- clause: HWE.3.BP2
+  requirement_ids:
+  - VWAY-HWE.3-BP2-001
+- clause: HWE.3.BP3
+  requirement_ids:
+  - VWAY-HWE.3-BP3-001
+- clause: HWE.3.BP4
+  requirement_ids:
+  - VWAY-HWE.3-BP4-001
+- clause: HWE.3.BP5
+  requirement_ids:
+  - VWAY-HWE.3-BP5-001
+- clause: HWE.3.BP6
+  requirement_ids:
+  - VWAY-HWE.3-BP6-001
+- clause: HWE.3.OC1
+  requirement_ids:
+  - VWAY-HWE.3-OC01-001
+- clause: HWE.3.OC2
+  requirement_ids:
+  - VWAY-HWE.3-OC02-001
+- clause: HWE.3.OC3
+  requirement_ids:
+  - VWAY-HWE.3-OC03-001
+- clause: HWE.3.OC4
+  requirement_ids:
+  - VWAY-HWE.3-OC04-001
+- clause: HWE.3.OC5
+  requirement_ids:
+  - VWAY-HWE.3-OC05-001
+- clause: HWE.3.OC6
+  requirement_ids:
+  - VWAY-HWE.3-OC06-001
+- clause: HWE.4
+  requirement_ids:
+  - VWAY-HWE.4-PURPOSE-001
+- clause: HWE.4.BP1
+  requirement_ids:
+  - VWAY-HWE.4-BP1-001
+- clause: HWE.4.BP2
+  requirement_ids:
+  - VWAY-HWE.4-BP2-001
+- clause: HWE.4.BP3
+  requirement_ids:
+  - VWAY-HWE.4-BP3-001
+- clause: HWE.4.BP4
+  requirement_ids:
+  - VWAY-HWE.4-BP4-001
+- clause: HWE.4.BP5
+  requirement_ids:
+  - VWAY-HWE.4-BP5-001
+- clause: HWE.4.BP6
+  requirement_ids:
+  - VWAY-HWE.4-BP6-001
+- clause: HWE.4.OC1
+  requirement_ids:
+  - VWAY-HWE.4-OC01-001
+- clause: HWE.4.OC2
+  requirement_ids:
+  - VWAY-HWE.4-OC02-001
+- clause: HWE.4.OC3
+  requirement_ids:
+  - VWAY-HWE.4-OC03-001
+- clause: HWE.4.OC4
+  requirement_ids:
+  - VWAY-HWE.4-OC04-001
+- clause: HWE.4.OC5
+  requirement_ids:
+  - VWAY-HWE.4-OC05-001
+- clause: HWE.4.OC6
+  requirement_ids:
+  - VWAY-HWE.4-OC06-001
+- clause: MAN.3
+  requirement_ids:
+  - VWAY-MAN.3-PURPOSE-001
+- clause: MAN.3.BP1
+  requirement_ids:
+  - VWAY-MAN.3-BP1-001
+- clause: MAN.3.BP10
+  requirement_ids:
+  - VWAY-MAN.3-BP10-001
+- clause: MAN.3.BP2
+  requirement_ids:
+  - VWAY-MAN.3-BP2-001
+- clause: MAN.3.BP3
+  requirement_ids:
+  - VWAY-MAN.3-BP3-001
+- clause: MAN.3.BP4
+  requirement_ids:
+  - VWAY-MAN.3-BP4-001
+- clause: MAN.3.BP5
+  requirement_ids:
+  - VWAY-MAN.3-BP5-001
+- clause: MAN.3.BP6
+  requirement_ids:
+  - VWAY-MAN.3-BP6-001
+- clause: MAN.3.BP7
+  requirement_ids:
+  - VWAY-MAN.3-BP7-001
+- clause: MAN.3.BP8
+  requirement_ids:
+  - VWAY-MAN.3-BP8-001
+- clause: MAN.3.BP9
+  requirement_ids:
+  - VWAY-MAN.3-BP9-001
+- clause: MAN.3.OC1
+  requirement_ids:
+  - VWAY-MAN.3-OC01-001
+- clause: MAN.3.OC2
+  requirement_ids:
+  - VWAY-MAN.3-OC02-001
+- clause: MAN.3.OC3
+  requirement_ids:
+  - VWAY-MAN.3-OC03-001
+- clause: MAN.3.OC4
+  requirement_ids:
+  - VWAY-MAN.3-OC04-001
+- clause: MAN.3.OC5
+  requirement_ids:
+  - VWAY-MAN.3-OC05-001
+- clause: MAN.3.OC6
+  requirement_ids:
+  - VWAY-MAN.3-OC06-001
+- clause: MAN.3.OC7
+  requirement_ids:
+  - VWAY-MAN.3-OC07-001
+- clause: MAN.5
+  requirement_ids:
+  - VWAY-MAN.5-PURPOSE-001
+- clause: MAN.5.BP1
+  requirement_ids:
+  - VWAY-MAN.5-BP1-001
+- clause: MAN.5.BP2
+  requirement_ids:
+  - VWAY-MAN.5-BP2-001
+- clause: MAN.5.BP3
+  requirement_ids:
+  - VWAY-MAN.5-BP3-001
+- clause: MAN.5.BP4
+  requirement_ids:
+  - VWAY-MAN.5-BP4-001
+- clause: MAN.5.BP5
+  requirement_ids:
+  - VWAY-MAN.5-BP5-001
+- clause: MAN.5.BP6
+  requirement_ids:
+  - VWAY-MAN.5-BP6-001
+- clause: MAN.5.BP7
+  requirement_ids:
+  - VWAY-MAN.5-BP7-001
+- clause: MAN.5.OC1
+  requirement_ids:
+  - VWAY-MAN.5-OC01-001
+- clause: MAN.5.OC2
+  requirement_ids:
+  - VWAY-MAN.5-OC02-001
+- clause: MAN.5.OC3
+  requirement_ids:
+  - VWAY-MAN.5-OC03-001
+- clause: MAN.5.OC4
+  requirement_ids:
+  - VWAY-MAN.5-OC04-001
+- clause: MAN.5.OC5
+  requirement_ids:
+  - VWAY-MAN.5-OC05-001
+- clause: MAN.6
+  requirement_ids:
+  - VWAY-MAN.6-PURPOSE-001
+- clause: MAN.6.BP1
+  requirement_ids:
+  - VWAY-MAN.6-BP1-001
+- clause: MAN.6.BP2
+  requirement_ids:
+  - VWAY-MAN.6-BP2-001
+- clause: MAN.6.BP3
+  requirement_ids:
+  - VWAY-MAN.6-BP3-001
+- clause: MAN.6.BP4
+  requirement_ids:
+  - VWAY-MAN.6-BP4-001
+- clause: MAN.6.BP5
+  requirement_ids:
+  - VWAY-MAN.6-BP5-001
+- clause: MAN.6.BP6
+  requirement_ids:
+  - VWAY-MAN.6-BP6-001
+- clause: MAN.6.OC1
+  requirement_ids:
+  - VWAY-MAN.6-OC01-001
+- clause: MAN.6.OC2
+  requirement_ids:
+  - VWAY-MAN.6-OC02-001
+- clause: MAN.6.OC3
+  requirement_ids:
+  - VWAY-MAN.6-OC03-001
+- clause: MAN.6.OC4
+  requirement_ids:
+  - VWAY-MAN.6-OC04-001
+- clause: MAN.6.OC5
+  requirement_ids:
+  - VWAY-MAN.6-OC05-001
+- clause: MLE.1
+  requirement_ids:
+  - VWAY-MLE.1-PURPOSE-001
+- clause: MLE.1.BP1
+  requirement_ids:
+  - VWAY-MLE.1-BP1-001
+- clause: MLE.1.BP2
+  requirement_ids:
+  - VWAY-MLE.1-BP2-001
+- clause: MLE.1.BP3
+  requirement_ids:
+  - VWAY-MLE.1-BP3-001
+- clause: MLE.1.BP4
+  requirement_ids:
+  - VWAY-MLE.1-BP4-001
+- clause: MLE.1.BP5
+  requirement_ids:
+  - VWAY-MLE.1-BP5-001
+- clause: MLE.1.BP6
+  requirement_ids:
+  - VWAY-MLE.1-BP6-001
+- clause: MLE.1.OC1
+  requirement_ids:
+  - VWAY-MLE.1-OC01-001
+- clause: MLE.1.OC2
+  requirement_ids:
+  - VWAY-MLE.1-OC02-001
+- clause: MLE.1.OC3
+  requirement_ids:
+  - VWAY-MLE.1-OC03-001
+- clause: MLE.1.OC4
+  requirement_ids:
+  - VWAY-MLE.1-OC04-001
+- clause: MLE.1.OC5
+  requirement_ids:
+  - VWAY-MLE.1-OC05-001
+- clause: MLE.1.OC6
+  requirement_ids:
+  - VWAY-MLE.1-OC06-001
+- clause: MLE.2
+  requirement_ids:
+  - VWAY-MLE.2-PURPOSE-001
+- clause: MLE.2.BP1
+  requirement_ids:
+  - VWAY-MLE.2-BP1-001
+- clause: MLE.2.BP2
+  requirement_ids:
+  - VWAY-MLE.2-BP2-001
+- clause: MLE.2.BP3
+  requirement_ids:
+  - VWAY-MLE.2-BP3-001
+- clause: MLE.2.BP4
+  requirement_ids:
+  - VWAY-MLE.2-BP4-001
+- clause: MLE.2.BP5
+  requirement_ids:
+  - VWAY-MLE.2-BP5-001
+- clause: MLE.2.BP6
+  requirement_ids:
+  - VWAY-MLE.2-BP6-001
+- clause: MLE.2.BP7
+  requirement_ids:
+  - VWAY-MLE.2-BP7-001
+- clause: MLE.2.OC1
+  requirement_ids:
+  - VWAY-MLE.2-OC01-001
+- clause: MLE.2.OC2
+  requirement_ids:
+  - VWAY-MLE.2-OC02-001
+- clause: MLE.2.OC3
+  requirement_ids:
+  - VWAY-MLE.2-OC03-001
+- clause: MLE.2.OC4
+  requirement_ids:
+  - VWAY-MLE.2-OC04-001
+- clause: MLE.2.OC5
+  requirement_ids:
+  - VWAY-MLE.2-OC05-001
+- clause: MLE.2.OC6
+  requirement_ids:
+  - VWAY-MLE.2-OC06-001
+- clause: MLE.2.OC7
+  requirement_ids:
+  - VWAY-MLE.2-OC07-001
+- clause: MLE.3
+  requirement_ids:
+  - VWAY-MLE.3-PURPOSE-001
+- clause: MLE.3.BP1
+  requirement_ids:
+  - VWAY-MLE.3-BP1-001
+- clause: MLE.3.BP2
+  requirement_ids:
+  - VWAY-MLE.3-BP2-001
+- clause: MLE.3.BP3
+  requirement_ids:
+  - VWAY-MLE.3-BP3-001
+- clause: MLE.3.BP4
+  requirement_ids:
+  - VWAY-MLE.3-BP4-001
+- clause: MLE.3.BP5
+  requirement_ids:
+  - VWAY-MLE.3-BP5-001
+- clause: MLE.3.OC1
+  requirement_ids:
+  - VWAY-MLE.3-OC01-001
+- clause: MLE.3.OC2
+  requirement_ids:
+  - VWAY-MLE.3-OC02-001
+- clause: MLE.3.OC3
+  requirement_ids:
+  - VWAY-MLE.3-OC03-001
+- clause: MLE.3.OC4
+  requirement_ids:
+  - VWAY-MLE.3-OC04-001
+- clause: MLE.3.OC5
+  requirement_ids:
+  - VWAY-MLE.3-OC05-001
+- clause: MLE.4
+  requirement_ids:
+  - VWAY-MLE.4-PURPOSE-001
+- clause: MLE.4.BP1
+  requirement_ids:
+  - VWAY-MLE.4-BP1-001
+- clause: MLE.4.BP2
+  requirement_ids:
+  - VWAY-MLE.4-BP2-001
+- clause: MLE.4.BP3
+  requirement_ids:
+  - VWAY-MLE.4-BP3-001
+- clause: MLE.4.BP4
+  requirement_ids:
+  - VWAY-MLE.4-BP4-001
+- clause: MLE.4.BP6
+  requirement_ids:
+  - VWAY-MLE.4-BP6-001
+- clause: MLE.4.BP7
+  requirement_ids:
+  - VWAY-MLE.4-BP7-001
+- clause: MLE.4.OC1
+  requirement_ids:
+  - VWAY-MLE.4-OC01-001
+- clause: MLE.4.OC2
+  requirement_ids:
+  - VWAY-MLE.4-OC02-001
+- clause: MLE.4.OC3
+  requirement_ids:
+  - VWAY-MLE.4-OC03-001
+- clause: MLE.4.OC4
+  requirement_ids:
+  - VWAY-MLE.4-OC04-001
+- clause: MLE.4.OC5
+  requirement_ids:
+  - VWAY-MLE.4-OC05-001
+- clause: MLE.4.OC6
+  requirement_ids:
+  - VWAY-MLE.4-OC06-001
+- clause: PIM.3
+  requirement_ids:
+  - VWAY-PIM.3-PURPOSE-001
+- clause: PIM.3.BP1
+  requirement_ids:
+  - VWAY-PIM.3-BP1-001
+- clause: PIM.3.BP2
+  requirement_ids:
+  - VWAY-PIM.3-BP2-001
+- clause: PIM.3.BP3
+  requirement_ids:
+  - VWAY-PIM.3-BP3-001
+- clause: PIM.3.BP4
+  requirement_ids:
+  - VWAY-PIM.3-BP4-001
+- clause: PIM.3.BP5
+  requirement_ids:
+  - VWAY-PIM.3-BP5-001
+- clause: PIM.3.BP6
+  requirement_ids:
+  - VWAY-PIM.3-BP6-001
+- clause: PIM.3.BP7
+  requirement_ids:
+  - VWAY-PIM.3-BP7-001
+- clause: PIM.3.BP8
+  requirement_ids:
+  - VWAY-PIM.3-BP8-001
+- clause: PIM.3.OC1
+  requirement_ids:
+  - VWAY-PIM.3-OC01-001
+- clause: PIM.3.OC2
+  requirement_ids:
+  - VWAY-PIM.3-OC02-001
+- clause: PIM.3.OC3
+  requirement_ids:
+  - VWAY-PIM.3-OC03-001
+- clause: PIM.3.OC4
+  requirement_ids:
+  - VWAY-PIM.3-OC04-001
+- clause: PIM.3.OC5
+  requirement_ids:
+  - VWAY-PIM.3-OC05-001
+- clause: PIM.3.OC6
+  requirement_ids:
+  - VWAY-PIM.3-OC06-001
+- clause: REU.2
+  requirement_ids:
+  - VWAY-REU.2-PURPOSE-001
+- clause: REU.2.BP1
+  requirement_ids:
+  - VWAY-REU.2-BP1-001
+- clause: REU.2.BP2
+  requirement_ids:
+  - VWAY-REU.2-BP2-001
+- clause: REU.2.BP3
+  requirement_ids:
+  - VWAY-REU.2-BP3-001
+- clause: REU.2.BP4
+  requirement_ids:
+  - VWAY-REU.2-BP4-001
+- clause: REU.2.BP5
+  requirement_ids:
+  - VWAY-REU.2-BP5-001
+- clause: REU.2.BP6
+  requirement_ids:
+  - VWAY-REU.2-BP6-001
+- clause: REU.2.OC1
+  requirement_ids:
+  - VWAY-REU.2-OC01-001
+- clause: REU.2.OC2
+  requirement_ids:
+  - VWAY-REU.2-OC02-001
+- clause: REU.2.OC3
+  requirement_ids:
+  - VWAY-REU.2-OC03-001
+- clause: REU.2.OC4
+  requirement_ids:
+  - VWAY-REU.2-OC04-001
+- clause: REU.2.OC5
+  requirement_ids:
+  - VWAY-REU.2-OC05-001
+- clause: REU.2.OC6
+  requirement_ids:
+  - VWAY-REU.2-OC06-001
+- clause: SPL.2
+  requirement_ids:
+  - VWAY-SPL.2-PURPOSE-001
+- clause: SPL.2.BP1
+  requirement_ids:
+  - VWAY-SPL.2-BP1-001
+- clause: SPL.2.BP2
+  requirement_ids:
+  - VWAY-SPL.2-BP2-001
+- clause: SPL.2.BP3
+  requirement_ids:
+  - VWAY-SPL.2-BP3-001
+- clause: SPL.2.BP4
+  requirement_ids:
+  - VWAY-SPL.2-BP4-001
+- clause: SPL.2.BP5
+  requirement_ids:
+  - VWAY-SPL.2-BP5-001
+- clause: SPL.2.BP6
+  requirement_ids:
+  - VWAY-SPL.2-BP6-001
+- clause: SPL.2.BP8
+  requirement_ids:
+  - VWAY-SPL.2-BP8-001
+- clause: SPL.2.OC1
+  requirement_ids:
+  - VWAY-SPL.2-OC01-001
+- clause: SPL.2.OC2
+  requirement_ids:
+  - VWAY-SPL.2-OC02-001
+- clause: SPL.2.OC3
+  requirement_ids:
+  - VWAY-SPL.2-OC03-001
+- clause: SPL.2.OC4
+  requirement_ids:
+  - VWAY-SPL.2-OC04-001
+- clause: SPL.2.OC5
+  requirement_ids:
+  - VWAY-SPL.2-OC05-001
+- clause: SUP.1
+  requirement_ids:
+  - VWAY-SUP.1-PURPOSE-001
+- clause: SUP.1.BP1
+  requirement_ids:
+  - VWAY-SUP.1-BP1-001
+- clause: SUP.1.BP2
+  requirement_ids:
+  - VWAY-SUP.1-BP2-001
+- clause: SUP.1.BP3
+  requirement_ids:
+  - VWAY-SUP.1-BP3-001
+- clause: SUP.1.BP4
+  requirement_ids:
+  - VWAY-SUP.1-BP4-001
+- clause: SUP.1.BP5
+  requirement_ids:
+  - VWAY-SUP.1-BP5-001
+- clause: SUP.1.BP6
+  requirement_ids:
+  - VWAY-SUP.1-BP6-001
+- clause: SUP.1.BP7
+  requirement_ids:
+  - VWAY-SUP.1-BP7-001
+- clause: SUP.1.OC1
+  requirement_ids:
+  - VWAY-SUP.1-OC01-001
+- clause: SUP.1.OC2
+  requirement_ids:
+  - VWAY-SUP.1-OC02-001
+- clause: SUP.1.OC3
+  requirement_ids:
+  - VWAY-SUP.1-OC03-001
+- clause: SUP.1.OC4
+  requirement_ids:
+  - VWAY-SUP.1-OC04-001
+- clause: SUP.1.OC5
+  requirement_ids:
+  - VWAY-SUP.1-OC05-001
+- clause: SUP.1.OC6
+  requirement_ids:
+  - VWAY-SUP.1-OC06-001
+- clause: SUP.10
+  requirement_ids:
+  - VWAY-SUP.10-PURPOSE-001
+- clause: SUP.10.BP1
+  requirement_ids:
+  - VWAY-SUP.10-BP1-001
+- clause: SUP.10.BP2
+  requirement_ids:
+  - VWAY-SUP.10-BP2-001
+- clause: SUP.10.BP3
+  requirement_ids:
+  - VWAY-SUP.10-BP3-001
+- clause: SUP.10.BP4
+  requirement_ids:
+  - VWAY-SUP.10-BP4-001
+- clause: SUP.10.BP5
+  requirement_ids:
+  - VWAY-SUP.10-BP5-001
+- clause: SUP.10.BP6
+  requirement_ids:
+  - VWAY-SUP.10-BP6-001
+- clause: SUP.10.OC1
+  requirement_ids:
+  - VWAY-SUP.10-OC01-001
+- clause: SUP.10.OC2
+  requirement_ids:
+  - VWAY-SUP.10-OC02-001
+- clause: SUP.10.OC3
+  requirement_ids:
+  - VWAY-SUP.10-OC03-001
+- clause: SUP.10.OC4
+  requirement_ids:
+  - VWAY-SUP.10-OC04-001
+- clause: SUP.10.OC5
+  requirement_ids:
+  - VWAY-SUP.10-OC05-001
+- clause: SUP.10.OC6
+  requirement_ids:
+  - VWAY-SUP.10-OC06-001
+- clause: SUP.11
+  requirement_ids:
+  - VWAY-SUP.11-PURPOSE-001
+- clause: SUP.11.BP1
+  requirement_ids:
+  - VWAY-SUP.11-BP1-001
+- clause: SUP.11.BP2
+  requirement_ids:
+  - VWAY-SUP.11-BP2-001
+- clause: SUP.11.BP3
+  requirement_ids:
+  - VWAY-SUP.11-BP3-001
+- clause: SUP.11.BP4
+  requirement_ids:
+  - VWAY-SUP.11-BP4-001
+- clause: SUP.11.BP5
+  requirement_ids:
+  - VWAY-SUP.11-BP5-001
+- clause: SUP.11.BP6
+  requirement_ids:
+  - VWAY-SUP.11-BP6-001
+- clause: SUP.11.OC1
+  requirement_ids:
+  - VWAY-SUP.11-OC01-001
+- clause: SUP.11.OC2
+  requirement_ids:
+  - VWAY-SUP.11-OC02-001
+- clause: SUP.11.OC3
+  requirement_ids:
+  - VWAY-SUP.11-OC03-001
+- clause: SUP.11.OC4
+  requirement_ids:
+  - VWAY-SUP.11-OC04-001
+- clause: SUP.11.OC5
+  requirement_ids:
+  - VWAY-SUP.11-OC05-001
+- clause: SUP.8
+  requirement_ids:
+  - VWAY-SUP.8-PURPOSE-001
+- clause: SUP.8.BP1
+  requirement_ids:
+  - VWAY-SUP.8-BP1-001
+- clause: SUP.8.BP2
+  requirement_ids:
+  - VWAY-SUP.8-BP2-001
+- clause: SUP.8.BP3
+  requirement_ids:
+  - VWAY-SUP.8-BP3-001
+- clause: SUP.8.BP4
+  requirement_ids:
+  - VWAY-SUP.8-BP4-001
+- clause: SUP.8.BP5
+  requirement_ids:
+  - VWAY-SUP.8-BP5-001
+- clause: SUP.8.BP6
+  requirement_ids:
+  - VWAY-SUP.8-BP6-001
+- clause: SUP.8.BP7
+  requirement_ids:
+  - VWAY-SUP.8-BP7-001
+- clause: SUP.8.BP8
+  requirement_ids:
+  - VWAY-SUP.8-BP8-001
+- clause: SUP.8.OC1
+  requirement_ids:
+  - VWAY-SUP.8-OC01-001
+- clause: SUP.8.OC2
+  requirement_ids:
+  - VWAY-SUP.8-OC02-001
+- clause: SUP.8.OC3
+  requirement_ids:
+  - VWAY-SUP.8-OC03-001
+- clause: SUP.8.OC4
+  requirement_ids:
+  - VWAY-SUP.8-OC04-001
+- clause: SUP.8.OC5
+  requirement_ids:
+  - VWAY-SUP.8-OC05-001
+- clause: SUP.8.OC6
+  requirement_ids:
+  - VWAY-SUP.8-OC06-001
+- clause: SUP.8.OC7
+  requirement_ids:
+  - VWAY-SUP.8-OC07-001
+- clause: SUP.8.OC8
+  requirement_ids:
+  - VWAY-SUP.8-OC08-001
+- clause: SUP.9
+  requirement_ids:
+  - VWAY-SUP.9-PURPOSE-001
+- clause: SUP.9.BP1
+  requirement_ids:
+  - VWAY-SUP.9-BP1-001
+- clause: SUP.9.BP2
+  requirement_ids:
+  - VWAY-SUP.9-BP2-001
+- clause: SUP.9.BP3
+  requirement_ids:
+  - VWAY-SUP.9-BP3-001
+- clause: SUP.9.BP4
+  requirement_ids:
+  - VWAY-SUP.9-BP4-001
+- clause: SUP.9.BP5
+  requirement_ids:
+  - VWAY-SUP.9-BP5-001
+- clause: SUP.9.BP6
+  requirement_ids:
+  - VWAY-SUP.9-BP6-001
+- clause: SUP.9.BP7
+  requirement_ids:
+  - VWAY-SUP.9-BP7-001
+- clause: SUP.9.OC1
+  requirement_ids:
+  - VWAY-SUP.9-OC01-001
+- clause: SUP.9.OC2
+  requirement_ids:
+  - VWAY-SUP.9-OC02-001
+- clause: SUP.9.OC3
+  requirement_ids:
+  - VWAY-SUP.9-OC03-001
+- clause: SUP.9.OC4
+  requirement_ids:
+  - VWAY-SUP.9-OC04-001
+- clause: SUP.9.OC5
+  requirement_ids:
+  - VWAY-SUP.9-OC05-001
+- clause: SWE.1
+  requirement_ids:
+  - VWAY-SWE.1-PURPOSE-001
+- clause: SWE.1.BP1
+  requirement_ids:
+  - VWAY-SWE.1-BP1-001
+- clause: SWE.1.BP2
+  requirement_ids:
+  - VWAY-SWE.1-BP2-001
+- clause: SWE.1.BP3
+  requirement_ids:
+  - VWAY-SWE.1-BP3-001
+- clause: SWE.1.BP4
+  requirement_ids:
+  - VWAY-SWE.1-BP4-001
+- clause: SWE.1.BP5
+  requirement_ids:
+  - VWAY-SWE.1-BP5-001
+- clause: SWE.1.BP6
+  requirement_ids:
+  - VWAY-SWE.1-BP6-001
+- clause: SWE.1.OC1
+  requirement_ids:
+  - VWAY-SWE.1-OC01-001
+- clause: SWE.1.OC2
+  requirement_ids:
+  - VWAY-SWE.1-OC02-001
+- clause: SWE.1.OC3
+  requirement_ids:
+  - VWAY-SWE.1-OC03-001
+- clause: SWE.1.OC4
+  requirement_ids:
+  - VWAY-SWE.1-OC04-001
+- clause: SWE.1.OC5
+  requirement_ids:
+  - VWAY-SWE.1-OC05-001
+- clause: SWE.1.OC6
+  requirement_ids:
+  - VWAY-SWE.1-OC06-001
+- clause: SWE.1.OC7
+  requirement_ids:
+  - VWAY-SWE.1-OC07-001
+- clause: SWE.2
+  requirement_ids:
+  - VWAY-SWE.2-PURPOSE-001
+- clause: SWE.2.BP1
+  requirement_ids:
+  - VWAY-SWE.2-BP1-001
+- clause: SWE.2.BP2
+  requirement_ids:
+  - VWAY-SWE.2-BP2-001
+- clause: SWE.2.BP3
+  requirement_ids:
+  - VWAY-SWE.2-BP3-001
+- clause: SWE.2.BP4
+  requirement_ids:
+  - VWAY-SWE.2-BP4-001
+- clause: SWE.2.BP5
+  requirement_ids:
+  - VWAY-SWE.2-BP5-001
+- clause: SWE.2.OC1
+  requirement_ids:
+  - VWAY-SWE.2-OC01-001
+- clause: SWE.2.OC2
+  requirement_ids:
+  - VWAY-SWE.2-OC02-001
+- clause: SWE.2.OC3
+  requirement_ids:
+  - VWAY-SWE.2-OC03-001
+- clause: SWE.2.OC4
+  requirement_ids:
+  - VWAY-SWE.2-OC04-001
+- clause: SWE.3
+  requirement_ids:
+  - VWAY-SWE.3-PURPOSE-001
+- clause: SWE.3.BP1
+  requirement_ids:
+  - VWAY-SWE.3-BP1-001
+- clause: SWE.3.BP2
+  requirement_ids:
+  - VWAY-SWE.3-BP2-001
+- clause: SWE.3.BP3
+  requirement_ids:
+  - VWAY-SWE.3-BP3-001
+- clause: SWE.3.BP4
+  requirement_ids:
+  - VWAY-SWE.3-BP4-001
+- clause: SWE.3.BP5
+  requirement_ids:
+  - VWAY-SWE.3-BP5-001
+- clause: SWE.3.OC1
+  requirement_ids:
+  - VWAY-SWE.3-OC01-001
+- clause: SWE.3.OC2
+  requirement_ids:
+  - VWAY-SWE.3-OC02-001
+- clause: SWE.3.OC3
+  requirement_ids:
+  - VWAY-SWE.3-OC03-001
+- clause: SWE.3.OC4
+  requirement_ids:
+  - VWAY-SWE.3-OC04-001
+- clause: SWE.4
+  requirement_ids:
+  - VWAY-SWE.4-PURPOSE-001
+- clause: SWE.4.BP1
+  requirement_ids:
+  - VWAY-SWE.4-BP1-001
+- clause: SWE.4.BP2
+  requirement_ids:
+  - VWAY-SWE.4-BP2-001
+- clause: SWE.4.BP3
+  requirement_ids:
+  - VWAY-SWE.4-BP3-001
+- clause: SWE.4.BP4
+  requirement_ids:
+  - VWAY-SWE.4-BP4-001
+- clause: SWE.4.BP5
+  requirement_ids:
+  - VWAY-SWE.4-BP5-001
+- clause: SWE.4.OC1
+  requirement_ids:
+  - VWAY-SWE.4-OC01-001
+- clause: SWE.4.OC2
+  requirement_ids:
+  - VWAY-SWE.4-OC02-001
+- clause: SWE.4.OC3
+  requirement_ids:
+  - VWAY-SWE.4-OC03-001
+- clause: SWE.4.OC4
+  requirement_ids:
+  - VWAY-SWE.4-OC04-001
+- clause: SWE.4.OC5
+  requirement_ids:
+  - VWAY-SWE.4-OC05-001
+- clause: SWE.5
+  requirement_ids:
+  - VWAY-SWE.5-PURPOSE-001
+- clause: SWE.5.BP1
+  requirement_ids:
+  - VWAY-SWE.5-BP1-001
+- clause: SWE.5.BP2
+  requirement_ids:
+  - VWAY-SWE.5-BP2-001
+- clause: SWE.5.BP3
+  requirement_ids:
+  - VWAY-SWE.5-BP3-001
+- clause: SWE.5.BP4
+  requirement_ids:
+  - VWAY-SWE.5-BP4-001
+- clause: SWE.5.BP5
+  requirement_ids:
+  - VWAY-SWE.5-BP5-001
+- clause: SWE.5.BP6
+  requirement_ids:
+  - VWAY-SWE.5-BP6-001
+- clause: SWE.5.BP7
+  requirement_ids:
+  - VWAY-SWE.5-BP7-001
+- clause: SWE.5.OC1
+  requirement_ids:
+  - VWAY-SWE.5-OC01-001
+- clause: SWE.5.OC2
+  requirement_ids:
+  - VWAY-SWE.5-OC02-001
+- clause: SWE.5.OC3
+  requirement_ids:
+  - VWAY-SWE.5-OC03-001
+- clause: SWE.5.OC4
+  requirement_ids:
+  - VWAY-SWE.5-OC04-001
+- clause: SWE.5.OC5
+  requirement_ids:
+  - VWAY-SWE.5-OC05-001
+- clause: SWE.5.OC6
+  requirement_ids:
+  - VWAY-SWE.5-OC06-001
+- clause: SWE.5.OC7
+  requirement_ids:
+  - VWAY-SWE.5-OC07-001
+- clause: SWE.5.OC8
+  requirement_ids:
+  - VWAY-SWE.5-OC08-001
+- clause: SWE.6
+  requirement_ids:
+  - VWAY-SWE.6-PURPOSE-001
+- clause: SWE.6.BP1
+  requirement_ids:
+  - VWAY-SWE.6-BP1-001
+- clause: SWE.6.BP2
+  requirement_ids:
+  - VWAY-SWE.6-BP2-001
+- clause: SWE.6.BP3
+  requirement_ids:
+  - VWAY-SWE.6-BP3-001
+- clause: SWE.6.BP4
+  requirement_ids:
+  - VWAY-SWE.6-BP4-001
+- clause: SWE.6.BP5
+  requirement_ids:
+  - VWAY-SWE.6-BP5-001
+- clause: SWE.6.OC1
+  requirement_ids:
+  - VWAY-SWE.6-OC01-001
+- clause: SWE.6.OC2
+  requirement_ids:
+  - VWAY-SWE.6-OC02-001
+- clause: SWE.6.OC3
+  requirement_ids:
+  - VWAY-SWE.6-OC03-001
+- clause: SWE.6.OC4
+  requirement_ids:
+  - VWAY-SWE.6-OC04-001
+- clause: SWE.6.OC5
+  requirement_ids:
+  - VWAY-SWE.6-OC05-001
+- clause: SYS.1
+  requirement_ids:
+  - VWAY-SYS.1-PURPOSE-001
+- clause: SYS.1.BP1
+  requirement_ids:
+  - VWAY-SYS.1-BP1-001
+- clause: SYS.1.BP2
+  requirement_ids:
+  - VWAY-SYS.1-BP2-001
+- clause: SYS.1.BP3
+  requirement_ids:
+  - VWAY-SYS.1-BP3-001
+- clause: SYS.1.BP4
+  requirement_ids:
+  - VWAY-SYS.1-BP4-001
+- clause: SYS.1.OC1
+  requirement_ids:
+  - VWAY-SYS.1-OC01-001
+- clause: SYS.1.OC2
+  requirement_ids:
+  - VWAY-SYS.1-OC02-001
+- clause: SYS.1.OC3
+  requirement_ids:
+  - VWAY-SYS.1-OC03-001
+- clause: SYS.1.OC4
+  requirement_ids:
+  - VWAY-SYS.1-OC04-001
+- clause: SYS.2
+  requirement_ids:
+  - VWAY-SYS.2-PURPOSE-001
+- clause: SYS.2.BP1
+  requirement_ids:
+  - VWAY-SYS.2-BP1-001
+- clause: SYS.2.BP2
+  requirement_ids:
+  - VWAY-SYS.2-BP2-001
+- clause: SYS.2.BP3
+  requirement_ids:
+  - VWAY-SYS.2-BP3-001
+- clause: SYS.2.BP4
+  requirement_ids:
+  - VWAY-SYS.2-BP4-001
+- clause: SYS.2.BP5
+  requirement_ids:
+  - VWAY-SYS.2-BP5-001
+- clause: SYS.2.BP6
+  requirement_ids:
+  - VWAY-SYS.2-BP6-001
+- clause: SYS.2.OC1
+  requirement_ids:
+  - VWAY-SYS.2-OC01-001
+- clause: SYS.2.OC2
+  requirement_ids:
+  - VWAY-SYS.2-OC02-001
+- clause: SYS.2.OC3
+  requirement_ids:
+  - VWAY-SYS.2-OC03-001
+- clause: SYS.2.OC4
+  requirement_ids:
+  - VWAY-SYS.2-OC04-001
+- clause: SYS.2.OC5
+  requirement_ids:
+  - VWAY-SYS.2-OC05-001
+- clause: SYS.2.OC6
+  requirement_ids:
+  - VWAY-SYS.2-OC06-001
+- clause: SYS.3
+  requirement_ids:
+  - VWAY-SYS.3-PURPOSE-001
+- clause: SYS.3.BP1
+  requirement_ids:
+  - VWAY-SYS.3-BP1-001
+- clause: SYS.3.BP2
+  requirement_ids:
+  - VWAY-SYS.3-BP2-001
+- clause: SYS.3.BP3
+  requirement_ids:
+  - VWAY-SYS.3-BP3-001
+- clause: SYS.3.BP4
+  requirement_ids:
+  - VWAY-SYS.3-BP4-001
+- clause: SYS.3.BP5
+  requirement_ids:
+  - VWAY-SYS.3-BP5-001
+- clause: SYS.3.OC1
+  requirement_ids:
+  - VWAY-SYS.3-OC01-001
+- clause: SYS.3.OC2
+  requirement_ids:
+  - VWAY-SYS.3-OC02-001
+- clause: SYS.3.OC3
+  requirement_ids:
+  - VWAY-SYS.3-OC03-001
+- clause: SYS.3.OC4
+  requirement_ids:
+  - VWAY-SYS.3-OC04-001
+- clause: SYS.4
+  requirement_ids:
+  - VWAY-SYS.4-PURPOSE-001
+- clause: SYS.4.BP1
+  requirement_ids:
+  - VWAY-SYS.4-BP1-001
+- clause: SYS.4.BP2
+  requirement_ids:
+  - VWAY-SYS.4-BP2-001
+- clause: SYS.4.BP3
+  requirement_ids:
+  - VWAY-SYS.4-BP3-001
+- clause: SYS.4.BP4
+  requirement_ids:
+  - VWAY-SYS.4-BP4-001
+- clause: SYS.4.BP5
+  requirement_ids:
+  - VWAY-SYS.4-BP5-001
+- clause: SYS.4.OC1
+  requirement_ids:
+  - VWAY-SYS.4-OC01-001
+- clause: SYS.4.OC2
+  requirement_ids:
+  - VWAY-SYS.4-OC02-001
+- clause: SYS.4.OC3
+  requirement_ids:
+  - VWAY-SYS.4-OC03-001
+- clause: SYS.4.OC4
+  requirement_ids:
+  - VWAY-SYS.4-OC04-001
+- clause: SYS.4.OC5
+  requirement_ids:
+  - VWAY-SYS.4-OC05-001
+- clause: SYS.4.OC6
+  requirement_ids:
+  - VWAY-SYS.4-OC06-001
+- clause: SYS.4.OC7
+  requirement_ids:
+  - VWAY-SYS.4-OC07-001
+- clause: SYS.5
+  requirement_ids:
+  - VWAY-SYS.5-PURPOSE-001
+- clause: SYS.5.BP1
+  requirement_ids:
+  - VWAY-SYS.5-BP1-001
+- clause: SYS.5.BP2
+  requirement_ids:
+  - VWAY-SYS.5-BP2-001
+- clause: SYS.5.BP3
+  requirement_ids:
+  - VWAY-SYS.5-BP3-001
+- clause: SYS.5.BP4
+  requirement_ids:
+  - VWAY-SYS.5-BP4-001
+- clause: SYS.5.BP5
+  requirement_ids:
+  - VWAY-SYS.5-BP5-001
+- clause: SYS.5.OC1
+  requirement_ids:
+  - VWAY-SYS.5-OC01-001
+- clause: SYS.5.OC2
+  requirement_ids:
+  - VWAY-SYS.5-OC02-001
+- clause: SYS.5.OC3
+  requirement_ids:
+  - VWAY-SYS.5-OC03-001
+- clause: SYS.5.OC4
+  requirement_ids:
+  - VWAY-SYS.5-OC04-001
+- clause: SYS.5.OC5
+  requirement_ids:
+  - VWAY-SYS.5-OC05-001
+- clause: SYS.5.OC6
+  requirement_ids:
+  - VWAY-SYS.5-OC06-001
+- clause: VAL.1
+  requirement_ids:
+  - VWAY-VAL.1-PURPOSE-001
+- clause: VAL.1.BP1
+  requirement_ids:
+  - VWAY-VAL.1-BP1-001
+- clause: VAL.1.BP2
+  requirement_ids:
+  - VWAY-VAL.1-BP2-001
+- clause: VAL.1.BP3
+  requirement_ids:
+  - VWAY-VAL.1-BP3-001
+- clause: VAL.1.BP4
+  requirement_ids:
+  - VWAY-VAL.1-BP4-001
+- clause: VAL.1.BP5
+  requirement_ids:
+  - VWAY-VAL.1-BP5-001
+- clause: VAL.1.OC1
+  requirement_ids:
+  - VWAY-VAL.1-OC01-001
+- clause: VAL.1.OC2
+  requirement_ids:
+  - VWAY-VAL.1-OC02-001
+- clause: VAL.1.OC3
+  requirement_ids:
+  - VWAY-VAL.1-OC03-001
+- clause: VAL.1.OC4
+  requirement_ids:
+  - VWAY-VAL.1-OC04-001

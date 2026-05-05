@@ -1,0 +1,887 @@
+standard_id: VWAY_Motors
+base_standard: Automotive SPICE 4.0
+generated_at: "2026-05-06"
+confirmed_at: "2026-05-06"
+organization: VWAY Motors
+domain: Automotive Software/Hardware Development
+description: >
+  VWAY Motors (Tier 1/2 자동차 부품·소프트웨어 공급업체) 전형 업무 흐름.
+  ASPICE 4.0의 32개 프로세스를 모두 포괄하는 21개 업무 시나리오로 구성한다.
+  Primary(공학·검증)·Supporting(품질/형상/문제/변경/ML데이터)·Organizational(관리/개선/재사용)
+  3계층을 모두 반영하여, 양산 ECU·ADAS/AI 모델·HW 개발 라이프사이클을 포괄한다.
+
+# ---------------------------------------------------------------------------
+# Scenario Groups (Level 1 / Level 2 분류)
+# ---------------------------------------------------------------------------
+scenario_groups:
+  - id: SG-1
+    name: 제품 개발 프로세스
+    description: 시스템·소프트웨어·하드웨어·ML 모델의 요구사항 정의부터 검증/통합까지의 핵심 V-모델 흐름
+    sub_groups:
+      - id: SG-1-1
+        name: 시스템 엔지니어링
+        scenarios: [SCN-001, SCN-002, SCN-003, SCN-004]
+      - id: SG-1-2
+        name: 소프트웨어 개발
+        scenarios: [SCN-005, SCN-006, SCN-007, SCN-008]
+      - id: SG-1-3
+        name: 하드웨어 개발
+        scenarios: [SCN-009, SCN-010]
+      - id: SG-1-4
+        name: 머신러닝 모델 개발
+        scenarios: [SCN-011, SCN-012]
+      - id: SG-1-5
+        name: 검증·인도
+        scenarios: [SCN-013, SCN-014]
+
+  - id: SG-2
+    name: 프로젝트 및 공급망 관리
+    description: 프로젝트 운영, 공급자 모니터링, 리스크/측정 등 프로젝트 거버넌스 영역
+    sub_groups:
+      - id: SG-2-1
+        name: 프로젝트 운영
+        scenarios: [SCN-015, SCN-016, SCN-017]
+      - id: SG-2-2
+        name: 공급망 관리
+        scenarios: [SCN-018]
+
+  - id: SG-3
+    name: 지원 및 변경/문제 처리
+    description: 형상관리, 품질보증, 변경요청, 문제해결, ML 데이터 관리 등 지원 프로세스
+    sub_groups:
+      - id: SG-3-1
+        name: 품질·형상·문제 관리
+        scenarios: [SCN-019, SCN-020]
+
+  - id: SG-4
+    name: 조직 차원 개선·재사용
+    description: 조직 단위 프로세스 개선과 재사용 자산 운영
+    sub_groups:
+      - id: SG-4-1
+        name: 프로세스 개선·재사용
+        scenarios: [SCN-021]
+
+# ---------------------------------------------------------------------------
+# Scenarios (총 21건, ASPICE 4.0 32개 프로세스 전부 포괄)
+# ---------------------------------------------------------------------------
+scenarios:
+  # ===== SG-1-1 시스템 엔지니어링 =====
+  - id: SCN-001
+    level1: 제품 개발
+    level2: 시스템 엔지니어링
+    level3: 고객 요구사항 도출
+    name: 고객 요구사항 도출 및 합의
+    type: main
+    scope_type: project
+    description: >
+      OEM(고객)으로부터 RFQ/사양서/표준(ISO 26262 ASIL, ISO 21434 CAL 등)을 수집·해석하여
+      stakeholder requirements baseline을 수립한다. 변경사항은 합의·추적된다.
+    related_processes: [SYS.1]
+    standard_clauses: ["ASPICE 4.0 SYS.1"]
+    typical_artifacts:
+      - Stakeholder Requirements Specification
+      - Customer RFQ / Statement of Work
+      - Requirements Elicitation Minutes
+      - Traceability matrix (customer ↔ stakeholder req)
+    nodes:
+      - {id: receive_rfq, label: OEM RFQ/사양 수령, type: core, standard_clause: "SYS.1.BP1"}
+      - {id: stakeholder_workshop, label: 이해관계자 워크숍, type: core, standard_clause: "SYS.1.BP2"}
+      - {id: elicit_requirements, label: 요구사항 도출·문서화, type: core, standard_clause: "SYS.1.BP3"}
+      - {id: agree_baseline, label: 요구사항 합의·베이스라인, type: core, standard_clause: "SYS.1.BP5"}
+      - {id: cm_baseline_lock, label: 형상관리 베이스라인 등록, type: support, standard_clause: "SUP.8"}
+    edges:
+      - {from: receive_rfq, to: stakeholder_workshop}
+      - {from: stakeholder_workshop, to: elicit_requirements}
+      - {from: elicit_requirements, to: agree_baseline}
+      - {from: agree_baseline, to: cm_baseline_lock}
+    mermaid: |
+      flowchart LR
+        A[OEM RFQ 수령] --> B[이해관계자 워크숍]
+        B --> C[요구사항 도출]
+        C --> D[합의·베이스라인]
+        D --> E[(SUP.8 베이스라인 등록)]
+
+  - id: SCN-002
+    level1: 제품 개발
+    level2: 시스템 엔지니어링
+    level3: 시스템 요구사항 분석
+    name: 시스템 요구사항 분석 및 추적성 확립
+    type: main
+    scope_type: project
+    description: >
+      Stakeholder 요구사항을 기능/비기능 시스템 요구사항으로 분해하고
+      ASIL 분배·시험 가능성·일관성을 검증한다.
+    related_processes: [SYS.2]
+    standard_clauses: ["ASPICE 4.0 SYS.2"]
+    typical_artifacts:
+      - System Requirements Specification (SyRS)
+      - Bidirectional traceability matrix
+      - System requirement review record
+    nodes:
+      - {id: refine_sys_req, label: 시스템 요구사항 정제, type: core, standard_clause: "SYS.2.BP1"}
+      - {id: classify_asil, label: ASIL/CAL 분류 및 속성 부여, type: core, standard_clause: "SYS.2.BP2"}
+      - {id: analyze_impact, label: 영향분석·일관성 분석, type: core, standard_clause: "SYS.2.BP3"}
+      - {id: trace_to_stakeholder, label: 이해관계자 요구 추적성 수립, type: core, standard_clause: "SYS.2.BP5"}
+      - {id: review_syrs, label: SyRS 검토(QA), type: support, standard_clause: "SUP.1"}
+    edges:
+      - {from: refine_sys_req, to: classify_asil}
+      - {from: classify_asil, to: analyze_impact}
+      - {from: analyze_impact, to: trace_to_stakeholder}
+      - {from: trace_to_stakeholder, to: review_syrs}
+    mermaid: |
+      flowchart LR
+        A[시스템 요구 정제] --> B[ASIL 분류]
+        B --> C[영향/일관성 분석]
+        C --> D[추적성 수립]
+        D --> E[(SUP.1 검토)]
+
+  - id: SCN-003
+    level1: 제품 개발
+    level2: 시스템 엔지니어링
+    level3: 시스템 아키텍처 설계
+    name: 시스템 아키텍처 설계 및 분배
+    type: main
+    scope_type: project
+    description: >
+      ECU/도메인 컨트롤러의 시스템 요소를 정의하고 SW/HW/ML 요소로 요구사항을 분배한다.
+      인터페이스(CAN/Ethernet/SOME-IP)와 동적 행위를 명세한다.
+    related_processes: [SYS.3]
+    standard_clauses: ["ASPICE 4.0 SYS.3"]
+    typical_artifacts:
+      - System Architecture Description
+      - Interface specification (ICD)
+      - Allocation matrix (요구 ↔ 시스템 요소)
+    nodes:
+      - {id: define_arch, label: 시스템 아키텍처 정의, type: core, standard_clause: "SYS.3.BP1"}
+      - {id: define_interface, label: 인터페이스 명세, type: core, standard_clause: "SYS.3.BP2"}
+      - {id: dynamic_behavior, label: 동적 행위 정의, type: core, standard_clause: "SYS.3.BP3"}
+      - {id: allocate_to_swhwml, label: SW/HW/ML 요소 분배, type: core, standard_clause: "SYS.3.BP4"}
+      - {id: arch_review, label: 아키텍처 검토, type: support, standard_clause: "SUP.1"}
+    edges:
+      - {from: define_arch, to: define_interface}
+      - {from: define_interface, to: dynamic_behavior}
+      - {from: dynamic_behavior, to: allocate_to_swhwml}
+      - {from: allocate_to_swhwml, to: arch_review}
+    mermaid: |
+      flowchart LR
+        A[아키텍처 정의] --> B[인터페이스 명세]
+        B --> C[동적 행위]
+        C --> D[SW/HW/ML 분배]
+        D --> E[(SUP.1 검토)]
+
+  - id: SCN-004
+    level1: 제품 개발
+    level2: 시스템 엔지니어링
+    level3: 시스템 통합·검증
+    name: 시스템 통합 및 시스템 검증
+    type: main
+    scope_type: project
+    description: >
+      통합된 SW/HW/ML 요소를 단계적으로 결합하여 시스템 통합 테스트와
+      시스템 요구사항 대비 검증(HIL/벤치/차량)을 수행한다.
+    related_processes: [SYS.4, SYS.5]
+    standard_clauses: ["ASPICE 4.0 SYS.4", "ASPICE 4.0 SYS.5"]
+    typical_artifacts:
+      - Integration test plan/spec/report
+      - System verification plan/spec/report
+      - HIL/Bench/차량 시험 결과
+    nodes:
+      - {id: integration_strategy, label: 통합 전략 수립, type: core, standard_clause: "SYS.4.BP1"}
+      - {id: integration_test_design, label: 통합 시험 설계, type: core, standard_clause: "SYS.4.BP2"}
+      - {id: integrate_elements, label: SW/HW/ML 요소 통합, type: core, standard_clause: "SYS.4.BP3"}
+      - {id: integration_test_exec, label: 통합 시험 실행, type: core, standard_clause: "SYS.4.BP4"}
+      - {id: sys_verification_design, label: 시스템 검증 설계, type: core, standard_clause: "SYS.5.BP2"}
+      - {id: sys_verification_exec, label: 시스템 검증 실행 (HIL/차량), type: core, standard_clause: "SYS.5.BP3"}
+      - {id: verification_report, label: 검증 결과 보고·이슈 등록, type: support, standard_clause: "SUP.9"}
+    edges:
+      - {from: integration_strategy, to: integration_test_design}
+      - {from: integration_test_design, to: integrate_elements}
+      - {from: integrate_elements, to: integration_test_exec}
+      - {from: integration_test_exec, to: sys_verification_design}
+      - {from: sys_verification_design, to: sys_verification_exec}
+      - {from: sys_verification_exec, to: verification_report}
+    mermaid: |
+      flowchart LR
+        A[통합 전략] --> B[통합 시험 설계]
+        B --> C[SW/HW/ML 통합]
+        C --> D[통합 시험 실행]
+        D --> E[시스템 검증 설계]
+        E --> F[시스템 검증 실행]
+        F --> G[(SUP.9 이슈 등록)]
+
+  # ===== SG-1-2 소프트웨어 개발 =====
+  - id: SCN-005
+    level1: 제품 개발
+    level2: 소프트웨어 개발
+    level3: SW 요구사항 분석
+    name: 소프트웨어 요구사항 분석
+    type: main
+    scope_type: project
+    description: >
+      시스템 요구사항/아키텍처에서 SW 요구사항을 도출하고 분석한다.
+      ASIL 상속·시험 가능성·인터페이스 일관성을 보장한다.
+    related_processes: [SWE.1]
+    standard_clauses: ["ASPICE 4.0 SWE.1"]
+    typical_artifacts:
+      - Software Requirements Specification (SwRS)
+      - SW 요구사항 검토 결과
+      - 추적성 매트릭스 (SyRS ↔ SwRS)
+    nodes:
+      - {id: derive_sw_req, label: SW 요구사항 도출, type: core, standard_clause: "SWE.1.BP1"}
+      - {id: classify_sw_req, label: SW 요구사항 분류·속성 부여, type: core, standard_clause: "SWE.1.BP2"}
+      - {id: analyze_consistency, label: 일관성·영향 분석, type: core, standard_clause: "SWE.1.BP3"}
+      - {id: trace_sw_to_sys, label: 시스템 요구 추적성, type: core, standard_clause: "SWE.1.BP5"}
+      - {id: sw_req_review, label: SwRS 검토, type: support, standard_clause: "SUP.1"}
+    edges:
+      - {from: derive_sw_req, to: classify_sw_req}
+      - {from: classify_sw_req, to: analyze_consistency}
+      - {from: analyze_consistency, to: trace_sw_to_sys}
+      - {from: trace_sw_to_sys, to: sw_req_review}
+    mermaid: |
+      flowchart LR
+        A[SW 요구 도출] --> B[분류·속성]
+        B --> C[일관성 분석]
+        C --> D[추적성]
+        D --> E[(SUP.1 검토)]
+
+  - id: SCN-006
+    level1: 제품 개발
+    level2: 소프트웨어 개발
+    level3: SW 아키텍처 설계
+    name: 소프트웨어 아키텍처 설계
+    type: main
+    scope_type: project
+    description: >
+      AUTOSAR 기반 SW 컴포넌트와 인터페이스, 동적 행위, 자원 소비 분석을 정의한다.
+    related_processes: [SWE.2]
+    standard_clauses: ["ASPICE 4.0 SWE.2"]
+    typical_artifacts:
+      - Software Architecture Description
+      - SW Interface specification
+      - Resource consumption analysis
+    nodes:
+      - {id: define_sw_arch, label: SW 아키텍처 정의, type: core, standard_clause: "SWE.2.BP1"}
+      - {id: define_sw_interface, label: SW 인터페이스 명세, type: core, standard_clause: "SWE.2.BP2"}
+      - {id: dynamic_sw_behavior, label: SW 동적 행위 분석, type: core, standard_clause: "SWE.2.BP3"}
+      - {id: allocate_sw_req, label: SW 컴포넌트 요구 분배, type: core, standard_clause: "SWE.2.BP4"}
+      - {id: sw_arch_review, label: SW 아키텍처 검토, type: support, standard_clause: "SUP.1"}
+    edges:
+      - {from: define_sw_arch, to: define_sw_interface}
+      - {from: define_sw_interface, to: dynamic_sw_behavior}
+      - {from: dynamic_sw_behavior, to: allocate_sw_req}
+      - {from: allocate_sw_req, to: sw_arch_review}
+    mermaid: |
+      flowchart LR
+        A[SW 아키텍처] --> B[인터페이스 명세]
+        B --> C[동적 행위]
+        C --> D[요구 분배]
+        D --> E[(SUP.1 검토)]
+
+  - id: SCN-007
+    level1: 제품 개발
+    level2: 소프트웨어 개발
+    level3: 상세설계·구현
+    name: SW 상세설계 및 유닛 구현
+    type: main
+    scope_type: project
+    description: >
+      SW 유닛 상세설계, 코딩 표준(MISRA-C 등) 준수 코드 작성, 정적 분석을 수행한다.
+    related_processes: [SWE.3]
+    standard_clauses: ["ASPICE 4.0 SWE.3"]
+    typical_artifacts:
+      - Software Detailed Design
+      - Source code (MISRA 준수)
+      - 정적 분석 리포트
+      - 유닛 코드 리뷰 기록
+    nodes:
+      - {id: detailed_design, label: 유닛 상세설계, type: core, standard_clause: "SWE.3.BP1"}
+      - {id: define_unit_interface, label: 유닛 인터페이스 명세, type: core, standard_clause: "SWE.3.BP2"}
+      - {id: implement_units, label: 유닛 코딩, type: core, standard_clause: "SWE.3.BP4"}
+      - {id: static_analysis, label: 정적분석/코드리뷰, type: support, standard_clause: "SUP.1"}
+      - {id: cm_commit, label: 형상관리 커밋, type: support, standard_clause: "SUP.8"}
+    edges:
+      - {from: detailed_design, to: define_unit_interface}
+      - {from: define_unit_interface, to: implement_units}
+      - {from: implement_units, to: static_analysis}
+      - {from: static_analysis, to: cm_commit}
+    mermaid: |
+      flowchart LR
+        A[상세설계] --> B[인터페이스]
+        B --> C[코딩]
+        C --> D[(정적분석)]
+        D --> E[(SUP.8 커밋)]
+
+  - id: SCN-008
+    level1: 제품 개발
+    level2: 소프트웨어 개발
+    level3: SW 검증·통합
+    name: SW 유닛/컴포넌트/통합/SW 검증
+    type: main
+    scope_type: project
+    description: >
+      유닛 테스트, 컴포넌트/통합 테스트, SW 요구사항 대비 SW 검증까지
+      ASPICE V-모델 우측 SW 사이드 흐름을 일괄 수행한다.
+    related_processes: [SWE.4, SWE.5, SWE.6]
+    standard_clauses: ["ASPICE 4.0 SWE.4", "ASPICE 4.0 SWE.5", "ASPICE 4.0 SWE.6"]
+    typical_artifacts:
+      - Unit/Integration/Verification test plan, spec, report
+      - 코드 커버리지 리포트
+      - 회귀시험 결과
+    nodes:
+      - {id: unit_test_design, label: 유닛 시험 설계, type: core, standard_clause: "SWE.4.BP1"}
+      - {id: unit_test_exec, label: 유닛 시험 실행 + 커버리지, type: core, standard_clause: "SWE.4.BP3"}
+      - {id: integration_strategy_sw, label: SW 통합 전략, type: core, standard_clause: "SWE.5.BP1"}
+      - {id: integration_test_sw, label: SW 컴포넌트/통합 시험, type: core, standard_clause: "SWE.5.BP4"}
+      - {id: sw_verify_design, label: SW 검증 설계, type: core, standard_clause: "SWE.6.BP2"}
+      - {id: sw_verify_exec, label: SW 검증 실행, type: core, standard_clause: "SWE.6.BP3"}
+      - {id: log_problems, label: 결함 등록, type: support, standard_clause: "SUP.9"}
+    edges:
+      - {from: unit_test_design, to: unit_test_exec}
+      - {from: unit_test_exec, to: integration_strategy_sw}
+      - {from: integration_strategy_sw, to: integration_test_sw}
+      - {from: integration_test_sw, to: sw_verify_design}
+      - {from: sw_verify_design, to: sw_verify_exec}
+      - {from: sw_verify_exec, to: log_problems}
+    mermaid: |
+      flowchart LR
+        A[유닛 설계] --> B[유닛 실행]
+        B --> C[통합 전략]
+        C --> D[통합 시험]
+        D --> E[SW 검증 설계]
+        E --> F[SW 검증 실행]
+        F --> G[(SUP.9)]
+
+  # ===== SG-1-3 하드웨어 개발 =====
+  - id: SCN-009
+    level1: 제품 개발
+    level2: 하드웨어 개발
+    level3: HW 요구사항·설계
+    name: 하드웨어 요구사항 분석 및 설계
+    type: main
+    scope_type: project
+    description: >
+      ECU/PCB의 HW 요구사항을 분석하고, 회로/PCB/기구 설계와 BOM을 도출한다.
+    related_processes: [HWE.1, HWE.2]
+    standard_clauses: ["ASPICE 4.0 HWE.1", "ASPICE 4.0 HWE.2"]
+    typical_artifacts:
+      - HW Requirements Specification
+      - Schematic, PCB Layout, BOM
+      - HW Design Description
+    nodes:
+      - {id: derive_hw_req, label: HW 요구사항 도출, type: core, standard_clause: "HWE.1.BP1"}
+      - {id: analyze_hw_req, label: HW 요구사항 분석·일관성, type: core, standard_clause: "HWE.1.BP3"}
+      - {id: schematic_design, label: 회로 설계, type: core, standard_clause: "HWE.2.BP1"}
+      - {id: pcb_layout, label: PCB 레이아웃, type: core, standard_clause: "HWE.2.BP2"}
+      - {id: bom_release, label: BOM 작성·릴리즈, type: support, standard_clause: "SUP.8"}
+    edges:
+      - {from: derive_hw_req, to: analyze_hw_req}
+      - {from: analyze_hw_req, to: schematic_design}
+      - {from: schematic_design, to: pcb_layout}
+      - {from: pcb_layout, to: bom_release}
+    mermaid: |
+      flowchart LR
+        A[HW 요구 도출] --> B[분석]
+        B --> C[회로 설계]
+        C --> D[PCB 레이아웃]
+        D --> E[(BOM/CM)]
+
+  - id: SCN-010
+    level1: 제품 개발
+    level2: 하드웨어 개발
+    level3: HW 검증
+    name: 하드웨어 설계·요구사항 검증
+    type: main
+    scope_type: project
+    description: >
+      DV/PV 시험을 통해 HW 설계 및 HW 요구사항 대비 검증을 수행한다.
+      EMC, 환경(온도/진동), 전기 시험을 포함한다.
+    related_processes: [HWE.3, HWE.4]
+    standard_clauses: ["ASPICE 4.0 HWE.3", "ASPICE 4.0 HWE.4"]
+    typical_artifacts:
+      - HW Design Verification report
+      - HW Requirement Verification report
+      - EMC/환경/내구 시험 데이터
+    nodes:
+      - {id: hw_design_verify_plan, label: HW 설계 검증 계획, type: core, standard_clause: "HWE.3.BP1"}
+      - {id: hw_design_verify_exec, label: HW 설계 검증 실행, type: core, standard_clause: "HWE.3.BP3"}
+      - {id: hw_req_verify_plan, label: HW 요구 검증 계획, type: core, standard_clause: "HWE.4.BP1"}
+      - {id: hw_req_verify_exec, label: HW 요구 검증 실행 (DV/PV), type: core, standard_clause: "HWE.4.BP3"}
+      - {id: hw_problem_log, label: 결함 보고, type: support, standard_clause: "SUP.9"}
+    edges:
+      - {from: hw_design_verify_plan, to: hw_design_verify_exec}
+      - {from: hw_design_verify_exec, to: hw_req_verify_plan}
+      - {from: hw_req_verify_plan, to: hw_req_verify_exec}
+      - {from: hw_req_verify_exec, to: hw_problem_log}
+    mermaid: |
+      flowchart LR
+        A[설계 검증 계획] --> B[설계 검증]
+        B --> C[요구 검증 계획]
+        C --> D[DV/PV 실행]
+        D --> E[(SUP.9)]
+
+  # ===== SG-1-4 머신러닝 모델 개발 =====
+  - id: SCN-011
+    level1: 제품 개발
+    level2: 머신러닝 개발
+    level3: ML 요구·아키텍처
+    name: ML 요구사항 분석 및 아키텍처
+    type: main
+    scope_type: project
+    description: >
+      ADAS/자율주행 인지 모델의 요구사항(성능 KPI, 작동조건, 안전성)과
+      ML 파이프라인 아키텍처를 정의한다.
+    related_processes: [MLE.1, MLE.2]
+    standard_clauses: ["ASPICE 4.0 MLE.1", "ASPICE 4.0 MLE.2"]
+    typical_artifacts:
+      - ML Requirements Specification
+      - ODD/ML 작동조건 정의
+      - ML 아키텍처 (모델 구조·파이프라인)
+    nodes:
+      - {id: derive_ml_req, label: ML 요구사항 도출, type: core, standard_clause: "MLE.1.BP1"}
+      - {id: analyze_ml_req, label: ML 요구 분석·KPI 정의, type: core, standard_clause: "MLE.1.BP3"}
+      - {id: ml_arch, label: ML 아키텍처/파이프라인 정의, type: core, standard_clause: "MLE.2.BP1"}
+      - {id: ml_data_request, label: 데이터 요구사항 도출, type: support, standard_clause: "SUP.11"}
+    edges:
+      - {from: derive_ml_req, to: analyze_ml_req}
+      - {from: analyze_ml_req, to: ml_arch}
+      - {from: ml_arch, to: ml_data_request}
+    mermaid: |
+      flowchart LR
+        A[ML 요구 도출] --> B[KPI 정의]
+        B --> C[ML 아키텍처]
+        C --> D[(SUP.11 데이터요구)]
+
+  - id: SCN-012
+    level1: 제품 개발
+    level2: 머신러닝 개발
+    level3: 학습·테스트
+    name: ML 학습·검증 및 데이터 관리
+    type: main
+    scope_type: project
+    description: >
+      ML 모델 학습, 하이퍼파라미터 튜닝, 모델 테스트와
+      ML 데이터셋 수집/주석/버전관리/품질평가를 수행한다.
+    related_processes: [MLE.3, MLE.4, SUP.11]
+    standard_clauses: ["ASPICE 4.0 MLE.3", "ASPICE 4.0 MLE.4", "ASPICE 4.0 SUP.11"]
+    typical_artifacts:
+      - 학습된 ML 모델·하이퍼파라미터
+      - 모델 테스트 리포트 (성능/일반화)
+      - 데이터셋 버전·메타데이터·품질평가
+    nodes:
+      - {id: dataset_acquire, label: 데이터 수집·라벨링, type: core, standard_clause: "SUP.11.BP1"}
+      - {id: dataset_qc, label: 데이터 품질평가·버전관리, type: core, standard_clause: "SUP.11.BP3"}
+      - {id: model_train, label: 모델 학습·하이퍼파라미터 튜닝, type: core, standard_clause: "MLE.3.BP2"}
+      - {id: model_eval, label: 학습 결과 평가, type: core, standard_clause: "MLE.3.BP4"}
+      - {id: model_test_design, label: 모델 테스트 설계, type: core, standard_clause: "MLE.4.BP1"}
+      - {id: model_test_exec, label: 모델 테스트 실행 (편향/강건성), type: core, standard_clause: "MLE.4.BP3"}
+      - {id: ml_problem_log, label: 모델 이슈 등록, type: support, standard_clause: "SUP.9"}
+    edges:
+      - {from: dataset_acquire, to: dataset_qc}
+      - {from: dataset_qc, to: model_train}
+      - {from: model_train, to: model_eval}
+      - {from: model_eval, to: model_test_design}
+      - {from: model_test_design, to: model_test_exec}
+      - {from: model_test_exec, to: ml_problem_log}
+    mermaid: |
+      flowchart LR
+        A[데이터 수집/라벨링] --> B[품질/버전]
+        B --> C[학습]
+        C --> D[학습평가]
+        D --> E[테스트 설계]
+        E --> F[테스트 실행]
+        F --> G[(SUP.9)]
+
+  # ===== SG-1-5 검증·인도 =====
+  - id: SCN-013
+    level1: 제품 개발
+    level2: 검증·인도
+    level3: 사용자 검증
+    name: 사용 환경 기반 시스템 검증 (Validation)
+    type: main
+    scope_type: project
+    description: >
+      실제 차량/사용 환경(도로 시험·고객 사이트)에서 의도된 사용에 대한 적합성을 검증한다.
+    related_processes: [VAL.1]
+    standard_clauses: ["ASPICE 4.0 VAL.1"]
+    typical_artifacts:
+      - Validation plan/spec/report
+      - 도로시험·필드 데이터
+      - 고객 승인 기록
+    nodes:
+      - {id: validation_plan, label: 검증 계획, type: core, standard_clause: "VAL.1.BP1"}
+      - {id: validation_design, label: 검증 시나리오 설계, type: core, standard_clause: "VAL.1.BP2"}
+      - {id: validation_exec, label: 검증 실행 (도로/필드), type: core, standard_clause: "VAL.1.BP3"}
+      - {id: customer_signoff, label: 고객 승인, type: core, standard_clause: "VAL.1.BP4"}
+      - {id: validation_problem, label: 잔존 이슈 등록, type: support, standard_clause: "SUP.9"}
+    edges:
+      - {from: validation_plan, to: validation_design}
+      - {from: validation_design, to: validation_exec}
+      - {from: validation_exec, to: customer_signoff}
+      - {from: customer_signoff, to: validation_problem}
+    mermaid: |
+      flowchart LR
+        A[Validation 계획] --> B[시나리오 설계]
+        B --> C[현장 실행]
+        C --> D[고객 승인]
+        D --> E[(SUP.9)]
+
+  - id: SCN-014
+    level1: 제품 개발
+    level2: 검증·인도
+    level3: 제품 릴리즈
+    name: 제품 릴리즈 및 OEM 인도
+    type: main
+    scope_type: project
+    description: >
+      릴리즈 패키지(SW/HW/문서·증적)를 구성·승인하고 OEM에 공식 인도한다.
+      SOP/PV/EOP 등 양산 단계 릴리즈 게이트와 연동된다.
+    related_processes: [SPL.2]
+    standard_clauses: ["ASPICE 4.0 SPL.2"]
+    typical_artifacts:
+      - Release notes
+      - Release package (SW image, HW lot, 문서)
+      - 릴리즈 승인 기록
+    nodes:
+      - {id: release_plan, label: 릴리즈 계획, type: core, standard_clause: "SPL.2.BP1"}
+      - {id: build_release_pkg, label: 릴리즈 패키지 빌드, type: core, standard_clause: "SPL.2.BP3"}
+      - {id: release_review, label: 릴리즈 검토·승인, type: core, standard_clause: "SPL.2.BP5"}
+      - {id: deliver_to_oem, label: OEM 인도, type: core, standard_clause: "SPL.2.BP6"}
+      - {id: cm_release_baseline, label: 릴리즈 베이스라인 등록, type: support, standard_clause: "SUP.8"}
+    edges:
+      - {from: release_plan, to: build_release_pkg}
+      - {from: build_release_pkg, to: release_review}
+      - {from: release_review, to: deliver_to_oem}
+      - {from: deliver_to_oem, to: cm_release_baseline}
+    mermaid: |
+      flowchart LR
+        A[릴리즈 계획] --> B[패키지 빌드]
+        B --> C[검토·승인]
+        C --> D[OEM 인도]
+        D --> E[(SUP.8 베이스라인)]
+
+  # ===== SG-2-1 프로젝트 운영 =====
+  - id: SCN-015
+    level1: 프로젝트 관리
+    level2: 프로젝트 운영
+    level3: 프로젝트 계획·통제
+    name: 프로젝트 계획 수립 및 통제
+    type: main
+    scope_type: project
+    description: >
+      프로젝트 범위·일정·자원·인터페이스·생애주기 모델을 정의하고
+      진척도/일정/자원을 모니터링·조정한다.
+    related_processes: [MAN.3]
+    standard_clauses: ["ASPICE 4.0 MAN.3"]
+    typical_artifacts:
+      - Project Plan / Work Breakdown Structure
+      - Project schedule, resource plan
+      - Status report, steering committee 의사록
+    nodes:
+      - {id: define_scope, label: 범위·산출물 정의, type: core, standard_clause: "MAN.3.BP1"}
+      - {id: define_lifecycle, label: 생애주기·작업 계획, type: core, standard_clause: "MAN.3.BP2"}
+      - {id: estimate, label: 일정·자원 추정, type: core, standard_clause: "MAN.3.BP4"}
+      - {id: track_progress, label: 진척도·일정 통제, type: core, standard_clause: "MAN.3.BP9"}
+      - {id: stakeholder_comm, label: 이해관계자 커뮤니케이션, type: support, standard_clause: "MAN.3.BP10"}
+    edges:
+      - {from: define_scope, to: define_lifecycle}
+      - {from: define_lifecycle, to: estimate}
+      - {from: estimate, to: track_progress}
+      - {from: track_progress, to: stakeholder_comm}
+    mermaid: |
+      flowchart LR
+        A[범위] --> B[생애주기]
+        B --> C[추정]
+        C --> D[통제]
+        D --> E[(커뮤니케이션)]
+
+  - id: SCN-016
+    level1: 프로젝트 관리
+    level2: 프로젝트 운영
+    level3: 리스크 관리
+    name: 프로젝트 리스크 관리
+    type: main
+    scope_type: project
+    description: >
+      프로젝트 리스크의 식별·평가·완화 계획·모니터링을 수행한다.
+      제품 안전성·일정·기술 리스크를 포함한다.
+    related_processes: [MAN.5]
+    standard_clauses: ["ASPICE 4.0 MAN.5"]
+    typical_artifacts:
+      - Risk Register
+      - Risk Mitigation Plan
+      - Risk Status Report
+    nodes:
+      - {id: risk_identify, label: 리스크 식별, type: core, standard_clause: "MAN.5.BP2"}
+      - {id: risk_analyze, label: 리스크 평가·우선순위, type: core, standard_clause: "MAN.5.BP3"}
+      - {id: risk_mitigate, label: 완화 계획·실행, type: core, standard_clause: "MAN.5.BP4"}
+      - {id: risk_monitor, label: 리스크 모니터링, type: core, standard_clause: "MAN.5.BP5"}
+      - {id: risk_corrective, label: 시정조치, type: support, standard_clause: "MAN.5.BP6"}
+    edges:
+      - {from: risk_identify, to: risk_analyze}
+      - {from: risk_analyze, to: risk_mitigate}
+      - {from: risk_mitigate, to: risk_monitor}
+      - {from: risk_monitor, to: risk_corrective}
+    mermaid: |
+      flowchart LR
+        A[식별] --> B[평가]
+        B --> C[완화]
+        C --> D[모니터링]
+        D --> E[(시정)]
+
+  - id: SCN-017
+    level1: 프로젝트 관리
+    level2: 프로젝트 운영
+    level3: 측정·분석
+    name: 측정 데이터 수집·분석
+    type: main
+    scope_type: project
+    description: >
+      프로젝트·제품·프로세스 KPI(결함밀도, 일정준수, 커버리지)를
+      수집·분석하여 의사결정을 지원한다.
+    related_processes: [MAN.6]
+    standard_clauses: ["ASPICE 4.0 MAN.6"]
+    typical_artifacts:
+      - Measurement Plan
+      - Metric dashboard
+      - Measurement analysis report
+    nodes:
+      - {id: define_metrics, label: 측정 항목·목표 정의, type: core, standard_clause: "MAN.6.BP1"}
+      - {id: collect_data, label: 측정 데이터 수집, type: core, standard_clause: "MAN.6.BP3"}
+      - {id: analyze_metrics, label: 분석·시각화, type: core, standard_clause: "MAN.6.BP4"}
+      - {id: report_metrics, label: 결과 보고·의사결정, type: core, standard_clause: "MAN.6.BP5"}
+    edges:
+      - {from: define_metrics, to: collect_data}
+      - {from: collect_data, to: analyze_metrics}
+      - {from: analyze_metrics, to: report_metrics}
+    mermaid: |
+      flowchart LR
+        A[항목 정의] --> B[데이터 수집]
+        B --> C[분석]
+        C --> D[보고]
+
+  # ===== SG-2-2 공급망 관리 =====
+  - id: SCN-018
+    level1: 프로젝트 관리
+    level2: 공급망 관리
+    level3: 공급자 모니터링
+    name: 외주 공급자 모니터링
+    type: main
+    scope_type: org
+    description: >
+      외주 SW/HW 공급자의 약속 이행, 정보교환, 변경, 시정조치를 추적·평가한다.
+    related_processes: [ACQ.4]
+    standard_clauses: ["ASPICE 4.0 ACQ.4"]
+    typical_artifacts:
+      - Supplier Agreement
+      - Supplier Performance Report
+      - Joint Review Minutes
+    nodes:
+      - {id: joint_activities, label: 공동 활동 수행, type: core, standard_clause: "ACQ.4.BP1"}
+      - {id: info_exchange, label: 합의 정보 교환, type: core, standard_clause: "ACQ.4.BP2"}
+      - {id: monitor_supplier, label: 공급자 성과 모니터링, type: core, standard_clause: "ACQ.4.BP3"}
+      - {id: change_agreement, label: 합의 변경 협상, type: support, standard_clause: "ACQ.4.BP4"}
+      - {id: corrective_action, label: 시정조치 추적, type: support, standard_clause: "ACQ.4.BP5"}
+    edges:
+      - {from: joint_activities, to: info_exchange}
+      - {from: info_exchange, to: monitor_supplier}
+      - {from: monitor_supplier, to: change_agreement}
+      - {from: monitor_supplier, to: corrective_action}
+    mermaid: |
+      flowchart LR
+        A[공동활동] --> B[정보교환]
+        B --> C[성과 모니터링]
+        C --> D[합의 변경]
+        C --> E[시정조치]
+
+  # ===== SG-3-1 품질·형상·문제 관리 =====
+  - id: SCN-019
+    level1: 지원 프로세스
+    level2: 품질·형상·문제 관리
+    level3: QA·형상관리
+    name: 품질보증 및 형상관리 운영
+    type: support
+    scope_type: org
+    description: >
+      프로세스/산출물 QA 활동과 형상 항목 식별·통제·상태기록·감사를 수행한다.
+    related_processes: [SUP.1, SUP.8]
+    standard_clauses: ["ASPICE 4.0 SUP.1", "ASPICE 4.0 SUP.8"]
+    typical_artifacts:
+      - QA plan/report
+      - Configuration Management Plan
+      - CI list, baseline records, CM audit report
+    nodes:
+      - {id: qa_plan, label: QA 계획 수립, type: core, standard_clause: "SUP.1.BP1"}
+      - {id: qa_audit, label: 프로세스/산출물 감사, type: core, standard_clause: "SUP.1.BP3"}
+      - {id: qa_report, label: 부적합 보고·시정, type: core, standard_clause: "SUP.1.BP5"}
+      - {id: cm_plan, label: 형상관리 계획, type: core, standard_clause: "SUP.8.BP1"}
+      - {id: cm_identify, label: 형상항목 식별, type: core, standard_clause: "SUP.8.BP2"}
+      - {id: cm_baseline, label: 베이스라인 통제, type: core, standard_clause: "SUP.8.BP4"}
+      - {id: cm_audit, label: 형상 감사, type: core, standard_clause: "SUP.8.BP6"}
+    edges:
+      - {from: qa_plan, to: qa_audit}
+      - {from: qa_audit, to: qa_report}
+      - {from: cm_plan, to: cm_identify}
+      - {from: cm_identify, to: cm_baseline}
+      - {from: cm_baseline, to: cm_audit}
+    mermaid: |
+      flowchart LR
+        subgraph QA
+          A[QA 계획] --> B[감사] --> C[부적합]
+        end
+        subgraph CM
+          D[CM 계획] --> E[항목식별] --> F[베이스라인] --> G[감사]
+        end
+
+  - id: SCN-020
+    level1: 지원 프로세스
+    level2: 품질·형상·문제 관리
+    level3: 변경·문제 처리
+    name: 변경요청·문제해결 처리
+    type: exception
+    scope_type: project
+    description: >
+      문제·결함 보고, 분석, 해결과 변경요청 접수·영향평가·승인·구현·검증을
+      통합적으로 처리한다 (CCB 운영 포함).
+    related_processes: [SUP.9, SUP.10]
+    standard_clauses: ["ASPICE 4.0 SUP.9", "ASPICE 4.0 SUP.10"]
+    typical_artifacts:
+      - Problem Report / Change Request
+      - Impact analysis record
+      - CCB minutes
+      - Verification of fix/change
+    nodes:
+      - {id: log_problem, label: 문제 보고/분류, type: core, standard_clause: "SUP.9.BP1"}
+      - {id: analyze_problem, label: 원인 분석, type: core, standard_clause: "SUP.9.BP3"}
+      - {id: resolve_problem, label: 문제 해결·검증, type: core, standard_clause: "SUP.9.BP4"}
+      - {id: log_cr, label: 변경요청 등록, type: core, standard_clause: "SUP.10.BP1"}
+      - {id: impact_analysis, label: 영향 평가, type: core, standard_clause: "SUP.10.BP3"}
+      - {id: ccb_decision, label: CCB 승인, type: core, standard_clause: "SUP.10.BP4"}
+      - {id: implement_change, label: 변경 구현·검증, type: core, standard_clause: "SUP.10.BP5"}
+      - {id: cm_update, label: 형상관리 업데이트, type: support, standard_clause: "SUP.8"}
+    edges:
+      - {from: log_problem, to: analyze_problem}
+      - {from: analyze_problem, to: resolve_problem}
+      - {from: resolve_problem, to: log_cr}
+      - {from: log_cr, to: impact_analysis}
+      - {from: impact_analysis, to: ccb_decision}
+      - {from: ccb_decision, to: implement_change}
+      - {from: implement_change, to: cm_update}
+    mermaid: |
+      flowchart LR
+        A[문제 보고] --> B[원인 분석] --> C[해결]
+        C --> D[CR 등록] --> E[영향평가] --> F[CCB] --> G[구현·검증] --> H[(SUP.8)]
+
+  # ===== SG-4-1 프로세스 개선·재사용 =====
+  - id: SCN-021
+    level1: 조직 차원
+    level2: 프로세스 개선·재사용
+    level3: 개선·재사용 자산 관리
+    name: 조직 프로세스 개선 및 재사용 자산 관리
+    type: main
+    scope_type: common
+    description: >
+      조직 표준 프로세스의 평가·개선과 재사용 가능한 작업 산출물(컴포넌트, 라이브러리,
+      문서 템플릿)의 식별·등록·유지·검색 가능성을 보장한다.
+    related_processes: [PIM.3, REU.2]
+    standard_clauses: ["ASPICE 4.0 PIM.3", "ASPICE 4.0 REU.2"]
+    typical_artifacts:
+      - Process improvement plan
+      - Lessons learned, Process assessment report
+      - Reuse asset register, Reuse strategy
+    nodes:
+      - {id: improvement_assessment, label: 프로세스 평가, type: core, standard_clause: "PIM.3.BP2"}
+      - {id: identify_improvement, label: 개선 기회 식별, type: core, standard_clause: "PIM.3.BP3"}
+      - {id: implement_improvement, label: 개선 실행·배포, type: core, standard_clause: "PIM.3.BP5"}
+      - {id: reuse_strategy, label: 재사용 전략 수립, type: core, standard_clause: "REU.2.BP1"}
+      - {id: reuse_register, label: 재사용 자산 등록, type: core, standard_clause: "REU.2.BP3"}
+      - {id: reuse_maintain, label: 재사용 자산 유지/검색성 보장, type: core, standard_clause: "REU.2.BP4"}
+      - {id: lessons_feedback, label: 교훈 피드백, type: support, standard_clause: "PIM.3.BP6"}
+    edges:
+      - {from: improvement_assessment, to: identify_improvement}
+      - {from: identify_improvement, to: implement_improvement}
+      - {from: implement_improvement, to: lessons_feedback}
+      - {from: reuse_strategy, to: reuse_register}
+      - {from: reuse_register, to: reuse_maintain}
+    mermaid: |
+      flowchart LR
+        subgraph PIM
+          A[평가] --> B[개선 기회] --> C[개선 실행] --> D[교훈]
+        end
+        subgraph REU
+          E[전략] --> F[자산 등록] --> G[유지·검색성]
+        end
+
+# ---------------------------------------------------------------------------
+# Flow Groups (시나리오 그룹의 평탄화 뷰)
+# ---------------------------------------------------------------------------
+flow_groups:
+  - id: FG-001
+    name: 제품 개발 프로세스
+    description: V-모델 기반 시스템·SW·HW·ML 개발 및 검증·인도 흐름
+    scenario_ids:
+      - SCN-001
+      - SCN-002
+      - SCN-003
+      - SCN-004
+      - SCN-005
+      - SCN-006
+      - SCN-007
+      - SCN-008
+      - SCN-009
+      - SCN-010
+      - SCN-011
+      - SCN-012
+      - SCN-013
+      - SCN-014
+
+  - id: FG-002
+    name: 프로젝트 및 공급망 관리
+    description: 프로젝트 거버넌스·리스크·측정 및 외주 공급자 관리
+    scenario_ids: [SCN-015, SCN-016, SCN-017, SCN-018]
+
+  - id: FG-003
+    name: 지원 및 변경/문제 처리
+    description: QA·CM·문제·변경요청 통합 운영
+    scenario_ids: [SCN-019, SCN-020]
+
+  - id: FG-004
+    name: 조직 차원 개선·재사용
+    description: 조직 표준 프로세스 개선과 재사용 자산 관리
+    scenario_ids: [SCN-021]
+
+# ---------------------------------------------------------------------------
+# Process Coverage (32개 프로세스 ↔ 시나리오 매핑 검증)
+# ---------------------------------------------------------------------------
+process_coverage:
+  ACQ.4: [SCN-018]
+  SPL.2: [SCN-014]
+  SYS.1: [SCN-001]
+  SYS.2: [SCN-002]
+  SYS.3: [SCN-003]
+  SYS.4: [SCN-004]
+  SYS.5: [SCN-004]
+  VAL.1: [SCN-013]
+  SWE.1: [SCN-005]
+  SWE.2: [SCN-006]
+  SWE.3: [SCN-007]
+  SWE.4: [SCN-008]
+  SWE.5: [SCN-008]
+  SWE.6: [SCN-008]
+  MLE.1: [SCN-011]
+  MLE.2: [SCN-011]
+  MLE.3: [SCN-012]
+  MLE.4: [SCN-012]
+  HWE.1: [SCN-009]
+  HWE.2: [SCN-009]
+  HWE.3: [SCN-010]
+  HWE.4: [SCN-010]
+  SUP.1: [SCN-019, SCN-002, SCN-003, SCN-005, SCN-006, SCN-007]
+  SUP.8: [SCN-019, SCN-001, SCN-007, SCN-009, SCN-014, SCN-020]
+  SUP.9: [SCN-020, SCN-004, SCN-008, SCN-010, SCN-012, SCN-013]
+  SUP.10: [SCN-020]
+  SUP.11: [SCN-012, SCN-011]
+  MAN.3: [SCN-015]
+  MAN.5: [SCN-016]
+  MAN.6: [SCN-017]
+  PIM.3: [SCN-021]
+  REU.2: [SCN-021]

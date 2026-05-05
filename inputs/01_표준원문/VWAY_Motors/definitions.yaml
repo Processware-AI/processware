@@ -1,0 +1,23 @@
+standard_id: VWAY_Motors
+version: '4.0'
+definitions:
+- term: Base Practice (BP)
+  definition: An activity that addresses one or more specific aspects of process performance and contributes to the achievement of the related process outcomes.
+- term: Generic Practice (GP)
+  definition: An activity that supports the implementation and institutionalization of a process.
+- term: Process Capability Level
+  definition: A point on a six-point ordinal measurement scale (0-5) that represents the increasing capability of the implemented process.
+- term: Process Attribute (PA)
+  definition: A measurable characteristic of process capability applicable to any process.
+- term: Work Product
+  definition: An artifact associated with the execution of a process.
+- term: Outcome
+  definition: An observable result of the successful achievement of the process purpose.
+- term: Process Assessment Model (PAM)
+  definition: A model suitable for assessing process capability based on the ISO/IEC 33020 measurement framework.
+- term: Process Reference Model (PRM)
+  definition: A model comprising definitions of processes in a life cycle described in terms of process purpose and process outcomes.
+- term: Affected Party
+  definition: A party that has accepted obligations and responsibilities for the implementation of base practices at process capability level 1.
+- term: Involved Party
+  definition: A party that has accepted obligations and responsibilities for the implementation of generic practices at process capability level 2.

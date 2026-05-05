@@ -1,0 +1,1748 @@
+standard_id: VWAY_Motors
+generated_at: '2026-05-06'
+note: Page numbers are estimated from character position; verify against PDF
+source_map:
+- requirement_id_prefix: VWAY-ACQ.4-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 34
+  clause: ACQ.4
+  element: Process purpose
+  source_text: The purpose is to track and assess the performance of an external contract-based supplier company against agreed commitments.
+  source_text_hash: sha256:5cad078b7f46b93d
+- requirement_id_prefix: VWAY-ACQ.4-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 34
+  clause: ACQ.4.BP1
+  element: Base Practice
+  source_text: Agree on and maintain joint activities, joint interfaces, and information to be exchanged. Establish and maintain an agreement on information to be exchanged, on joint activities, joint interfaces,
+    re
+  source_text_hash: sha256:ab1fa8303b2a06e7
+- requirement_id_prefix: VWAY-ACQ.4-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 34
+  clause: ACQ.4.BP2
+  element: Base Practice
+  source_text: Exchange all agreed information. Use the defined joint interfaces between customer and supplier for the exchange of all agreed information.
+  source_text_hash: sha256:4fd2e083a0ad3948
+- requirement_id_prefix: VWAY-ACQ.4-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 34
+  clause: ACQ.4.BP3
+  element: Base Practice
+  source_text: Review development work products with the supplier. Review development work products with the supplier on the agreed regular basis, covering technical aspects, problems and risks. Track open
+    measures.
+  source_text_hash: sha256:4187e5b11c48cdbc
+- requirement_id_prefix: VWAY-ACQ.4-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 34
+  clause: ACQ.4.BP4
+  element: Base Practice
+  source_text: Review progress of the supplier. Review progress of the supplier regarding schedule, quality, and cost on the agreed regular basis. Track open measures to closure and perform risk mitigation
+    activitie
+  source_text_hash: sha256:2cd212932664cb32
+- requirement_id_prefix: VWAY-ACQ.4-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 34
+  clause: ACQ.4.BP5
+  element: Base Practice
+  source_text: Act to correct deviations. Take action when agreed objectives are not achieved. Negotiate changes to objectives and document them in the agreements.
+  source_text_hash: sha256:6ce9df0c33052e92
+- requirement_id_prefix: VWAY-HWE.1-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 74
+  clause: HWE.1
+  element: Process purpose
+  source_text: The purpose is to establish a structured and analyzed set of hardware requirements consistent with the system requirements, and the system architectural design.
+  source_text_hash: sha256:dc31f6c12dcb2cee
+- requirement_id_prefix: VWAY-HWE.1-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 74
+  clause: HWE.1.BP1
+  element: Base Practice
+  source_text: Specify hardware requirements. Use the system requirements, and the system architecture including interface definitions, to identify and document the functional and non- functional requirements
+    of the
+  source_text_hash: sha256:2fa0cad93ea36fbc
+- requirement_id_prefix: VWAY-HWE.1-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 74
+  clause: HWE.1.BP2
+  element: Base Practice
+  source_text: 'Structure hardware requirements. Structure and prioritize the hardware requirements. Note 5: Examples for structuring criteria can be grouping (e.g., by functionality) or variants identification.
+    Note'
+  source_text_hash: sha256:8af7c78481b5434a
+- requirement_id_prefix: VWAY-HWE.1-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 74
+  clause: HWE.1.BP3
+  element: Base Practice
+  source_text: Analyze hardware requirements. Analyze the specified hardware requirements including their interdependencies to ensure correctness, technical feasibility, and to support project management
+    regarding p
+  source_text_hash: sha256:979faf7d590b1aec
+- requirement_id_prefix: VWAY-HWE.1-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 74
+  clause: HWE.1.BP4
+  element: Base Practice
+  source_text: Analyze the impact on the operating environment. Identify the interfaces between the specified hardware and other elements of the operating environment. Analyze the impact that the hardware
+    requiremen
+  source_text_hash: sha256:2a316643be6be9d6
+- requirement_id_prefix: VWAY-HWE.1-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 74
+  clause: HWE.1.BP5
+  element: Base Practice
+  source_text: Ensure consistency and establish bidirectional traceability. Ensure consistency and establish traceability between hardware requirements and the system architecture. Ensure consistency and
+    establish t
+  source_text_hash: sha256:d1607c8815306741
+- requirement_id_prefix: VWAY-HWE.1-BP6
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 74
+  clause: HWE.1.BP6
+  element: Base Practice
+  source_text: Communicate agreed hardware requirements and impact on the operating environment. Communicate the agreed hardware requirements and results of the analysis of impact on the operating environment
+    to all
+  source_text_hash: sha256:8491562338be77d4
+- requirement_id_prefix: VWAY-HWE.2-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 76
+  clause: HWE.2
+  element: Process purpose
+  source_text: The purpose is to provide an analyzed design, including dynamic aspects, that is consistent with the hardware requirements and suitable for manufacturing, and to derive production-relevant
+    data.
+  source_text_hash: sha256:ad77bf3973781740
+- requirement_id_prefix: VWAY-HWE.2-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 76
+  clause: HWE.2.BP1
+  element: Base Practice
+  source_text: 'Specify the hardware architecture. Develop the hardware architecture that identifies the hardware components. Document the rationale for the defined hardware architecture. Note 1: Examples
+    for aspects'
+  source_text_hash: sha256:fc814ed67afad052
+- requirement_id_prefix: VWAY-HWE.2-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 76
+  clause: HWE.2.BP2
+  element: Base Practice
+  source_text: Specify the hardware detailed design. Based on components identified in the hardware architecture, specify the detailed design description and the schematics for the intended hardware variants,
+    includ
+  source_text_hash: sha256:02ff3a18579002cc
+- requirement_id_prefix: VWAY-HWE.2-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 76
+  clause: HWE.2.BP3
+  element: Base Practice
+  source_text: 'Specify dynamic aspects. Evaluate and document the dynamic behavior of the relevant hardware elements and the interaction between them. Note 5: Not all hardware elements have dynamic behavior
+    that nee'
+  source_text_hash: sha256:c6444f276b17c156
+- requirement_id_prefix: VWAY-HWE.2-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 76
+  clause: HWE.2.BP4
+  element: Base Practice
+  source_text: 'Analyze the hardware architecture and the hardware detailed design. Analyze the hardware architecture and hardware detailed design regarding relevant technical aspects, and support project
+    management '
+  source_text_hash: sha256:664a250d7b15c07b
+- requirement_id_prefix: VWAY-HWE.2-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 76
+  clause: HWE.2.BP5
+  element: Base Practice
+  source_text: Ensure consistency and establish bidirectional traceability. Ensure consistency and establish traceability between hardware elements and hardware requirements. Ensure consistency and establish
+    traceab
+  source_text_hash: sha256:fe34fbdff5340559
+- requirement_id_prefix: VWAY-HWE.2-BP6
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 76
+  clause: HWE.2.BP6
+  element: Base Practice
+  source_text: Communicate agreed hardware architecture and hardware detailed design. Communicate the agreed hardware architecture and the hardware detailed design, including the special characteristics
+    and relevant
+  source_text_hash: sha256:80326198057285cc
+- requirement_id_prefix: VWAY-HWE.3-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 79
+  clause: HWE.3
+  element: Process purpose
+  source_text: The purpose is to ensure that the production data compliant hardware is verified to provide evidence for compliance with the hardware design.
+  source_text_hash: sha256:0fc2d7c9039e8dc5
+- requirement_id_prefix: VWAY-HWE.3-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 79
+  clause: HWE.3.BP1
+  element: Base Practice
+  source_text: Specify verification measures for the verification against hardware design. Specify the verification measures suitable to provide evidence for compliance of the hardware with the hardware
+    design and i
+  source_text_hash: sha256:98cb9371baf90153
+- requirement_id_prefix: VWAY-HWE.3-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 79
+  clause: HWE.3.BP2
+  element: Base Practice
+  source_text: Ensure use of compliant samples. Ensure that the samples used for verification against hardware design are compliant with the corresponding production data, including special characteristics.
+    Ensure t
+  source_text_hash: sha256:d16a0b234b90b088
+- requirement_id_prefix: VWAY-HWE.3-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 79
+  clause: HWE.3.BP3
+  element: Base Practice
+  source_text: Select verification measures. Document the selection of verification measures considering selection criteria including regression criteria. The documented selection of verification measures
+    shall have
+  source_text_hash: sha256:804e2abb75dcf77c
+- requirement_id_prefix: VWAY-HWE.3-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 79
+  clause: HWE.3.BP4
+  element: Base Practice
+  source_text: Verify hardware design. Verify the hardware design using the selected verification measures. Record the verification results including pass/fail status and corresponding verification measure
+    output da
+  source_text_hash: sha256:9b4293b0f642561e
+- requirement_id_prefix: VWAY-HWE.3-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 79
+  clause: HWE.3.BP5
+  element: Base Practice
+  source_text: Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between hardware elements and the verification measures. Establish
+    bidirectiona
+  source_text_hash: sha256:73298e980f5f820a
+- requirement_id_prefix: VWAY-HWE.3-BP6
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 79
+  clause: HWE.3.BP6
+  element: Base Practice
+  source_text: 'Summarize and communicate results. Summarize the verification results and communicate them to all affected parties. Note 7: Providing all necessary information from the test case execution
+    in a summar'
+  source_text_hash: sha256:611be7e0c7d6397f
+- requirement_id_prefix: VWAY-HWE.4-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 81
+  clause: HWE.4
+  element: Process purpose
+  source_text: PUBLIC 76 The purpose is to ensure that the complete hardware is verified to be consistent with the hardware requirements.
+  source_text_hash: sha256:54661f679042ef64
+- requirement_id_prefix: VWAY-HWE.4-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 81
+  clause: HWE.4.BP1
+  element: Base Practice
+  source_text: Specify verification measures for the verification against hardware requirements. Specify the verification measure to provide evidence for compliance with the hardware requirements. This
+    includes • te
+  source_text_hash: sha256:cb1b8a898ea3227c
+- requirement_id_prefix: VWAY-HWE.4-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 81
+  clause: HWE.4.BP2
+  element: Base Practice
+  source_text: Ensure use of compliant samples. Ensure that the samples used for the verification against hardware requirements are compliant with the corresponding production data, including special characteristics
+  source_text_hash: sha256:c212bee8449a3025
+- requirement_id_prefix: VWAY-HWE.4-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 81
+  clause: HWE.4.BP3
+  element: Base Practice
+  source_text: Select verification measures. Document the selection of verification measures considering selection criteria including regression criteria. The documented selection of verification measures
+    shall have
+  source_text_hash: sha256:804e2abb75dcf77c
+- requirement_id_prefix: VWAY-HWE.4-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 81
+  clause: HWE.4.BP4
+  element: Base Practice
+  source_text: Verify the compliant hardware samples. Verify the compliant hardware samples using the selected verification measures. Record the verification results including pass/fail status and corresponding
+    veri
+  source_text_hash: sha256:4f9631c0055dc934
+- requirement_id_prefix: VWAY-HWE.4-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 81
+  clause: HWE.4.BP5
+  element: Base Practice
+  source_text: Ensure consistency and establish bidirectional traceability. Ensure consistency between hardware requirements and verification measures. Establish bidirectional traceability between hardware
+    requireme
+  source_text_hash: sha256:977815e9cf836bf9
+- requirement_id_prefix: VWAY-HWE.4-BP6
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 81
+  clause: HWE.4.BP6
+  element: Base Practice
+  source_text: 'Summarize and communicate results. Summarize the verification results and communicate them to all affected parties. Note 6: Providing all necessary information from the test case execution
+    in a summar'
+  source_text_hash: sha256:f2da680ac8869edb
+- requirement_id_prefix: VWAY-MAN.3-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 93
+  clause: MAN.3
+  element: Process purpose
+  source_text: The purpose is to identify and control the activities, and establish resources necessary for a project to develop a product, in the context of the project’s requirements and constraints.
+  source_text_hash: sha256:096718475722366b
+- requirement_id_prefix: VWAY-MAN.3-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 93
+  clause: MAN.3.BP1
+  element: Base Practice
+  source_text: Define the scope of work. Identify the project's goals, motivation and boundaries.
+  source_text_hash: sha256:b1d19d5a58fd60c8
+- requirement_id_prefix: VWAY-MAN.3-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 93
+  clause: MAN.3.BP2
+  element: Base Practice
+  source_text: 'Define project life cycle. Define the life cycle for the project, which is appropriate to the scope, context, and complexity of the project. Define a release scope for relevant milestones.
+    Note 1: Thi'
+  source_text_hash: sha256:71239684e04334bb
+- requirement_id_prefix: VWAY-MAN.3-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 93
+  clause: MAN.3.BP3
+  element: Base Practice
+  source_text: 'Evaluate feasibility of the project. Evaluate the feasibility of achieving the goals of the project with respect to time, project estimates, and available resources. Note 2: The evaluation
+    of feasibil'
+  source_text_hash: sha256:b83afc498773e4e2
+- requirement_id_prefix: VWAY-MAN.3-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 93
+  clause: MAN.3.BP4
+  element: Base Practice
+  source_text: 'Define and monitor work packages. Define and monitor work packages and their dependencies according to defined project life cycle and estimations. Note 3: The structure and the size of the
+    work packag'
+  source_text_hash: sha256:540e7103bbf7bb3c
+- requirement_id_prefix: VWAY-MAN.3-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 93
+  clause: MAN.3.BP5
+  element: Base Practice
+  source_text: 'Define and monitor project estimates and resources. Define and monitor project estimates of effort and resources based on project''s goals, project risks, motivation and boundaries. Note
+    5: Examples of'
+  source_text_hash: sha256:d9cb7a45231dfd19
+- requirement_id_prefix: VWAY-MAN.3-BP6
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 93
+  clause: MAN.3.BP6
+  element: Base Practice
+  source_text: 'Define and monitor required skills, knowledge, and experience. Identify and monitor the required skills, knowledge, and experience for the project in line with the estimates and work packages.
+    Note 8:'
+  source_text_hash: sha256:386b7d1156d4a659
+- requirement_id_prefix: VWAY-MAN.3-BP7
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 93
+  clause: MAN.3.BP7
+  element: Base Practice
+  source_text: Define and monitor project interfaces and agreed commitments. Identify and agree interfaces of the project with affected stakeholders and monitor agreed commitments. Define an escalation
+    mechanism for
+  source_text_hash: sha256:9fcdc7350c6d25b5
+- requirement_id_prefix: VWAY-MAN.3-BP8
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 93
+  clause: MAN.3.BP8
+  element: Base Practice
+  source_text: Define and monitor project schedule. Allocate resources to work packages and schedule each activity of the project. Monitor the performance of activities against schedule.
+  source_text_hash: sha256:139fbd926f557501
+- requirement_id_prefix: VWAY-MAN.3-BP9
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 93
+  clause: MAN.3.BP9
+  element: Base Practice
+  source_text: Ensure consistency. Regularly adjust estimates, resources, skills, work packages and their dependencies, schedules, plans, interfaces, and commitments for the project to ensure consistency
+    with the sc
+  source_text_hash: sha256:eaf18564967cc979
+- requirement_id_prefix: VWAY-MAN.3-BP10
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 93
+  clause: MAN.3.BP10
+  element: Base Practice
+  source_text: Review and report progress of the project. Regularly review and report the status of the project and the fulfillment of work packages against estimated effort and duration to all affected
+    parties. Pre
+  source_text_hash: sha256:19cbdee4b032399d
+- requirement_id_prefix: VWAY-MAN.5-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 96
+  clause: MAN.5
+  element: Process purpose
+  source_text: The purpose is to Regularly identify, analyze, treat and monitor process related risks and product related risks.
+  source_text_hash: sha256:8cdf1b3f7e70b0c7
+- requirement_id_prefix: VWAY-MAN.5-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 96
+  clause: MAN.5.BP1
+  element: Base Practice
+  source_text: 'Identify sources of risks. Identify and regularly update the sources of risks with affected parties. Note 1: Risks may include technical, economical, and schedule risks. Note 2: Risks may
+    include the '
+  source_text_hash: sha256:b34924ef5d2fb433
+- requirement_id_prefix: VWAY-MAN.5-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 96
+  clause: MAN.5.BP2
+  element: Base Practice
+  source_text: Identify potential undesirable events. Identify potential undesirable events within the scope of the risk management for the project.
+  source_text_hash: sha256:c72cba02f5efa43e
+- requirement_id_prefix: VWAY-MAN.5-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 96
+  clause: MAN.5.BP3
+  element: Base Practice
+  source_text: 'Determine risks. Determine the probability and severity of the undesirable events to support priorities for the mitigation of the risks. Note 4: Different methods may be used to analyze
+    technical risk'
+  source_text_hash: sha256:21edf0e1ae723220
+- requirement_id_prefix: VWAY-MAN.5-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 96
+  clause: MAN.5.BP4
+  element: Base Practice
+  source_text: Define risk treatment options. For each risk select a treatment option to accept, mitigate, avoid, or share (transfer) the risk.
+  source_text_hash: sha256:6c6e0019b30b6824
+- requirement_id_prefix: VWAY-MAN.5-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 96
+  clause: MAN.5.BP5
+  element: Base Practice
+  source_text: Define and perform risk treatment activities. Define and perform risk activities for risk treatment options.
+  source_text_hash: sha256:5da8a12b3e2d7110
+- requirement_id_prefix: VWAY-MAN.5-BP6
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 96
+  clause: MAN.5.BP6
+  element: Base Practice
+  source_text: Monitor risks. Regularly re-evaluate the risk related to the identified potential undesirable events to determine changes in the status of a risk and to evaluate the progress of the risk
+    treatment act
+  source_text_hash: sha256:e13bdc86f0196bfe
+- requirement_id_prefix: VWAY-MAN.5-BP7
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 96
+  clause: MAN.5.BP7
+  element: Base Practice
+  source_text: 'Take corrective action. When risk treatment activities are not effective, take appropriate corrective action. Note 6: Corrective actions may involve reevaluation of risks, developing and
+    implementing '
+  source_text_hash: sha256:9d71479adde33b97
+- requirement_id_prefix: VWAY-MAN.6-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 98
+  clause: MAN.6
+  element: Process purpose
+  source_text: The purpose is to Collect and analyze data relating to the development results and processes implemented within the organization and its projects, to support effective management of the processes.
+  source_text_hash: sha256:05a64d43b135800e
+- requirement_id_prefix: VWAY-MAN.6-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 98
+  clause: MAN.6.BP1
+  element: Base Practice
+  source_text: 'Identify information needs. Identify the measurement information needs that are necessary to evaluate the achievement of process objectives and work products. Note 1: Information needs may
+    change over'
+  source_text_hash: sha256:fb88183eda1c1c28
+- requirement_id_prefix: VWAY-MAN.6-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 98
+  clause: MAN.6.BP2
+  element: Base Practice
+  source_text: 'Specify metrics. Identify and develop an appropriate set of metrics based on measurement information needs. Note 2: Metrics may be related to processes or development results.'
+  source_text_hash: sha256:c5a0e09308182e24
+- requirement_id_prefix: VWAY-MAN.6-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 98
+  clause: MAN.6.BP3
+  element: Base Practice
+  source_text: 'Collect and store metrics. Collect and store both base and derived metrics, including any context information necessary to verify and understand the metrics. Note 3: Base metrics in the
+    context of thi'
+  source_text_hash: sha256:04db8ad3fe37e4f0
+- requirement_id_prefix: VWAY-MAN.6-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 98
+  clause: MAN.6.BP4
+  element: Base Practice
+  source_text: Analyze collected metrics. Analyze, interpret and review measured values to support decision-making.
+  source_text_hash: sha256:e63642e108ffbcdb
+- requirement_id_prefix: VWAY-MAN.6-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 98
+  clause: MAN.6.BP5
+  element: Base Practice
+  source_text: Communicate analysis results. Communicate analysis results to all affected parties.
+  source_text_hash: sha256:00a8c9ebd928c381
+- requirement_id_prefix: VWAY-MAN.6-BP6
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 98
+  clause: MAN.6.BP6
+  element: Base Practice
+  source_text: Use metrics for decision-making. Make accessible and use information from collected metrics and analysis results for any decision-making process for which it is relevant. MAN.6 Measurement
+  source_text_hash: sha256:4a1591c1898edc72
+- requirement_id_prefix: VWAY-MLE.1-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 65
+  clause: MLE.1
+  element: Process purpose
+  source_text: The purpose is to refine the machine learning-related software requirements into a set of ML requirements.
+  source_text_hash: sha256:885ef613eb93b6d5
+- requirement_id_prefix: VWAY-MLE.1-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 65
+  clause: MLE.1.BP1
+  element: Base Practice
+  source_text: Specify ML requirements. Use the software requirements and the software architecture to identify and specify functional and non-functional ML requirements, as well as ML data requirements
+    specifying d
+  source_text_hash: sha256:978a0d6439d1123a
+- requirement_id_prefix: VWAY-MLE.1-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 65
+  clause: MLE.1.BP2
+  element: Base Practice
+  source_text: 'Structure ML requirements. Structure and prioritize the ML requirements. Note 4: Examples for structuring criteria can be grouping (e.g., by functionality) or variants identification. Note
+    5: Prioriti'
+  source_text_hash: sha256:37572667a70b3027
+- requirement_id_prefix: VWAY-MLE.1-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 65
+  clause: MLE.1.BP3
+  element: Base Practice
+  source_text: Analyze ML requirements. Analyze the specified ML requirements including their interdependencies to ensure correctness, technical feasibility, and ability for machine learning model testing,
+    and to su
+  source_text_hash: sha256:a1830bd4bc0a17ee
+- requirement_id_prefix: VWAY-MLE.1-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 65
+  clause: MLE.1.BP4
+  element: Base Practice
+  source_text: 'Analyze the impact on the ML operating environment. Analyze the impact that the ML requirements will have on interfaces of software components and the ML operating environment. Note 7: The
+    ML operatin'
+  source_text_hash: sha256:78243e82d608f1d7
+- requirement_id_prefix: VWAY-MLE.1-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 65
+  clause: MLE.1.BP5
+  element: Base Practice
+  source_text: Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between ML requirements and software requirements and between ML requirements
+    a
+  source_text_hash: sha256:fa2c2715953c86a6
+- requirement_id_prefix: VWAY-MLE.1-BP6
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 65
+  clause: MLE.1.BP6
+  element: Base Practice
+  source_text: Communicate agreed ML requirements and impact on the operating environment. Communicate the agreed ML requirements, and the results of the impact analysis on the ML operating environment
+    to all affect
+  source_text_hash: sha256:a9c724e1a1cceee0
+- requirement_id_prefix: VWAY-MLE.2-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: MLE.2
+  element: Process purpose
+  source_text: The purpose is to establish an ML architecture supporting training and deployment, consistent with the ML requirements, and to evaluate the ML architecture against defined criteria.
+  source_text_hash: sha256:b50d660ab2ca4395
+- requirement_id_prefix: VWAY-MLE.2-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: MLE.2.BP1
+  element: Base Practice
+  source_text: Develop ML architecture. Develop and document the ML architecture that specifies ML architectural elements including details of the ML model, pre- and postprocessing, and hyperparameters
+    which are req
+  source_text_hash: sha256:dea881b848874175
+- requirement_id_prefix: VWAY-MLE.2-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: MLE.2.BP2
+  element: Base Practice
+  source_text: Determine hyperparameter ranges and initial values. Determine and document the hyperparameter ranges and the initial values as a basis for the training.
+  source_text_hash: sha256:9200b752369a4682
+- requirement_id_prefix: VWAY-MLE.2-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: MLE.2.BP3
+  element: Base Practice
+  source_text: 'Analyze ML architectural elements. Define criteria for analysis of the ML architectural elements. Analyze ML architectural elements according to the defined criteria. Note 3: Trustworthiness
+    and expla'
+  source_text_hash: sha256:12f048e5992107dd
+- requirement_id_prefix: VWAY-MLE.2-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: MLE.2.BP4
+  element: Base Practice
+  source_text: Define interfaces of the ML architectural elements. Determine and document the internal and external interfaces of each ML architectural element including its interfaces to related software
+    components
+  source_text_hash: sha256:57eef836a20ffa69
+- requirement_id_prefix: VWAY-MLE.2-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: MLE.2.BP5
+  element: Base Practice
+  source_text: Define resource consumption objectives for the ML architectural elements. Determine and document the resource consumption objectives for all relevant ML architectural elements during training
+    and depl
+  source_text_hash: sha256:733d744485a7e35f
+- requirement_id_prefix: VWAY-MLE.2-BP6
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: MLE.2.BP6
+  element: Base Practice
+  source_text: 'Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between the ML architectural elements and the ML requirements. Note
+    4: Bidirect'
+  source_text_hash: sha256:25185b772af2d1e2
+- requirement_id_prefix: VWAY-MLE.2-BP7
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: MLE.2.BP7
+  element: Base Practice
+  source_text: Communicate agreed ML architecture. Inform all affected parties about the agreed ML architecture including the details of the ML model and the initial hyperparameter values. MLE.2 Machine
+    Learning Arc
+  source_text_hash: sha256:d638189fd41790b3
+- requirement_id_prefix: VWAY-MLE.3-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: MLE.3
+  element: Process purpose
+  source_text: PUBLIC The purpose is to optimize the ML model to meet the defined ML requirements.
+  source_text_hash: sha256:0c8b0736b9a90d38
+- requirement_id_prefix: VWAY-MLE.3-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: MLE.3.BP1
+  element: Base Practice
+  source_text: Specify ML training and validation approach. Specify an approach which supports the training and validation of the ML model to meet the defined ML requirements. The ML training and validation
+    approach
+  source_text_hash: sha256:667324d3d38e3530
+- requirement_id_prefix: VWAY-MLE.3-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: MLE.3.BP2
+  element: Base Practice
+  source_text: Create ML training and validation data set. Select data from the ML data collection provided by SUP.11 and assign them to the data set for training and validation of the ML model according
+    to the spec
+  source_text_hash: sha256:1d010e13b8c5d718
+- requirement_id_prefix: VWAY-MLE.3-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: MLE.3.BP3
+  element: Base Practice
+  source_text: Create and optimize ML model. Create the ML model according to the ML architecture and train it, using the identified ML training and validation data set according to the ML training and
+    validation ap
+  source_text_hash: sha256:c5468e1f0277b9bb
+- requirement_id_prefix: VWAY-MLE.3-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: MLE.3.BP4
+  element: Base Practice
+  source_text: Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between the ML training and validation data set and the ML data requirements.
+    N
+  source_text_hash: sha256:851c8baf72bcf489
+- requirement_id_prefix: VWAY-MLE.3-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: MLE.3.BP5
+  element: Base Practice
+  source_text: Summarize and communicate agreed trained ML model. Summarize the results of the optimization and inform all affected parties about the agreed trained ML model. MLE.3 Machine Learning Training
+  source_text_hash: sha256:9977d89fc59af9e2
+- requirement_id_prefix: VWAY-MLE.4-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: MLE.4
+  element: Process purpose
+  source_text: The purpose is to ensure compliance of the trained ML model and the deployed ML model with the ML requirements.
+  source_text_hash: sha256:96648d64bcc2c024
+- requirement_id_prefix: VWAY-MLE.4-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: MLE.4.BP1
+  element: Base Practice
+  source_text: Specify an ML test approach. Specify an ML test approach suitable to provide evidence for compliance of the trained ML model and the deployed ML model with the ML requirements. The ML test
+    approach in
+  source_text_hash: sha256:caba9f45f3bd1d40
+- requirement_id_prefix: VWAY-MLE.4-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: MLE.4.BP2
+  element: Base Practice
+  source_text: Create ML test data set. Create the ML test data set needed for testing of the trained ML model and testing of the deployed ML model from the ML data collection provided by SUP.11 considering
+    the ML t
+  source_text_hash: sha256:6beaedd52714be3d
+- requirement_id_prefix: VWAY-MLE.4-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: MLE.4.BP3
+  element: Base Practice
+  source_text: 'Test trained ML model. Test the trained ML model according to the ML test approach using the created ML test data set. Record and evaluate the ML test results. Note 7: Evaluation of test
+    logs might in'
+  source_text_hash: sha256:c2929da12e8feb05
+- requirement_id_prefix: VWAY-MLE.4-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: MLE.4.BP4
+  element: Base Practice
+  source_text: Derive deployed ML model. Derive the deployed ML model from the trained ML model according to the ML architecture. The deployed ML model shall be used for testing and delivery to software
+    integration.
+  source_text_hash: sha256:090c5dc0dc4284f8
+- requirement_id_prefix: VWAY-MLE.4-BP6
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: MLE.4.BP6
+  element: Base Practice
+  source_text: 'Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between the ML test approach and the ML requirements, and the ML
+    test data set '
+  source_text_hash: sha256:fcd3c27e54d36a26
+- requirement_id_prefix: VWAY-MLE.4-BP7
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: MLE.4.BP7
+  element: Base Practice
+  source_text: Summarize and communicate results. Summarize the ML test results of the ML model. Inform all affected parties about the agreed results and the deployed ML model. MLE.4 Machine Learning Model
+    Testing
+  source_text_hash: sha256:854cfa20b4c815fc
+- requirement_id_prefix: VWAY-PIM.3-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 99
+  clause: PIM.3
+  element: Process purpose
+  source_text: The purpose is to continually improve the organization’s effectiveness and efficiency through the processes used and ensure alignment of the processes with the business needs.
+  source_text_hash: sha256:3c6c2d8215aece11
+- requirement_id_prefix: VWAY-PIM.3-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 99
+  clause: PIM.3.BP1
+  element: Base Practice
+  source_text: 'Establish commitment. Establish commitment to support the process improvement staff, to provide resources and further enablers to sustain improvement actions. Note 1: The process improvement
+    process i'
+  source_text_hash: sha256:7f4a6135ef376b3b
+- requirement_id_prefix: VWAY-PIM.3-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 99
+  clause: PIM.3.BP2
+  element: Base Practice
+  source_text: 'Identify improvement measures. Identify issues from the analysis of process performance and derive improvement opportunities with justified reasons for change. Note 4: Analysis may include
+    problem rep'
+  source_text_hash: sha256:e79164c792277a51
+- requirement_id_prefix: VWAY-PIM.3-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 99
+  clause: PIM.3.BP3
+  element: Base Practice
+  source_text: Establish process improvement goals. Analyze the current status of the existing processes and establish improvement goals.
+  source_text_hash: sha256:1707ef61d9704a92
+- requirement_id_prefix: VWAY-PIM.3-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 99
+  clause: PIM.3.BP4
+  element: Base Practice
+  source_text: Prioritize improvements. Prioritize the improvement goals and improvement measures.
+  source_text_hash: sha256:d881ac2f0d91e43c
+- requirement_id_prefix: VWAY-PIM.3-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 99
+  clause: PIM.3.BP5
+  element: Base Practice
+  source_text: 'Define process improvement measures. Process improvement measures are defined. Note 8: Improvements may be documented in incremental steps.'
+  source_text_hash: sha256:14e181b163db8c59
+- requirement_id_prefix: VWAY-PIM.3-BP6
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 99
+  clause: PIM.3.BP6
+  element: Base Practice
+  source_text: 'Implement process improvement measures. Implement and apply the improvements to the processes. Update the Process documentation and train people as needed. Note 9: Process application can
+    be supported'
+  source_text_hash: sha256:9bf2125ce809d578
+- requirement_id_prefix: VWAY-PIM.3-BP7
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 99
+  clause: PIM.3.BP7
+  element: Base Practice
+  source_text: Confirm process improvement. The effects of process implementation are monitored and measured, and the achievement of defined improvement goals is confirmed.
+  source_text_hash: sha256:bd7ff4e70479e8d6
+- requirement_id_prefix: VWAY-PIM.3-BP8
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 99
+  clause: PIM.3.BP8
+  element: Base Practice
+  source_text: Communicate results of improvement. Knowledge gained from the improvements and progress of the improvement implementation is communicated to affected parties. PIM.3 Process Improvement
+  source_text_hash: sha256:2f4fbeb9c5bb464e
+- requirement_id_prefix: VWAY-REU.2-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 101
+  clause: REU.2
+  element: Process purpose
+  source_text: The purpose is to ensure that reused work products are analyzed, verified, and approved for their target context.
+  source_text_hash: sha256:37be6bf2e687040f
+- requirement_id_prefix: VWAY-REU.2-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 101
+  clause: REU.2.BP1
+  element: Base Practice
+  source_text: 'Select products for reuse. Select the products to be reused using defined criteria. Note 1: Products for reuse may be systems, hardware or software components, third party components or
+    legacy compone'
+  source_text_hash: sha256:c49e4f9ec7d5367c
+- requirement_id_prefix: VWAY-REU.2-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 101
+  clause: REU.2.BP2
+  element: Base Practice
+  source_text: Analyze the reuse capability of the product. Analyze the designated target architecture and the product to be reused to determine its applicability in the target architecture according to
+    relevant cri
+  source_text_hash: sha256:bdef9ddf756634ef
+- requirement_id_prefix: VWAY-REU.2-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 101
+  clause: REU.2.BP3
+  element: Base Practice
+  source_text: 'Define limitations for reuse. Define and communicate limitations for the products to be reused. Note 3: Limitations may address parameters of operational environment.'
+  source_text_hash: sha256:659183ee4a8ebeb3
+- requirement_id_prefix: VWAY-REU.2-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 101
+  clause: REU.2.BP4
+  element: Base Practice
+  source_text: 'Ensure qualification of products for reuse. Provide evidence that the product for reuse is qualified for the intended use of the deliverable. Note 4: Qualification may be demonstrated by
+    verification '
+  source_text_hash: sha256:0e1592eb16721e4e
+- requirement_id_prefix: VWAY-REU.2-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 101
+  clause: REU.2.BP5
+  element: Base Practice
+  source_text: 'Provide products for reuse. Make available the product to be reused to affected parties. Note 6: Refer to HWE.3, SWE.5 or SYS.4 for more information on integration of hardware, software,
+    or system com'
+  source_text_hash: sha256:41a44d851bd83807
+- requirement_id_prefix: VWAY-REU.2-BP6
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 101
+  clause: REU.2.BP6
+  element: Base Practice
+  source_text: 'Communicate information about effectiveness of reuse activities. Establish communication and notification mechanism about experiences and technical outcomes to the provider of reused products.
+    Note 7:'
+  source_text_hash: sha256:e2d262e3809ad51f
+- requirement_id_prefix: VWAY-SPL.2-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 36
+  clause: SPL.2
+  element: Process purpose
+  source_text: The purpose is to control the release of a product to the intended customer.
+  source_text_hash: sha256:e424d0f3da8d84c1
+- requirement_id_prefix: VWAY-SPL.2-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 36
+  clause: SPL.2.BP1
+  element: Base Practice
+  source_text: 'Define the functional content of releases. Define the functionality to be included and the release criteria for each release. Note 1: This may include the hardware elements, software elements,
+    and ext'
+  source_text_hash: sha256:aa5662dd9fc4de9a
+- requirement_id_prefix: VWAY-SPL.2-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 36
+  clause: SPL.2.BP2
+  element: Base Practice
+  source_text: 'Define release package. Define the release as well as supporting tools and information. Note 2: The release package may include also programming tools.'
+  source_text_hash: sha256:13f7f8bc2e6fb3f6
+- requirement_id_prefix: VWAY-SPL.2-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 36
+  clause: SPL.2.BP3
+  element: Base Practice
+  source_text: 'Ensure unique identification of releases. Ensure a unique identification of the release based upon the intended purpose and expectations of the release. Note 3: Unique identification may
+    be realized b'
+  source_text_hash: sha256:fd71961c14563bca
+- requirement_id_prefix: VWAY-SPL.2-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 36
+  clause: SPL.2.BP4
+  element: Base Practice
+  source_text: 'Build the release from items under configuration control. Build the release from items under configuration control to ensure integrity. Note 4: This practice may be supported by the SUP.8
+    Configuratio'
+  source_text_hash: sha256:2df93bb36c3fd7b0
+- requirement_id_prefix: VWAY-SPL.2-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 36
+  clause: SPL.2.BP5
+  element: Base Practice
+  source_text: Ensure release approval before delivery. Criteria for the release are satisfied before delivery takes place.
+  source_text_hash: sha256:6eed08ba1862afc4
+- requirement_id_prefix: VWAY-SPL.2-BP6
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 36
+  clause: SPL.2.BP6
+  element: Base Practice
+  source_text: 'Provide a release note. A release is accompanied by information detailing key characteristics of the release. Note 5: The release note may include information about legal aspects like relevant
+    target '
+  source_text_hash: sha256:62fa70461819de5e
+- requirement_id_prefix: VWAY-SPL.2-BP8
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 36
+  clause: SPL.2.BP8
+  element: Base Practice
+  source_text: 'Deliver the release package to the intended customer. Deliver the release package to the intended customer. Note 6: The intended customer may be an internal organizational unit or an external
+    organiza'
+  source_text_hash: sha256:75c09aa17bcb419f
+- requirement_id_prefix: VWAY-SUP.1-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 84
+  clause: SUP.1
+  element: Process purpose
+  source_text: The purpose of the Quality Assurance Process is to provide independent and objective assurance that work products and processes comply with defined criteria and that non- conformances are
+    resolved and
+  source_text_hash: sha256:f15fa1c93893827a
+- requirement_id_prefix: VWAY-SUP.1-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 84
+  clause: SUP.1.BP1
+  element: Base Practice
+  source_text: 'Ensure independence of quality assurance. Ensure that quality assurance is performed independently and objectively without conflicts of interest. Note 1: Possible inputs for evaluating the
+    independenc'
+  source_text_hash: sha256:0771bff6381a623b
+- requirement_id_prefix: VWAY-SUP.1-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 84
+  clause: SUP.1.BP2
+  element: Base Practice
+  source_text: 'Define criteria for quality assurance. Define quality criteria for work products as well as for process tasks and their performance. Note 2: Quality criteria may consider internal and external
+    inputs '
+  source_text_hash: sha256:7d4737267d04fef5
+- requirement_id_prefix: VWAY-SUP.1-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 84
+  clause: SUP.1.BP3
+  element: Base Practice
+  source_text: Assure quality of work products. Identify work products subject to quality assurance according to the quality criteria. Perform appropriate activities to evaluate the work products against
+    the defined
+  source_text_hash: sha256:31d2b2df24c3eee3
+- requirement_id_prefix: VWAY-SUP.1-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 84
+  clause: SUP.1.BP4
+  element: Base Practice
+  source_text: 'Assure quality of process activities. Identify processes subject to quality assurance according to the quality criteria. Perform appropriate activities to evaluate the processes against
+    their defined '
+  source_text_hash: sha256:1d3f42046ac3830e
+- requirement_id_prefix: VWAY-SUP.1-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 84
+  clause: SUP.1.BP5
+  element: Base Practice
+  source_text: Summarize and communicate quality assurance activities and results. Regularly report performance, non-conformances, and trends of quality assurance activities to all affected parties.
+  source_text_hash: sha256:392f3db6248a1294
+- requirement_id_prefix: VWAY-SUP.1-BP6
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 84
+  clause: SUP.1.BP6
+  element: Base Practice
+  source_text: 'Ensure resolution of non-conformances. Analyze, track, correct, resolve, and further prevent non-conformances found in quality assurance activities. NOTE 5: Non-conformances detected in
+    work products '
+  source_text_hash: sha256:2eaff086ed62ed23
+- requirement_id_prefix: VWAY-SUP.1-BP7
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 84
+  clause: SUP.1.BP7
+  element: Base Practice
+  source_text: 'Escalate non-conformances. Escalate relevant non-conformances to appropriate levels of management and other relevant stakeholders to facilitate their resolution. NOTE 7: The decision whether
+    to escala'
+  source_text_hash: sha256:6e502505467b72b9
+- requirement_id_prefix: VWAY-SUP.10-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 90
+  clause: SUP.10
+  element: Process purpose
+  source_text: The purpose of the Change Request Management Process is to ensure that change requests are recorded, analyzed, tracked, approved, and implemented.
+  source_text_hash: sha256:e131f46996c840b3
+- requirement_id_prefix: VWAY-SUP.10-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 90
+  clause: SUP.10.BP1
+  element: Base Practice
+  source_text: Identify and record the change requests. The scope for application of change requests is identified. Each change request is uniquely identified, described, and recorded, including the initiator
+    and re
+  source_text_hash: sha256:9e1ad82845a4d28d
+- requirement_id_prefix: VWAY-SUP.10-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 90
+  clause: SUP.10.BP2
+  element: Base Practice
+  source_text: Analyze and assess change requests. Change requests are analyzed by relevant parties according to analysis criteria. Work products affected by the change request and dependencies to other
+    change reque
+  source_text_hash: sha256:3d04e9dbba144449
+- requirement_id_prefix: VWAY-SUP.10-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 90
+  clause: SUP.10.BP3
+  element: Base Practice
+  source_text: 'Approve change requests before implementation. Change requests are prioritized and approved for implementation based on analysis results and availability of resources. NOTE 5: A Change Control
+    Board ('
+  source_text_hash: sha256:6bb6b71d715792e2
+- requirement_id_prefix: VWAY-SUP.10-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 90
+  clause: SUP.10.BP4
+  element: Base Practice
+  source_text: 'Establish bidirectional traceability. Establish bidirectional traceability between change requests and work products affected by the change requests. In case that the change request is initiated
+    by a '
+  source_text_hash: sha256:7f8d66c42d5a20ae
+- requirement_id_prefix: VWAY-SUP.10-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 90
+  clause: SUP.10.BP5
+  element: Base Practice
+  source_text: Confirm the implementation of change requests. The implementation of change requests is confirmed before closure by relevant stakeholders.
+  source_text_hash: sha256:d92b56f6c7ee7a68
+- requirement_id_prefix: VWAY-SUP.10-BP6
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 90
+  clause: SUP.10.BP6
+  element: Base Practice
+  source_text: 'Track change requests to closure. Change requests are tracked to closure. The status of change requests is communicated to all affected parties. NOTE 7: Examples for informing affected parties
+    can be '
+  source_text_hash: sha256:dff357a473b1d7d4
+- requirement_id_prefix: VWAY-SUP.11-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: SUP.11
+  element: Process purpose
+  source_text: The purpose is to define and align ML data with ML data requirements, maintain the integrity and quality of the ML data, and make them available to affected parties.
+  source_text_hash: sha256:f329a865fce0d70a
+- requirement_id_prefix: VWAY-SUP.11-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: SUP.11.BP1
+  element: Base Practice
+  source_text: Establish an ML data management system. Establish an ML data management system which supports • ML data management activities, • relevant sources of ML data, • ML data life cycle including
+    a status mo
+  source_text_hash: sha256:db3b82318a9b164f
+- requirement_id_prefix: VWAY-SUP.11-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: SUP.11.BP2
+  element: Base Practice
+  source_text: Develop an ML data quality approach. Develop an approach to ensure that the quality of ML data is analyzed based on defined ML data quality criteria and activities are performed to support
+    avoidance o
+  source_text_hash: sha256:712df0cb9e89a506
+- requirement_id_prefix: VWAY-SUP.11-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: SUP.11.BP3
+  element: Base Practice
+  source_text: 'Collect ML data. Relevant sources for raw data are identified and continuously monitored for changes. The raw data is collected according to the ML data requirements. Note 6: The identification
+    and co'
+  source_text_hash: sha256:0971e38a47115baf
+- requirement_id_prefix: VWAY-SUP.11-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: SUP.11.BP4
+  element: Base Practice
+  source_text: Process ML data. The raw data are processed (annotated, analyzed, and structured) according to the ML data requirements.
+  source_text_hash: sha256:f7594b66a4b35c10
+- requirement_id_prefix: VWAY-SUP.11-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: SUP.11.BP5
+  element: Base Practice
+  source_text: 'Assure quality of ML data. Perform the activities according to the ML data quality approach to ensure that the ML data meets the defined ML data quality criteria. Note 8: These activities
+    may include '
+  source_text_hash: sha256:8f52df9f7bc147cb
+- requirement_id_prefix: VWAY-SUP.11-BP6
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 0
+  clause: SUP.11.BP6
+  element: Base Practice
+  source_text: Communicate agreed processed ML data. Inform all affected parties about the agreed processed ML data and provide them to the affected parties. SUP.11 Machine Learning Data Management
+  source_text_hash: sha256:cf001d54285179c9
+- requirement_id_prefix: VWAY-SUP.8-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 86
+  clause: SUP.8
+  element: Process purpose
+  source_text: The purpose of the Configuration Management Process is to establish and maintain the integrity of relevant configuration items and baselines, and make them available to affected parties.
+  source_text_hash: sha256:75fd808215026c2e
+- requirement_id_prefix: VWAY-SUP.8-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 86
+  clause: SUP.8.BP1
+  element: Base Practice
+  source_text: Identify configuration items. Define selection criteria for identifying relevant work products to be subject to configuration management. Identify and document configuration items according
+    to the def
+  source_text_hash: sha256:d7c74721b2073752
+- requirement_id_prefix: VWAY-SUP.8-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 86
+  clause: SUP.8.BP2
+  element: Base Practice
+  source_text: 'Define configuration item properties. Define the necessary properties needed for the modification and control of configuration items. NOTE 4: The configuration item properties may be defined
+    for singl'
+  source_text_hash: sha256:34ec46c5f7a0f94c
+- requirement_id_prefix: VWAY-SUP.8-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 86
+  clause: SUP.8.BP3
+  element: Base Practice
+  source_text: Establish configuration management. Establish configuration management mechanisms for control of identified configuration items including the configuration item properties, including mechanisms
+    for co
+  source_text_hash: sha256:33b64c13594423b5
+- requirement_id_prefix: VWAY-SUP.8-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 86
+  clause: SUP.8.BP4
+  element: Base Practice
+  source_text: 'Control modifications. Control modifications using the configuration management mechanisms. NOTE 8: This may include the application of a defined status model for configuration items.'
+  source_text_hash: sha256:9c3e62e5bc53fc0d
+- requirement_id_prefix: VWAY-SUP.8-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 86
+  clause: SUP.8.BP5
+  element: Base Practice
+  source_text: Establish baselines. Define and establish baselines for internal purposes, and for external product delivery, for all relevant configuration items.
+  source_text_hash: sha256:34dbfe69f484ded3
+- requirement_id_prefix: VWAY-SUP.8-BP6
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 86
+  clause: SUP.8.BP6
+  element: Base Practice
+  source_text: Summarize and communicate configuration status. Record, summarize, and communicate the status of configuration items and established baselines to affected parties in order to support the
+    monitoring of
+  source_text_hash: sha256:b80d208a088563f9
+- requirement_id_prefix: VWAY-SUP.8-BP7
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 86
+  clause: SUP.8.BP7
+  element: Base Practice
+  source_text: Ensure completeness and consistency. Ensure that the information about configuration items is correct and complete including configuration item properties. Ensure the completeness and consistency
+    of b
+  source_text_hash: sha256:97e349a2fc1c77ed
+- requirement_id_prefix: VWAY-SUP.8-BP8
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 86
+  clause: SUP.8.BP8
+  element: Base Practice
+  source_text: Verify backup and recovery mechanisms availability. Verify the availability of appropriate backup and recovery mechanisms for the configuration management including the controlled configuration
+    items.
+  source_text_hash: sha256:1b56bfd8873eb80b
+- requirement_id_prefix: VWAY-SUP.9-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 88
+  clause: SUP.9
+  element: Process purpose
+  source_text: The purpose of the Problem Resolution Management Process is to ensure that problems are identified, recorded, analyzed, and their resolution is managed and controlled.
+  source_text_hash: sha256:a4d50e7bdfc6b244
+- requirement_id_prefix: VWAY-SUP.9-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 88
+  clause: SUP.9.BP1
+  element: Base Practice
+  source_text: Identify and record the problem. Each problem is uniquely identified, described and recorded. A status is assigned to each problem to facilitate tracking. Supporting information is provided
+    to reprodu
+  source_text_hash: sha256:f31498ff870f4cff
+- requirement_id_prefix: VWAY-SUP.9-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 88
+  clause: SUP.9.BP2
+  element: Base Practice
+  source_text: 'Determine the cause and the impact of the problem. Analyze the problem, determine its cause, including common causes if existing, and impact. Involve relevant parties. Categorize the problem.
+    NOTE 5: '
+  source_text_hash: sha256:dd0054260496a334
+- requirement_id_prefix: VWAY-SUP.9-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 88
+  clause: SUP.9.BP3
+  element: Base Practice
+  source_text: Authorize urgent resolution action. Obtain authorization for immediate action if a problem requires an urgent resolution according to the categorization.
+  source_text_hash: sha256:20a0646e4713d6fb
+- requirement_id_prefix: VWAY-SUP.9-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 88
+  clause: SUP.9.BP4
+  element: Base Practice
+  source_text: Raise alert notifications. If according to the categorization the problem has a high impact on other systems or other affected parties, an alert notification needs to be raised accordingly.
+  source_text_hash: sha256:c6bca2c378cb3fc8
+- requirement_id_prefix: VWAY-SUP.9-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 88
+  clause: SUP.9.BP5
+  element: Base Practice
+  source_text: Initiate problem resolution. Initiate appropriate actions according to the categorization to resolve the problem long-term, including review of those actions or initiate a change request.
+    This include
+  source_text_hash: sha256:0469223cb1ca2ee4
+- requirement_id_prefix: VWAY-SUP.9-BP6
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 88
+  clause: SUP.9.BP6
+  element: Base Practice
+  source_text: Track problems to closure. Track the status of problems to closure including all related change requests. The closure of problems is accepted by relevant stakeholders.
+  source_text_hash: sha256:f779303473cff4cc
+- requirement_id_prefix: VWAY-SUP.9-BP7
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 88
+  clause: SUP.9.BP7
+  element: Base Practice
+  source_text: Report the status of problem resolution activities. Collect and analyze problem resolution management data, identify trends, and initiate related actions. Regularly report the results of
+    data analysis
+  source_text_hash: sha256:293ff07756c86c14
+- requirement_id_prefix: VWAY-SWE.1-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 48
+  clause: SWE.1
+  element: Process purpose
+  source_text: The purpose is to establish a structured and analyzed set of software requirements consistent with the system requirements, and the system architecture.
+  source_text_hash: sha256:a3f877c2a717c5d2
+- requirement_id_prefix: VWAY-SWE.1-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 48
+  clause: SWE.1.BP1
+  element: Base Practice
+  source_text: Specify software requirements. Use the system requirements and the system architecture to identify and document the functional and non-functional requirements for the software according to
+    defined cha
+  source_text_hash: sha256:47e1329e0289f78c
+- requirement_id_prefix: VWAY-SWE.1-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 48
+  clause: SWE.1.BP2
+  element: Base Practice
+  source_text: 'Structure software requirements. Structure and prioritize the software requirements. Note 5: Examples for structuring criteria can be grouping (e.g., by functionality) or expressing product
+    variants. '
+  source_text_hash: sha256:baef5d0451ef7168
+- requirement_id_prefix: VWAY-SWE.1-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 48
+  clause: SWE.1.BP3
+  element: Base Practice
+  source_text: Analyze software requirements. Analyze the specified software requirements including their interdependencies to ensure correctness, technical feasibility, and to support project management
+    regarding p
+  source_text_hash: sha256:482fa94c1fe2574f
+- requirement_id_prefix: VWAY-SWE.1-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 48
+  clause: SWE.1.BP4
+  element: Base Practice
+  source_text: Analyze the impact on the operating environment. Analyze the impact that the software requirements will have on elements in the operating environment.
+  source_text_hash: sha256:4a137af55e9c6bfa
+- requirement_id_prefix: VWAY-SWE.1-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 48
+  clause: SWE.1.BP5
+  element: Base Practice
+  source_text: Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between software requirements and system architecture. Ensure consistency
+    and e
+  source_text_hash: sha256:bafca04b3d13d262
+- requirement_id_prefix: VWAY-SWE.1-BP6
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 48
+  clause: SWE.1.BP6
+  element: Base Practice
+  source_text: 'Communicate agreed software requirements and impact on the operating environment. Communicate the agreed software requirements, and the results of the analysis of impact on the operating
+    environment, '
+  source_text_hash: sha256:e587c56b49abfb74
+- requirement_id_prefix: VWAY-SWE.2-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 50
+  clause: SWE.2
+  element: Process purpose
+  source_text: The purpose is to establish an analyzed software architecture, comprising static and dynamic aspects, consistent with the software requirements.
+  source_text_hash: sha256:f0c8259e9244f10d
+- requirement_id_prefix: VWAY-SWE.2-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 50
+  clause: SWE.2.BP1
+  element: Base Practice
+  source_text: Specify static aspects of the software architecture. Specify and document the static aspects of the software architecture with respect to the functional and non-functional software requirements,
+    inclu
+  source_text_hash: sha256:b45167284abdabb0
+- requirement_id_prefix: VWAY-SWE.2-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 50
+  clause: SWE.2.BP2
+  element: Base Practice
+  source_text: Specify dynamic aspects of the software architecture. Specify and document the dynamic aspects of the software architecture with respect to the functional and non- functional software requirements,
+    in
+  source_text_hash: sha256:ebfbc2b728ce2c8a
+- requirement_id_prefix: VWAY-SWE.2-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 50
+  clause: SWE.2.BP3
+  element: Base Practice
+  source_text: Analyze software architecture. Analyze the software architecture regarding relevant technical design aspects and to support project management regarding project estimates. Document a rationale
+    for the
+  source_text_hash: sha256:4026142e345a1f51
+- requirement_id_prefix: VWAY-SWE.2-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 50
+  clause: SWE.2.BP4
+  element: Base Practice
+  source_text: 'Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between the software architecture and the software requirements.
+    Note 9: There '
+  source_text_hash: sha256:ca83e607f0ddc5ff
+- requirement_id_prefix: VWAY-SWE.2-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 50
+  clause: SWE.2.BP5
+  element: Base Practice
+  source_text: Communicate agreed software architecture. Communicate the agreed software architecture to all affected parties. SWE.2 Software Architectural Design
+  source_text_hash: sha256:1e85c4d810d441ee
+- requirement_id_prefix: VWAY-SWE.3-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 52
+  clause: SWE.3
+  element: Process purpose
+  source_text: The purpose is to establish a software detailed design, comprising static and dynamic aspects, consistent with the software architecture, and to construct software units consistent with the
+    software d
+  source_text_hash: sha256:09328fb6e1143418
+- requirement_id_prefix: VWAY-SWE.3-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 52
+  clause: SWE.3.BP1
+  element: Base Practice
+  source_text: 'Specify the static aspects of the detailed design. For each software component specify the behavior of its software units, their static structure and relationships, their interfaces including
+    • valid '
+  source_text_hash: sha256:7e2c040a3cd94bf0
+- requirement_id_prefix: VWAY-SWE.3-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 52
+  clause: SWE.3.BP2
+  element: Base Practice
+  source_text: Specify dynamic aspects of the detailed design. Specify and document the dynamic aspects of the detailed design with respect to the software architecture, including the interactions between
+    relevant s
+  source_text_hash: sha256:63637e6d2b58268f
+- requirement_id_prefix: VWAY-SWE.3-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 52
+  clause: SWE.3.BP3
+  element: Base Practice
+  source_text: 'Develop software units. Develop and document the software units consistent with the detailed design, and according to coding principles. Note 7: Examples for coding principles at capability
+    level 1 ar'
+  source_text_hash: sha256:1e9f78d8426be715
+- requirement_id_prefix: VWAY-SWE.3-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 52
+  clause: SWE.3.BP4
+  element: Base Practice
+  source_text: Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between the software detailed design and the software architecture.
+    Ensure cons
+  source_text_hash: sha256:c178f1e95519f2c2
+- requirement_id_prefix: VWAY-SWE.3-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 52
+  clause: SWE.3.BP5
+  element: Base Practice
+  source_text: 'Communicate agreed software detailed design and developed software units. Communicate the agreed software detailed design and developed software units to all affected parties. SWE.3 Software
+    Detailed '
+  source_text_hash: sha256:402c0dc728955288
+- requirement_id_prefix: VWAY-SWE.4-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 55
+  clause: SWE.4
+  element: Process purpose
+  source_text: The purpose is to verify that software units are consistent with the software detailed design.
+  source_text_hash: sha256:3e9635692d9b45b6
+- requirement_id_prefix: VWAY-SWE.4-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 55
+  clause: SWE.4.BP1
+  element: Base Practice
+  source_text: Specify software unit verification measures. Specify verification measures for each software unit defined in the software detailed design, including • pass/fail criteria for verification
+    measures, • e
+  source_text_hash: sha256:4c70863f97d66336
+- requirement_id_prefix: VWAY-SWE.4-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 55
+  clause: SWE.4.BP2
+  element: Base Practice
+  source_text: Select software unit verification measures. Document the selection of verification measures considering selection criteria including criteria for regression verification. The documented selection
+    of v
+  source_text_hash: sha256:da5d595c528ce23c
+- requirement_id_prefix: VWAY-SWE.4-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 55
+  clause: SWE.4.BP3
+  element: Base Practice
+  source_text: Verify software units. Perform software unit verification using the selected verification measures. Record the verification results including pass/fail status and corresponding verification
+    measure da
+  source_text_hash: sha256:44991bfc920f03c3
+- requirement_id_prefix: VWAY-SWE.4-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 55
+  clause: SWE.4.BP4
+  element: Base Practice
+  source_text: Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between verification measures and the software units defined in the
+    detailed de
+  source_text_hash: sha256:a056bc907db28b28
+- requirement_id_prefix: VWAY-SWE.4-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 55
+  clause: SWE.4.BP5
+  element: Base Practice
+  source_text: 'Summarize and communicate results. Summarize the results of software unit verification and communicate them to all affected parties. Note 5: Providing all necessary information from the
+    test case exec'
+  source_text_hash: sha256:e3459b68b359d733
+- requirement_id_prefix: VWAY-SWE.5-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 57
+  clause: SWE.5
+  element: Process purpose
+  source_text: 'PUBLIC The purpose is to verify that software components are consistent with the software architectural design, and to integrate software elements and verify that the integrated software
+    elements are '
+  source_text_hash: sha256:b5476b944a4ab296
+- requirement_id_prefix: VWAY-SWE.5-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 57
+  clause: SWE.5.BP1
+  element: Base Practice
+  source_text: Specify software integration verification measures. Specify verification measures, based on a defined sequence and preconditions for the integration of software elements, against the defined
+    static an
+  source_text_hash: sha256:2f0a14bd3d0f2c11
+- requirement_id_prefix: VWAY-SWE.5-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 57
+  clause: SWE.5.BP2
+  element: Base Practice
+  source_text: Specify verification measures for verifying software component behavior. Specify verification measures for software component verification against the defined software components’ behavior
+    and their i
+  source_text_hash: sha256:db66451084ad5ec5
+- requirement_id_prefix: VWAY-SWE.5-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 57
+  clause: SWE.5.BP3
+  element: Base Practice
+  source_text: Select verification measures. Document the selection of integration verification measures for each integration step considering selection criteria including criteria for regression verification.
+    The d
+  source_text_hash: sha256:9bf8dc876aa233ed
+- requirement_id_prefix: VWAY-SWE.5-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 57
+  clause: SWE.5.BP4
+  element: Base Practice
+  source_text: 'Integrate software elements and perform integration verification. Integrate the software elements until the software is fully integrated according to the specified interfaces and interactions
+    between '
+  source_text_hash: sha256:fa5063a8236721dc
+- requirement_id_prefix: VWAY-SWE.5-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 57
+  clause: SWE.5.BP5
+  element: Base Practice
+  source_text: Perform software component verification. Perform the selected verification measures for verifying software component behavior. Record the verification results including pass/fail status and
+    correspond
+  source_text_hash: sha256:f6d5dc8174f34a8f
+- requirement_id_prefix: VWAY-SWE.5-BP6
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 57
+  clause: SWE.5.BP6
+  element: Base Practice
+  source_text: Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between verification measures and the static and dynamic aspects of
+    the softwar
+  source_text_hash: sha256:567f47aa1c132648
+- requirement_id_prefix: VWAY-SWE.5-BP7
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 57
+  clause: SWE.5.BP7
+  element: Base Practice
+  source_text: 'Summarize and communicate results. Summarize the software component verification and the software integration verification results and communicate them to all affected parties. Note 10:
+    Providing all '
+  source_text_hash: sha256:5ffeab8a0eb488e1
+- requirement_id_prefix: VWAY-SWE.6-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 60
+  clause: SWE.6
+  element: Process purpose
+  source_text: The purpose of the Software Verification process is to ensure that the integrated software is verified to be consistent with the software requirements.
+  source_text_hash: sha256:90c503f5d877df0d
+- requirement_id_prefix: VWAY-SWE.6-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 60
+  clause: SWE.6.BP1
+  element: Base Practice
+  source_text: Specify verification measures for software verification. Specify the verification measures for software verification suitable to provide evidence for compliance of the integrated software
+    with the fun
+  source_text_hash: sha256:a23c85dcbc939c3d
+- requirement_id_prefix: VWAY-SWE.6-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 60
+  clause: SWE.6.BP2
+  element: Base Practice
+  source_text: Select verification measures. Document the selection of verification measures considering selection criteria including criteria for regression verification. The documented selection of verification
+    me
+  source_text_hash: sha256:575a80fd14be98bf
+- requirement_id_prefix: VWAY-SWE.6-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 60
+  clause: SWE.6.BP3
+  element: Base Practice
+  source_text: Verify the integrated software. Perform the verification of the integrated software using the selected verification measures. Record the verification results including pass/fail status and
+    correspondi
+  source_text_hash: sha256:8a5d414be5d4189f
+- requirement_id_prefix: VWAY-SWE.6-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 60
+  clause: SWE.6.BP4
+  element: Base Practice
+  source_text: Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between verification measures and software requirements. Establish
+    bidirectiona
+  source_text_hash: sha256:ef3bdc675bb2e881
+- requirement_id_prefix: VWAY-SWE.6-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 60
+  clause: SWE.6.BP5
+  element: Base Practice
+  source_text: 'Summarize and communicate results. Summarize the software verification results and communicate them to all affected parties. Note 5: Providing all necessary information from the test case
+    execution in'
+  source_text_hash: sha256:363e7d42d6673b9e
+- requirement_id_prefix: VWAY-SYS.1-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 37
+  clause: SYS.1
+  element: Process purpose
+  source_text: The purpose is to gather, analyze, and track evolving stakeholder needs and requirements throughout the lifecycle of the product and/or service to establish a set of agreed requirements.
+  source_text_hash: sha256:694c9e4569e91395
+- requirement_id_prefix: VWAY-SYS.1-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 37
+  clause: SYS.1.BP1
+  element: Base Practice
+  source_text: Obtain stakeholder expectations and requests. Obtain and define stakeholder expectations and requests through direct solicitation of stakeholder input, and through review of stakeholder business
+    propo
+  source_text_hash: sha256:5fde32faa874fde4
+- requirement_id_prefix: VWAY-SYS.1-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 37
+  clause: SYS.1.BP2
+  element: Base Practice
+  source_text: 'Agree on requirements. Formalize the stakeholder’s expectations and requests into requirements. Reach a common understanding of the set of stakeholder requirements among affected parties
+    by obtaining '
+  source_text_hash: sha256:df88a596eae81b51
+- requirement_id_prefix: VWAY-SYS.1-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 37
+  clause: SYS.1.BP3
+  element: Base Practice
+  source_text: Analyze stakeholder requirements changes. Analyze all changes made to the stakeholder requirements against the agreed stakeholder requirements. Assess the impact and risks, and initiate appropriate
+    ch
+  source_text_hash: sha256:e53b7ac3e93765a7
+- requirement_id_prefix: VWAY-SYS.1-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 37
+  clause: SYS.1.BP4
+  element: Base Practice
+  source_text: Communicate requirements status. Ensure all affected parties can be aware of the status and disposition of their requirements including changes and can communicate necessary information and
+    data. SYS.
+  source_text_hash: sha256:1a30d5f4aa129606
+- requirement_id_prefix: VWAY-SYS.2-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 39
+  clause: SYS.2
+  element: Process purpose
+  source_text: The purpose is to establish a structured and analyzed set of system requirements consistent with the stakeholder requirements.
+  source_text_hash: sha256:88561b8cf307be2c
+- requirement_id_prefix: VWAY-SYS.2-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 39
+  clause: SYS.2.BP1
+  element: Base Practice
+  source_text: Specify system requirements. Use the stakeholder requirements to identify and document the functional and non-functional requirements for the system according to defined characteristics for
+    requiremen
+  source_text_hash: sha256:167d9f71624769d8
+- requirement_id_prefix: VWAY-SYS.2-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 39
+  clause: SYS.2.BP2
+  element: Base Practice
+  source_text: 'Structure system requirements. Structure and prioritize the system requirements. Note 3: Examples for structuring criteria can be grouping (e.g., by functionality) or product variants identification. '
+  source_text_hash: sha256:38beed1e84234be5
+- requirement_id_prefix: VWAY-SYS.2-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 39
+  clause: SYS.2.BP3
+  element: Base Practice
+  source_text: Analyze system requirements. Analyze the specified system requirements including their interdependencies to ensure correctness, technical feasibility, and to support project management regarding
+    proje
+  source_text_hash: sha256:cf221f8c7d97cd30
+- requirement_id_prefix: VWAY-SYS.2-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 39
+  clause: SYS.2.BP4
+  element: Base Practice
+  source_text: Analyze the impact on the system context. Analyze the impact that the system requirements will have on elements in the relevant system context.
+  source_text_hash: sha256:eeea1ba428f5920e
+- requirement_id_prefix: VWAY-SYS.2-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 39
+  clause: SYS.2.BP5
+  element: Base Practice
+  source_text: 'Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between system requirements and stakeholder requirements. Note 7:
+    Bidirectional'
+  source_text_hash: sha256:f30911fdcd113198
+- requirement_id_prefix: VWAY-SYS.2-BP6
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 39
+  clause: SYS.2.BP6
+  element: Base Practice
+  source_text: 'Communicate agreed system requirements and impact on the system context. Communicate the agreed system requirements, and results of the impact analysis on the system context, to all affected
+    parties. '
+  source_text_hash: sha256:17716d8b63fecab2
+- requirement_id_prefix: VWAY-SYS.3-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 41
+  clause: SYS.3
+  element: Process purpose
+  source_text: The purpose is to establish an analyzed system architecture, comprising static and dynamic aspects, consistent with the system requirements.
+  source_text_hash: sha256:9c91b529f691deab
+- requirement_id_prefix: VWAY-SYS.3-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 41
+  clause: SYS.3.BP1
+  element: Base Practice
+  source_text: Specify static aspects of the system architecture. Specify and document the static aspects of the system architecture with respect to the functional and non-functional system requirements,
+    including e
+  source_text_hash: sha256:b7763b5cbfc46da7
+- requirement_id_prefix: VWAY-SYS.3-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 41
+  clause: SYS.3.BP2
+  element: Base Practice
+  source_text: 'Specify dynamic aspects of the system architecture. Specify and document the dynamic aspects of the system architecture with respect to the functional and non-functional system requirements
+    including '
+  source_text_hash: sha256:ac95628c32f05c10
+- requirement_id_prefix: VWAY-SYS.3-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 41
+  clause: SYS.3.BP3
+  element: Base Practice
+  source_text: Analyze system architecture. Analyze the system architecture regarding relevant technical design aspects related to the product lifecycle, and to support project management regarding project
+    estimates
+  source_text_hash: sha256:9b52b7edba7796a7
+- requirement_id_prefix: VWAY-SYS.3-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 41
+  clause: SYS.3.BP4
+  element: Base Practice
+  source_text: Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between the elements of the system architecture and the system requirements
+    tha
+  source_text_hash: sha256:1835a697d64595fb
+- requirement_id_prefix: VWAY-SYS.3-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 41
+  clause: SYS.3.BP5
+  element: Base Practice
+  source_text: Communicate agreed system architecture. Communicate the agreed system architecture, including the special characteristics, to all affected parties. SYS.3 System Architectural Design
+  source_text_hash: sha256:f21fc4685a48eaf7
+- requirement_id_prefix: VWAY-SYS.4-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 43
+  clause: SYS.4
+  element: Process purpose
+  source_text: The purpose is to integrate systems elements and verify that the integrated system elements are consistent with the system architecture.
+  source_text_hash: sha256:65a6888c7bd34bf6
+- requirement_id_prefix: VWAY-SYS.4-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 43
+  clause: SYS.4.BP1
+  element: Base Practice
+  source_text: 'Specify verification measures for system integration. Specify the verification measures, based on a defined sequence and preconditions for the integration of system elements against the
+    system static '
+  source_text_hash: sha256:4645526498f55594
+- requirement_id_prefix: VWAY-SYS.4-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 43
+  clause: SYS.4.BP2
+  element: Base Practice
+  source_text: Select verification measures. Document the selection of verification measures for each integration step considering selection criteria including criteria for regression verification. The
+    documented se
+  source_text_hash: sha256:18c9da533c478752
+- requirement_id_prefix: VWAY-SYS.4-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 43
+  clause: SYS.4.BP3
+  element: Base Practice
+  source_text: Integrate system elements and perform integration verification. Integrate the system elements until the system is fully integrated according to the specified interfaces and interactions between
+    the sy
+  source_text_hash: sha256:2121bcd496357ff7
+- requirement_id_prefix: VWAY-SYS.4-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 43
+  clause: SYS.4.BP4
+  element: Base Practice
+  source_text: Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between verification measures and the system architecture. Establish
+    bidirectio
+  source_text_hash: sha256:ebf9cfa1ef5a028e
+- requirement_id_prefix: VWAY-SYS.4-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 43
+  clause: SYS.4.BP5
+  element: Base Practice
+  source_text: 'Summarize and communicate results. Summarize the system integration and integration verification results and communicate them to all affected parties. Note 6: Providing all necessary information
+    from '
+  source_text_hash: sha256:e1610daa92df3fac
+- requirement_id_prefix: VWAY-SYS.5-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 46
+  clause: SYS.5
+  element: Process purpose
+  source_text: The purpose is to ensure that the system is verified to be consistent with the system requirements.
+  source_text_hash: sha256:a1079354bfc2e3a8
+- requirement_id_prefix: VWAY-SYS.5-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 46
+  clause: SYS.5.BP1
+  element: Base Practice
+  source_text: Specify verification measures for system verification. Specify the verification measures for system verification suitable to provide evidence for compliance with the functional and non-functional
+    info
+  source_text_hash: sha256:3e10c8b5807e122e
+- requirement_id_prefix: VWAY-SYS.5-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 46
+  clause: SYS.5.BP2
+  element: Base Practice
+  source_text: Select verification measures. Document the selection of verification measures considering selection criteria including criteria for regression verification. The selection of verification
+    measures shal
+  source_text_hash: sha256:6441e1360f8fa59d
+- requirement_id_prefix: VWAY-SYS.5-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 46
+  clause: SYS.5.BP3
+  element: Base Practice
+  source_text: Perform verification of the integrated system. Perform the verification of the integrated system using the selected verification measures. Record the verification results including pass/fail
+    status an
+  source_text_hash: sha256:8fe8bf72fd164236
+- requirement_id_prefix: VWAY-SYS.5-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 46
+  clause: SYS.5.BP4
+  element: Base Practice
+  source_text: 'Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability between verification measures and system requirements. Establish
+    bidirectional '
+  source_text_hash: sha256:73e1070dd2cc2745
+- requirement_id_prefix: VWAY-SYS.5-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 46
+  clause: SYS.5.BP5
+  element: Base Practice
+  source_text: 'Summarize and communicate results. Summarize the system verification results and communicate them to all affected parties. Note 5: Providing all necessary information from the test case
+    execution in a'
+  source_text_hash: sha256:1299903712d18c37
+- requirement_id_prefix: VWAY-VAL.1-PURPOSE
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 63
+  clause: VAL.1
+  element: Process purpose
+  source_text: The purpose is to provide evidence that the end product, allowing direct end user interaction, satisfies the intended use expectations in its operational target environment.
+  source_text_hash: sha256:74f0bd6cb5a3531c
+- requirement_id_prefix: VWAY-VAL.1-BP1
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 63
+  clause: VAL.1.BP1
+  element: Base Practice
+  source_text: Specify validation measures for product validation. Specify the validation measures for the end product based on the stakeholder requirements to provide evidence that it fulfills its intended
+    use expe
+  source_text_hash: sha256:033cc36f815d4726
+- requirement_id_prefix: VWAY-VAL.1-BP2
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 63
+  clause: VAL.1.BP2
+  element: Base Practice
+  source_text: Select validation measures. Document the selection of validation measures considering selection criteria including criteria for regression validation. The documented selection of validation
+    measures s
+  source_text_hash: sha256:a767bd953078b5ab
+- requirement_id_prefix: VWAY-VAL.1-BP3
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 63
+  clause: VAL.1.BP3
+  element: Base Practice
+  source_text: Perform validation and evaluate results. Perform the validation of the integrated end product using the selected validation measures. Record the validation results including pass/fail status.
+    Evaluate
+  source_text_hash: sha256:9b755e6c5d39a0f9
+- requirement_id_prefix: VWAY-VAL.1-BP4
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 63
+  clause: VAL.1.BP4
+  element: Base Practice
+  source_text: Ensure consistency and establish bidirectional traceability. Ensure consistency and establish bidirectional traceability from validation measures to the stakeholder requirements from which
+    they are de
+  source_text_hash: sha256:c980b138fc8d1769
+- requirement_id_prefix: VWAY-VAL.1-BP5
+  source_file: sources/ASPICE4.pdf
+  estimated_page: 63
+  clause: VAL.1.BP5
+  element: Base Practice
+  source_text: 'Summarize and communicate results. Summarize the validation results and communicate them to all affected parties. Note 10: Providing all necessary information from the test case execution
+    in a summary'
+  source_text_hash: sha256:2b4ebf960a14f455
