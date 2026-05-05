@@ -1,6 +1,6 @@
 ---
 description: '표준 문서 전처리 (차원 0 Ingest) — sources/ 의 PDF·DOCX·PPTX 등을 추출·정규화·요구사항화하여 inputs/ 에 정제된 YAML·MD 패키지로 변환. /process-plan 의 선행 필수 단계. 사용: /process-ingest sources/ISO9001.pdf --standard ISO9001 --version 2015'
-argument-hint: "<source_file> --standard <ID> [--version <ver>] [--category <01-05>] [--mode delta --base-version <ver>] | --confirm <standard_id> [--mode delta] | --status <standard_id> | --list [--category <01-05>]"
+argument-hint: "<source_file> --standard <ID> [--version <ver>] [--category <01-05>] [--ocr] [--mode delta --base-version <ver>] | --confirm <standard_id> [--mode delta] | --status <standard_id> | --list [--category <01-05>]"
 ---
 
 # 표준 문서 전처리 파이프라인 (차원 0 Ingest)
@@ -14,7 +14,7 @@ argument-hint: "<source_file> --standard <ID> [--version <ver>] [--category <01-
 ## 0. 핵심 원칙
 
 - **소스와 산출물 분리**: 원본 파일은 `sources/` 에서만. `inputs/` 는 ingest 출력 전용 — 바이너리 파일 진입 절대 금지.
-- **스캔본 즉시 중단**: OCR 처리 범위 외. 스캔본 감지 시 텍스트 변환 후 재투입 안내 + 작업 정지.
+- **스캔본 처리 정책**: `--ocr` 플래그 없으면 즉시 중단. `--ocr` 지정 시 `ocrmypdf`(Tesseract 백엔드)로 자동 OCR 처리 후 계속 진행. OCR 처리된 파일은 `_state.yaml.ocr_processed: true` 마킹.
 - **HITL 강제 게이트**: Phase 7 QA 완료 후 반드시 사람이 검토·확인해야 Phase 8 실행 가능. 자동 통과 없음.
 - **입력 불변**: `sources/` 원본은 본 커맨드가 절대 수정하지 않는다. 읽기 전용.
 - **멱등성**: 동일 standard_id 재실행 시 기존 outputs 덮어쓰기 전 사용자 확인.
@@ -156,19 +156,61 @@ counts:
 
 2-2. **스캔본 감지** (PDF 한정):
   - 추출 텍스트가 전체 페이지 평균 **100자 미만** 이면 스캔본으로 판단.
-  - 즉시 중단:
-    ```
-    ❌ 스캔본 PDF 감지 — 작업 중단
-    이 파일은 이미지 기반 PDF(스캔본)입니다. OCR 처리는 지원하지 않습니다.
-    
-    조치:
-      1. Adobe Acrobat / ABBYY FineReader / AWS Textract 등으로 텍스트 변환
-      2. 변환된 텍스트 파일을 sources/ 에 배치
-      3. /process-ingest 재실행
-    
-    파일: sources/ISO9001_2015.pdf
-    ```
-  - `_state.yaml.overall_status: aborted` + `abort_reason: scanned_pdf`.
+
+  **`--ocr` 플래그 없는 경우** → 즉시 중단:
+  ```
+  ❌ 스캔본 PDF 감지 — 작업 중단
+  이 파일은 이미지 기반 PDF(스캔본)입니다.
+
+  OCR로 자동 처리하려면:
+    /process-ingest sources/ISO9001_2015.pdf --standard ISO9001 --ocr
+
+  또는 외부 도구로 텍스트 변환 후 재투입:
+    1. Adobe Acrobat / ABBYY FineReader 등으로 텍스트 PDF 변환
+    2. 변환 파일을 sources/ 에 배치 후 재실행
+  ```
+  `_state.yaml.overall_status: aborted` + `abort_reason: scanned_pdf`.
+
+  **`--ocr` 플래그 있는 경우** → OCR 처리 분기 (Phase 2-OCR):
+
+  2-OCR-1. `ocrmypdf` 설치 확인:
+  ```bash
+  which ocrmypdf
+  ```
+  미설치 시:
+  ```
+  ❌ ocrmypdf 미설치 — OCR 처리 불가
+  설치 방법: brew install ocrmypdf
+  설치 후 재실행하세요.
+  ```
+  `_state.yaml.overall_status: aborted` + `abort_reason: ocrmypdf_not_found`.
+
+  2-OCR-2. OCR 실행:
+  ```bash
+  ocrmypdf --force-ocr -l kor+eng \
+    sources/ISO9001_2015.pdf \
+    .claude/runs/ingest_{standard_slug}/ocr_output.pdf
+  ```
+  - `-l kor+eng`: 한국어 + 영어 동시 인식 (한글 문서 대응).
+  - `--force-ocr`: 기존 텍스트 레이어 무시 후 재인식 (혼합 PDF 대응).
+  - 출력 파일은 `.claude/runs/ingest_{standard_slug}/` 임시 디렉터리. `sources/` 와 `inputs/` 에는 쓰지 않는다.
+
+  2-OCR-3. OCR 성공 시 → OCR'd PDF 에서 텍스트 재추출 → 이후 Phase 2-3 이상 정상 진행.
+
+  2-OCR-4. `_state.yaml` 에 OCR 마킹:
+  ```yaml
+  ocr_processed: true
+  ocr_tool: ocrmypdf
+  ocr_lang: kor+eng
+  ocr_completed_at: "ISO8601"
+  ```
+
+  2-OCR-5. OCR 품질 경고: 추출 텍스트가 여전히 페이지 평균 100자 미만이면:
+  ```
+  ⚠️ OCR 후에도 텍스트 추출이 불충분합니다.
+  스캔 품질이 낮거나 손상된 파일일 수 있습니다.
+  계속 진행하시겠습니까? (Y/N)
+  ```
 
 2-3. 추출된 텍스트 → `inputs/<category>/<standard_id>/clauses.md` 임시 저장 (raw).  
 2-4. 페이지번호·헤더·푸터·목차 페이지 제거.  
@@ -525,7 +567,7 @@ D-5. confirm 후 기존 `requirements.yaml` 에 delta 반영 + `_state.yaml` 버
 - **`sources/` 읽기 전용**: 원본 파일 절대 수정 안 함.
 - **`inputs/` 바이너리 금지**: 본 커맨드가 `inputs/` 에 쓰는 파일은 YAML·MD·TXT 만 허용. 바이너리 생성 시 버그로 간주.
 - **`vault/` 불가침**: 본 커맨드는 `vault/` 어떤 파일도 읽거나 쓰지 않는다.
-- **스캔본 즉시 중단**: 감지 즉시 abort, 부분 처리 파일 정리 후 종료.
+- **스캔본**: `--ocr` 없으면 즉시 abort. `--ocr` 있으면 `ocrmypdf` 자동 처리. OCR 임시 파일은 `.claude/runs/ingest_*/` 에만 저장 — `sources/`·`inputs/` 에는 절대 쓰지 않음.
 - **재실행 보호**: `overall_status: done` 상태에서 재실행 시 반드시 사용자 확인.
 
 ---

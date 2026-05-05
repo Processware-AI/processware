@@ -73,7 +73,12 @@ confidence_threshold: 75
    - best candidate confidence < 30% → `status: no_match`.
    - WI 카탈로그 항목이 없는 표준 코드 → `status: no_match`.
 
-3-5. **confidence 등급**:
+3-5. **OCR 패널티 적용**:
+   해당 파일의 `ocr_processed: true` 이면 가중 합산 점수에 **× 0.85** 패널티 적용 후 confidence 산출.
+   이유: OCR 텍스트는 오인식으로 키워드 오버랩 정확도가 낮음.
+   `mapping_draft.yaml` 에 `ocr_penalty_applied: true` 기록.
+
+3-6. **confidence 등급**:
    | 범위 | 등급 | 표시 |
    |---|---|---|
    | ≥ 75% | 고신뢰 | ✅ |
@@ -81,7 +86,8 @@ confidence_threshold: 75
    | < 50% or no_match | 불가 | ❌ |
 
    ⚠️ (50–74%) 항목은 HITL 에서 사람이 수정 권장.  
-   ❌ 항목은 HITL 화면에서 자동 제외 예정임을 명시.
+   ❌ 항목은 HITL 화면에서 자동 제외 예정임을 명시.  
+   OCR 처리 파일은 패널티로 인해 ⚠️ 비율이 높아질 수 있음 — HITL 에서 수동 확인 필요.
 
 ### Phase 4. mapping_draft.yaml 생성
 

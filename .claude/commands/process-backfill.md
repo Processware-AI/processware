@@ -1,6 +1,6 @@
 ---
 description: 'REC 백필 (기존 산출물 → REC 변환) — 레거시 문서(DOCX/XLSX/PDF 등)를 WI 자동 매칭 후 표준 REC 로 변환. 배치·단건 모두 지원. 사용: /process-backfill <path> | --confirm <trace> | --resume <trace> | --status <trace> | --list'
-argument-hint: "<파일|폴더> [--wi WI-XX] [--backfiller <이름>] [--date YYYY-MM] [--dry-run] | --confirm <trace_id> | --resume <trace_id> | --status <trace_id> | --list"
+argument-hint: "<파일|폴더> [--wi WI-XX] [--backfiller <이름>] [--date YYYY-MM] [--ocr] [--dry-run] | --confirm <trace_id> | --resume <trace_id> | --status <trace_id> | --list"
 ---
 
 # REC 백필 하네스
@@ -32,7 +32,8 @@ argument-hint: "<파일|폴더> [--wi WI-XX] [--backfiller <이름>] [--date YYY
 /process-backfill sources/sprint_review.docx               # 단건
 /process-backfill sources/old_docs/ --backfiller "홍길동" --date 2026-03
 /process-backfill sources/old.docx --wi WI-CMMI-04-01-03   # 단건 + 수동 WI 지정
-/process-backfill sources/old_docs/ --dry-run              # 미리보기 (파일 미생성)
+/process-backfill sources/scan.pdf --ocr                   # 스캔본 PDF OCR 처리
+/process-backfill sources/old_docs/ --ocr --dry-run        # 스캔본 포함 폴더 미리보기
 ```
 
 `--wi` 는 단건 전용. 폴더 배치 시 `--wi` 지정은 무시하고 자동 매칭 적용.
@@ -93,10 +94,46 @@ files: []             # Phase 1 완료 후 채워짐
 | DOCX / DOC | XML 파싱 → 단락·표 추출 |
 | XLSX / XLS | 시트별 셀 값 추출 |
 | PPTX / PPT | 슬라이드별 텍스트 추출 |
-| PDF | 텍스트 레이어 추출 (이미지 기반 PDF 감지 시 해당 파일 ❌ 제외 + 로그) |
+| PDF (텍스트 기반) | 텍스트 레이어 추출 |
+| PDF (스캔본) | `--ocr` 없으면 ❌ 제외 / `--ocr` 있으면 Phase 2-OCR 분기 |
 
-2-2. 추출 결과를 `.claude/runs/{trace_id}/extracts/{파일명}.txt` 에 저장.  
-2-3. 추출 실패 파일은 state.yaml `files[].status: extract_failed` 로 표시 + 제외.
+2-2. **스캔본 PDF 감지**: 페이지 평균 추출 텍스트 100자 미만.
+
+  **`--ocr` 없는 경우**: `files[].status: excluded_scan_no_ocr` 로 제외 + 로그.
+  ```
+  ⚠️ scan.pdf — 스캔본 PDF (OCR 처리 필요). 제외됨.
+     처리하려면: /process-backfill <path> --ocr
+  ```
+
+  **`--ocr` 있는 경우** → Phase 2-OCR 분기:
+
+  2-OCR-1. `ocrmypdf` 설치 확인 (`which ocrmypdf`). 미설치 시 즉시 abort:
+  ```
+  ❌ ocrmypdf 미설치 — OCR 처리 불가
+  설치: brew install ocrmypdf
+  ```
+
+  2-OCR-2. OCR 실행 (스캔본 파일별):
+  ```bash
+  ocrmypdf --force-ocr -l kor+eng \
+    <원본_스캔본.pdf> \
+    .claude/runs/{trace_id}/ocr/<원본_스캔본_ocr.pdf>
+  ```
+  - `-l kor+eng`: 한국어 + 영어 동시 인식.
+  - `--force-ocr`: 혼합 PDF (텍스트+이미지) 전체 재인식.
+  - OCR 임시 파일은 `.claude/runs/{trace_id}/ocr/` 에만 저장. `sources/` 에는 절대 쓰지 않는다.
+
+  2-OCR-3. OCR'd PDF에서 텍스트 재추출. 여전히 100자 미만이면:
+  ```
+  ⚠️ scan.pdf — OCR 후에도 텍스트 불충분 (스캔 품질 불량).
+  제외 처리합니다.
+  ```
+  `files[].status: excluded_ocr_quality_low`.
+
+  2-OCR-4. OCR 성공 파일: `files[].ocr_processed: true` 마킹.
+
+2-3. 추출 결과를 `.claude/runs/{trace_id}/extracts/{파일명}.txt` 에 저장.  
+2-4. 추출 실패(OCR 외 오류) 파일은 `files[].status: extract_failed` 로 표시 + 제외.
 
 ### Phase 3 — Match
 
@@ -219,6 +256,7 @@ options:
 ## 4. 강제 규칙
 
 - `vault/08_REC_기록/` 과 `vault/90_MAT_통합매핑/MAT-005_*.md` 외 쓰기 금지.
+- OCR 임시 파일은 `.claude/runs/{trace_id}/ocr/` 에만 저장. `sources/` 에 절대 쓰지 않는다.
 - 매칭 불가 파일은 절대 강제 진행하지 않는다.
 - `verdict_type: legacy_evidence` 누락 금지 — 백필 REC 임을 항상 명시.
 - source_hash 기록 필수 — 원본 문서 추적성 보장.
