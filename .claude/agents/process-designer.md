@@ -16,6 +16,7 @@ model: opus
 - `vault/00_공통관리/01_문서체계.md`, `02_문서번호체계.md`, `05_입력자료_규칙.md`
 - `vault/00_MOC/MOC_프로세스맵.md`
 - **`inputs/04_AsIs/`** (있으면 기존 POL/PRO 참조)
+- **`inputs/06_목표흐름/business_flow.yaml`** (있으면 PRO 선후 관계·wi_sequence 설계 기준)
 
 ## 절차
 
@@ -43,9 +44,14 @@ S-3. 일반 모드: 자기 phase `design` 을 `status: running` + `started` 로 
 
 경계면 목록(interface_only 시 참조 대상): 문서관리·역량관리·공급자관리·변경관리·구성관리·리스크 거버넌스·내부심사 (레지스트리 §3).
 
-### Phase 0. 입력자료·골든샘플 Preflight
+### Phase 0. 입력자료·골든샘플 Preflight + Business Flow 로드
 0-1. `inputs/04_AsIs/` 스캔 → 기존 정책·절차 요약·용어 추출.
 0-2. 적용요건.md 의 `source_citation` 을 역추적해 각 REQ 의 근거가 실재하는지 확인. 누락 REQ 는 "inputs 미제공" 플래그.
+0-3. **`inputs/06_목표흐름/business_flow.yaml` 로드** (있으면):
+   - `scenario_groups` → PRO 그룹 설계 참조
+   - 각 scenario의 `nodes` (type: core/support) → PRO 유형 분류 기준
+   - 각 scenario의 `edges` → PRO 간 선후 관계(`follows/precedes`) 기준
+   - 없으면 표준 구조와 적용요건.md 만으로 PRO 설계 (선후 관계 추정).
 0-4. **골든샘플 학습** — 다음 파일을 반드시 먼저 읽고 구조·분량·문체·상세도의 기준선으로 삼는다:
    - `vault/99_템플릿/_골든샘플/GS-POL-QMS-002_문서화된정보_관리_정책.md`
    - `vault/99_템플릿/_골든샘플/GS-PRO-QMS-102_문서_개정_관리_절차.md`
@@ -72,11 +78,26 @@ S-3. 일반 모드: 자기 phase `design` 을 `status: running` + `started` 로 
      - POL-003 이후 → 3xx, 4xx, 5xx ... 동일 규칙 적용
      - 같은 POL 하위에 PRO가 복수일 경우 십·일의 자리를 01부터 순차 증가.
      - 근거: `vault/00_공통관리/02_문서번호체계.md` "PRO 번호 배정 원칙" 참조.
-   - **child_wi 사전 계획 (필수)**: PRO 생성 시 해당 절차에서 파생될
-     WI 전체 목록을 `child_wi` frontmatter에 미리 계획·기입한다.
+   - **PRO 유형 및 선후 관계 (필수)**:
+     - `pro_type: core | support` — business_flow.yaml nodes.type 기준. 없으면 표준 조항 성격으로 추정.
+     - `source_scenarios: [SC-001, ...]` — 이 PRO가 파생된 시나리오 ID 목록 (추적성).
+     - `follows: [PRO-XXX, ...]` — 이 PRO 시작 전 완료되어야 하는 PRO. business_flow edges 기준.
+     - `precedes: [PRO-YYY, ...]` — 이 PRO 완료 후 시작 가능한 PRO.
+   - **wi_sequence 사전 계획 (필수)**: PRO 생성 시 해당 절차에서 파생될
+     WI 전체 목록을 순서대로 `wi_sequence` frontmatter에 계획·기입한다.
      - WI 번호는 `WI-{영역}-{POL###}-{PRO##}-{##}` 형식으로 01부터 순차 부여.
      - 이 목록이 wi-tmp-writer의 생성 기준이 되므로 누락 없이 작성해야 한다.
      - WI 제목은 해당 PRO의 단계별 상세(§5)에서 도출한다.
+     - 스키마:
+       ```yaml
+       wi_sequence:
+         - wi_id: WI-XXX-101-01-01
+           mandatory: true
+           entry_condition: null        # null이면 즉시 시작 가능
+         - wi_id: WI-XXX-101-01-02
+           mandatory: true
+           entry_condition: "WI-XXX-101-01-01.status == done"
+       ```
 4. 적용요건.md 의 각 REQ 에 "연결 POL", "연결 PRO" 링크 갱신.
 5. `vault/90_MAT_통합매핑/MAT-003_산출물_목록표.md` 의 해당 표준 Row 갱신.
 

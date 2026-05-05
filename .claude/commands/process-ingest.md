@@ -50,6 +50,8 @@ projectroot/
     03_해설서/
     04_AsIs/
     05_산업가이드/
+    06_목표흐름/
+      business_flow.yaml    ← flow-proposer 생성 (사람이 직접 수정 가능)
 
   vault/                                ← process-plan 산출물
     02_적용요건/
@@ -440,6 +442,29 @@ counts:
 ▶  다음 단계:
    /process-ingest sources/ISO27001.pdf --standard ISO27001   # 추가 표준 ingest
    /process-plan "OOO사 품질경영체계"                          # 프로세스 생성
+```
+
+---
+
+### Phase 9. Business Flow 제안 — Agent `flow-proposer`
+
+**`--confirm` 완료 직후 자동 실행.** 추가 표준 ingest 예정이면 사용자에게 확인 후 진행.
+
+9-1. `inputs/06_목표흐름/business_flow.yaml` 존재 확인.
+   - **있으면**: "기존 business_flow.yaml이 있습니다. 갱신(delta)하시겠습니까? (Y/N)"
+   - **없으면**: 신규 생성 모드.
+9-2. Agent `flow-proposer` 호출.
+   - 표준 분석 → 시나리오 도출 → HITL 선택 → `inputs/06_목표흐름/business_flow.yaml` 저장.
+9-3. 완료 보고:
+```
+✅ 업무 시나리오 확정 완료
+
+📁 inputs/06_목표흐름/business_flow.yaml
+   시나리오 N건 확정 (추가 M건 포함)
+
+▶  다음 단계:
+   /process-plan "OOO사 품질경영체계"    # 프로세스 생성
+   (business_flow.yaml 을 직접 수정 후 재실행 가능)
 ```
 
 ---

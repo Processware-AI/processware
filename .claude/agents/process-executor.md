@@ -73,7 +73,7 @@ options:
 ### Phase A — 컨텍스트 로드
 
 A-1. **WI Read** — frontmatter 와 본문 모두 파싱.
-   - frontmatter: `doc_id`, `parent_pro`, `parent_pol`, `related_tmp[]`, `owner`, `reviewer`, `approver`, `standards`, `scope_code`
+   - frontmatter: `doc_id`, `parent_pro`, `parent_pol`, `related_tmp[]`, `owner`, `reviewer`, `approver`, `standards`, `scope_code`, `entry_gate`
    - 본문 §1 업무 목적 → 사용자 안내 문구
    - 본문 §2 수행 주체 → R/A 역할 추출 (HITL approver 후보)
    - 본문 §4 입력/산출물 → input/output 식별
@@ -91,9 +91,17 @@ A-3. **EX Read (있으면)** — 작성 예시를 참조용으로만 사용.
    - 사람의 답변이 비어있을 때 형식 예시 제시용 (값을 베껴 쓰지 않음 — 환각 위험)
    - 표 행 개수의 합리적 기본값 추론에만 사용
 
+A-1-gate. **entry_gate 체크** (WI frontmatter.entry_gate 가 null 이 아닌 경우):
+   - 조건식 평가 (예: `WI-XXX.status == done`).
+   - `.claude/runs/` 또는 `MAT-005` 에서 선행 WI 의 실행 상태 확인.
+   - 미충족 시 사용자에게 경고: "⚠ 선행 조건 미충족: {entry_gate}. 계속하시겠습니까?"
+   - soft warning — 사용자가 확인하면 진행 허용. 강제 중단 안 함.
+   - trace.jsonl 에 `entry_gate_warning` 이벤트 기록.
+
 A-4. **PRO Read (있으면)** — 상위 절차 §4 RACI / §6 KPI / §7 통제점 을 참조하여:
    - HITL 승인자 역할이 WI 보다 정확히 명시된 경우 PRO 우선
    - WI 와 PRO 가 충돌하면 사용자에게 보고하고 진행 보류
+   - `wi_sequence[]` 에서 현재 WI 의 위치와 다음 WI 정보 추출 → Phase F 완료 보고에 포함
 
 ### Phase B — Step 추출 (Phase 4 — 우선순위 3단)
 

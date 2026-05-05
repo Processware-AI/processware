@@ -152,6 +152,12 @@ main 에 merge 는 사용자 결정 사항. PR 생성 안내만 출력 (`gh pr c
    - 출력: `05_WI_업무지침/`, `06_TMP_템플릿/`, `07_EX_작성예시/`, `90_MAT/MAT-001`
    - done-marker: `phases.write`
 
+3.5. **Flow** — Agent `flow-mapper`
+   - 입력: `vault/04_PRO_절차/PRO-*.md` frontmatter (pro_type, follows, precedes, wi_sequence)
+   - 출력: `90_MAT_통합매핑/MAT-010_프로세스_플로우맵.md` (파생 문서, 덮어쓰기)
+   - done-marker: `phases.flow`
+   - **`--flow` 단독 실행 시**: 이 단계만 실행 (1~3 단계 생략). PRO/WI 가 이미 존재해야 함.
+
 4. **Trace** — Agent `traceability-mapper`
    - 출력: `90_MAT_통합매핑/MAT-{NNN}_{표준코드}_추적성_*` (NNN 은 MAT-011 부터 순차. 기존 번호 스캔 후 max+1), 공통 매트릭스(MAT-001·003·004·005·006) 최신화, 02_문서번호체계 표에 신규 행 append
    - done-marker: `phases.trace`
@@ -221,6 +227,7 @@ R-6. QA 결과로 루프 재평가.
 | `--max-attempts N` | 자가수정 최대 횟수 변경 (기본 3) |
 | `--no-branch` | Phase −2 (git branch 격리) skip — 단일 main 작업 모드 |
 | `--commit-per-phase` | 각 phase 종료 시 중간 commit (기본은 종료 시 일괄 4분할) |
+| `--flow` | Phase 3.5 (flow-mapper) 만 단독 실행. PRO/WI 가 이미 존재해야 함. MAT-010 재생성. |
 
 ---
 
