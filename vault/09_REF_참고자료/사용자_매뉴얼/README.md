@@ -2,10 +2,10 @@
 type: guide
 doc_id: MAN-INDEX
 title: "사용자 매뉴얼 — 인덱스"
-version: "1.0"
+version: "1.1"
 status: approved
 created: 2026-05-03
-updated: 2026-05-03
+updated: 2026-05-05
 tags: [manual, index, guide]
 ---
 
@@ -24,7 +24,8 @@ tags: [manual, index, guide]
 | 문서 | 내용 | 대상 |
 |---|---|---|
 | [[00_시작하기]] | 15분 퀵스타트 — 설치부터 첫 빌드까지 | 처음 시작하는 모든 분 |
-| [[01_개념이해]] | 4차원 PDCA, 8종 문서체계, vault 구조, 프로세스 뷔페 | 개념을 이해하고 싶은 분 |
+| [[01_개념이해]] | 5단계 파이프라인, 8종 문서체계, vault 구조, 프로세스 뷔페 | 개념을 이해하고 싶은 분 |
+| [[02-0_표준문서_전처리]] | `/process-ingest` 상세 — 표준 PDF 전처리·요건 패키지 생성 | 표준 분석가, 프로세스 설계자 |
 | [[02_프로세스_설계]] | `/process-plan` 상세 — 입력, 단계, 플래그, 자가수정 | 프로세스 설계자 |
 | [[03_프로세스_실행]] | `/process-do` 상세 — 8가지 모드, HITL 승인 흐름 | PM, 실행자 |
 | [[04_프로세스_심사]] | `/process-check` 상세 — 독립성, NCR, KPI | QA, 심사원 |
@@ -37,6 +38,10 @@ tags: [manual, index, guide]
 ## 커맨드 빠른 참조
 
 ```bash
+# 표준 문서 전처리 (Ingest)
+/process-ingest sources/ISO9001_2015.pdf --standard ISO9001 --version 2015
+/process-ingest --confirm ISO9001   # HITL 검토 완료 후 확정
+
 # 프로세스 설계 (Plan)
 /process-plan "필요한 업무 체계 설명"
 /process-plan --resume              # 중단된 빌드 재개

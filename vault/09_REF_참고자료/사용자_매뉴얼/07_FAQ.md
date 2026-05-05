@@ -2,10 +2,10 @@
 type: guide
 doc_id: MAN-07
 title: "사용자 매뉴얼 — 07. FAQ (자주 묻는 질문)"
-version: "1.0"
+version: "1.1"
 status: approved
 created: 2026-05-03
-updated: 2026-05-03
+updated: 2026-05-05
 tags: [manual, faq, guide, troubleshooting]
 ---
 
@@ -13,7 +13,63 @@ tags: [manual, faq, guide, troubleshooting]
 
 ---
 
+## /process-ingest 관련
+
+### Q. 스캔본 PDF인데 어떻게 처리하나?
+
+**A.** 스캔본(이미지 기반) PDF는 지원하지 않는다. 텍스트 기반으로 변환 후 사용해야 한다.
+
+변환 도구:
+- Adobe Acrobat Pro (OCR 기능)
+- ABBYY FineReader
+- AWS Textract
+- macOS: `pdftotext` (Homebrew)
+
+### Q. ingest 결과 검토에서 "누락 의심" 항목이 많다. 어떻게 하나?
+
+**A.** `review_request.md`의 해당 항목을 확인하고 `requirements.yaml`을 직접 수정한 후 confirm한다.
+
+```bash
+# 1. 검토 파일 열기 (Obsidian 또는 텍스트 에디터)
+open inputs/01_표준원문/ISO9001/qa/review_request.md
+
+# 2. requirements.yaml 직접 수정 (필요 시)
+open inputs/01_표준원문/ISO9001/requirements.yaml
+
+# 3. 확정
+/process-ingest --confirm ISO9001
+```
+
+### Q. 표준이 개정됐다. 어떻게 반영하나?
+
+**A.** 개정사항 문서를 sources/에 등록하고 delta 모드로 실행한다.
+
+```bash
+cp ISO9001_2024_개정사항.pdf sources/
+/process-ingest sources/ISO9001_2024_개정사항.pdf \
+  --standard ISO9001 --mode delta --base-version 2015
+/process-ingest --confirm ISO9001 --mode delta
+```
+
+기존 requirements.yaml이 ADD/MODIFIED/DEPRECATED로 업데이트된다.
+
+---
+
 ## /process-plan 관련
+
+### Q. 표준 PDF를 어디에 넣어야 하나?
+
+**A.** `sources/` 폴더에 배치한다. `inputs/`에 직접 넣으면 `/process-plan`이 차단된다.
+
+```bash
+# 올바른 방법
+cp ISO9001_2015.pdf sources/
+/process-ingest sources/ISO9001_2015.pdf --standard ISO9001 --version 2015
+/process-ingest --confirm ISO9001
+
+# 잘못된 방법 (process-plan이 즉시 중단됨)
+cp ISO9001_2015.pdf inputs/01_표준원문/    ← ❌
+```
 
 ### Q. 자연어 입력과 표준 코드 입력 중 어느 게 낫나?
 
@@ -29,11 +85,21 @@ tags: [manual, faq, guide, troubleshooting]
 
 ### Q. 입력자료(PDF 등)가 없어도 빌드가 되나?
 
-**A.** 된다. LLM이 해당 표준에 대한 지식으로 추정해서 빌드한다. 다만 요구사항 커버리지가 낮거나 특수 요건을 놓칠 수 있다. 정확도가 중요하면 PDF를 `_inputs/01_표준원문/`에 배치하고 재실행 권장.
+**A.** 된다. 자연어로 필요한 업무를 설명하면 LLM 추정으로 빌드한다. 다만 정확도가 중요하면 `/process-ingest`로 먼저 전처리 후 실행을 권장한다.
+
+```bash
+# PDF가 있는 경우: ingest 먼저
+/process-ingest sources/ISO9001_2015.pdf --standard ISO9001 --version 2015
+/process-ingest --confirm ISO9001
+/process-plan "OOO사 품질경영체계"
+
+# PDF 없이 바로 시작
+/process-plan "품질목표 수립·모니터링·불적합품 관리"
+```
 
 ### Q. 빌드 중간에 실수로 Claude Code를 닫았다. 어떻게 하나?
 
-**A.** `--resume` 플래그로 이어서 실행한다. 진행 상태는 `vault/02_표준/{모듈}/_state.yaml`에 저장되어 있다.
+**A.** `--resume` 플래그로 이어서 실행한다. 진행 상태는 `.claude/states/{슬러그}_state.yaml`에 저장되어 있다.
 
 ```bash
 /process-plan "프로젝트 계획·추정·리스크 관리" --resume
@@ -42,7 +108,7 @@ tags: [manual, faq, guide, troubleshooting]
 ### Q. QA가 계속 실패한다. 어떻게 해야 하나?
 
 **A.** 자가수정이 3회(기본) 후에도 실패하면 `manual` 에스컬레이션이 발생한다. 이때:
-1. QA 리포트 파일 열기: `vault/02_표준/{모듈}/99_QA리포트_*.md`
+1. QA 리포트 파일 열기: `vault/02_적용요건/{슬러그}/99_QA리포트_*.md`
 2. `assigned_to: manual` 항목 확인
 3. 수동으로 해당 파일 수정
 4. `--from qa` 로 QA만 재실행
@@ -236,13 +302,18 @@ git worktree add ../planning-view feat/prj-planning-est-risk-output
 
 ### Q. 새 표준(ISO 27001, ISO 9001 등)을 추가하려면?
 
-**A.** 표준 코드를 레지스트리에 등록한 후 빌드한다. `/process-plan` 실행 시 Phase -2에서 자동으로 등록 안내를 한다.
+**A.** sources/에 PDF를 배치하고 ingest 후 process-plan을 실행한다.
 
 ```bash
-/process-plan "정보보안 위험관리·접근통제"    # ISO 27001 기반
+# 1. 전처리
+/process-ingest sources/ISO27001_2022.pdf --standard ISO27001 --version 2022
+/process-ingest --confirm ISO27001
+
+# 2. 빌드
+/process-plan "OOO사 정보보호체계"
 ```
 
-또는 표준 코드로 직접:
+PDF 없이 자연어만으로도 시작할 수 있다:
 ```bash
-/process-plan iso27001-isms
+/process-plan "정보보안 위험관리·접근통제"
 ```
