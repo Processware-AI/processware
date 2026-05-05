@@ -5,24 +5,34 @@
 > 상위 개념: `AI-Driven CMMI Operating Platform.md` (Layer 1/2/3 비전) · `표준프로세스_AI관리체계_4차원PDCA.md` (4차원 PDCA 설계)
 > 차원별 운영 가이드: `표준_빌드_워크플로우_가이드.md` (1) · `표준_프로세스_실행_가이드.md` (2) · `표준_프로세스_심사_가이드.md` (3) · `표준_프로세스_제개정_가이드.md` (4)
 
-## 4차원 자동화 매트릭스
+## 5단계 자동화 매트릭스
 
 | 차원 | 슬래시 | 에이전트 | 핵심 산출물 |
 |---|---|---|---|
-| **1 (Plan)** 표준 수립 | `/process-plan` | standard-analyzer · process-designer · wi-tmp-writer · qa-reviewer · traceability-mapper (5) | POL / PRO / WI / TMP / EX / MAT / REF |
+| **0 (Ingest)** 표준 전처리 | `/process-ingest` | flow-proposer (1) | inputs/ 요건 패키지 (requirements.yaml · structure.yaml) + business_flow.yaml |
+| **1 (Plan)** 표준 수립 | `/process-plan` | standard-analyzer · process-designer · wi-tmp-writer · qa-reviewer · traceability-mapper · flow-mapper (6) | POL / PRO / WI / TMP / EX / MAT / REF + MAT-010 프로세스 플로우맵 |
 | **2 (Do)** 프로세스 실행 | `/process-do` | process-router · process-executor · hitl-gatekeeper · rec-writer · escalation-coordinator (5) | REC + MAT-005 §실행기록 + MAT-007 카탈로그 |
-| **3 (Check)** 심사·KPI | `/process-check` (`--kpi` `--act-queue` `--rbac-check`) | audit-planner · evidence-collector · compliance-checker · audit-reporter · ncr-drafter · kpi-collector · kpi-analyzer · independence-guard · act-trigger (9) | REC-AUDIT / REC-NCR + MAT-008 KPI 대시보드 + MAT-009 NCR 관리대장 + act queue |
+| **3 (Check)** 이행 심사·KPI | `/process-check` (`--kpi` `--act-queue` `--rbac-check`) | audit-planner · evidence-collector · compliance-checker · audit-reporter · ncr-drafter · kpi-collector · kpi-analyzer · independence-guard · act-trigger (9) | REC-AUDIT / REC-NCR + MAT-008 KPI 대시보드 + MAT-009 NCR 관리대장 + act queue |
+| **3 (Audit)** 외부 표준 GAP | `/process-audit` | gap-analyzer · gap-reporter (2) | REC-GAP + MAT-002 §GAP 분석 |
 | **4 (Act)** 제·개정 | `/process-act` | rca-analyzer · revision-planner · pcb-gatekeeper · act-coordinator (4) | As-Is 입력 + MAT-001 §개정이력 + 차원 1 재트리거 명령 |
 
-**총 23 에이전트 / 4 슬래시** — 모든 차원이 단일 브랜치(main, ed853b1)에 통합되어 운영.
+**총 27 에이전트 / 6 슬래시** — 모든 차원이 단일 브랜치(main)에 통합되어 운영.
 
 ## 특징
+
+### 차원 0 (Ingest) — 표준 전처리
+- **8단계 파이프라인**: Source Intake → Text Extraction → Structural Parsing → Requirement Mining → Classification → Traceability → QA Review → Handoff
+- **Phase 9 (flow-proposer)**: 요구사항 분석 결과로 업무 시나리오 도출 → HITL 선택 → `inputs/06_목표흐름/business_flow.yaml` 생성
+- **이중 레이어 출력**: `requirements.yaml` (표준 요건) + `business_flow.yaml` (조직 업무 시나리오)
+- **HITL 강제 검토**: Phase 7 QA 완료 후 `/process-ingest --confirm` 전까지 차단
+- **delta 모드**: 표준 개정 시 ADD/MODIFIED/DEPRECATED 상태로 요건 갱신
 
 ### 차원 1 (Plan) — 표준 수립
 - **8종 문서 유형 체계**: POL / PRO / WI / TMP / EX / REC / MAT / REF
 - **유형별 엄격한 분리**: 템플릿↔기록↔예시 분리, 정책↔절차↔지침 분리
 - **계층 번호 체계**: `POL-{영역}-{###}` → `PRO-{P}{##}` → `WI-{POL}-{PRO}-{##}` 계보 추적
-- **통합 MAT 9종 운영** (10 슬롯 중 9 운영, 1 예약)
+- **Business / Process Flow 이중 레이어**: ingest의 `business_flow.yaml` 기반으로 PRO 간 선후관계(`follows`/`precedes`) + WI 시퀀스(`wi_sequence[]`) 설계 → Phase 3.5 `flow-mapper`가 MAT-010 프로세스 플로우맵 파생 생성
+- **통합 MAT 10종 운영** (MAT-001~009 + MAT-010 프로세스 플로우맵)
 - **표준 분류 레지스트리**: Layer(L1/L2/L3)·Structure·Integration Mode 3축 분류
 - **자동차/의료기기 도메인 지원**: 8개 도메인 전용 표준 (IATF 16949, ASPICE, ISO 26262, ISO/SAE 21434, ISO 13485, ISO 14971, IEC 62304, IEC 81001-5-1)
 - **표준-프로세스 양방향 추적성** + `source_citation` 기반 감사증적
@@ -74,17 +84,21 @@ STD_Process_Builder/
 ├── 표준_프로세스_심사_가이드.md             ← 차원 3 운영 가이드 (Phase 1~4 + 4.5 명세)
 ├── 표준_프로세스_제개정_가이드.md           ← 차원 4 운영 가이드 (Phase 1~2 + 4.5 명세)
 ├── .claude/                                 ← 4차원 자동화 인프라
-│   ├── commands/                            ← 슬래시 커맨드 (4)
-│   │   ├── build-process.md                ← 차원 1
-│   │   ├── do.md                            ← 차원 2 (8 진입 모드)
-│   │   ├── audit.md                         ← 차원 3 (--kpi, --act-queue, --rbac-check)
-│   │   └── act.md                           ← 차원 4 (7 진입 모드 + --batch)
-│   ├── agents/                              ← 23 에이전트 (차원별 5/5/9/4)
+│   ├── commands/                            ← 슬래시 커맨드 (6)
+│   │   ├── process-ingest.md               ← 차원 0 (9 Phase + flow-proposer)
+│   │   ├── process-plan.md                 ← 차원 1 (Phase 3.5 + --flow 포함)
+│   │   ├── process-do.md                   ← 차원 2 (8 진입 모드)
+│   │   ├── process-check.md                ← 차원 3 (--kpi, --act-queue, --rbac-check)
+│   │   ├── process-audit.md                ← 차원 3 Audit (외부 표준 GAP 분석)
+│   │   └── process-act.md                  ← 차원 4 (7 진입 모드 + --batch)
+│   ├── agents/                              ← 27 에이전트 (차원별 1/6/5/9+2/4)
+│   │   ├── flow-proposer.md                 ← 차원 0 Phase 9 (시나리오 도출 HITL → business_flow.yaml)
 │   │   ├── standard-analyzer.md             ← 차원 1
 │   │   ├── process-designer.md
 │   │   ├── wi-tmp-writer.md
 │   │   ├── qa-reviewer.md
 │   │   ├── traceability-mapper.md
+│   │   ├── flow-mapper.md                   ← 차원 1 Phase 3.5 (MAT-010 프로세스 플로우맵 파생)
 │   │   ├── process-router.md                ← 차원 2 (Phase 3 자연어 라우팅)
 │   │   ├── process-executor.md              ← 차원 2 (Phase 4 steps.yaml 우선순위)
 │   │   ├── hitl-gatekeeper.md               ← 차원 2 (Phase 2/2.5 다단계)
@@ -99,6 +113,8 @@ STD_Process_Builder/
 │   │   ├── kpi-analyzer.md
 │   │   ├── independence-guard.md            ← 차원 3 Phase 4 (ISO §9.2 + RBAC)
 │   │   ├── act-trigger.md                   ← 차원 3 → 4 인계 큐 발행
+│   │   ├── gap-analyzer.md                  ← 차원 3 Audit Phase 1 (외부 표준 GAP 분석)
+│   │   ├── gap-reporter.md                  ← 차원 3 Audit Phase 2 (REC-GAP + MAT-002 갱신)
 │   │   ├── rca-analyzer.md                  ← 차원 4 Phase 1 (5-Why / Fishbone)
 │   │   ├── revision-planner.md              ← 차원 4 Phase 2 (Mermaid 의존성 그래프)
 │   │   ├── pcb-gatekeeper.md                ← 차원 4 Phase 1 (HITL + 4.5 quorum)
@@ -134,6 +150,7 @@ STD_Process_Builder/
     │   └── AUDIT/                           ← REC sub-type AUDIT/NCR (차원 3 산출)
     ├── 09_REF_참고자료/                     ← REF-*
     ├── 90_MAT_통합매핑/                     ← MAT-001~010 전사 공통 + MAT-011~ 표준별
+    │   └── MAT-010_프로세스_플로우맵.md     ← PRO 선후관계 + WI 시퀀스 (flow-mapper 파생)
     ├── 99_템플릿/                           ← Obsidian Templates
     │   └── _골든샘플/                       ← POL/PRO/WI 품질 하한선 참조 예시
     ├── 99_폐기_보관/                        ← 만료/폐지 문서 아카이브
@@ -188,13 +205,24 @@ STD_Process_Builder/
 ```
 
 > Plan→Do→Check→Act→Plan' 폐쇄 루프 PoC 검증 (run-c4f8a1b2 / queue-qa1b2c3d4 → PRO v1.0→v1.1 → KPI round 2 회복).
-> **23 에이전트 / 4 슬래시 / 10 trace / 6 act queue / MAT 9종 운영**.
+> **27 에이전트 / 6 슬래시 / 10 trace / 6 act queue / MAT 10종 운영**.
 
 ## 사용법
 
 ### 0. 사전 준비
 1. Obsidian 에서 `vault/` 폴더를 **Open folder as vault** 로 열기.
 2. **입력자료 배치 (권장)** — `vault/02_표준/{표준코드}/_inputs/` 에 표준원문·법규·해설서·As-Is 투하. 상세 규칙: `vault/00_공통관리/05_입력자료_규칙.md`
+
+### 0-1. 차원 0 (Ingest) — 표준 전처리
+```bash
+/process-ingest sources/ISO9001_2015.pdf --standard ISO9001 --version 2015
+/process-ingest sources/개인정보보호법.pdf --standard 개인정보보호법 --category 02
+/process-ingest --confirm ISO9001                           # HITL 검토 완료 후 inputs/ 확정
+/process-ingest --status ISO9001                            # 진행 상태 확인
+/process-ingest --list                                      # 완료된 ingest 목록
+```
+
+> flow-proposer(Phase 9)가 업무 시나리오를 HITL로 확정 → `inputs/06_목표흐름/business_flow.yaml` 생성
 
 ### 1. 차원 1 (Plan) — 표준 수립
 ```bash
@@ -204,6 +232,7 @@ STD_Process_Builder/
 /process-plan ISO9001 --from design                          # design phase 부터 강제 재시작
 /process-plan ISO9001 --restart                              # 기존 state 폐기 후 처음부터
 /process-plan ISO9001 --from write --target PRO-CMMI-04-01   # 차원 4 인계 후 부분 재실행
+/process-plan ISO9001 --flow                                # Phase 3.5 (flow-mapper) 만 단독 실행 — MAT-010 재생성
 /process-plan ISO9001 --max-attempts 5 --skip-qa            # 자가수정·QA 옵션
 ```
 
@@ -335,7 +364,7 @@ POL-{영역}-{###}
 
 예: `POL-QMS-001_품질방침_v1.0.md` → `PRO-QMS-101_품질기획_절차_v1.0.md` → `WI-QMS-001-01-02_문서_검토_및_승인_v1.0.md`
 
-## 통합 MAT 9종 (현 운영, 상세: `vault/00_공통관리/02_문서번호체계.md` §MAT 번호 할당 원칙)
+## 통합 MAT 10종 (현 운영, 상세: `vault/00_공통관리/02_문서번호체계.md` §MAT 번호 할당 원칙)
 
 | 번호 | 문서 | 도입 차원 | 역할 |
 |---|---|---|---|
@@ -348,7 +377,7 @@ POL-{영역}-{###}
 | MAT-007 | 프로세스 카탈로그 | 2 (Phase 3) | 자연어 → WI 라우팅 인덱스 |
 | MAT-008 | KPI 대시보드 | 3 (Phase 3) + 4 (§차원 4 인계) | 표준별 KPI 시계열·회귀 알림 + act queue 인덱스 |
 | MAT-009 | NCR 관리대장 | 3 (Phase 2) | NCR 발행/종결 두 섹션 + §통계 자동 |
-| MAT-010 | (예약) | — | 미사용 |
+| MAT-010 | 프로세스 플로우 맵 | 1 Phase 3.5 (flow-mapper 파생) | PRO 간 선후관계 + WI 시퀀스 통합 맵 (Mermaid) |
 | MAT-011~ | 표준별 추적성 | 1 | 표준 편입 순서대로 순차 부여 |
 
 ## 지원 표준 (상세: `vault/00_공통관리/07_표준분류레지스트리.md`)
@@ -422,13 +451,11 @@ Phase 4.5 extensions (명세 활성화):
 
 본 README 의 4 차원 자동화 (차원 2~4) 까지 포함한 전체 플랫폼은 Phase 5 (외부 시스템 실 연동) 시점에 독립 제품화 검토.
 
-## 누적 통계 (main, ed853b1 기준)
+## 누적 통계 (main 기준)
 
-- **총 commits**: 49
-- **Tracked 파일**: ~722
-- **에이전트**: 23 (차원별 5/5/9/4)
-- **슬래시 커맨드**: 4 (`/process-plan`, `/process-do`, `/process-check`, `/process-act`)
-- **운영 MAT**: 9 / 10 슬롯 (MAT-001~009 운영, MAT-010 예약)
+- **에이전트**: 27 (차원별 1/6/5/9+2/4)
+- **슬래시 커맨드**: 6 (`/process-ingest`, `/process-plan`, `/process-do`, `/process-check`, `/process-audit`, `/process-act`)
+- **운영 MAT**: 10 슬롯 (MAT-001~009 + MAT-010 프로세스 플로우맵)
 - **PoC trace**: 10 (do 5, audit 1, kpi 2, act 2)
 - **act queue**: 6 (3 done — 1 단일 + 2 batch / 3 pending)
 - **가이드 문서**: 4 (빌드 / 실행 / 심사 / 제·개정)
