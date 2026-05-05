@@ -1,6 +1,6 @@
 ---
 description: '외부 표준 부합성 심사 (GAP 분석) — inputs/ 의 표준 요건 ↔ 내부 POL/PRO/WI 커버리지 대조 → GAP 보고서 발행 + MAT-002 갱신. 사용: /process-audit start --against <표준코드> | --confirm <trace> | --status <trace>'
-argument-hint: 'start --against <표준코드> [--scope <모듈슬러그>] [--strictness strict|normal|lenient] [--llm-fallback] | --confirm <trace_id> [--not-applicable <조항>="사유"] [--adjust-gap <조항>=minor|major|critical] | --status <trace_id> | --list [--status pending|done]'
+argument-hint: 'start --against <표준코드> [--scope <모듈슬러그>] [--strictness strict|normal|lenient] [--llm-fallback] | --confirm <trace_id> [--not-applicable <조항>="사유"] [--adjust-gap <조항>=minor|major|critical] [--no-act-queue] | --status <trace_id> | --list [--status pending|done]'
 ---
 
 # 외부 표준 부합성 심사 하네스 (GAP 분석)
@@ -209,6 +209,32 @@ standard_code: ISO9001
 
 ---
 
+### Phase 4 — act-trigger 위임 (GAP → 차원 4 큐 자동 push)
+
+gap-reporter 반환값의 `critical_gaps[]` + `major_gaps[]` 합산 건수 > 0 이고 `--no-act-queue` 미설정 시:
+
+**위임 입력:**
+```yaml
+mode: from_gap
+trace_id: run-gXXXXXXXX
+gap_rec_id: REC-GAP-{표준코드}-{YYYY}-{NNN}
+standard_code: {standard_code}
+critical_gaps: [gap-reporter 반환값 그대로]
+major_gaps:    [gap-reporter 반환값 그대로]
+options:
+  dry_run: {--dry-run 여부}
+  no_act_queue: false
+```
+
+`act-trigger` (from_gap 모드) 가 수행:
+- critical/major GAP 마다 `.claude/queues/process-act/queue-q*.yaml` 1건씩 생성.
+- 중복 큐(동일 gap_rec_id + clause) 자동 skip.
+- MAT-008 §"차원 4 인계" 표 갱신.
+
+GAP 없거나 (critical + major == 0) `--no-act-queue` 설정 시: 이 Phase 생략.
+
+---
+
 ## 3. 산출물
 
 ```
@@ -222,6 +248,9 @@ vault/08_REC_기록/AUDIT/
 
 vault/90_MAT_통합매핑/
 └── MAT-002_규제요구사항_대조표.md  (Edit — 신규/갱신 행 추가)
+
+.claude/queues/process-act/
+└── queue-q{hex}.yaml × N  (critical/major GAP 건수)  ← --no-act-queue 미설정 시
 ```
 
 ### coverage_matrix.yaml 구조
@@ -312,6 +341,7 @@ status: issued
 | `--auditor "이름"` | 보고서 심사자 명시 | start |
 | `--not-applicable <조항>="사유"` | 해당 조항 N/A 처리 | confirm |
 | `--adjust-gap <조항>=<등급>` | 심각도 override | confirm |
+| `--no-act-queue` | GAP 발견 시에도 act 큐 자동 push 억제 | confirm |
 | `--dry-run` | REC·MAT-002 저장 생략, 미리보기만 | start |
 
 ---
@@ -362,4 +392,4 @@ status: issued
 
 | Phase | 현재 구현 | 미구현 |
 |---|---|---|
-| 1 (지금) | start / confirm / status / list / 2 에이전트 (gap-analyzer + gap-reporter) / coverage_matrix / REC-GAP / MAT-002 갱신 / HITL 게이트 / llm-fallback 모드 | 다국어 보고서 / 외부 인증기관 포맷 (XLSX) / 자동 /process-act 트리거 |
+| 1 (지금) | start / confirm / status / list / 2 에이전트 (gap-analyzer + gap-reporter) / coverage_matrix / REC-GAP / MAT-002 갱신 / HITL 게이트 / llm-fallback 모드 / 자동 /process-act 트리거 | 다국어 보고서 / 외부 인증기관 포맷 (XLSX) |

@@ -234,6 +234,32 @@ completed_at: "YYYY-MM-DDTHH:MM:SSZ"
 
 ---
 
+## 8. Phase F — act-trigger 입력 데이터 반환
+
+호출자(process-audit)에게 act-trigger 위임에 필요한 GAP 데이터를 반환:
+
+```yaml
+critical_gaps:
+  - clause: "6.1"
+    title: "리스크·기회 조치"
+    gap_note: "..."
+    recommendation: "..."
+    req_mapping: "REQ-005" | null
+major_gaps:
+  - clause: "7.5"
+    title: "..."
+    gap_note: "..."
+    recommendation: "..."
+    req_mapping: null
+```
+
+추출 기준:
+- `critical_gaps`: coverage_matrix.clauses 에서 `verdict: GAP` + `severity: critical` 항목 (human_override NOT_APPLICABLE 제외).
+- `major_gaps`: `verdict: GAP` + `severity: major` 항목 (NOT_APPLICABLE 제외).
+- PARTIAL / minor / observation 항목은 반환하지 않음 (act 큐 발행 대상 아님).
+
+---
+
 ## 7. 완료 출력
 
 ```
@@ -242,11 +268,15 @@ completed_at: "YYYY-MM-DDTHH:MM:SSZ"
 📄 vault/08_REC_기록/AUDIT/REC-GAP-{표준코드}-{YYYY}-{NNN}_GAP분석보고서.md
 📊 커버리지: X.X%  |  GAP: N건 (critical N · major N · minor N)
 📋 MAT-002 갱신 완료
+🔧 차원 4 자동 트리거: critical {N}건 · major {N}건 → act 큐 push 예정
+   (--no-act-queue 로 억제 가능)
 
 권고 다음 단계:
   개선 작업: /process-plan "{권고 모듈}"
   재심사:    /process-audit start --against {표준코드}
 ```
+
+단, critical + major 가 0이면 🔧 줄 생략.
 
 ---
 

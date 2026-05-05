@@ -15,7 +15,7 @@ model: opus
 
 ---
 
-## 1. 입력 — 2가지 모드
+## 1. 입력 — 3가지 모드
 
 ### 1-1. `from_audit` 모드 (audit-reporter 가 confirm 직후 위임)
 ```yaml
@@ -57,13 +57,36 @@ options:
   no_act_queue: false
 ```
 
+### 1-3. `from_gap` 모드 (gap-reporter 가 confirm 직후 위임)
+```yaml
+mode: from_gap
+trace_id: run-gxxxxxxxx              # audit trace
+gap_rec_id: REC-GAP-ISO9001-2026-001
+standard_code: ISO9001
+critical_gaps:
+  - clause: "6.1"
+    title: "리스크·기회 조치"
+    gap_note: "POL/PRO/WI 없음"
+    recommendation: "PRO-리스크관리 신규 설계 필요"
+    req_mapping: "REQ-005"           # 없으면 null
+major_gaps:
+  - clause: "7.5"
+    title: "문서화 정보"
+    gap_note: "PRO 있으나 WI·TMP 없음"
+    recommendation: "WI-문서관리-01 신규 작성"
+    req_mapping: null
+options:
+  dry_run: false
+  no_act_queue: false
+```
+
 ---
 
 ## 2. 절차
 
 ### Phase 0 — 모드 분기
 
-0-1. `mode` 확인. `from_audit` → Phase A. `from_kpi` → Phase B.
+0-1. `mode` 확인. `from_audit` → Phase A. `from_kpi` → Phase B. `from_gap` → Phase G.
 0-2. `options.no_act_queue == true` → 즉시 정상 반환 (큐 미발행).
 
 ### Phase A — NCR 기반 큐 발행
@@ -118,6 +141,62 @@ A-4. **MAT-008 §"차원 4 인계" 신규 섹션 갱신** — 표 1행 append:
 A-5. **audit_recommendations[]** 처리 (보고서 §6 권고 — NCR 외 부가 권고):
    - 각 권고 1건 → 1 큐 (kind: recommendation, priority: minor 또는 unspecified).
    - root cause 가 NCR 큐와 동일하면 큐를 분리하지 않고 NCR 큐의 `linked_recommendations[]` 로 합침 (중복 방지).
+
+### Phase G — GAP 기반 큐 발행
+
+G-1. `critical_gaps[]` + `major_gaps[]` 모두 비어 있으면 정상 반환 (큐 발행 불필요).
+
+G-2. **중복 검사**: `Glob ".claude/queues/process-act/queue-*.yaml"` → 같은 `(gap_rec_id, clause)` 조합이 이미 존재하면 건너뜀. 단 기존 큐 status 가 done/abandoned 이면 재발행 허용.
+
+G-3. critical_gaps[] 각 항목 → 큐 1건:
+   - `queue_id`: `queue-q` + 8자 hex
+   - `kind: gap_remediation`
+   - `priority: critical`
+   - `source.gap_rec`: gap_rec_id
+   - `source.standard_code`: standard_code
+   - `source.clause`: clause
+   - `source.req_mapping`: req_mapping (없으면 null)
+   - `target.scope_kind`: 권고 텍스트에서 추론 — "PRO" 언급 시 PRO, "WI" 언급 시 WI, 그 외 PRO (기본)
+   - `target.scope_id`: req_mapping 이 있으면 그 값, 없으면 null
+   - `target.proposed_action`: recommendation 텍스트 그대로 (실제 슬래시 명령은 rca-analyzer가 결정)
+   - `rationale`: gap_note
+   - `recommendation`: recommendation
+
+G-4. major_gaps[] 각 항목 → 큐 1건 (priority: major 로만 다름, 나머지 동일).
+
+G-5. 큐 yaml 형식 (G-3/G-4 공통):
+```yaml
+queue_id: queue-q{hex}
+kind: gap_remediation
+priority: critical | major
+status: pending
+created_at: "ISO8601"
+created_by: "act-trigger (claude-opus-4-7)"
+source:
+  trace_id: run-gxxxxxxxx
+  gap_rec: REC-GAP-ISO9001-2026-001
+  standard_code: ISO9001
+  clause: "6.1"
+  clause_title: "리스크·기회 조치"
+  req_mapping: "REQ-005"
+  severity: critical
+target:
+  scope_kind: PRO
+  scope_id: null
+  proposed_action: "PRO-리스크관리 신규 설계 필요"
+rationale: "POL/PRO/WI 없음"
+recommendation: "PRO-리스크관리 신규 설계 필요"
+assignment:
+  responsible_role: "Process Owner"
+  responsible_name: null
+  due_date: null
+dispatched_to: null
+dispatched_at: null
+done_at: null
+done_capa_rec: null
+```
+
+→ Phase C 진행 (MAT-008 갱신).
 
 ### Phase B — KPI 기반 큐 발행
 
@@ -220,7 +299,7 @@ mat008_updated: true
 ## 5. Phase 4 동작 사항
 
 **Phase 4 범위 (지금)**:
-- ✅ from_audit / from_kpi 두 모드.
+- ✅ from_audit / from_kpi / from_gap 세 모드.
 - ✅ NCR + critical KPI → 큐 자동 발행 (NCR 1차, KPI 통합 2차).
 - ✅ 중복 방지 (queue_id 충돌 + ncr_id 재발행 방지).
 - ✅ MAT-008 §"차원 4 인계" 섹션 자동 누적.
