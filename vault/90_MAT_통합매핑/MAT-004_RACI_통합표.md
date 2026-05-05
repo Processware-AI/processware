@@ -34,37 +34,37 @@ tags: [MAT, raci]
 
 | PRO | 활동 | CEO | CTO | PQO | PM | QA | CM | SE | SW | HW | ML | VAL | PROC | DEV |
 |---|---|---|---|---|---|---|---|---|---|---|---|---|---|---|
-| PRO-SPICE-01-01 | SYS.1 이해관계자 요구사항 도출 | I | A | I | A | I | I | **R** | C | C | C | I | I | C |
-| PRO-SPICE-01-01 | SYS.2 시스템 요구사항 분석 | I | A | C | A | C | I | **R** | C | C | C | I | I | C |
-| PRO-SPICE-01-01 | SYS.3 시스템 아키텍처 설계 | I | A | C | A | C | I | **R** | C | C | C | I | I | C |
-| PRO-SPICE-01-01 | SYS.4 시스템 통합 | I | A | C | A | C | C | **R** | C | C | C | I | I | C |
-| PRO-SPICE-01-01 | SYS.5 시스템 검증 | I | A | C | I | **A(QA)** | I | **R** | C | C | C | C | I | C |
-| PRO-SPICE-01-02 | SWE.1 SW 요구사항 분석 | I | A | C | A | C | I | C | **R** | I | I | I | I | C |
-| PRO-SPICE-01-02 | SWE.2 SW 아키텍처 설계 | I | A | C | A | C | I | C | **R** | I | I | I | I | C |
-| PRO-SPICE-01-02 | SWE.3 상세설계·단위구현 | I | A | C | A | I | I | I | **R** | I | I | I | I | **R** |
-| PRO-SPICE-01-02 | SWE.4 단위 검증 | I | A | C | I | C | I | I | **R** | I | I | I | I | **R** |
-| PRO-SPICE-01-02 | SWE.5/6 SW 통합·검증 | I | A | C | I | **A(QA)** | I | C | **R** | I | I | C | I | C |
-| PRO-SPICE-01-03 | HWE.1 HW 요구사항 분석 | I | A | C | A | C | I | C | I | **R** | I | I | I | C |
-| PRO-SPICE-01-03 | HWE.2 HW 설계 | I | A | C | A | C | I | C | I | **R** | I | I | C | C |
-| PRO-SPICE-01-03 | HWE.3/4 HW 검증 | I | A | C | I | **A(QA)** | I | C | I | **R** | I | C | I | C |
-| PRO-SPICE-01-04 | MLE.1 ML 요구사항 분석 | I | A | C | A | C | I | C | C | I | **R** | I | I | C |
-| PRO-SPICE-01-04 | MLE.2 ML 아키텍처 설계 | I | A | C | A | C | I | C | C | I | **R** | I | I | C |
-| PRO-SPICE-01-04 | MLE.3 ML 학습 | I | A | C | A | C | I | I | I | I | **R** | I | I | **R** |
-| PRO-SPICE-01-04 | MLE.4 모델 테스트 | I | A | C | I | **A(QA)** | I | I | I | I | **R** | C | I | C |
-| PRO-SPICE-01-05 | VAL.1 사용자 검증 | I | A | C | A | C | I | C | C | C | C | **R** | I | C |
-| PRO-SPICE-01-05 | SPL.2 제품 릴리스·인도 | I | A | C | A | C | C | C | C | C | C | **R** | I | C |
-| PRO-SPICE-01-06 | ACQ.4 공급사 모니터링 | I | A | I | A | C | I | I | C | C | I | I | **R** | C |
-| PRO-SPICE-01-07 | SUP.1 QA 감사 | I | A | C | I | **R** | I | I | I | I | I | I | I | I |
-| PRO-SPICE-01-07 | SUP.1.BP4 QA 에스컬레이션 | **A** | C | I | I | **R** | I | I | I | I | I | I | I | I |
-| PRO-SPICE-01-07 | SUP.8 형상관리 (CM) | I | A | C | I | C | **R** | C | C | C | C | C | C | C |
-| PRO-SPICE-01-08 | SUP.9 문제해결 | I | A | C | A | C | I | C | C | C | C | C | I | **R** |
-| PRO-SPICE-01-08 | SUP.10 변경관리 (CR) | I | A | C | A | **A(QA)** | C | C | C | C | C | C | C | **R** |
-| PRO-SPICE-01-09 | MAN.3 프로젝트 관리 | I | A | C | **R** | C | I | C | C | C | C | I | I | C |
-| PRO-SPICE-01-09 | MAN.5 리스크 관리 | I | A | C | **R** | C | I | C | C | C | C | I | I | C |
-| PRO-SPICE-01-09 | MAN.6 측정 | I | A | C | **R** | C | I | I | I | I | I | I | I | I |
-| PRO-SPICE-01-10 | SUP.11 ML 데이터 관리 | I | A | C | A | C | C | I | I | I | **R** | I | I | C |
-| PRO-SPICE-01-11 | PIM.3 프로세스 개선 | I | A | **R** | C | C | I | I | I | I | I | I | I | I |
-| PRO-SPICE-01-11 | REU.2 재사용 자산 관리 | I | A | **R** | C | C | C | C | C | C | C | C | C | C |
+| PRO-ASPICE-01-01 | SYS.1 이해관계자 요구사항 도출 | I | A | I | A | I | I | **R** | C | C | C | I | I | C |
+| PRO-ASPICE-01-01 | SYS.2 시스템 요구사항 분석 | I | A | C | A | C | I | **R** | C | C | C | I | I | C |
+| PRO-ASPICE-01-01 | SYS.3 시스템 아키텍처 설계 | I | A | C | A | C | I | **R** | C | C | C | I | I | C |
+| PRO-ASPICE-01-01 | SYS.4 시스템 통합 | I | A | C | A | C | C | **R** | C | C | C | I | I | C |
+| PRO-ASPICE-01-01 | SYS.5 시스템 검증 | I | A | C | I | **A(QA)** | I | **R** | C | C | C | C | I | C |
+| PRO-ASPICE-01-02 | SWE.1 SW 요구사항 분석 | I | A | C | A | C | I | C | **R** | I | I | I | I | C |
+| PRO-ASPICE-01-02 | SWE.2 SW 아키텍처 설계 | I | A | C | A | C | I | C | **R** | I | I | I | I | C |
+| PRO-ASPICE-01-02 | SWE.3 상세설계·단위구현 | I | A | C | A | I | I | I | **R** | I | I | I | I | **R** |
+| PRO-ASPICE-01-02 | SWE.4 단위 검증 | I | A | C | I | C | I | I | **R** | I | I | I | I | **R** |
+| PRO-ASPICE-01-02 | SWE.5/6 SW 통합·검증 | I | A | C | I | **A(QA)** | I | C | **R** | I | I | C | I | C |
+| PRO-ASPICE-01-03 | HWE.1 HW 요구사항 분석 | I | A | C | A | C | I | C | I | **R** | I | I | I | C |
+| PRO-ASPICE-01-03 | HWE.2 HW 설계 | I | A | C | A | C | I | C | I | **R** | I | I | C | C |
+| PRO-ASPICE-01-03 | HWE.3/4 HW 검증 | I | A | C | I | **A(QA)** | I | C | I | **R** | I | C | I | C |
+| PRO-ASPICE-01-04 | MLE.1 ML 요구사항 분석 | I | A | C | A | C | I | C | C | I | **R** | I | I | C |
+| PRO-ASPICE-01-04 | MLE.2 ML 아키텍처 설계 | I | A | C | A | C | I | C | C | I | **R** | I | I | C |
+| PRO-ASPICE-01-04 | MLE.3 ML 학습 | I | A | C | A | C | I | I | I | I | **R** | I | I | **R** |
+| PRO-ASPICE-01-04 | MLE.4 모델 테스트 | I | A | C | I | **A(QA)** | I | I | I | I | **R** | C | I | C |
+| PRO-ASPICE-01-05 | VAL.1 사용자 검증 | I | A | C | A | C | I | C | C | C | C | **R** | I | C |
+| PRO-ASPICE-01-05 | SPL.2 제품 릴리스·인도 | I | A | C | A | C | C | C | C | C | C | **R** | I | C |
+| PRO-ASPICE-01-06 | ACQ.4 공급사 모니터링 | I | A | I | A | C | I | I | C | C | I | I | **R** | C |
+| PRO-ASPICE-01-07 | SUP.1 QA 감사 | I | A | C | I | **R** | I | I | I | I | I | I | I | I |
+| PRO-ASPICE-01-07 | SUP.1.BP4 QA 에스컬레이션 | **A** | C | I | I | **R** | I | I | I | I | I | I | I | I |
+| PRO-ASPICE-01-07 | SUP.8 형상관리 (CM) | I | A | C | I | C | **R** | C | C | C | C | C | C | C |
+| PRO-ASPICE-01-08 | SUP.9 문제해결 | I | A | C | A | C | I | C | C | C | C | C | I | **R** |
+| PRO-ASPICE-01-08 | SUP.10 변경관리 (CR) | I | A | C | A | **A(QA)** | C | C | C | C | C | C | C | **R** |
+| PRO-ASPICE-01-09 | MAN.3 프로젝트 관리 | I | A | C | **R** | C | I | C | C | C | C | I | I | C |
+| PRO-ASPICE-01-09 | MAN.5 리스크 관리 | I | A | C | **R** | C | I | C | C | C | C | I | I | C |
+| PRO-ASPICE-01-09 | MAN.6 측정 | I | A | C | **R** | C | I | I | I | I | I | I | I | I |
+| PRO-ASPICE-01-10 | SUP.11 ML 데이터 관리 | I | A | C | A | C | C | I | I | I | **R** | I | I | C |
+| PRO-ASPICE-01-11 | PIM.3 프로세스 개선 | I | A | **R** | C | C | I | I | I | I | I | I | I | I |
+| PRO-ASPICE-01-11 | REU.2 재사용 자산 관리 | I | A | **R** | C | C | C | C | C | C | C | C | C | C |
 
 > **검증 결과 (Accountable)**:
 > - 단계당 Accountable 1인 보장: ✓ (단, SYS.5/SWE.5/HWE.3/MLE.4 검증 단계는 QA 가 A — ASPICE 독립성 원칙)
