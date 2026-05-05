@@ -14,10 +14,10 @@
 | **2 (Do)** 프로세스 실행 | `/process-do` | process-router · process-executor · hitl-gatekeeper · rec-writer · escalation-coordinator (5) | REC + MAT-005 §실행기록 + MAT-007 카탈로그 |
 | **2 (Backfill)** 레거시 변환 | `/process-backfill` | backfill-matcher · rec-writer (2) | REC (verdict_type: legacy_evidence) + MAT-005 §실행기록 |
 | **3 (Check)** 이행 심사·KPI | `/process-check` (`--kpi` `--act-queue` `--rbac-check`) | audit-planner · evidence-collector · compliance-checker · audit-reporter · ncr-drafter · kpi-collector · kpi-analyzer · independence-guard · act-trigger (9) | REC-AUDIT / REC-NCR + MAT-008 KPI 대시보드 + MAT-009 NCR 관리대장 + act queue |
-| **3 (Audit)** 외부 표준 GAP | `/process-audit` | gap-analyzer · gap-reporter (2) | REC-GAP + MAT-002 §GAP 분석 |
+| **3 (Audit)** 외부 표준 GAP | `/process-audit` | gap-analyzer · gap-reporter · gap-exporter (3) | REC-GAP + MAT-002 §GAP 분석 + act queue (critical/major GAP) + exports/ (XLSX·HTML·PDF) |
 | **4 (Act)** 제·개정 | `/process-act` | rca-analyzer · revision-planner · pcb-gatekeeper · act-coordinator (4) | As-Is 입력 + MAT-001 §개정이력 + 차원 1 재트리거 명령 |
 
-**총 28 에이전트 / 7 슬래시** — 모든 차원이 단일 브랜치(main)에 통합되어 운영.
+**총 29 에이전트 / 7 슬래시** — 모든 차원이 단일 브랜치(main)에 통합되어 운영.
 
 ## 특징
 
@@ -62,6 +62,13 @@
 - **ISO §9.2 독립성 강제**: independence-guard 가 audit 진입 시 auditor ≠ trace.executed_by 자동 검증
 - **RBAC 6 역할**: auditor / executor / process_owner / qmr / admin / viewer
 
+### 차원 3 (Audit) — 외부 표준 GAP 분석
+- **외부 표준 대조**: 표준 조항 ↔ 내부 POL/PRO/WI 커버리지 자동 판정 (COVERED / PARTIAL / GAP / N/A)
+- **strictness 3단계**: strict (THIN 포함) / normal / lenient 모드
+- **LLM fallback**: inputs/ 없을 때 LLM 내부 지식으로 조항 추출 (낮은 신뢰도 표시)
+- **GAP → act 자동 트리거**: confirm 후 critical/major GAP을 `kind: gap_remediation` 큐로 자동 push (--no-act-queue 억제 가능)
+- **외부 인증기관 내보내기**: `--export --format xlsx|html|pdf` — openpyxl 3시트 스크립트(커버리지 요약·부합성 매트릭스·GAP 상세) 또는 Noto Sans KR A4 HTML
+
 ### 차원 4 (Act) — 제·개정
 - **5-Why / Fishbone RCA**: queue → primary_root_cause + confidence + secondary
 - **개정 범위 결정**: 5종 rebuild_mode (manual_edit / rec_only / `--from write` / `--from design` / `--restart`)
@@ -70,8 +77,8 @@
 - **다중 큐 일괄** (Phase 2): merged_root_cause + Mermaid 의존성 그래프 + 통합 As-Is
 
 ### 폐쇄 루프 (4차원 통합)
-- **act queue 자동 발행**: 차원 3 의 NCR + critical KPI → `.claude/queues/process-act/queue-q*.yaml` 자동 push
-- **차원 4 인계 큐**: act-trigger 가 confirm/kpi-finalize 직후 자동 발행 (NCR/KPI 통합 휴리스틱)
+- **act queue 자동 발행**: 차원 3 의 NCR + critical KPI + critical/major GAP → `.claude/queues/process-act/queue-q*.yaml` 자동 push
+- **차원 4 인계 큐**: act-trigger 가 confirm/kpi-finalize/gap-confirm 직후 자동 발행 (NCR · KPI · GAP 3종 통합 휴리스틱)
 - **PoC 실증**: queue-qa1b2c3d4 (NCR-001 critical) → PRO v1.0 → v1.1 → CAPA REC → NCR close → KPI round 2 회복 (critical 4→1, healthy 3→6, recovering 0→2)
 
 ### Phase 4.5 명세 (외부 인프라 연동 준비)
@@ -100,7 +107,7 @@ STD_Process_Builder/
 │   │   ├── process-check.md                ← 차원 3 (--kpi, --act-queue, --rbac-check)
 │   │   ├── process-audit.md                ← 차원 3 Audit (외부 표준 GAP 분석)
 │   │   └── process-act.md                  ← 차원 4 (7 진입 모드 + --batch)
-│   ├── agents/                              ← 28 에이전트 (차원별 1/6/5+2/9+2/4)
+│   ├── agents/                              ← 29 에이전트 (차원별 1/6/5+2/9+3/4)
 │   │   ├── flow-proposer.md                 ← 차원 0 Phase 9 (시나리오 도출 HITL → business_flow.yaml)
 │   │   ├── standard-analyzer.md             ← 차원 1
 │   │   ├── process-designer.md
@@ -125,6 +132,7 @@ STD_Process_Builder/
 │   │   ├── act-trigger.md                   ← 차원 3 → 4 인계 큐 발행
 │   │   ├── gap-analyzer.md                  ← 차원 3 Audit Phase 1 (외부 표준 GAP 분석)
 │   │   ├── gap-reporter.md                  ← 차원 3 Audit Phase 2 (REC-GAP + MAT-002 갱신)
+│   │   ├── gap-exporter.md                  ← 차원 3 Audit Phase 3 (XLSX·HTML·PDF 내보내기)
 │   │   ├── rca-analyzer.md                  ← 차원 4 Phase 1 (5-Why / Fishbone)
 │   │   ├── revision-planner.md              ← 차원 4 Phase 2 (Mermaid 의존성 그래프)
 │   │   ├── pcb-gatekeeper.md                ← 차원 4 Phase 1 (HITL + 4.5 quorum)
@@ -133,10 +141,11 @@ STD_Process_Builder/
 │   │   └── policy.yaml                      ← 6 역할 + Phase 4.5 extensions 4종
 │   ├── queues/
 │   │   └── act/                             ← 차원 4 인계 큐 (queue-q*)
-│   ├── runs/                                ← 실행 trace (4 prefix)
+│   ├── runs/                                ← 실행 trace (5 prefix)
 │   │   ├── run-{hex}/                       ← 차원 2 do trace
 │   │   ├── run-a*/                          ← 차원 3 audit trace
 │   │   ├── run-k*/                          ← 차원 3 kpi trace
+│   │   ├── run-g*/                          ← 차원 3 audit (GAP 분석) trace
 │   │   └── run-c*/                          ← 차원 4 act trace
 │   └── utils/                               ← Phase 4.5 명세 (3)
 │       ├── business_days_kr.md              ← 한국 영업일 (KST 공휴일 14개)
