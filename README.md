@@ -35,7 +35,7 @@
 - **Business / Process Flow 이중 레이어**: ingest의 `business_flow.yaml` 기반으로 PRO 간 선후관계(`follows`/`precedes`) + WI 시퀀스(`wi_sequence[]`) 설계 → Phase 3.5 `flow-mapper`가 MAT-010 프로세스 플로우맵 파생 생성
 - **통합 MAT 10종 운영** (MAT-001~009 + MAT-010 프로세스 플로우맵)
 - **표준 분류 레지스트리**: Layer(L1/L2/L3)·Structure·Integration Mode 3축 분류
-- **자동차/의료기기 도메인 지원**: 8개 도메인 전용 표준 (IATF 16949, ASPICE, ISO 26262, ISO/SAE 21434, ISO 13485, ISO 14971, IEC 62304, IEC 81001-5-1)
+- **표준 무관(standard-agnostic)**: ISO·IEC·KS·IATF·CMMI·법규·사내규정·고객 요구사항 등 어떤 구조화 문서든 `/process-ingest`로 편입 가능
 - **표준-프로세스 양방향 추적성** + `source_citation` 기반 감사증적
 - **체크포인트/재개** (`_state.yaml`): 실패 지점부터 이어 실행
 - **자가수정 루프**: QA Fail → 담당 에이전트 자동 재호출 (max 3 attempts)
@@ -410,31 +410,22 @@ POL-{영역}-{###}
 | MAT-010 | 프로세스 플로우 맵 | 1 Phase 3.5 (flow-mapper 파생) | PRO 간 선후관계 + WI 시퀀스 통합 맵 (Mermaid) |
 | MAT-011~ | 표준별 추적성 | 1 | 표준 편입 순서대로 순차 부여 |
 
-## 지원 표준 (상세: `vault/00_공통관리/07_표준분류레지스트리.md`)
+## 입력 가능 레퍼런스
 
-표준은 **Layer·Structure·Integration Mode** 3축으로 분류되어 에이전트 설계 전략이 자동 결정됩니다.
+**이 플랫폼은 특정 표준에 한정되지 않는다.** `/process-ingest`가 구조화 문서를 파싱할 수 있으면 어떤 레퍼런스든 프로세스 자산의 입력이 된다.
 
-| Layer | 표준 | 영역코드 | Integration Mode |
-|---|---|---|---|
-| **L1 경영시스템** | ISO 9001 | QMS | hls_merge |
-| | ISO/IEC 27001 | ISMS | hls_merge |
-| | ISO/IEC 27701 | PIMS | hls_merge |
-| | ISO 14001 | EMS | hls_merge |
-| | ISO 45001 | OHSMS | hls_merge |
-| | ISO/IEC 20000 | ITSM | hls_merge |
-| | ISO 22301 | BCMS | hls_merge |
-| | ISO/IEC 42001 | AIMS | hls_merge |
-| | IATF 16949 | AUTO | hls_merge (ISO 9001 확장) |
-| | ISO 13485 | MDQMS | quasi_hls_merge |
-| **L2 엔지니어링** | ASPICE | SPICE | interface_only |
-| | ISO 26262 | FUSA | interface_only |
-| | ISO/SAE 21434 | VCSMS | interface_only |
-| | ISO 14971 | MDRM | interface_only |
-| | IEC 62304 | MDSW | interface_only |
-| | IEC 81001-5-1 | MDCS | interface_only |
-| | ISO/IEC/IEEE 12207 | SWLC | interface_only |
-| | ISO/IEC/IEEE 15288 | SYSLC | interface_only |
-| **L3 참조** | ISO 31000 | RM | reference_only |
+| 유형 | 예시 |
+|---|---|
+| 국제 표준 | ISO 9001, ISO/IEC 27001, ISO 13485, ISO 26262, IATF 16949, IEC 62304 등 |
+| 역량 모델 | CMMI-DEV ML3/ML5, ASPICE, COBIT 등 |
+| 국내 표준·법규 | KS, 개인정보보호법, 전자금융감독규정 등 |
+| 사내 규정 | 내부 품질 매뉴얼, 경영 방침, IT 보안 정책 등 |
+| 고객·계약 요구사항 | SoW, RFP 요건, 고객 심사 체크리스트 등 |
+| 산업 가이드라인 | NIST CSF, CIS Controls, OWASP 등 |
+
+`/process-ingest sources/{문서}.pdf --standard {레이블}` 한 줄로 어떤 문서든 편입 가능. `standard-analyzer`가 문서 구조를 파싱하여 REQ-NNN 요건으로 정규화하고, 이후 `process-plan → process-do → process-check` 사이클이 동일하게 작동한다.
+
+복수 레퍼런스를 동시에 편입하면 MAT-002 규제요구사항 대조표가 통합 추적성을 유지한다.
 
 ## 권장 Obsidian 플러그인
 - Templates (코어) → `vault/99_템플릿/` 지정
@@ -483,7 +474,7 @@ Phase 4.5 extensions (명세 활성화):
 
 ## 누적 통계 (main 기준)
 
-- **에이전트**: 28 (차원별 1/6/5+2/9+2/4)
+- **에이전트**: 29 (차원별 1/6/5+2/9+3/4)
 - **슬래시 커맨드**: 7 (`/process-ingest`, `/process-plan`, `/process-do`, `/process-backfill`, `/process-check`, `/process-audit`, `/process-act`)
 - **운영 MAT**: 10 슬롯 (MAT-001~009 + MAT-010 프로세스 플로우맵)
 - **PoC trace**: 10 (do 5, audit 1, kpi 2, act 2)
