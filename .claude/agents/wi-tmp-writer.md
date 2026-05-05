@@ -61,6 +61,7 @@ Glob `vault/04_PRO_절차/PRO-*.md` 로 대상 PRO 전수 수집.
    - POL###: 상위 POL 3자리 번호, PRO##: PRO 번호의 십·일 자리, ##: WI 순번(01~)
    - `parent_pro` frontmatter 에 PRO 링크
    - `entry_gate` frontmatter 추가: PRO `wi_sequence[].entry_condition` 값을 그대로 복사. null이면 생략.
+   - `scope_type` frontmatter 추가: parent PRO 의 `scope_type` 값을 그대로 상속.
    - 입력/출력/단계/담당/예외처리 모두 기재
    - **생성 후 즉시**: 사전 목록 테이블에서 해당 항목을 ✅ 처리. PRO 1개당 모든 ✅ 확인 후 다음 PRO로 이동.
    - **완료 검증**: 사전 목록 테이블의 전 항목 ✅ 확인. 미생성(빈칸) 항목 발견 시 즉시 생성 후 재검증.
@@ -98,7 +99,7 @@ Glob `vault/04_PRO_절차/PRO-*.md` 로 대상 PRO 전수 수집.
      - `wi_id` ← WI MD frontmatter.doc_id
      - `title` ← WI MD frontmatter.title
      - `version` ← WI MD frontmatter.version
-     - `parent_pro` / `parent_pol` / `related_tmp[]` / `scope_code` / `standards[]` 모두 일치
+     - `parent_pro` / `parent_pol` / `related_tmp[]` / `scope_code` / `scope_type` / `standards[]` 모두 일치
    - **steps[] 추출** (WI MD 본문 §5):
      - §5.1 사전 준비 + §5.2 수행 단계 의 모든 번호 항목을 `step-NN` 으로 zero-padding.
      - 각 step 마다 `inputs[]` (사용자 질문), `outputs[]` (TMP 필드 매핑), `derivations[]` (자동 계산) 정의.
@@ -150,6 +151,7 @@ Glob `vault/04_PRO_절차/PRO-*.md` 로 대상 PRO 전수 수집.
 - 각 PRO의 `wi_sequence[].wi_id` 값을 Glob `vault/05_WI_업무지침/{파일명}` 으로 확인.
 - 불일치(계획에 있으나 파일 없음) 는 전수 생성 원칙 위반 → 즉시 WI 보완 생성.
 - WI `entry_gate` 와 PRO `wi_sequence[].entry_condition` 일치 여부 교차 확인. 불일치 시 즉시 동기화.
+- WI `scope_type` 와 parent PRO `scope_type` 일치 여부 교차 확인. 불일치 시 WI를 PRO 기준으로 동기화.
 
 **검증 완료 조건**: L-1 ~ L-4 전 항목에서 깨진 링크 0건.
 

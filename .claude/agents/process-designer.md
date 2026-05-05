@@ -80,6 +80,7 @@ S-3. 일반 모드: 자기 phase `design` 을 `status: running` + `started` 로 
      - 근거: `vault/00_공통관리/02_문서번호체계.md` "PRO 번호 배정 원칙" 참조.
    - **PRO 유형 및 선후 관계 (필수)**:
      - `pro_type: core | support` — business_flow.yaml nodes.type 기준. 없으면 표준 조항 성격으로 추정.
+     - `scope_type: project | org | common` — source_scenarios 의 scope_type 상속. 복수 시나리오가 서로 다른 scope_type이면 가장 넓은 범위 우선(`common > org > project`). business_flow.yaml 없으면 표준 조항 성격으로 추정.
      - `source_scenarios: [SC-001, ...]` — 이 PRO가 파생된 시나리오 ID 목록 (추적성).
      - `follows: [PRO-XXX, ...]` — 이 PRO 시작 전 완료되어야 하는 PRO. business_flow edges 기준.
      - `precedes: [PRO-YYY, ...]` — 이 PRO 완료 후 시작 가능한 PRO.

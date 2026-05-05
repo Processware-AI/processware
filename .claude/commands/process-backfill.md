@@ -1,6 +1,6 @@
 ---
 description: 'REC 백필 (기존 산출물 → REC 변환) — 레거시 문서(DOCX/XLSX/PDF 등)를 WI 자동 매칭 후 표준 REC 로 변환. 배치·단건 모두 지원. 사용: /process-backfill <path> | --confirm <trace> | --resume <trace> | --status <trace> | --list'
-argument-hint: "<파일|폴더> [--wi WI-XX] [--backfiller <이름>] [--date YYYY-MM] [--ocr] [--dry-run] | --confirm <trace_id> | --resume <trace_id> | --status <trace_id> | --list"
+argument-hint: "<파일|폴더> [--wi WI-XX] [--backfiller <이름>] [--date YYYY-MM] [--scope <레이블>] [--ocr] [--dry-run] | --confirm <trace_id> | --resume <trace_id> | --status <trace_id> | --list"
 ---
 
 # REC 백필 하네스
@@ -80,10 +80,20 @@ backfill_date: <--date 값 또는 오늘 날짜 YYYY-MM>
 options:
   dry_run: false
   forced_wi: null     # --wi 지정 시 채움
+  scope_explicit: <--scope 값 또는 null>  # null이면 파일별 경로 자동 추론
 files: []             # Phase 1 완료 후 채워짐
 ```
 
 1-6. 파일 목록을 state.yaml `files[]` 에 저장 (path, size, extension).
+
+1-7. **scope 추론** (파일별):
+   - `--scope` 명시 시: 모든 파일에 해당 값 적용.
+   - `--scope` 미지정 + 폴더 입력: 입력 루트 바로 아래 첫 번째 서브폴더명을 scope 레이블로 사용.
+     - 예: `sources/projects/project-A/sprint.docx` → scope: `"project-A"` (입력 루트가 `sources/`인 경우)
+     - 예: `sources/old_docs/2024/Q1/sprint.docx` → scope: `"2024"` (입력 루트가 `sources/old_docs/`인 경우는 `"2024"`)
+     실제로는 입력 루트 바로 아래 첫 번째 디렉토리명을 사용.
+   - `--scope` 미지정 + 단건 입력: scope: `"(미지정)"`.
+   - 추론된 scope 는 `files[].scope` 에 기록. HITL Phase 4 에서 사용자가 수정 가능.
 
 ### Phase 2 — Extract
 
@@ -149,6 +159,7 @@ files: []             # Phase 1 완료 후 채워짐
   source_doc: sources/{원본파일명}
   source_hash: sha256:<hash>
   extracted_at: "<ISO8601>"
+  scope: "<--scope 값 또는 경로 자동 추론 결과>"
   doc_type_signals: [<평가서|검토표|회의록|보고서 등>]
   metadata:
     date: "<추출된 날짜 또는 미확인>"
@@ -186,6 +197,7 @@ trace_id: run-bXXXXXXXX
 legacy_dir: sources/legacy/
 forced_wi: <--wi 값 또는 null>
 confidence_threshold: 75
+scope_explicit: <--scope 값 또는 null>
 ```
 
 3-2. backfill-matcher 가 반환한 `mapping_draft.yaml` 을 `.claude/runs/{trace_id}/` 에 저장.  
@@ -199,12 +211,12 @@ confidence_threshold: 75
 [Back-fill 매핑 검토] — run-bXXXXXXXX
 총 {N}건 | 자동 매칭 {n1}건 | ⚠️ 저신뢰도 {n2}건 | ❌ 매칭 불가 {n3}건
 
-No. 파일                              추천 WI               confidence
-────────────────────────────────────────────────────────────────────
-1.  sprint_review_2026Q1.docx       WI-CMMI-04-01-03     87%  ✅
-2.  peer_review_api.xlsx            WI-CMMI-04-01-05     72%  ⚠️
-3.  test_report_2026-03.docx        WI-CMMI-04-02-01     65%  ⚠️
-4.  meeting_kick_off.docx           (매칭 불가)           --   ❌
+No. 파일                              scope          추천 WI               confidence
+──────────────────────────────────────────────────────────────────────────────────
+1.  sprint_review_2026Q1.docx       project-A      WI-CMMI-04-01-03     87%  ✅
+2.  peer_review_api.xlsx            project-A      WI-CMMI-04-01-05     72%  ⚠️
+3.  test_report_2026-03.docx        project-B      WI-CMMI-04-02-01     65%  ⚠️
+4.  meeting_kick_off.docx           hr             (매칭 불가)           --   ❌
 
 ❌ 항목(4번)은 자동 제외됩니다.
 ⚠️ 항목은 WI 수정 권장. 수정: "2=WI-CMMI-04-01-04" 형식.
@@ -212,8 +224,19 @@ No. 파일                              추천 WI               confidence
 ```
 
 4-2. 사용자 응답 파싱:
+
+| 입력 예시 | 동작 |
+|---|---|
+| `"확정"` | 현재 매핑 그대로 진행 |
+| `"2=WI-CMMI-04-01-04"` | 2번 파일의 WI 수정 |
+| `"3 scope=전사-품질"` | 3번 파일의 scope 수정 |
+| `"3 제외"` | 3번 파일 제외 (REC 미생성) |
+| `"2=WI-CMMI-04-01-04, 3 scope=전사-품질"` | 복합 수정 |
+| `"전체 취소"` | 작업 중단 |
+
 - `"확정"` → state.yaml `status: pending_hitl_confirmation` + 확정 내용 반영.
 - `"2=WI-XX, 3 제외"` 등 → mapping_draft.yaml 수정 후 테이블 재출력.
+- `"3 scope=..."` → mapping_draft.yaml 해당 파일의 scope 필드 수정 후 테이블 재출력.
 - `"전체 취소"` → state.yaml `status: cancelled` 후 종료.
 
 4-3. ❌ 항목은 `state.yaml files[].status: excluded_no_match` 로 기록 (REC 미생성).
@@ -303,7 +326,20 @@ options:
 
 ---
 
-## 4. 강제 규칙
+## 4. 옵션 목록
+
+| 옵션 | 설명 |
+|---|---|
+| `--wi <WI번호>` | 수동 WI 지정 (단건 전용, confidence 100% 처리) |
+| `--backfiller <이름>` | 백필 담당자 명시 (REC에 기록됨) |
+| `--date <YYYY-MM>` | 원본 문서 생성 시점 (미지정 시 오늘 날짜) |
+| `--scope <레이블>` | 조직 범위 레이블 (예: "프로젝트-A", "HR팀", "전사-품질"). 미지정 시 폴더명 자동 추론 |
+| `--ocr` | 스캔본 PDF OCR 처리 활성화 |
+| `--dry-run` | 실제 REC 생성 없이 결과 미리보기 |
+
+---
+
+## 5. 강제 규칙
 
 - 쓰기 허용 경로: `sources/legacy/` (추출 MD), `vault/08_REC_기록/` (REC), `vault/90_MAT_통합매핑/MAT-005_*.md` (인덱스). 그 외 쓰기 금지.
 - OCR 임시 PDF는 `.claude/runs/{trace_id}/ocr/` 에만 저장. OCR'd PDF를 `sources/` 에 직접 쓰지 않는다.

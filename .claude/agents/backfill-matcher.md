@@ -21,6 +21,7 @@ trace_id: run-bXXXXXXXX
 legacy_dir: sources/legacy/
 forced_wi: null          # --wi 지정 시 채워짐 (단건 전용)
 confidence_threshold: 75
+scope_explicit: null     # --scope 지정 시 채워짐
 ```
 
 ---
@@ -31,8 +32,8 @@ confidence_threshold: 75
 
 1-1. `vault/90_MAT_통합매핑/MAT-007_프로세스_카탈로그.md` Read.  
 1-2. 카탈로그에서 각 WI 항목 추출:
-   - `wi_id`, `title`, `keywords[]`, `description`, `output_type` (산출물 유형)
-   - 없으면 `vault/05_WI_업무지침/WI-*.md` Glob → frontmatter `keywords` / `title` 직접 수집.
+   - `wi_id`, `title`, `keywords[]`, `description`, `output_type` (산출물 유형), `scope_type`
+   - 없으면 `vault/05_WI_업무지침/WI-*.md` Glob → frontmatter `keywords` / `title` / `scope_type` 직접 수집.
 1-3. 카탈로그 항목이 0건이면 에러 반환 (차원 1 미구축 상태).
 
 ### Phase 2. 레거시 MD 수집
@@ -45,6 +46,7 @@ confidence_threshold: 75
    - **표 헤더**: MD 표의 헤더 행. 구조가 보존되어 있어 평문 대비 신뢰도 높음.
    - **산출물 유형 신호**: frontmatter `doc_type_signals[]` 우선 사용. 없으면 제목·본문에서 재추출 ("평가서", "검토표", "계획서", "보고서", "회의록" 등).
    - **메타데이터**: frontmatter `metadata.date/author/approver` — 매핑 품질 참고용.
+   - **scope**: frontmatter `scope` 필드 읽기. scope_explicit 가 있으면 overwrite.
 
 ### Phase 3. WI 매칭 (파일별)
 
@@ -67,6 +69,23 @@ confidence_threshold: 75
    문서 표 헤더 ↔ 해당 WI 의 TMP frontmatter `fields[]` 유사도.
 
    가중 합산 → **confidence score (0~100)**.
+
+3-2-scope. **scope 정합성 보정**:
+   파일의 `scope` 와 WI 카탈로그의 `scope_type` 를 대조하여 confidence 를 보정한다.
+
+   | 파일 scope 추론 | WI scope_type | 보정 |
+   |---|---|---|
+   | project 성격 | `project` | 없음 |
+   | project 성격 | `org` | **-10** |
+   | org 성격 | `org` | 없음 |
+   | org 성격 | `project` | **-10** |
+   | 어느 쪽이든 | `common` | 없음 (전사 공통은 항상 적용 가능) |
+   | scope 미확인 | 어느 쪽이든 | 없음 |
+
+   scope 성격 추론 규칙:
+   - `scope` 레이블에 "project", "proj", "프로젝트" 등 → project 성격
+   - `scope` 레이블에 "hr", "인사", "finance", "재무", "구매", "it-", "지원" 등 → org 성격
+   - 그 외 또는 "(미지정)": 미확인 → 보정 없음.
 
 3-3. 상위 3개 후보 보존 (best 1개만 매핑, 나머지는 alternatives 로 저장).
 
@@ -107,6 +126,7 @@ summary:
 mappings:
   - file: sources/legacy/2026/Q1/sprint_review_2026Q1.md
     source_doc: sources/old_docs/2026/Q1/sprint_review_2026Q1.docx
+    scope: "project-A"
     status: high_confidence      # high_confidence | low_confidence | no_match
     best:
       wi_id: WI-CMMI-04-01-03
