@@ -1,0 +1,41 @@
+redmine:
+  url: "https://redmine.yourorg.com"   # 실제 URL로 교체
+  api_key: "${REDMINE_API_KEY}"         # 환경변수로 주입
+
+# scope_code → Redmine 상위 프로젝트 매핑
+project_mapping:
+  by_scope_code:
+    ISO27001: "lib-iso27001"
+    CMMI:     "lib-cmmi"
+    ISO9001:  "lib-iso9001"
+    IATF:     "lib-iatf"
+    IEC62304: "lib-iec62304"
+
+  # PRO doc_id → Redmine 서브프로젝트 매핑 (process-plan 실행 후 자동 채워짐)
+  by_pro: {}
+  # 예시:
+  # PRO-ISO27001-001-001: "lib-iso27001-riskmanagement"
+  # PRO-ISO27001-001-002: "lib-iso27001-accesscontrol"
+
+sync_rules:
+  skip_status: [draft]                  # 이 status 문서는 동기화 안 함
+  wiki_types:  [POL, PRO, WI, TMP, EX, MAT, REC-AUDIT, REC-GAP]
+  issue_types: [REC, REC-NCR]
+
+issue_trackers:
+  REC:     "프로세스기록"
+  REC-NCR: "NCR"
+
+# Redmine custom field ID (Redmine 관리자 화면에서 확인 후 채울 것)
+redmine_custom_fields:
+  doc_id:    null   # 예: 10
+  version:   null   # 예: 11
+  standards: null   # 예: 12
+  retention: null   # 예: 13
+
+# Workspace 생성 시 기본 트래커 목록
+workspace_trackers:
+  - name: "프로세스기록"
+    is_in_roadmap: false
+  - name: "NCR"
+    is_in_roadmap: true
