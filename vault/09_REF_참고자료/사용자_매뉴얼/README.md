@@ -28,6 +28,7 @@ tags: [manual, index, guide]
 | [[02-0_표준문서_전처리]] | `/process-ingest` 상세 — 표준 PDF 전처리·요건 패키지 생성 | 표준 분석가, 프로세스 설계자 |
 | [[02_프로세스_설계]] | `/process-plan` 상세 — 입력, 단계, 플래그, 자가수정 | 프로세스 설계자 |
 | [[03_프로세스_실행]] | `/process-do` 상세 — 8가지 모드, HITL 승인 흐름 | PM, 실행자 |
+| [[03-1_레거시_REC_백필]] | `/process-backfill` 상세 — 레거시 문서 → REC 변환, 자동 WI 매칭, legacy_evidence | 프로세스 전환 담당자, QMR |
 | [[04_프로세스_심사]] | `/process-check` 상세 — 독립성, NCR, KPI | QA, 심사원 |
 | [[04-1_외부표준_GAP분석]] | `/process-audit` 상세 — 외부 표준 부합성 GAP 분석·MAT-002 갱신 | 심사원, QMR |
 | [[05_프로세스_개정]] | `/process-act` 상세 — RCA, PCB 승인, 재빌드 | QMR, Process Owner |
@@ -51,6 +52,11 @@ tags: [manual, index, guide]
 /process-do WI-번호
 /process-do --approve run-XXXX      # HITL 승인
 /process-do --check-approvals       # 대기 중 승인 일괄 처리
+
+# 레거시 REC 백필 (Backfill)
+/process-backfill sources/old_docs/                      # 배치 변환
+/process-backfill sources/old.docx --wi WI-번호          # 단건 (수동 WI 지정)
+/process-backfill --confirm run-bXXXX                    # HITL 확정 → REC 생성
 
 # 내부 이행 심사 (Check)
 /process-check start PRO-번호 --auditor "이름"
