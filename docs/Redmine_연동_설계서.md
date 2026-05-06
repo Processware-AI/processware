@@ -212,7 +212,7 @@ CREATE TABLE workspace_map (
 
 ```
 processware/
-└── integrations/
+└── publish/
     └── redmine/
         ├── config.yaml          접속 정보 + 매핑 룰
         ├── sync.py              /vault-push 메인 로직

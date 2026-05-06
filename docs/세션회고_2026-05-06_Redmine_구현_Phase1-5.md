@@ -20,10 +20,10 @@ tags: [session, integration, redmine, vault-push, workspace, phase5, implementat
 
 | 파일 | 내용 |
 |---|---|
-| `integrations/redmine/config.yaml` | Redmine URL/API KEY + project_mapping (by_scope_code, by_pro) + sync_rules + issue_trackers + custom_fields |
-| `integrations/redmine/requirements.txt` | python-frontmatter≥1.1.0, requests≥2.31.0, PyYAML≥6.0.1 |
-| `integrations/redmine/redmine_client.py` | RedmineClient — get/create project, upsert_wiki_page, create/update issue, ping, client_from_config |
-| `integrations/redmine/db.py` | SQLite: sync_map + workspace_map, init_db, upsert_sync, get_sync, mark_failed, get_status_summary |
+| `publish/redmine/config.yaml` | Redmine URL/API KEY + project_mapping (by_scope_code, by_pro) + sync_rules + issue_trackers + custom_fields |
+| `publish/redmine/requirements.txt` | python-frontmatter≥1.1.0, requests≥2.31.0, PyYAML≥6.0.1 |
+| `publish/redmine/redmine_client.py` | RedmineClient — get/create project, upsert_wiki_page, create/update issue, ping, client_from_config |
+| `publish/redmine/db.py` | SQLite: sync_map + workspace_map, init_db, upsert_sync, get_sync, mark_failed, get_status_summary |
 
 ### 주요 결정
 
@@ -38,8 +38,8 @@ tags: [session, integration, redmine, vault-push, workspace, phase5, implementat
 
 | 파일 | 내용 |
 |---|---|
-| `integrations/redmine/transformer.py` | `transform()` — `_strip_frontmatter`, `_convert_wikilinks` (Obsidian `[[link]]` → Redmine), 자동생성 헤더 삽입 |
-| `integrations/redmine/sync.py` | CLI 메인: collect_vault_files, resolve_redmine_project, sync_file, `_sync_as_wiki`, `--setup`, `--changed`, `--dry-run`, `--status` |
+| `publish/redmine/transformer.py` | `transform()` — `_strip_frontmatter`, `_convert_wikilinks` (Obsidian `[[link]]` → Redmine), 자동생성 헤더 삽입 |
+| `publish/redmine/sync.py` | CLI 메인: collect_vault_files, resolve_redmine_project, sync_file, `_sync_as_wiki`, `--setup`, `--changed`, `--dry-run`, `--status` |
 
 ### 동기화 규칙
 
@@ -55,8 +55,8 @@ tags: [session, integration, redmine, vault-push, workspace, phase5, implementat
 
 | 파일 | 내용 |
 |---|---|
-| `integrations/redmine/library_setup.py` | PRO 파일 스캔 → `lib-*` 프로젝트 자동 생성 → config.yaml `by_pro` 자동 갱신 + Wiki 인덱스 페이지 생성 |
-| `integrations/redmine/issue_sync.py` | REC → Redmine Issue, STATUS_MAP/PRIORITY_MAP, custom_fields, _find_existing_issue (DB 우선, custom field fallback), journal notes (갱신 시) |
+| `publish/redmine/library_setup.py` | PRO 파일 스캔 → `lib-*` 프로젝트 자동 생성 → config.yaml `by_pro` 자동 갱신 + Wiki 인덱스 페이지 생성 |
+| `publish/redmine/issue_sync.py` | REC → Redmine Issue, STATUS_MAP/PRIORITY_MAP, custom_fields, _find_existing_issue (DB 우선, custom field fallback), journal notes (갱신 시) |
 
 ### STATUS_MAP / PRIORITY_MAP
 
@@ -85,7 +85,7 @@ NCR severity → Redmine 우선순위
 
 ### 구현 파일
 
-`integrations/redmine/workspace.py` — `cmd_create`, `cmd_sync`, `cmd_list`, `cmd_status`
+`publish/redmine/workspace.py` — `cmd_create`, `cmd_sync`, `cmd_list`, `cmd_status`
 
 ### 버그 수정
 
@@ -106,8 +106,8 @@ NCR severity → Redmine 우선순위
 
 | 파일 | 내용 |
 |---|---|
-| `integrations/redmine/post-commit.hook` | git post-commit hook: `vault/*.md` 변경 감지 → 백그라운드 `sync.py --changed` |
-| `integrations/redmine/install-hook.sh` | hook 설치 스크립트: 기존 hook에 append 또는 신규 생성 |
+| `publish/redmine/post-commit.hook` | git post-commit hook: `vault/*.md` 변경 감지 → 백그라운드 `sync.py --changed` |
+| `publish/redmine/install-hook.sh` | hook 설치 스크립트: 기존 hook에 append 또는 신규 생성 |
 | `.github/workflows/vault-push.yml` | GitHub Actions: `feat/*-output`, `main` 브랜치 + `vault/**/*.md` 트리거 → sync.py --changed → artifact 업로드 |
 
 ### GitHub Actions 특이사항
@@ -130,7 +130,7 @@ NCR severity → Redmine 우선순위
 ## 8. 산출물 목록
 
 ```
-integrations/redmine/
+publish/redmine/
   config.yaml          (설정)
   requirements.txt     (의존성)
   redmine_client.py    (API 래퍼)

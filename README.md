@@ -19,7 +19,7 @@
 
 **총 29 에이전트 / 7 슬래시 + 2 통합 스킬** — 모든 차원이 단일 브랜치(main)에 통합되어 운영.
 
-> **Phase 5 (외부 시스템 연동)**: `/vault-push`, `/workspace-create` — vault → Redmine 단방향 Push 구현 완료. `integrations/redmine/` 참조.
+> **Phase 5 (외부 시스템 연동)**: `/vault-push`, `/workspace-create` — vault → Redmine 단방향 Push 구현 완료. `publish/redmine/` 참조.
 
 ## 특징
 
@@ -164,7 +164,7 @@ STD_Process_Builder/
 │       ├── business_days_kr.md              ← 한국 영업일 (KST 공휴일 14개)
 │       ├── pcb_quorum.md                    ← PCB 다단계 quorum (4 모드)
 │       └── auto_trend_mermaid.md            ← round ≥ 2 자동 트렌드
-├── integrations/                            ← Phase 5 외부 시스템 연동
+├── publish/                            ← Phase 5 외부 시스템 연동
 │   └── redmine/                             ← Redmine 단방향 Push (Headless CMS 모델)
 │       ├── config.yaml                      ← Redmine URL/API KEY + project_mapping + sync_rules
 │       ├── requirements.txt                 ← python-frontmatter, requests, PyYAML
@@ -363,7 +363,7 @@ STD_Process_Builder/
 #### 5-A. 최초 설정 (1회)
 ```bash
 # 1. 의존성 설치
-pip3 install -r integrations/redmine/requirements.txt
+pip3 install -r publish/redmine/requirements.txt
 
 # 2. 환경변수 설정
 export REDMINE_API_KEY=your_api_key
@@ -375,7 +375,7 @@ export REDMINE_URL=https://your-redmine.example.com
 /vault-push --setup --dry-run     # 생성 예정 미리보기
 
 # 5. git hook 설치 (커밋 시 자동 push)
-bash integrations/redmine/install-hook.sh
+bash publish/redmine/install-hook.sh
 ```
 
 #### 5-B. vault → Redmine 동기화
@@ -556,4 +556,4 @@ Phase 4.5 extensions (명세 활성화):
 - **act queue**: 6 (3 done — 1 단일 + 2 batch / 3 pending)
 - **가이드 문서**: 4 (빌드 / 실행 / 심사 / 제·개정)
 - **Phase 4.5 명세**: 3 utils (영업일 / PCB quorum / 자동 트렌드) + RBAC extensions 4종
-- **Phase 5 구현**: integrations/redmine/ (11 파일) + .github/workflows/vault-push.yml + 2 스킬
+- **Phase 5 구현**: publish/redmine/ (11 파일) + .github/workflows/vault-push.yml + 2 스킬

@@ -1,12 +1,12 @@
 #!/usr/bin/env bash
 # vault 변경 시 Redmine 자동 동기화 git hook 설치 스크립트.
-# 프로젝트 루트에서 실행: bash integrations/redmine/install-hook.sh
+# 프로젝트 루트에서 실행: bash publish/redmine/install-hook.sh
 
 set -euo pipefail
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
 HOOK_DST="$REPO_ROOT/.git/hooks/post-commit"
-HOOK_SRC="$REPO_ROOT/integrations/redmine/post-commit.hook"
+HOOK_SRC="$REPO_ROOT/publish/redmine/post-commit.hook"
 
 # 이미 다른 hook이 있으면 append, 없으면 새로 생성
 if [[ -f "$HOOK_DST" ]]; then
@@ -26,5 +26,5 @@ fi
 echo ""
 echo "사전 조건:"
 echo "  1. export REDMINE_API_KEY=your_api_key"
-echo "  2. integrations/redmine/config.yaml 에 실제 URL 입력"
-echo "  3. pip3 install -r integrations/redmine/requirements.txt"
+echo "  2. publish/redmine/config.yaml 에 실제 URL 입력"
+echo "  3. pip3 install -r publish/redmine/requirements.txt"

@@ -5,7 +5,7 @@
 # ── 설정 확인 ────────────────────────────────────────────────────────────────
 
 REPO_ROOT="$(git rev-parse --show-toplevel)"
-SYNC_SCRIPT="$REPO_ROOT/integrations/redmine/sync.py"
+SYNC_SCRIPT="$REPO_ROOT/publish/redmine/sync.py"
 
 # Redmine API KEY 미설정 시 조용히 스킵
 if [[ -z "${REDMINE_API_KEY:-}" ]]; then
@@ -37,7 +37,7 @@ if [[ "$CHANGED_COUNT" -gt 5 ]]; then
 fi
 
 (
-    cd "$REPO_ROOT/integrations/redmine"
+    cd "$REPO_ROOT/publish/redmine"
     python3 sync.py --changed >> "$REPO_ROOT/.claude/states/redmine_sync.log" 2>&1
     EXIT_CODE=$?
     if [[ $EXIT_CODE -eq 0 ]]; then
