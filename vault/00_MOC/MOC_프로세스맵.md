@@ -1,7 +1,7 @@
 ---
 type: moc
 title: 프로세스 맵
-updated: 2026-04-16
+updated: 2026-05-06
 tags: [moc, process-map]
 ---
 
@@ -31,3 +31,12 @@ tags: [moc, process-map]
 - 자산·설비
 
 > 각 프로세스의 Level 2 정의서는 `04_PRO_절차/` 에 `PRO-{영역}-{POL번호}-{순번}` 파일명으로 생성. flow-mapper 실행 시 MAT-010 프로세스 플로우 맵(Mermaid)으로 자동 파생.
+
+---
+
+## 개정 이력
+
+| 버전 | 일자 | 변경 내용 |
+|---|---|---|
+| — | 2026-04-16 | 최초 작성 — M/C/S 3-Tier 프로세스 분류 |
+| — | 2026-05-06 | Level 2 정의서 폴더 참조 수정(`03_프로세스/` → `04_PRO_절차/`), flow-mapper MAT-010 연계 명시 |
