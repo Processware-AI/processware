@@ -49,14 +49,15 @@ overrides 반영 후 summary 재계산:
 
 ## 3. Phase B — 일련번호 결정
 
-일련번호 충돌 방지:
-```
-Glob: vault/08_REC_기록/AUDIT/REC-GAP-{standard_code}-{YYYY}-*.md
-→ 존재하는 NNN 최대값 + 1 → 3자리 zero-pad (001, 002, ...)
-→ 없으면 001
+일련번호 결정:
+```bash
+NNN=$(python3 -m tools.vault_rules next-seq \
+  --glob "vault/08_REC_기록/AUDIT/REC-GAP-{standard_code}-{YYYY}-*.md" \
+  --digits 3)
+GAP_ID="REC-GAP-{standard_code}-{YYYY}-$NNN"
 ```
 
-파일명 확정: `REC-GAP-{표준코드}-{YYYY}-{NNN}_GAP분석보고서.md`
+파일명 확정: `${GAP_ID}_GAP분석보고서.md`
 
 ---
 

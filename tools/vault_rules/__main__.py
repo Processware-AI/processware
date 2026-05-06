@@ -79,6 +79,25 @@ def cmd_validate(args):
     print("OK")
 
 
+def cmd_next_seq(args):
+    """Return next sequential number by scanning files matching a glob pattern."""
+    import glob as _glob
+    import re as _re
+
+    pattern = args.glob
+    digits = args.digits
+    seq_re = _re.compile(r"-(\d{" + str(digits) + r"})(?:\.|_)")
+
+    seqs = []
+    for f in _glob.glob(pattern):
+        m = seq_re.search(Path(f).name)
+        if m:
+            seqs.append(int(m.group(1)))
+
+    nxt = max(seqs, default=0) + 1
+    print(str(nxt).zfill(digits))
+
+
 def cmd_cascade(args):
     """List files to rename when a POL ID changes."""
     vault_root = Path(args.vault)
@@ -168,10 +187,16 @@ def main():
     p.add_argument("--new", required=True, help="New POL ID (e.g. POL-QMS-02)")
     p.add_argument("--dry-run", action="store_true", help="Preview only, no changes")
 
+    # next-seq
+    p = sub.add_parser("next-seq", help="Next seq number by glob scan (for NCR/AUDIT/GAP patterns)")
+    p.add_argument("--glob", required=True, help="Glob pattern, e.g. 'vault/08_REC_기록/AUDIT/REC-NCR-04-01-2026-*.md'")
+    p.add_argument("--digits", type=int, default=3, help="Zero-pad width (default: 3)")
+
     args = parser.parse_args()
 
     dispatch = {
         "next-id":  cmd_next_id,
+        "next-seq": cmd_next_seq,
         "filename": cmd_filename,
         "folder":   cmd_folder,
         "schema":   cmd_schema,

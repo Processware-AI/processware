@@ -194,16 +194,14 @@ B-1. payload 에서 다음 추출:
    - tmp_id 의 식별 부분 (예: `04-01-03-01`) — POL2-PRO2-WI2-TMP2
    - 연도 = `executed_at` 의 4자리 연도
 
-B-2. 다음 일련번호 결정:
-   - 패턴: `REC-{scope}-{POL2}-{PRO2}-{WI2}-{TMP2}-{YYYY}-{###}`
-   - Glob 으로 동일 패턴의 기존 REC 파일을 스캔.
-   - 가장 큰 일련번호 + 1 → zero-padding 3자리.
-   - 예: `REC-CMMI-04-01-03-01-2026-001`
-
-B-3. 파일명 결정:
-   - 패턴: `{REC식별번호}_{TMP의 한국어 제목}.md`
+B-2. REC ID 및 파일명 결정:
+   ```bash
+   ID=$(python3 -m tools.vault_rules next-id --type REC --scope {scope} --parent {TMP-ID})
+   FILE=$(python3 -m tools.vault_rules filename --id "$ID" --name "{TMP 한국어 제목}" --version "")
+   # 예: REC-CMMI-04-01-03-01-2026-001_작업산출물_평가표.md
+   ```
    - TMP 제목은 TMP frontmatter `title` 사용 (공백은 `_` 변환).
-   - 예: `REC-CMMI-04-01-03-01-2026-001_작업산출물_평가표.md`
+   - REC는 버전 suffix 불필요 (`--version ""` 전달 시 자동 생략).
 
 ### Phase C — REC 본문 합성
 

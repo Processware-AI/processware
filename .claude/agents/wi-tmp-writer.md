@@ -57,8 +57,13 @@ Glob `vault/04_PRO_절차/PRO-*.md` 로 대상 PRO 전수 수집.
    `wi_sequence` frontmatter를 우선한다.
 
 2. **업무지침(WI)** 생성 — **우선순위·컨텍스트 분량을 이유로 일부 생략 절대 금지**
-   - 경로: `vault/05_WI_업무지침/WI-{영역}-{POL###}-{PRO##}-{##}_{이름}_v0.1.md`
-   - POL###: 상위 POL 3자리 번호, PRO##: PRO 번호의 십·일 자리, ##: WI 순번(01~)
+   - ID·경로·파일명 결정:
+     ```bash
+     ID=$(python3 -m tools.vault_rules next-id --type WI --scope {영역} --parent {PRO-ID})
+     FOLDER=$(python3 -m tools.vault_rules folder --type WI)
+     FILE=$(python3 -m tools.vault_rules filename --id "$ID" --name "{이름}" --version 0.1)
+     # 경로: $FOLDER/$FILE
+     ```
    - `parent_pro` frontmatter 에 PRO 링크
    - `entry_gate` frontmatter 추가: PRO `wi_sequence[].entry_condition` 값을 그대로 복사. null이면 생략.
    - `scope_type` frontmatter 추가: parent PRO 의 `scope_type` 값을 그대로 상속.
@@ -69,7 +74,13 @@ Glob `vault/04_PRO_절차/PRO-*.md` 로 대상 PRO 전수 수집.
 3. **템플릿(TMP)** 생성 — **WI §8 연계템플릿에 명시된 TMP 전부 생성, 건너뜀 금지**
    - 각 WI 생성 직후, 해당 WI의 §8 연계 템플릿 섹션을 Read하여 필요한 TMP 목록 확정.
    - Glob `vault/06_TMP_템플릿/TMP-*.md` 로 기존 파일 스캔 → 이미 존재하는 TMP 는 생성 생략(차분만).
-   - 경로: `vault/06_TMP_템플릿/TMP-{영역}-{POL###}-{PRO##}-{WI##}_{이름}_v0.1.md`
+   - ID·경로·파일명 결정:
+     ```bash
+     ID=$(python3 -m tools.vault_rules next-id --type TMP --scope {영역} --parent {WI-ID})
+     FOLDER=$(python3 -m tools.vault_rules folder --type TMP)
+     FILE=$(python3 -m tools.vault_rules filename --id "$ID" --name "{이름}" --version 0.1)
+     # 경로: $FOLDER/$FILE
+     ```
    - **빈 양식만**: 샘플 데이터 금지
    - `parent_wi`, `related_ex` frontmatter 채움
    - 생성 후 해당 WI의 `related_tmp[]` frontmatter에 실제 파일명 기입.
@@ -84,8 +95,13 @@ Glob `vault/04_PRO_절차/PRO-*.md` 로 대상 PRO 전수 수집.
    | TMP-xxx | EX-xxx | 미생성 |
 
    - Glob `vault/07_EX_작성예시/EX-*.md` 로 기존 파일 스캔 → 이미 존재하는 EX 는 생략(차분만).
-   - 경로: `vault/07_EX_작성예시/EX-{영역}-{POL###}-{PRO##}-{WI##}_{이름}_작성예시_v0.1.md`
-     (TMP 파일명에서 `TMP-` → `EX-`, `_v숫자` 앞에 `_작성예시` 삽입)
+   - ID·경로·파일명 결정 (TMP와 동일 WI 부모, seq는 독립):
+     ```bash
+     ID=$(python3 -m tools.vault_rules next-id --type EX --scope {영역} --parent {WI-ID})
+     FOLDER=$(python3 -m tools.vault_rules folder --type EX)
+     FILE=$(python3 -m tools.vault_rules filename --id "$ID" --name "{이름}_작성예시" --version 0.1)
+     # 경로: $FOLDER/$FILE
+     ```
    - 샘플 값 채움 + 작성 요령 + 잘못된 사례
    - `parent_tmp` frontmatter에 대응 TMP 파일명 기입.
    - EX 생성 직후 대응 TMP의 `related_ex` frontmatter를 실제 EX 파일명으로 Edit.

@@ -71,14 +71,17 @@ B-1. 매 finding 마다 다음 추출:
    - `finding_id` (F-NNN)
 
 B-2. **NCR 식별번호 결정**:
-   - 패턴: `REC-NCR-{POL2}-{PRO2}-{YYYY}-{NNN}`
-     - POL2 / PRO2: finding 의 source 가 PRO/WI/POL 인 경우 그 부모 PRO 의 식별번호에서 추출.
-     - PRO2 식별 못 할 때 (POL 만 있는 경우): `00` 으로 padding.
+   - POL2 / PRO2: finding 의 source (PRO/WI/POL doc_id) 에서 추출. PRO2 식별 불가 시 `00`.
    - YYYY: audit_started_at 의 4자리 연도.
-   - NNN: 동일 (POL2, PRO2, YYYY) 안에서 일련번호. `Glob "vault/08_REC_기록/AUDIT/REC-NCR-{POL2}-{PRO2}-{YYYY}-*.md"` 결과 + 1.
+   ```bash
+   NNN=$(python3 -m tools.vault_rules next-seq \
+     --glob "vault/08_REC_기록/AUDIT/REC-NCR-{POL2}-{PRO2}-{YYYY}-*.md" \
+     --digits 3)
+   NCR_ID="REC-NCR-{POL2}-{PRO2}-{YYYY}-$NNN"
+   ```
    - 단일 audit 안에서 finding 4개라도 일련번호는 연속 (001, 002, 003, 004).
 
-B-3. **파일명**: `{REC-NCR 식별번호}_{REQ-NNN}_{등급}_{단축_제목}.md`
+B-3. **파일명**: `{NCR_ID}_{REQ-NNN}_{등급}_{단축_제목}.md`
    - 단축 제목: requirement.statement 의 핵심 명사구 1~3 단어 + `_` 변환.
    - 예: `REC-NCR-04-01-2026-001_REQ-005_critical_종결추적.md`
 

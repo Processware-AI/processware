@@ -47,17 +47,22 @@ B-1. audit_plan.scope 에서 다음 추출:
    - 연도 = `state.yaml.started_at` 의 4자리.
 
 B-2. **REC-AUDIT 식별번호 결정**:
-   - 패턴 (PRO 범위): `REC-AUDIT-{POL2}-{PRO2}-{회차2}-{YYYY}-{NNN}`
-     예: `REC-AUDIT-04-01-01-2026-001` (POL-04 / PRO-04-01 / 1회차 / 2026년 / 001)
-   - 패턴 (WI 범위): `REC-AUDIT-{POL2}-{PRO2}-{WI2}-{회차2}-{YYYY}-{NNN}`
-     예: `REC-AUDIT-04-01-03-01-2026-001`
-   - 패턴 (standard 범위): `REC-AUDIT-{표준코드별칭}-{회차2}-{YYYY}-{NNN}`
-     예: `REC-AUDIT-CMMI-ML3-01-2026-001`
-   - **회차 2자리** 결정: `Glob "vault/08_REC_기록/AUDIT/REC-AUDIT-{prefix}-*.md"` 로 동일 scope·연도 내 기존 보고서 수 + 1.
-   - **NNN 결정**: 동일 (scope, 회차, 연도) 안에서 동시 실행 충돌 시 일련번호. Phase 1 에서는 보통 001.
+   - 패턴은 scope.kind 에 따라 선택:
+     - PRO 범위: `REC-AUDIT-{POL2}-{PRO2}-{회차2}-{YYYY}-{NNN}`
+     - WI 범위:  `REC-AUDIT-{POL2}-{PRO2}-{WI2}-{회차2}-{YYYY}-{NNN}`
+     - standard 범위: `REC-AUDIT-{표준코드별칭}-{회차2}-{YYYY}-{NNN}`
+   - **회차 결정**: prefix 로 기존 보고서 수 + 1.
+   ```bash
+   ROUND=$(python3 -m tools.vault_rules next-seq \
+     --glob "vault/08_REC_기록/AUDIT/REC-AUDIT-{prefix}-*.md" \
+     --digits 2)
+   NNN=$(python3 -m tools.vault_rules next-seq \
+     --glob "vault/08_REC_기록/AUDIT/REC-AUDIT-{prefix}-$ROUND-{YYYY}-*.md" \
+     --digits 3)
+   AUDIT_ID="REC-AUDIT-{prefix}-$ROUND-{YYYY}-$NNN"
+   ```
 
-B-3. **파일명**: `{REC-AUDIT 식별번호}_{scope대표명}_심사보고서.md`
-   - PRO 범위: `REC-AUDIT-04-01-01-2026-001_프로세스_품질보증_심사보고서.md`
+B-3. **파일명**: `{AUDIT_ID}_{scope대표명}_심사보고서.md`
    - 한국어 부분은 PRO/WI/표준의 `title` (frontmatter) 에서. 공백은 `_` 로 변환.
 
 ### Phase C — 보고서 본문 합성

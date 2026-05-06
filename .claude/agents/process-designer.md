@@ -62,22 +62,27 @@ S-3. 일반 모드: 자기 phase `design` 을 `status: running` + `started` 로 
    - `inputs/04_AsIs/` 에 유사 정책/절차가 있으면 **용어·체계를 존중해 통합** (기존 어휘 유지)
 2. **정책(POL)** 생성
    - 템플릿: `vault/99_템플릿/T03_정책서_POL.md`
-   - 경로: `vault/03_POL_정책/POL-{영역}-{###}_{이름}_v0.1.md`
-   - 하나의 표준당 1~3개의 상위 POL (예: ISO9001 → `POL-QMS-001_품질방침`)
+   - ID·경로·파일명 결정:
+     ```bash
+     ID=$(python3 -m tools.vault_rules next-id --type POL --scope {영역})
+     FOLDER=$(python3 -m tools.vault_rules folder --type POL)
+     FILE=$(python3 -m tools.vault_rules filename --id "$ID" --name "{이름}" --version 0.1)
+     # 경로: $FOLDER/$FILE
+     ```
+   - 하나의 표준당 1~3개의 상위 POL (예: ISO9001 → `POL-QMS-01_품질방침_v0.1.md`)
    - 방향성·원칙·책임만. 세부 절차 금지.
 3. **절차(PRO)** 생성
    - 템플릿: `vault/99_템플릿/T04_절차서_PRO.md`
-   - 경로: `vault/04_PRO_절차/PRO-{영역}-{###}_{이름}_v0.1.md`
+   - ID·경로·파일명 결정:
+     ```bash
+     ID=$(python3 -m tools.vault_rules next-id --type PRO --scope {영역} --parent {POL-ID})
+     FOLDER=$(python3 -m tools.vault_rules folder --type PRO)
+     FILE=$(python3 -m tools.vault_rules filename --id "$ID" --name "{이름}" --version 0.1)
+     # 경로: $FOLDER/$FILE
+     ```
    - `parent_policy` frontmatter 에 상위 POL 링크
    - Mermaid flowchart, RACI, 통제점/KPI 필수
    - `standards: [...]` 에 관련 표준 다중 표기 가능(IMS 통합)
-   - **PRO 번호 배정 규칙 (필수)**: PRO 3자리 번호의 백의 자리는
-     반드시 부모 POL의 일련번호와 일치해야 한다.
-     - POL-001 하위 → 1xx (101, 102, ...)
-     - POL-002 하위 → 2xx (201, 202, ...)
-     - POL-003 이후 → 3xx, 4xx, 5xx ... 동일 규칙 적용
-     - 같은 POL 하위에 PRO가 복수일 경우 십·일의 자리를 01부터 순차 증가.
-     - 근거: `vault/00_공통관리/02_문서번호체계.md` "PRO 번호 배정 원칙" 참조.
    - **PRO 유형 및 선후 관계 (필수)**:
      - `pro_type: core | support` — business_flow.yaml nodes.type 기준. 없으면 표준 조항 성격으로 추정.
      - `scope_type: project | org | common` — source_scenarios 의 scope_type 상속. 복수 시나리오가 서로 다른 scope_type이면 가장 넓은 범위 우선(`common > org > project`). business_flow.yaml 없으면 표준 조항 성격으로 추정.
@@ -86,7 +91,7 @@ S-3. 일반 모드: 자기 phase `design` 을 `status: running` + `started` 로 
      - `precedes: [PRO-YYY, ...]` — 이 PRO 완료 후 시작 가능한 PRO.
    - **wi_sequence 사전 계획 (필수)**: PRO 생성 시 해당 절차에서 파생될
      WI 전체 목록을 순서대로 `wi_sequence` frontmatter에 계획·기입한다.
-     - WI 번호는 `WI-{영역}-{POL###}-{PRO##}-{##}` 형식으로 01부터 순차 부여.
+     - WI 번호는 `python3 -m tools.vault_rules next-id --type WI --scope {영역} --parent {PRO-ID}` 로 순차 결정.
      - 이 목록이 wi-tmp-writer의 생성 기준이 되므로 누락 없이 작성해야 한다.
      - WI 제목은 해당 PRO의 단계별 상세(§5)에서 도출한다.
      - 스키마:

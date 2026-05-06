@@ -29,13 +29,19 @@ S-3. 일반 모드: 자기 phase `trace` 를 `status: running` + `started` 로 E
 ### A. 표준별 추적성 매트릭스
 1. `vault/02_적용요건/{슬러그}/적용요건.md` 의 모든 REQ-ID 수집 (source_citation 포함).
 2. `vault/03_POL_정책`, `04_PRO_절차`, `05_WI_업무지침`, `06_TMP_템플릿` 내 문서의 frontmatter `standards` 및 본문 표준 매핑 섹션을 스캔.
-3. **MAT 번호 부여 규칙** (`[[02_문서번호체계]]` §MAT 번호 할당 원칙):
-   - MAT-001~010 은 전사 공통 (최대 10종, 재배정 금지). 현재 운영: 001·002·003·004·005·006. 007·008·009·010 은 예약.
-   - 표준별 추적성은 **MAT-011 부터 순차 부여**.
-   - `vault/90_MAT_통합매핑/` 에 `ls MAT-*_*_추적성_*.md` 로 기존 번호 스캔 → 현재 최대 번호 +1 을 새 번호로 결정. 기존 번호가 없으면 `011` 부터 시작.
-   - 동일 표준 재실행 시에는 기존 번호 유지 (덮어쓰기).
-   - 번호는 **3자리 0-padding** (예: `MAT-011`, `MAT-012`, `MAT-099`).
-4. `vault/99_템플릿/T09_매핑표_MAT.md` 로 `vault/90_MAT_통합매핑/MAT-{NNN}_{슬러그}_추적성_v0.1.md` 생성/갱신. 결정된 번호를 파일명·frontmatter `doc_id`·본문 헤더에 일관 반영.
+3. **MAT 번호 결정**:
+   ```bash
+   MAT_ID=$(python3 -m tools.vault_rules next-id --type MAT)
+   # MAT-001~010 전사공통 예약 구간 자동 스킵 → MAT-011 부터 반환
+   ```
+   - 동일 표준 재실행 시 기존 파일 Glob 으로 확인 후 기존 번호 유지 (신규 번호 미발급).
+4. `vault/99_템플릿/T09_매핑표_MAT.md` 로 경로 결정 후 생성/갱신:
+   ```bash
+   FOLDER=$(python3 -m tools.vault_rules folder --type MAT)
+   FILE=$(python3 -m tools.vault_rules filename --id "$MAT_ID" --name "{슬러그}_추적성" --version 0.1)
+   # 경로: $FOLDER/$FILE
+   ```
+   결정된 번호를 frontmatter `doc_id`·본문 헤더에 일관 반영.
 5. 커버리지 집계:
    - ✅ 반영완료: POL+PRO+WI+TMP+증적경로 모두 링크
    - 🟡 작업중: 일부 누락
