@@ -1,0 +1,197 @@
+wi_id:           "WI-CMMI-01-02-04"
+title:           "배포 모니터링·경험 통합 (SG3: SP3.3~3.4)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-01-02"
+parent_pol:      "POL-CMMI-01"
+related_tmp:
+  - "TMP-CMMI-01-02-04-01_배포_실행_모니터링_보고서"
+  - "TMP-CMMI-01-02-04-02_교훈_등록부"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:30:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "선행 WI 게이트 + 모니터링 데이터 확보"
+    section_ref: "§5.1.1"
+    inputs:
+      - field: "wi_03_status"
+        type: "enum"
+        question: "WI-CMMI-01-02-03 의 상태는?"
+        options: ["done", "in_progress", "pending"]
+        required: true
+      - field: "data_quarter"
+        type: "text"
+        question: "모니터링 대상 분기는? (예: 2026-Q2)"
+        required: true
+    derivations:
+      - id: "gate_pass"
+        expr: |
+          if wi_03_status == "done": "Pass"
+          else: "Block"
+    hitl: false
+
+  - id: "step-02"
+    name: "OSSP 적용 모니터링 (SP3.3)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "active_project_count"
+        type: "number"
+        question: "활성 프로젝트 수는?"
+        required: true
+      - field: "ossp_applied_count"
+        type: "number"
+        question: "OSSP 갱신본 적용 프로젝트 수는?"
+        required: true
+    derivations:
+      - id: "compliance_rate"
+        expr: |
+          rate = (ossp_applied_count / active_project_count) * 100
+          if rate >= 90: "Pass"
+          else: "PCB_escalate"
+        description: "배포 컴플라이언스율 = 적용 ÷ 활성 (목표 ≥ 90%)"
+    outputs:
+      - tmp_field: "모니터링보고서.컴플라이언스율"
+        from: "compliance_rate"
+    hitl: false
+
+  - id: "step-03"
+    name: "프로젝트 산출물 표본 검토 (SP3.3)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "sampled_artifacts_table"
+        type: "table"
+        question: "표본 검토 결과를 기록하라"
+        columns: ["프로젝트ID", "산출물", "OSSP부합여부", "비고"]
+        required: true
+    outputs:
+      - tmp_field: "모니터링보고서.표본검토"
+        from: "sampled_artifacts_table"
+    hitl: false
+
+  - id: "step-04"
+    name: "PPQA 감사 결과 통합 (SP3.3)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "ppqa_ncr_table"
+        type: "table"
+        question: "PPQA NCR 목록·종결 상태를 기록하라"
+        columns: ["NCR ID", "내용", "발행일", "조치", "종결일", "반복여부"]
+        required: true
+      - field: "repeating_ncr_count"
+        type: "number"
+        question: "반복 발생 NCR 건수는?"
+        required: true
+    outputs:
+      - tmp_field: "모니터링보고서.PPQA통합"
+        from: "ppqa_ncr_table"
+    hitl: false
+
+  - id: "step-05"
+    name: "OSSP·OPA 효과성 정기 검토 (SP3.4)"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "perf_objectives_actuals"
+        type: "table"
+        question: "프로세스 성능 목표 대비 실측값을 비교하라"
+        columns: ["지표", "목표값", "실측값", "달성여부", "비고"]
+        required: true
+    outputs:
+      - tmp_field: "모니터링보고서.효과성평가"
+        from: "perf_objectives_actuals"
+    hitl: false
+
+  - id: "step-06"
+    name: "교훈 도출 및 등록 (SP3.4)"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "lessons_learned_table"
+        type: "table"
+        question: "이번 분기 등재할 교훈을 정리하라"
+        columns: ["교훈ID", "출처프로젝트", "상황", "교훈내용", "권장조치", "관련PA"]
+        required: true
+      - field: "lessons_count"
+        type: "number"
+        question: "이번 분기 등재 교훈 수는?"
+        required: true
+        validation: "x >= 5"
+    derivations:
+      - id: "lessons_pass"
+        expr: |
+          if lessons_count >= 5: "Pass"
+          else: "Fail_promote_retrospective"
+        description: "분기 5건 미만 시 회고 워크숍 의무화"
+    outputs:
+      - tmp_field: "교훈등록부.이번분기"
+        from: "lessons_learned_table"
+    hitl: false
+
+  - id: "step-07"
+    name: "개선 제안 관리 (SP3.4)"
+    section_ref: "§5.2.7"
+    inputs:
+      - field: "improvement_proposals_table"
+        type: "table"
+        question: "수집된 개선 제안과 평가 결과는?"
+        columns: ["제안ID", "제안자", "내용", "분류", "채택여부", "차기사이클이관"]
+        required: true
+    outputs:
+      - tmp_field: "모니터링보고서.개선제안"
+        from: "improvement_proposals_table"
+    hitl: false
+
+  - id: "step-08"
+    name: "결과 보고 및 환류 + 승인"
+    section_ref: "§5.2.8"
+    inputs:
+      - field: "approver_name"
+        type: "person"
+        question: "분기 보고 승인자(CEO/CTO) 이름은?"
+        required: true
+      - field: "approval_date"
+        type: "date"
+        question: "승인 일자는?"
+        required: true
+      - field: "feedback_to_next_cycle"
+        type: "boolean"
+        question: "차기 사이클(WI-01) 입력 인계 완료했는가?"
+        required: true
+      - field: "mat001_row_id"
+        type: "text"
+        question: "MAT-001 등록 Row 번호는?"
+        required: true
+    outputs:
+      - tmp_field: "모니터링보고서.결재"
+        from: "approver_name"
+    hitl: required
+    approver_role: "CEO/CTO"
+    rationale: "PRO §3 RACI: 분기 보고 승인 권한자 = 경영진"
+
+dod_checklist:
+  - "분기 모니터링 보고서 작성·승인 완료"
+  - "PPQA NCR 통합·종결 상태 추적 완료"
+  - "표본 검토 결과 + OSSP 부합률 산정"
+  - "OSSP·OPA 효과성 평가 결과 등재 (분기 1회 이상)"
+  - "교훈 등록부 갱신 (분기 최소 5건 이상)"
+  - "개선 제안 분류·평가 + 차기 사이클 입력 인계"
+  - "CM 베이스라인 + MAT-001 등록"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "컴플라이언스 부합률 90% 미달"
+    rule: "PCB 안건 상정 + 미준수 프로젝트 별도 개입 + 시정 액션 플랜 별도 수립"
+  - section: "§7.2"
+    name: "교훈 등록 부진"
+    rule: "프로젝트 회고 회의 의무화 + EPG 사례 발굴 워크숍 + OT 연계 분기 1회 세미나"
+  - section: "§7.3"
+    name: "모니터링 데이터 누락"
+    rule: "MA 측정저장소 결손 발견 시 WI-CMMI-01-01-03 §7.2 절차로 정규화, 누락 분기는 다음 분기 통합"
+
+triggers: ["배포 모니터링", "컴플라이언스 감사", "교훈 등록", "프로세스 환류"]
+aliases: ["Process Compliance", "Lessons Learned", "환류 루프"]
+event_triggers: ["분기 종료 시점", "PPQA 감사 완료", "프로젝트 종결"]
+domains: ["일반", "SW"]

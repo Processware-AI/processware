@@ -1,0 +1,101 @@
+wi_id:           "WI-CMMI-03-03-03"
+title:           "컴포넌트 통합 준비·조립 (SG3: SP3.1~3.2)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-03-03"
+parent_pol:      "POL-CMMI-03"
+related_tmp:
+  - "TMP-CMMI-03-03-03-01_컴포넌트_인수_조립_기록부"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T10:40:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "컴포넌트 인수 (SP3.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "intake_checklist"
+        type: "table"
+        question: "각 컴포넌트 인수 체크리스트 결과는?"
+        columns: ["컴포넌트ID", "식별", "버전", "SBOM", "라이선스", "시험결과", "매뉴얼", "ICD 검증", "종합 합격"]
+        required: true
+    outputs:
+      - tmp_field: "기록부.인수체크리스트"
+        from: "intake_checklist"
+    hitl: false
+
+  - id: "step-02"
+    name: "라운드별 조립 (SP3.2)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "round_assembly"
+        type: "table"
+        question: "라운드별 조립 결과를 작성하라"
+        columns: ["라운드", "조립 일자", "진입기준 충족", "조립 결과(Pass/Fail)", "CM 베이스라인 ID"]
+        required: true
+    outputs:
+      - tmp_field: "기록부.라운드별조립"
+        from: "round_assembly"
+    hitl: false
+
+  - id: "step-03"
+    name: "부적합 처리"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "ncr_table"
+        type: "table"
+        question: "발행된 NCR 목록은?"
+        columns: ["NCR-ID", "라운드", "내용", "등급", "시정 결과", "상태"]
+        required: true
+    outputs:
+      - tmp_field: "기록부.NCR목록"
+        from: "ncr_table"
+    hitl: false
+
+  - id: "step-04"
+    name: "최종 통합 베이스라인·승인"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "final_integration_baseline_id"
+        type: "text"
+        question: "최종 통합 베이스라인 ID는?"
+        required: true
+      - field: "pm_approver"
+        type: "person"
+        question: "승인 PM 은?"
+        required: true
+    outputs:
+      - tmp_field: "기록부.최종베이스라인"
+        from: "final_integration_baseline_id"
+      - tmp_field: "기록부.결재"
+        from: "pm_approver"
+    hitl: required
+    approver_role: "Project Manager"
+
+dod_checklist:
+  - "모든 컴포넌트 인수 통과"
+  - "라운드별 진입·종료 기준 충족"
+  - "라운드별 CM 베이스라인 등록"
+  - "NCR 시정 완료 또는 PM 보류"
+  - "최종 통합 베이스라인 등록"
+  - "PM 승인 결재"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "인수 불합격"
+    rule: "TS WI-04 측 차감 통지 → 보완 → 재인수, 일정 영향시 PM 재계획"
+  - section: "§7.2"
+    name: "라운드 종료 기준 미달"
+    rule: "NCR → 시정 → 재시험, 3회 실패시 설계 회귀 검토"
+  - section: "§7.3"
+    name: "부분 조립 인도"
+    rule: "PM 결재 + 인수자 동의 + 후속 일정 + 별도 베이스라인 ID"
+
+triggers: ["통합 조립", "컴포넌트 인수", "Integration Assembly"]
+aliases: ["Component Intake", "Assembly"]
+event_triggers: ["통합 라운드 시작", "컴포넌트 인수 시점"]
+domains: ["일반", "SW"]

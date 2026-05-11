@@ -1,0 +1,228 @@
+wi_id:           "WI-CMMI-01-02-01"
+title:           "프로세스 니즈·목표 및 평가 (SG1: SP1.1~1.3)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-01-02"
+parent_pol:      "POL-CMMI-01"
+related_tmp:
+  - "TMP-CMMI-01-02-01-01_프로세스_니즈_목표_기술서"
+  - "TMP-CMMI-01-02-01-02_프로세스_평가_계획_결과보고서"
+  - "TMP-CMMI-01-02-01-03_개선_권고_목록"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:30:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "직전 평가 후속 액션 마감 상태 확인"
+    section_ref: "§5.1.1"
+    inputs:
+      - field: "prior_appraisal_id"
+        type: "text"
+        question: "직전 프로세스 평가의 문서ID는?"
+        required: true
+      - field: "prior_actions_closed_rate"
+        type: "number"
+        question: "직전 평가의 후속 액션 종결률(%)은?"
+        required: true
+        validation: "0 <= x <= 100"
+    derivations:
+      - id: "ready_to_proceed"
+        expr: |
+          if prior_actions_closed_rate >= 80: "Ready"
+          else: "Block_resolve_prior_actions"
+        description: "직전 액션 80% 미만이면 신규 평가 보류"
+    outputs:
+      - tmp_field: "평가계획.선결조건"
+        from: "ready_to_proceed"
+    hitl: false
+
+  - id: "step-02"
+    name: "프로세스 니즈·목표 식별 (SP1.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "business_objectives"
+        type: "text"
+        question: "당해년도 비즈니스 전략·목표 요지(3~5개)는?"
+        required: true
+      - field: "applicable_standards"
+        type: "multiselect"
+        question: "적용 외부 표준은?"
+        options: ["CMMI-DEV-ML3", "ISO 9001", "ISO/IEC 27001", "ISO/IEC 12207", "ISO 21434", "기타"]
+        required: true
+      - field: "process_perf_objectives_table"
+        type: "table"
+        question: "프로세스 성능 목표(지표·단위·목표값)를 표로 정의하라"
+        columns: ["지표", "단위", "현재값", "목표값", "주기"]
+        required: true
+    outputs:
+      - tmp_field: "니즈목표기술서.비즈니스목표"
+        from: "business_objectives"
+      - tmp_field: "니즈목표기술서.표준매핑"
+        from: "applicable_standards"
+      - tmp_field: "니즈목표기술서.성능목표표"
+        from: "process_perf_objectives_table"
+    hitl: false
+
+  - id: "step-03"
+    name: "평가 계획 수립 (SP1.2 준비)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "appraisal_method"
+        type: "enum"
+        question: "평가 방법론은?"
+        options: ["SCAMPI A", "SCAMPI B", "SCAMPI C", "내부 진단"]
+        required: true
+      - field: "appraisal_scope_pas"
+        type: "multiselect"
+        question: "평가 대상 PA(복수 선택)는?"
+        options: ["OPD","OPF","OT","PP","PMC","REQM","SAM","IPM","RSKM","RD","TS","PI","VER","VAL","CM","MA","PPQA","DAR"]
+        required: true
+      - field: "sponsor_name"
+        type: "person"
+        question: "평가 스폰서(Senior Mgmt) 이름은?"
+        required: true
+      - field: "appraisal_duration_days"
+        type: "number"
+        question: "평가 기간(일)은?"
+        required: true
+        validation: "x > 0"
+    outputs:
+      - tmp_field: "평가계획.방법론"
+        from: "appraisal_method"
+      - tmp_field: "평가계획.범위"
+        from: "appraisal_scope_pas"
+      - tmp_field: "평가계획.스폰서"
+        from: "sponsor_name"
+    hitl: false
+
+  - id: "step-04"
+    name: "평가 실행 (SP1.2)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "evidence_collected_count"
+        type: "number"
+        question: "수집한 증거(문서·인터뷰·관찰) 건수는?"
+        required: true
+      - field: "interview_count"
+        type: "number"
+        question: "인터뷰 대상자 수는?"
+        required: true
+    outputs:
+      - tmp_field: "평가결과보고서.증거수집"
+        from: "evidence_collected_count"
+    hitl: false
+
+  - id: "step-05"
+    name: "평가 결과 문서화 (SP1.2)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "strengths_list"
+        type: "table"
+        question: "식별된 강점을 PA 단위로 정리하라"
+        columns: ["PA", "강점내용", "증거"]
+        required: true
+      - field: "weaknesses_list"
+        type: "table"
+        question: "식별된 약점·격차를 정리하라"
+        columns: ["PA", "약점내용", "격차정도", "증거"]
+        required: true
+      - field: "capability_level_per_pa"
+        type: "table"
+        question: "PA별 능력 수준 판정 결과는?"
+        columns: ["PA", "Capability Level", "판정 근거"]
+        required: true
+    outputs:
+      - tmp_field: "평가결과보고서.강점"
+        from: "strengths_list"
+      - tmp_field: "평가결과보고서.약점"
+        from: "weaknesses_list"
+      - tmp_field: "평가결과보고서.능력수준"
+        from: "capability_level_per_pa"
+    hitl: false
+
+  - id: "step-06"
+    name: "개선 기회 식별 (SP1.3)"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "improvement_candidates"
+        type: "table"
+        question: "약점 기반 개선 후보 항목을 정리하라"
+        columns: ["#", "개선항목명", "관련PA", "영향도", "실행가능성", "우선순위"]
+        required: true
+        validation: "최소 5건 이상"
+      - field: "candidate_count"
+        type: "number"
+        question: "도출된 후보 개수는?"
+        required: true
+        validation: "x >= 5"
+    derivations:
+      - id: "candidates_pass"
+        expr: |
+          if candidate_count >= 5: "Pass"
+          else: "Fail_insufficient_candidates"
+        description: "최소 5건 미만이면 SP1.3 재수행"
+    outputs:
+      - tmp_field: "개선권고목록.후보표"
+        from: "improvement_candidates"
+    hitl: false
+
+  - id: "step-07"
+    name: "결과 보고 및 승인"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "report_package_link"
+        type: "text"
+        question: "Senior Mgmt 보고 패키지 경로/링크는?"
+        required: true
+      - field: "approver_name"
+        type: "person"
+        question: "승인자(CEO/CTO) 이름은?"
+        required: true
+      - field: "approval_date"
+        type: "date"
+        question: "승인 일자는?"
+        required: true
+      - field: "baseline_id"
+        type: "text"
+        question: "CM 베이스라인 ID는?"
+        required: true
+      - field: "mat001_row_id"
+        type: "text"
+        question: "MAT-001 등록 Row 번호는?"
+        required: true
+    outputs:
+      - tmp_field: "평가결과보고서.결재"
+        from: "approver_name"
+      - tmp_field: "평가결과보고서.승인일"
+        from: "approval_date"
+    hitl: required
+    approver_role: "CEO/CTO"
+    rationale: "PRO §3 RACI: 평가 결과 승인 권한자"
+
+dod_checklist:
+  - "프로세스 니즈·목표 기술서 작성·승인 완료"
+  - "평가 계획(스폰서·범위·방법·일정) 결재 완료"
+  - "평가 실시 + 결과보고서 작성 완료 (강점·약점·기회 명시)"
+  - "개선 권고 목록 작성 + 우선순위 부여 완료 (최소 5건 이상)"
+  - "Senior Mgmt 보고 + CEO/CTO 승인 결재 첨부"
+  - "CM 베이스라인 등록 + MAT-001 등록"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "평가 주기 초과"
+    rule: "직전 평가 후 12개월 경과 시 SP1.2 즉시 발동 — 분기 KPI 보고서 자동 플래그"
+  - section: "§7.2"
+    name: "외부 강제 평가"
+    rule: "외부 감사·인증 평가 도래 시 본 WI 일정 통합 — 외부 결과는 결과보고서에 별첨"
+  - section: "§7.3"
+    name: "평가 결과 강한 부정"
+    rule: "ML3 능력 미달 영역 발견 시 액션 플랜 수립을 90일 이내로 단축 + 별도 PCB 긴급 회의"
+
+triggers: ["프로세스 평가", "Appraisal", "SCAMPI", "개선 기회 식별", "프로세스 니즈"]
+aliases: ["프로세스 진단", "조직 평가", "Process Assessment"]
+event_triggers: ["연간 평가 주기 도래", "외부 감사 임박", "주요 비즈니스 전략 변경"]
+domains: ["일반", "SW"]

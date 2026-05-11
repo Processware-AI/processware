@@ -1,0 +1,148 @@
+wi_id:           "WI-CMMI-02-05-03"
+title:           "팀 구성 + OPA 기여 (SG1: SP1.6~1.7)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-02-05"
+parent_pol:      "POL-CMMI-02"
+related_tmp:
+  - "TMP-CMMI-02-05-03-01_팀_헌장_공유_비전"
+  - "TMP-CMMI-02-05-03-02_OPA_기여_자료"
+scope_code:      "CMMI"
+scope_type:      "project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:23:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "팀 헌장 작성 (SP1.6)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "team_vision"
+        type: "longtext"
+        question: "팀 비전 (1~3 문장)?"
+        required: true
+      - field: "team_roles"
+        type: "table"
+        question: "팀 역할·책임 표"
+        columns: ["역할", "담당자", "책임"]
+        required: true
+      - field: "operating_rules"
+        type: "multitext"
+        question: "운영 규칙 목록 (회의·의사소통·갈등 해결)"
+        required: true
+    outputs:
+      - tmp_field: "팀헌장.비전"
+        from: "team_vision"
+      - tmp_field: "팀헌장.역할"
+        from: "team_roles"
+    hitl: false
+
+  - id: "step-02"
+    name: "공유 비전 워크숍"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "workshop_date"
+        type: "date"
+        question: "워크숍 일자는?"
+        required: true
+      - field: "all_agreed"
+        type: "boolean"
+        question: "전원 합의?"
+        required: true
+    outputs: []
+    hitl: false
+
+  - id: "step-03"
+    name: "팀 운영 가동"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "standup_frequency"
+        type: "enum"
+        question: "Standup 빈도는?"
+        options: ["daily", "biweekly", "weekly", "기타"]
+        required: true
+      - field: "retro_frequency"
+        type: "enum"
+        question: "회고 빈도는?"
+        options: ["biweekly", "monthly", "milestone", "기타"]
+        required: true
+    outputs: []
+    hitl: false
+
+  - id: "step-04"
+    name: "(종료 시) OPA 기여 자료 (SP1.7)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "measurements_to_contribute"
+        type: "multitext"
+        question: "기여 측정값 목록 (effort, defect rate 등)"
+        required: false
+      - field: "lessons_learned"
+        type: "multitext"
+        question: "교훈 (잘된 점·개선점) 목록"
+        required: false
+      - field: "improvement_suggestions"
+        type: "multitext"
+        question: "OPF 개선 제안 목록"
+        required: false
+    derivations:
+      - id: "contribution_count"
+        expr: "count(measurements_to_contribute) + count(lessons_learned) + count(improvement_suggestions)"
+        description: "총 기여 자산 수"
+    outputs:
+      - tmp_field: "OPA기여자료.측정값"
+        from: "measurements_to_contribute"
+      - tmp_field: "OPA기여자료.교훈"
+        from: "lessons_learned"
+      - tmp_field: "OPA기여자료.개선제안"
+        from: "improvement_suggestions"
+    hitl: false
+
+  - id: "step-05"
+    name: "EPG 인계 + PAL 등록"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "epg_handover_date"
+        type: "date"
+        question: "EPG 인계일은?"
+        required: false
+      - field: "pal_registration_id"
+        type: "text"
+        question: "PAL 등록 ID는?"
+        required: false
+      - field: "approver_name"
+        type: "person"
+        question: "PMO Director 승인자 이름은?"
+        required: true
+    outputs:
+      - tmp_field: "OPA기여자료.PAL등록ID"
+        from: "pal_registration_id"
+    hitl: required
+    approver_role: "PMO Director"
+    rationale: "PRO §3 RACI 의 A — IPM 종료 시 PAL 기여는 PMO 결재"
+
+dod_checklist:
+  - "팀 헌장 작성 + 전원 합의"
+  - "공유 비전 워크숍 수행"
+  - "정기 운영 (standup/회고) 가동"
+  - "(종료 시) OPA 기여 ≥ 3 자산"
+  - "EPG 인계 + PAL 등록 ID"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "팀원 변경"
+    rule: "팀 헌장 갱신 + onboarding + 비전 재합의 시도"
+  - section: "§7.2"
+    name: "OPA 기여 자료 부족"
+    rule: "작은 프로젝트 최소 1건; 조직 차원 합산 통계로 PAL 등록 가능"
+  - section: "§7.3"
+    name: "비전 불일치"
+    rule: "Sponsor 의견 청취 후 재합의; 분기 결정 안 되면 PMO 결정"
+
+triggers: ["팀 헌장", "공유 비전", "OPA 기여", "PAL 등록", "교훈"]
+aliases: ["team charter", "shared vision", "OPA contribution", "IPM SP1.7"]
+event_triggers: ["프로젝트 kick-off", "프로젝트 종료 단계"]
+domains: ["일반", "SW", "조직"]

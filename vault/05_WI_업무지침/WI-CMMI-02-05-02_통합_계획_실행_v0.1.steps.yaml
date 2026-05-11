@@ -1,0 +1,110 @@
+wi_id:           "WI-CMMI-02-05-02"
+title:           "통합 계획·실행 (SG1: SP1.4~1.5)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-02-05"
+parent_pol:      "POL-CMMI-02"
+related_tmp:
+  - "TMP-CMMI-02-05-02-01_상위_통합_계획서"
+scope_code:      "CMMI"
+scope_type:      "project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:22:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "PP + 인접 PA 계획 수집"
+    section_ref: "§5.1"
+    inputs:
+      - field: "pp_plan_id"
+        type: "text"
+        question: "PP 통합 계획서 ID는?"
+        required: true
+      - field: "adjacent_plans"
+        type: "multitext"
+        question: "인접 PA 계획 ID 목록"
+        required: true
+    outputs: []
+    hitl: false
+
+  - id: "step-02"
+    name: "계획 통합 (SP1.4)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "integrated_sections"
+        type: "multiselect"
+        question: "포함 섹션"
+        options: ["PP 통합 계획", "MA 측정 계획", "OT 교육 계획", "CM 계획", "QA 계획", "RSKM 전략", "기타"]
+        required: true
+    outputs:
+      - tmp_field: "상위통합계획서.섹션"
+        from: "integrated_sections"
+    hitl: false
+
+  - id: "step-03"
+    name: "Cross-PA Consistency Check"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "consistency_checks"
+        type: "table"
+        question: "Cross-PA 점검"
+        columns: ["점검 항목", "결과", "조정 사항"]
+        required: true
+    outputs: []
+    hitl: false
+
+  - id: "step-04"
+    name: "CEO/CTO 결재 + CM 등록"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "approver_name"
+        type: "person"
+        question: "CEO/CTO 승인자 이름은?"
+        required: true
+      - field: "cm_baseline_id"
+        type: "text"
+        question: "CM 베이스라인 ID는?"
+        required: true
+    outputs:
+      - tmp_field: "상위통합계획서.승인자"
+        from: "approver_name"
+    hitl: required
+    approver_role: "CEO/CTO"
+    rationale: "PRO §3 RACI 의 A — 상위 통합 계획은 CEO/CTO 결재"
+
+  - id: "step-05"
+    name: "정의된 프로세스 실행 + 측정 actuals 시작 (SP1.5)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "execution_start_date"
+        type: "date"
+        question: "실행 시작일은?"
+        required: true
+    outputs: []
+    hitl: false
+
+dod_checklist:
+  - "상위 통합 계획서 작성"
+  - "Cross-PA consistency check 통과"
+  - "CEO/CTO 결재"
+  - "CM 베이스라인 등록"
+  - "정의된 프로세스 실행 시작 + 첫 측정 actuals"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "Cross-PA 충돌"
+    rule: "사전 교육·일정 조정; 해소 불가 시 WI-01 재진입"
+  - section: "§7.2"
+    name: "정의 프로세스 미준수"
+    rule: "PMC SP2 시정조치; 빈번 미준수 시 적합성 재검토"
+  - section: "§7.3"
+    name: "측정 actuals 미수집"
+    rule: "수동 집계 + MA 도구 보강"
+
+triggers: ["IPM 통합 계획", "정의된 프로세스 실행"]
+aliases: ["integrated project plan", "execute defined process"]
+event_triggers: ["WI-01 완료 직후"]
+domains: ["일반", "SW"]

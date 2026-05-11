@@ -1,0 +1,104 @@
+wi_id:           "WI-CMMI-02-06-03"
+title:           "리스크 완화 (SG3: SP3.1~3.2)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-02-06"
+parent_pol:      "POL-CMMI-02"
+related_tmp:
+  - "TMP-CMMI-02-06-03-01_리스크_완화_계획서"
+  - "TMP-CMMI-02-06-03-02_리스크_모니터링_기록"
+scope_code:      "CMMI"
+scope_type:      "project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:34:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "완화 계획 수립 (SP3.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "mitigation_table"
+        type: "table"
+        question: "완화 계획 (리스크ID, 활동, 책임자, 비용·기간, 비상계획, 발동조건)"
+        columns: ["리스크ID", "완화 활동", "책임자", "비용", "비상계획", "발동조건(trigger)"]
+        required: true
+    outputs:
+      - tmp_field: "리스크완화계획서.표"
+        from: "mitigation_table"
+    hitl: false
+
+  - id: "step-02"
+    name: "Senior Mgmt 승인 (Critical)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "critical_count"
+        type: "number"
+        question: "Critical 완화 계획 수는?"
+        required: true
+      - field: "approver_name"
+        type: "person"
+        question: "Senior Mgmt 결재자 이름은? (Critical 있을 때)"
+        required: false
+    outputs:
+      - tmp_field: "리스크완화계획서.승인자"
+        from: "approver_name"
+    hitl: required
+    approver_role: "Senior Management"
+    rationale: "PRO §3 RACI A — Critical 완화는 Senior Mgmt 결재"
+
+  - id: "step-03"
+    name: "완화 계획 실행·status 추적 (SP3.2)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "monitoring_records"
+        type: "table"
+        question: "리스크 모니터링 (status·status 변경일·재평가)"
+        columns: ["리스크ID", "status(Active/Mitigated/Triggered/Closed)", "변경일", "재평가 우선순위"]
+        required: true
+    outputs:
+      - tmp_field: "리스크모니터링기록.표"
+        from: "monitoring_records"
+    hitl: false
+
+  - id: "step-04"
+    name: "종결 + PAL 등록"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "closed_risks"
+        type: "multitext"
+        question: "종결 리스크 ID 목록"
+        required: false
+      - field: "pal_registration_id"
+        type: "text"
+        question: "완화 노하우 PAL 등록 ID는?"
+        required: false
+    outputs:
+      - tmp_field: "리스크모니터링기록.PAL등록"
+        from: "pal_registration_id"
+    hitl: false
+
+dod_checklist:
+  - "임계치 초과 리스크 100% 완화 계획"
+  - "Critical 완화 Senior Mgmt 결재"
+  - "실행 추적 + status 갱신"
+  - "종결 시 우선순위 재평가"
+  - "PAL 등록"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "완화 비용 > 영향"
+    rule: "Acceptance 결정 가능 + Senior Mgmt 승인"
+  - section: "§7.2"
+    name: "비상 계획 발동 (Triggered)"
+    rule: "즉시 PMC SP2 시정조치 + root cause → RSKM 개선"
+  - section: "§7.3"
+    name: "완화 효과 미달"
+    rule: "계획 강화 또는 acceptance 재결정"
+
+triggers: ["리스크 완화", "비상 계획", "Mitigation", "RSKM SG3"]
+aliases: ["risk mitigation", "contingency plan"]
+event_triggers: ["우선순위 결정 직후", "정기 status review"]
+domains: ["일반", "SW", "리스크"]

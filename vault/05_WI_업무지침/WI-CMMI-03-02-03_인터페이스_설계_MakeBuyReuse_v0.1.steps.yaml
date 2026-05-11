@@ -1,0 +1,152 @@
+wi_id:           "WI-CMMI-03-02-03"
+title:           "인터페이스 설계 + Make/Buy/Reuse (SG2: SP2.3~2.4)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-03-02"
+parent_pol:      "POL-CMMI-03"
+related_tmp:
+  - "TMP-CMMI-03-02-03-01_인터페이스_설계_명세서_ICD"
+  - "TMP-CMMI-03-02-03-02_Make_Buy_Reuse_분석서"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T10:00:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "기준·AVL 확보"
+    section_ref: "§5.1"
+    inputs:
+      - field: "if_standards_loaded"
+        type: "boolean"
+        question: "조직 인터페이스 표준(REST/스키마 등)을 확보했는가?"
+        required: true
+      - field: "avl_version"
+        type: "text"
+        question: "AVL(승인공급업체) 버전은?"
+        required: true
+    outputs:
+      - tmp_field: "ICD.적용표준"
+        from: "if_standards_loaded"
+    hitl: false
+
+  - id: "step-02"
+    name: "ICD 작성"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "icd_table"
+        type: "table"
+        question: "ICD 항목을 표로 작성하라"
+        columns: ["ICD-ID", "관련 IR-ID", "From↔To", "스키마(URL/내용)", "프로토콜", "SLA", "에러/재시도", "관측성", "버전 정책", "비표준 사유"]
+        required: true
+    outputs:
+      - tmp_field: "ICD.본표"
+        from: "icd_table"
+    hitl: false
+
+  - id: "step-03"
+    name: "인터페이스 검토"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "review_done"
+        type: "boolean"
+        question: "PI Lead + 양 끝점 Owner 합동 검토를 완료했는가?"
+        required: true
+      - field: "review_defects"
+        type: "number"
+        question: "검토 결함 수는?"
+        required: true
+        validation: ">= 0"
+    outputs:
+      - tmp_field: "ICD.검토결과"
+        from: "review_done"
+    hitl: false
+
+  - id: "step-04"
+    name: "Make/Buy/Reuse 분석"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "mbr_table"
+        type: "table"
+        question: "컴포넌트별 4축 비교 결과는?"
+        columns: ["컴포넌트ID", "Make(점수)", "Buy(점수)", "Reuse(점수)", "비용", "일정", "역량", "리스크", "결정", "근거"]
+        required: true
+      - field: "dar_apps"
+        type: "text"
+        question: "DAR 적용된 컴포넌트의 DAR ID 목록은?"
+        required: false
+    outputs:
+      - tmp_field: "MBR분석서.비교표"
+        from: "mbr_table"
+    hitl: false
+
+  - id: "step-05"
+    name: "결정 후속 조치"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "sam_handover_ids"
+        type: "text"
+        question: "Buy 결정 컴포넌트의 SAM 인계 송부 ID 목록은?"
+        required: false
+      - field: "reuse_agreements"
+        type: "text"
+        question: "Reuse 자산 PAL 협약 ID 목록은?"
+        required: false
+    outputs:
+      - tmp_field: "MBR분석서.후속조치"
+        from: "sam_handover_ids"
+    hitl: false
+
+  - id: "step-06"
+    name: "PI 인계"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "pi_handover_id"
+        type: "text"
+        question: "PI (PRO-CMMI-03-03 WI-02) 인계 송부 ID는?"
+        required: true
+    outputs:
+      - tmp_field: "ICD.PI인계ID"
+        from: "pi_handover_id"
+    hitl: false
+
+  - id: "step-07"
+    name: "PM 승인"
+    section_ref: "§5.2.7"
+    inputs:
+      - field: "pm_approver"
+        type: "person"
+        question: "승인 PM 은?"
+        required: true
+    outputs:
+      - tmp_field: "MBR분석서.결재"
+        from: "pm_approver"
+    hitl: required
+    approver_role: "Project Manager"
+
+dod_checklist:
+  - "모든 IR 에 1개 이상의 ICD 매핑"
+  - "ICD 7요소 모두 명시"
+  - "비표준 채택 사유·승인 첨부"
+  - "PI Lead 합동 검토 완료"
+  - "모든 컴포넌트 Make/Buy/Reuse 결정"
+  - "Buy 결정 SAM 인계 송부 기록"
+  - "PM 승인 결재"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "표준 미준수 인터페이스"
+    rule: "적응 계층 도입 + ICD 명시"
+  - section: "§7.2"
+    name: "공급업체 변경"
+    rule: "영향평가 + 재DAR + ICD 재검토"
+  - section: "§7.3"
+    name: "Reuse 부합 미흡 (<70%)"
+    rule: "Make/Hybrid 재결정 + 부합도 기준 첨부"
+
+triggers: ["인터페이스 설계", "ICD", "Make Buy Reuse", "조달"]
+aliases: ["Interface Control Document", "MBR Analysis"]
+event_triggers: ["설계 베이스라인 후", "공급업체 변경 요청"]
+domains: ["일반", "SW"]

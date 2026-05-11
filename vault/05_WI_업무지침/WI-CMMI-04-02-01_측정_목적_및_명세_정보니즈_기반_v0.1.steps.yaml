@@ -1,0 +1,177 @@
+wi_id:           "WI-CMMI-04-02-01"
+title:           "측정 목적·명세 — 정보 니즈 기반 (SP1.1~1.4)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-04-02"
+parent_pol:      "POL-CMMI-04"
+related_tmp:
+  - "TMP-CMMI-04-02-01-01_측정목적_정의서"
+  - "TMP-CMMI-04-02-01-02_측정_명세서"
+  - "TMP-CMMI-04-02-01-03_수집_저장_분석_절차서"
+scope_code:      "CMMI"
+scope_type:      "organization_project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:00:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "이해관계자 정보 니즈 식별·우선순위"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "stakeholder_list"
+        type: "multiselect"
+        question: "정보 니즈 이해관계자는?"
+        options: ["경영진","PM","QA","고객","개발팀","Sponsor","Other"]
+        required: true
+      - field: "info_needs"
+        type: "table"
+        question: "정보 니즈 목록과 우선순위?"
+        columns: ["니즈명", "이해관계자", "전략 부합도(1-5)", "우선순위"]
+        required: true
+    outputs:
+      - tmp_field: "측정목적정의서.이해관계자"
+        from: "stakeholder_list"
+      - tmp_field: "측정목적정의서.정보니즈표"
+        from: "info_needs"
+    hitl: false
+
+  - id: "step-02"
+    name: "측정 목적 수립 (SP1.1)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "measurement_objectives"
+        type: "table"
+        question: "측정 목적을 SMART 형식으로 정의하라"
+        columns: ["측정목적명", "Specific", "Measurable", "Achievable", "Relevant", "Time-bound"]
+        required: true
+    outputs:
+      - tmp_field: "측정목적정의서.목적표"
+        from: "measurement_objectives"
+    hitl: false
+
+  - id: "step-03"
+    name: "측정 명세 (SP1.2) — base/derived"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "base_measures"
+        type: "table"
+        question: "base measure 정의?"
+        columns: ["측정명", "정의", "단위", "수집 빈도", "정밀도"]
+        required: true
+      - field: "derived_measures"
+        type: "table"
+        question: "derived measure 정의?"
+        columns: ["측정명", "수식", "구성 base", "단위", "임계값"]
+        required: true
+    outputs:
+      - tmp_field: "측정명세서.Base"
+        from: "base_measures"
+      - tmp_field: "측정명세서.Derived"
+        from: "derived_measures"
+    hitl: false
+
+  - id: "step-04"
+    name: "수집·저장 절차 (SP1.3)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "collection_method"
+        type: "table"
+        question: "수집 방법·출처·책임자?"
+        columns: ["측정명", "방법(자동/수동)", "출처(시스템)", "책임자"]
+        required: true
+      - field: "storage_schema"
+        type: "text"
+        question: "저장소·스키마·보관 기간?"
+        required: true
+      - field: "integrity_rules"
+        type: "text"
+        question: "무결성 점검 룰(중복·범위·타입)?"
+        required: true
+    outputs:
+      - tmp_field: "절차서.수집방법"
+        from: "collection_method"
+      - tmp_field: "절차서.저장스키마"
+        from: "storage_schema"
+      - tmp_field: "절차서.무결성룰"
+        from: "integrity_rules"
+    hitl: false
+
+  - id: "step-05"
+    name: "분석 명세 (SP1.4)"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "analysis_methods"
+        type: "multiselect"
+        question: "분석 방법?"
+        options: ["기술통계","추세분석","비교(목표-실적)","예측","상관분석","기타"]
+        required: true
+      - field: "report_format"
+        type: "text"
+        question: "결과 표현 양식(대시보드·표·그래프)?"
+        required: true
+      - field: "report_audience_cycle"
+        type: "table"
+        question: "보고 주기·대상?"
+        columns: ["측정명", "대상", "주기"]
+        required: true
+    outputs:
+      - tmp_field: "절차서.분석방법"
+        from: "analysis_methods"
+      - tmp_field: "절차서.결과양식"
+        from: "report_format"
+      - tmp_field: "절차서.보고주기"
+        from: "report_audience_cycle"
+    hitl: false
+
+  - id: "step-06"
+    name: "검토·승인"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "stakeholder_review_status"
+        type: "enum"
+        question: "이해관계자 검토 상태?"
+        options: ["통과","조건부 통과","재작성"]
+        required: true
+      - field: "approver_name"
+        type: "person"
+        question: "승인자(CEO/CTO 또는 PM) 이름?"
+        required: true
+      - field: "mat001_row_id"
+        type: "text"
+        question: "MAT-001 등록 Row ID?"
+        required: true
+    outputs:
+      - tmp_field: "측정목적정의서.승인자"
+        from: "approver_name"
+      - tmp_field: "공통.MAT001"
+        from: "mat001_row_id"
+    hitl: required
+    approver_role: "CEO/CTO or PM"
+    rationale: "WI §2 승인자 — 조직/프로젝트 측정 체계는 결재 필수"
+
+dod_checklist:
+  - "정보 니즈 목록 우선순위 부여 완료"
+  - "측정 목적 SMART 점검 통과"
+  - "측정 명세서(base+derived) 작성·검토 완료"
+  - "수집·저장·분석 절차 명시"
+  - "이해관계자 검토 의견 반영"
+  - "결재 완료 및 MAT-001 등록"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "정보 니즈 충돌"
+    rule: "측정 명세 계층화(요약+상세), 상위 측정 우선"
+  - section: "§7.2"
+    name: "측정 가능성 부족"
+    rule: "Proxy 지표 대체, 명세에 'proxy' 표기"
+  - section: "§7.3"
+    name: "측정 비용 과다"
+    rule: "1건당 인일 ≥1 시 자동화 또는 표본 측정 검토"
+
+triggers: ["측정 명세", "정보 니즈", "Base/Derived measure", "측정 목적"]
+aliases: ["Measurement Specification", "Information Need", "GQM"]
+event_triggers: ["조직 KPI 체계 수립", "프로젝트 측정 계획 수립", "기존 측정 폐기·갱신"]
+domains: ["일반", "SW"]

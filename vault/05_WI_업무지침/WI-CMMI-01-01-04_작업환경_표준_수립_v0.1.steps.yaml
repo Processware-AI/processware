@@ -1,0 +1,224 @@
+wi_id:           "WI-CMMI-01-01-04"
+title:           "작업환경 표준 수립 (OPD SP1.6)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-01-01"
+parent_pol:      "POL-CMMI-01"
+related_tmp:
+  - "TMP-CMMI-01-01-04-01_작업환경_표준서"
+scope_code:      "CMMI"
+scope_type:      "organization"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T11:05:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "OSSP 및 후보 표준 확보"
+    section_ref: "§5.1"
+    inputs:
+      - field: "ossp_doc_id"
+        type: "text"
+        question: "참조할 OSSP 정의서 문서ID는?"
+        required: true
+      - field: "candidate_standards"
+        type: "table"
+        question: "평가할 후보 작업환경 표준을 나열하라"
+        columns: ["표준명", "출처(상용/오픈소스/사내)", "라이선스", "1차 적용범위"]
+        required: true
+        min_rows: 3
+    outputs:
+      - tmp_field: "작업환경표준서.후보표준목록"
+        from: "candidate_standards"
+    hitl: false
+
+  - id: "step-02"
+    name: "상업적 가용 표준 평가"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "evaluation_matrix"
+        type: "table"
+        question: "후보 표준 별 평가 점수를 입력하라"
+        columns: ["표준명", "적용범위", "라이선스", "통합성", "보안", "총비용", "운영부담", "종합점수(100)"]
+        required: true
+    derivations:
+      - id: "top3_recommended"
+        expr: "evaluation_matrix.sort_by(종합점수).reverse().take(3)"
+        description: "상위 3개 권고 표준 자동 선정"
+    outputs:
+      - tmp_field: "작업환경표준서.평가표"
+        from: "evaluation_matrix"
+      - tmp_field: "작업환경표준서.권고상위"
+        from: "top3_recommended"
+    hitl: false
+
+  - id: "step-03"
+    name: "채택 영역 확정"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "adopted_by_category"
+        type: "table"
+        question: "카테고리별 채택 표준을 확정하라"
+        columns: ["카테고리(개발/빌드/테스트/협업/보안/인프라)", "채택 표준", "선정 근거"]
+        required: true
+        validation: "all 6 categories covered"
+    outputs:
+      - tmp_field: "작업환경표준서.채택표"
+        from: "adopted_by_category"
+    hitl: false
+
+  - id: "step-04"
+    name: "격차 영역 신규 정의"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "gap_areas_exist"
+        type: "boolean"
+        question: "채택 표준이 다루지 못한 격차 영역이 존재하는가?"
+        required: true
+      - field: "gap_definitions"
+        type: "table"
+        question: "격차 영역과 신규 정의 표준을 기술하라"
+        columns: ["격차 영역", "최소 요구사항", "권장 구성", "예외 절차"]
+        required: false
+        depends_on: "gap_areas_exist == true"
+    outputs:
+      - tmp_field: "작업환경표준서.격차영역"
+        from: "gap_definitions"
+    hitl: false
+
+  - id: "step-05"
+    name: "라이선스·보안 검토"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "license_compliance"
+        type: "enum"
+        question: "라이선스 적합성 점검 결과는?"
+        options: ["통과", "조건부 통과", "위반 발견"]
+        required: true
+      - field: "security_reviewer"
+        type: "person"
+        question: "보안 책임자 검토자 이름은?"
+        required: true
+      - field: "security_findings"
+        type: "text"
+        question: "보안 검토 주요 지적사항(없음 가능)"
+        required: false
+    derivations:
+      - id: "license_pass"
+        expr: |
+          if license_compliance == "위반 발견": "Fail (즉시 §7.1 적용)"
+          else: "Pass"
+        description: "라이선스 통과 판정"
+    outputs:
+      - tmp_field: "작업환경표준서.라이선스결과"
+        from: "license_pass"
+      - tmp_field: "작업환경표준서.보안검토자"
+        from: "security_reviewer"
+    hitl: false
+
+  - id: "step-06"
+    name: "변경 영향평가 및 마이그레이션 계획"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "impact_projects_count"
+        type: "number"
+        question: "영향받는 기존 프로젝트 수는?"
+        required: true
+        validation: ">= 0"
+      - field: "migration_plan_summary"
+        type: "text"
+        question: "마이그레이션 계획 요약(이전 비용·중단 위험·일정)"
+        required: false
+        depends_on: "impact_projects_count > 0"
+    outputs:
+      - tmp_field: "작업환경표준서.영향평가"
+        from: "migration_plan_summary"
+    hitl: false
+
+  - id: "step-07"
+    name: "피어 리뷰"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "review_defects"
+        type: "number"
+        question: "피어 리뷰 결함 수는?"
+        required: true
+        validation: ">= 0"
+      - field: "review_status"
+        type: "enum"
+        question: "결함 해소 상태는?"
+        options: ["전체해소", "부분해소", "보류"]
+        required: true
+    derivations:
+      - id: "review_pass"
+        expr: |
+          if review_defects == 0 or review_status == "전체해소": "Pass"
+          else: "Fail"
+        description: "리뷰 통과 판정"
+    outputs:
+      - tmp_field: "작업환경표준서.피어리뷰"
+        from: "review_pass"
+    hitl: false
+
+  - id: "step-08"
+    name: "경영진 승인 및 CM 베이스라인 등록"
+    section_ref: "§5.2.7"
+    inputs:
+      - field: "approver_name"
+        type: "person"
+        question: "승인자(CEO/CTO) 이름은?"
+        required: true
+      - field: "baseline_id"
+        type: "text"
+        question: "CM 시스템 베이스라인 ID는?"
+        required: true
+      - field: "mat001_row_id"
+        type: "text"
+        question: "MAT-001 등록 Row 번호는?"
+        required: true
+      - field: "pal_catalog_id"
+        type: "text"
+        question: "PAL 카탈로그 등록 ID는?"
+        required: true
+    outputs:
+      - tmp_field: "작업환경표준서.결재"
+        from: "approver_name"
+      - tmp_field: "작업환경표준서.베이스라인ID"
+        from: "baseline_id"
+      - tmp_field: "작업환경표준서.PAL_ID"
+        from: "pal_catalog_id"
+    hitl: required
+    approver_role: "CEO/CTO"
+    rationale: "WI §2 승인자 — 조직 표준 채택은 경영진 의사결정 사안"
+
+dod_checklist:
+  - "후보 작업환경 표준 평가표 작성·서명 (최소 3개 후보)"
+  - "카테고리별 조직 채택 표준 1개 이상 확정 (6개 영역 모두 커버)"
+  - "격차 영역 신규 표준 식별 및 정의 또는 '없음' 명시"
+  - "라이선스 적합성 점검 통과 (위반 0건)"
+  - "보안 책임자 검토 결재 첨부"
+  - "피어 리뷰 결함 0건 또는 모두 해소"
+  - "CEO/CTO 승인 결재 첨부"
+  - "CM 베이스라인 ID 부여 + MAT-001 등록"
+  - "PAL 카탈로그 등재"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "라이선스 위반 발견"
+    rule: "즉시 사용 중지 → 보안 책임자 보고 → 6개월 이상 미해결 시 강제 제거"
+  - section: "§7.2"
+    name: "신규 도구 긴급 도입 요청"
+    rule: "임시 사용 3개월 + 보안 임시 평가 → 표준 편입/폐기. 1회 연장(총 6개월)"
+  - section: "§7.3"
+    name: "상용 라이선스 좌석 부족"
+    rule: "우선순위 기준 적용 + 미배정은 차기 예산 반영"
+  - section: "§7.4"
+    name: "격차 영역 임시 사용"
+    rule: "6개월 내 정식 표준 등재 의무, 미등재 시 PPQA 비준수 보고"
+
+triggers: ["작업환경 표준", "도구 표준", "개발환경", "워크 환경 정의"]
+aliases: ["Work Environment Standards", "WES", "도구 스택 표준"]
+event_triggers: ["조직 신규 설립", "주요 도구 EOL", "보안 정책 변경", "OSSP 정기 검토"]
+domains: ["일반", "SW", "DevOps"]

@@ -1,0 +1,261 @@
+wi_id:           "WI-CMMI-01-01-05"
+title:           "팀 구성·운영 규칙 수립 (OPD SP1.7)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-01-01"
+parent_pol:      "POL-CMMI-01"
+related_tmp:
+  - "TMP-CMMI-01-01-05-01_팀_운영_규칙서"
+scope_code:      "CMMI"
+scope_type:      "organization"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T11:15:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "OSSP 역할표 및 HR 직무체계 확보"
+    section_ref: "§5.1"
+    inputs:
+      - field: "ossp_doc_id"
+        type: "text"
+        question: "참조할 OSSP 정의서 문서ID는?"
+        required: true
+      - field: "hr_job_framework_id"
+        type: "text"
+        question: "HR 직무체계 문서ID는?"
+        required: true
+      - field: "past_team_cases"
+        type: "table"
+        question: "지난 12개월 종료 프로젝트 회고 사례를 입력하라"
+        columns: ["프로젝트", "팀유형", "팀크기", "성과", "회고 교훈"]
+        required: true
+        min_rows: 3
+    outputs:
+      - tmp_field: "팀운영규칙서.회고사례"
+        from: "past_team_cases"
+    hitl: false
+
+  - id: "step-02"
+    name: "권한위임(Empowerment) 메커니즘 정의"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "decision_levels"
+        type: "table"
+        question: "의사결정 4단계와 권한 범위·시한을 정의하라"
+        columns: ["단계 (팀자율/PM/부서장/경영진)", "결정 범위", "응답 SLA", "Escalation 트리거"]
+        required: true
+        validation: "4 rows required"
+    outputs:
+      - tmp_field: "팀운영규칙서.권한위임모델"
+        from: "decision_levels"
+    hitl: false
+
+  - id: "step-03"
+    name: "팀 유형 분류 및 구성 가이드"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "team_types"
+        type: "table"
+        question: "팀 유형과 권장 구성을 정의하라"
+        columns: ["팀유형(Feature/Component/Platform/Tiger)", "최소인원", "최대인원", "핵심 역할", "다기능성 비율(%)", "적용 시나리오"]
+        required: true
+        min_rows: 3
+      - field: "lifecycle_steps"
+        type: "table"
+        question: "신규 팀 생성·해체 절차 6단계를 기술하라"
+        columns: ["단계", "활동", "산출물", "책임"]
+        required: true
+        validation: "6 rows: 제안/검토/승인/킥오프/운영/해체"
+    outputs:
+      - tmp_field: "팀운영규칙서.팀유형표"
+        from: "team_types"
+      - tmp_field: "팀운영규칙서.팀라이프사이클"
+        from: "lifecycle_steps"
+    hitl: false
+
+  - id: "step-04"
+    name: "운영 규칙 — 회의·합의·갈등해결"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "meeting_standards"
+        type: "table"
+        question: "회의 표준(주기·아젠다·기록)을 기술하라"
+        columns: ["회의유형", "주기", "필수 참석자", "아젠다 템플릿", "기록 보관"]
+        required: true
+      - field: "working_agreements"
+        type: "table"
+        question: "Working Agreement 항목을 정의하라"
+        columns: ["항목(DoR/DoD/코드리뷰/근무/휴가/Oncall)", "표준 정의", "예외"]
+        required: true
+      - field: "conflict_resolution"
+        type: "table"
+        question: "갈등해결 3단계 절차를 기술하라"
+        columns: ["단계", "주체", "처리 시한", "에스컬레이션 조건"]
+        required: true
+        validation: "3 rows: 팀내/PM/HR+부서장"
+      - field: "performance_kpi_weight"
+        type: "object"
+        question: "개인·팀 KPI 가중치를 정의하라 (예: 개인 60% / 팀 40%)"
+        fields: ["개인_가중치(%)", "팀_가중치(%)", "HR 합의 일자"]
+        required: true
+    outputs:
+      - tmp_field: "팀운영규칙서.회의표준"
+        from: "meeting_standards"
+      - tmp_field: "팀운영규칙서.WorkingAgreement"
+        from: "working_agreements"
+      - tmp_field: "팀운영규칙서.갈등해결"
+        from: "conflict_resolution"
+      - tmp_field: "팀운영규칙서.KPI가중치"
+        from: "performance_kpi_weight"
+    hitl: false
+
+  - id: "step-05"
+    name: "법무 검토"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "legal_reviewer"
+        type: "person"
+        question: "법무 검토자 이름은?"
+        required: true
+      - field: "labor_law_compliance"
+        type: "enum"
+        question: "노동법 적합성은?"
+        options: ["적합", "조건부 적합", "부적합"]
+        required: true
+      - field: "privacy_compliance"
+        type: "enum"
+        question: "개인정보(원격근무 모니터링 등) 적합성은?"
+        options: ["적합", "조건부 적합", "부적합"]
+        required: true
+      - field: "antidiscrimination_compliance"
+        type: "enum"
+        question: "차별금지 적합성은?"
+        options: ["적합", "조건부 적합", "부적합"]
+        required: true
+    derivations:
+      - id: "legal_pass"
+        expr: |
+          if labor_law_compliance == "적합" and privacy_compliance == "적합" and antidiscrimination_compliance == "적합": "Pass"
+          elif "부적합" in [labor_law_compliance, privacy_compliance, antidiscrimination_compliance]: "Fail (§7.1 적용)"
+          else: "Conditional"
+        description: "법무 통과 판정"
+    outputs:
+      - tmp_field: "팀운영규칙서.법무검토"
+        from: "legal_pass"
+    hitl: false
+
+  - id: "step-06"
+    name: "노조/협의회 협의 (해당 시)"
+    section_ref: "§7.2"
+    inputs:
+      - field: "union_consultation_required"
+        type: "boolean"
+        question: "노조/협의회 협의가 필요한가?"
+        required: true
+      - field: "consultation_result"
+        type: "enum"
+        question: "협의 결과는?"
+        options: ["합의", "조건부 합의", "미합의", "해당없음"]
+        required: true
+        depends_on: "union_consultation_required == true"
+    outputs:
+      - tmp_field: "팀운영규칙서.노사협의결과"
+        from: "consultation_result"
+    hitl: false
+
+  - id: "step-07"
+    name: "피어 리뷰"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "review_defects"
+        type: "number"
+        question: "피어 리뷰 결함 수는?"
+        required: true
+        validation: ">= 0"
+      - field: "review_status"
+        type: "enum"
+        question: "결함 해소 상태는?"
+        options: ["전체해소", "부분해소", "보류"]
+        required: true
+    derivations:
+      - id: "review_pass"
+        expr: |
+          if review_defects == 0 or review_status == "전체해소": "Pass"
+          else: "Fail"
+        description: "리뷰 통과 판정"
+    outputs:
+      - tmp_field: "팀운영규칙서.피어리뷰"
+        from: "review_pass"
+    hitl: false
+
+  - id: "step-08"
+    name: "경영진 승인 및 CM 베이스라인 등록"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "approver_name"
+        type: "person"
+        question: "승인자(CEO/CTO) 이름은?"
+        required: true
+      - field: "baseline_id"
+        type: "text"
+        question: "CM 시스템 베이스라인 ID는?"
+        required: true
+      - field: "mat001_row_id"
+        type: "text"
+        question: "MAT-001 등록 Row 번호는?"
+        required: true
+      - field: "pal_catalog_id"
+        type: "text"
+        question: "PAL 카탈로그 등록 ID는?"
+        required: true
+      - field: "hr_system_sync"
+        type: "boolean"
+        question: "HR 시스템 직무·역할 매핑 동기화 완료?"
+        required: true
+    outputs:
+      - tmp_field: "팀운영규칙서.결재"
+        from: "approver_name"
+      - tmp_field: "팀운영규칙서.베이스라인ID"
+        from: "baseline_id"
+      - tmp_field: "팀운영규칙서.PAL_ID"
+        from: "pal_catalog_id"
+    hitl: required
+    approver_role: "CEO/CTO"
+    rationale: "WI §2 승인자 — 조직 차원 인사·운영 규칙은 경영진 의사결정 사안"
+
+dod_checklist:
+  - "권한위임 4단계 의사결정 모델 정의"
+  - "의사결정 시한 SLA 단계별 명시"
+  - "팀 유형 분류(최소 3유형) + 유형별 구성 가이드 작성"
+  - "신규 팀 생성·해체 절차 6단계 명시"
+  - "회의/Working Agreement/갈등해결 운영 규칙 작성"
+  - "법무 검토 결재 (노동·개인정보·차별금지 적합)"
+  - "HR 직무체계 매핑 동기화 완료"
+  - "피어 리뷰 결함 0건 또는 모두 해소"
+  - "CEO/CTO 승인 결재 첨부"
+  - "CM 베이스라인 ID 부여 + MAT-001 등록 + PAL 등재"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "노동법 위반 우려"
+    rule: "해당 조항 즉시 보류 + 30일 내 HR/법무 재검토"
+  - section: "§7.2"
+    name: "노사협의 필요"
+    rule: "협의 미완료 조항은 운영 보류, 잠정 조항 명시"
+  - section: "§7.3"
+    name: "다국가/원격 팀"
+    rule: "시차 ≥ 4h 시 On-call·회의 시간대 별도 부록 + 개인정보 국외이전 동의"
+  - section: "§7.4"
+    name: "Tiger 팀 (한시 ≤ 6주)"
+    rule: "회의표준·평가연동 면제 가능, 권한위임·갈등해결은 의무"
+  - section: "§7.5"
+    name: "해체 시 노하우 손실"
+    rule: "회고 워크숍 + 교훈 등록 의무, OPF 환류 (PRO-CMMI-01-02)"
+
+triggers: ["팀 구성 규칙", "팀 운영", "권한위임", "IPPD", "팀 빌딩"]
+aliases: ["Team Rules", "Team Empowerment", "Working Agreement"]
+event_triggers: ["조직 신규 설립", "노동법 개정", "원격근무 정책 변경", "OSSP 정기 검토"]
+domains: ["일반", "HR", "조직개발"]

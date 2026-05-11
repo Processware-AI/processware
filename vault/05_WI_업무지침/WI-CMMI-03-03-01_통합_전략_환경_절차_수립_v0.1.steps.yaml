@@ -1,0 +1,107 @@
+wi_id:           "WI-CMMI-03-03-01"
+title:           "통합 전략·환경·절차 수립 (SG1: SP1.1~1.3)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-03-03"
+parent_pol:      "POL-CMMI-03"
+related_tmp:
+  - "TMP-CMMI-03-03-01-01_제품_통합_전략_환경_절차서"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T10:20:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "통합 순서 결정 (SP1.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "integration_strategy"
+        type: "enum"
+        question: "통합 전략은?"
+        options: ["Bottom-up", "Top-down", "Big-bang", "Sandwich", "Incremental"]
+        required: true
+      - field: "dependency_graph_file"
+        type: "text"
+        question: "의존성 그래프 첨부 파일/링크는?"
+        required: true
+      - field: "has_cycle"
+        type: "boolean"
+        question: "순환 의존이 있는가?"
+        required: true
+    outputs:
+      - tmp_field: "통합절차서.전략"
+        from: "integration_strategy"
+    hitl: false
+
+  - id: "step-02"
+    name: "통합 환경 수립 (SP1.2)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "env_components"
+        type: "table"
+        question: "환경 구성요소를 표로 작성하라"
+        columns: ["분류(HW/SW/N/W/Data/Mock)", "항목", "버전", "Owner", "가용 상태"]
+        required: true
+    outputs:
+      - tmp_field: "통합절차서.환경"
+        from: "env_components"
+    hitl: false
+
+  - id: "step-03"
+    name: "통합 절차·기준 (SP1.3)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "round_criteria"
+        type: "table"
+        question: "라운드별 진입·종료 기준은?"
+        columns: ["라운드", "포함 컴포넌트", "진입기준", "종료기준", "합격/불합격 판정"]
+        required: true
+      - field: "ncr_flow_file"
+        type: "text"
+        question: "부적합 처리 흐름도 파일/링크는?"
+        required: true
+    outputs:
+      - tmp_field: "통합절차서.라운드기준"
+        from: "round_criteria"
+    hitl: false
+
+  - id: "step-04"
+    name: "검토·PM 승인"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "pm_approver"
+        type: "person"
+        question: "승인 PM 은?"
+        required: true
+    outputs:
+      - tmp_field: "통합절차서.결재"
+        from: "pm_approver"
+    hitl: required
+    approver_role: "Project Manager"
+
+dod_checklist:
+  - "통합 순서 결정 + 의존성 그래프 첨부"
+  - "환경 명세 (HW/SW/N/W/Data/Mock)"
+  - "라운드별 진입·종료 기준"
+  - "합격/불합격 판정 기준"
+  - "부적합 처리 흐름도"
+  - "PM 승인 결재"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "환경 가용성 부족"
+    rule: "우선 영역 한정 통합 + 후속 인수 일정"
+  - section: "§7.2"
+    name: "의존성 순환"
+    rule: "TS SP2.3 회귀 또는 임시 stub"
+  - section: "§7.3"
+    name: "외부 시스템 미가용"
+    rule: "Mock 서버 + 정식 환경 시점 재시험"
+
+triggers: ["제품 통합", "Integration Strategy", "통합 환경"]
+aliases: ["Product Integration", "Integration Plan"]
+event_triggers: ["설계 베이스라인 후", "통합 환경 가용성 변동"]
+domains: ["일반", "SW"]

@@ -1,0 +1,188 @@
+wi_id:           "WI-CMMI-01-03-01"
+title:           "전략적 교육 요구 식별·전술계획 (SG1: SP1.1~1.4)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-01-03"
+parent_pol:      "POL-CMMI-01"
+related_tmp:
+  - "TMP-CMMI-01-03-01-01_전략적_교육요구_분석서"
+  - "TMP-CMMI-01-03-01-02_교육_약정서"
+  - "TMP-CMMI-01-03-01-03_조직_교육_전술계획"
+  - "TMP-CMMI-01-03-01-04_커리큘럼_및_강사풀_명세서"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:30:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "직전년도 평가·OSSP·OPF 환류 결과 확보"
+    section_ref: "§5.1"
+    inputs:
+      - field: "prior_year_effectiveness_link"
+        type: "text"
+        question: "직전년도 효과성 평가 보고서 링크/ID는?"
+        required: true
+      - field: "ossp_baseline_id"
+        type: "text"
+        question: "참조할 OSSP 베이스라인 ID는?"
+        required: true
+    hitl: false
+
+  - id: "step-02"
+    name: "전략 분석 및 교육 요구 도출 (SP1.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "business_strategy_summary"
+        type: "text"
+        question: "당해년도 비즈니스 전략 요지는?"
+        required: true
+      - field: "roles_skills_needed_table"
+        type: "table"
+        question: "OSSP 수행에 필요한 역할·스킬 매트릭스를 작성하라"
+        columns: ["역할", "필요스킬", "현재격차", "우선순위"]
+        required: true
+      - field: "mandatory_training_items"
+        type: "multiselect"
+        question: "필수(안전·보안·법규) 교육 항목은?"
+        options: ["정보보안 기초", "개인정보보호", "안전보건", "내부통제", "윤리·컴플라이언스", "기타"]
+        required: true
+    outputs:
+      - tmp_field: "교육요구분석서.역할스킬"
+        from: "roles_skills_needed_table"
+      - tmp_field: "교육요구분석서.필수교육"
+        from: "mandatory_training_items"
+    hitl: false
+
+  - id: "step-03"
+    name: "조직 책임 vs 프로젝트 책임 구분 (SP1.2)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "needs_classification_table"
+        type: "table"
+        question: "각 교육 니즈를 조직 책임/프로젝트 책임으로 분류하라"
+        columns: ["니즈ID", "내용", "분류(조직/프로젝트)", "제기부서", "협상결과"]
+        required: true
+    outputs:
+      - tmp_field: "교육약정서.분류표"
+        from: "needs_classification_table"
+    hitl: false
+
+  - id: "step-04"
+    name: "전술 교육 계획 수립 (SP1.3)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "tactical_plan_table"
+        type: "table"
+        question: "분기·연 단위 교육 계획을 표로 작성하라"
+        columns: ["분기", "과정명", "대상자", "예산", "이수목표(명)", "강사구분"]
+        required: true
+      - field: "annual_budget"
+        type: "number"
+        question: "연간 교육 예산 총액은? (단위: 천원)"
+        required: true
+      - field: "commitment_signed_list"
+        type: "table"
+        question: "이해관계자 약정 서명 결과는?"
+        columns: ["부서", "약정과정", "서명자", "서명일"]
+        required: true
+    outputs:
+      - tmp_field: "전술계획.본문"
+        from: "tactical_plan_table"
+      - tmp_field: "전술계획.예산"
+        from: "annual_budget"
+    hitl: false
+
+  - id: "step-05"
+    name: "Training Capability 구축 (SP1.4)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "delivery_approaches"
+        type: "multiselect"
+        question: "교육 전달 방식은?"
+        options: ["내부 강의", "외부 위탁", "이러닝", "OJT", "멘토링", "워크숍"]
+        required: true
+      - field: "build_or_buy_decision"
+        type: "table"
+        question: "교재 자체개발 vs 외부구매 결정 결과는?"
+        columns: ["과정명", "결정", "사유", "공급자"]
+        required: true
+      - field: "instructor_pool_table"
+        type: "table"
+        question: "강사 풀 확보·자격 평가 결과는?"
+        columns: ["강사이름/외부사", "전문영역", "자격조건충족", "사용가능과정"]
+        required: true
+    outputs:
+      - tmp_field: "커리큘럼명세서.전달방식"
+        from: "delivery_approaches"
+      - tmp_field: "커리큘럼명세서.강사풀"
+        from: "instructor_pool_table"
+    hitl: false
+
+  - id: "step-06"
+    name: "자원·시설 확보"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "facilities_lms_check"
+        type: "table"
+        question: "교육실·LMS·도구 가용성 확인 결과는?"
+        columns: ["자원유형", "가용여부", "비고"]
+        required: true
+    outputs:
+      - tmp_field: "전술계획.자원확보"
+        from: "facilities_lms_check"
+    hitl: false
+
+  - id: "step-07"
+    name: "검토 및 승인"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "approver_name"
+        type: "person"
+        question: "승인자(CEO/CTO) 이름은?"
+        required: true
+      - field: "approval_date"
+        type: "date"
+        question: "승인 일자는?"
+        required: true
+      - field: "announcement_done"
+        type: "boolean"
+        question: "사내 공지·발효 완료했는가?"
+        required: true
+      - field: "mat001_row_id"
+        type: "text"
+        question: "MAT-001 등록 Row 번호는?"
+        required: true
+    outputs:
+      - tmp_field: "전술계획.결재"
+        from: "approver_name"
+    hitl: required
+    approver_role: "CEO/CTO"
+    rationale: "PRO §3 RACI: SP1.1~1.3 의 A=Senior Mgmt → CEO/CTO 결재"
+
+dod_checklist:
+  - "전략적 교육요구 분석서 작성·승인 완료"
+  - "교육 약정서 체결 (조직 책임 범위 명시)"
+  - "전술계획서 작성·승인 + 예산 확정"
+  - "커리큘럼·교재·강사 풀 명세서 작성 완료"
+  - "자원·시설·LMS 가용성 확정"
+  - "사내 공지·발효"
+  - "CM 베이스라인 + MAT-001 등록"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "약정 항목 불일치"
+    rule: "PCB 안건 상정 + Senior Mgmt 조정, 합의 결과 약정서 반영"
+  - section: "§7.2"
+    name: "예산 삭감·자원 제약"
+    rule: "우선순위 재조정, 일부 과정 외부 위탁·이러닝 전환, 미이행 시 사내 공지+사유 명시"
+  - section: "§7.3"
+    name: "신규 표준·기술 도입"
+    rule: "임시 교육 과정 3개월 내 신설, 정식 커리큘럼은 다음 분기 갱신에 통합"
+
+triggers: ["교육 요구 식별", "전술 교육 계획", "Training Capability", "커리큘럼 수립"]
+aliases: ["조직 훈련", "교육 계획", "OT planning"]
+event_triggers: ["연초 사업계획 수립 시점", "OSSP 갱신 직후", "OPF 교훈 환류 시점"]
+domains: ["일반", "SW"]

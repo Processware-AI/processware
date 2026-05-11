@@ -1,0 +1,123 @@
+wi_id:           "WI-CMMI-03-03-02"
+title:           "인터페이스 완전성·관리 (SG2: SP2.1~2.2)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-03-03"
+parent_pol:      "POL-CMMI-03"
+related_tmp:
+  - "TMP-CMMI-03-03-02-01_인터페이스_카테고리_매핑표_관리기록"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T10:30:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "인터페이스 카테고리·매핑 (SP2.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "category_table"
+        type: "table"
+        question: "카테고리별 인터페이스 분류 결과는?"
+        columns: ["카테고리(내부/외부/제어/데이터/사용자/물리)", "ICD-ID 목록"]
+        required: true
+      - field: "from_to_matrix"
+        type: "text"
+        question: "From↔To 매트릭스 첨부 파일/링크는?"
+        required: true
+    outputs:
+      - tmp_field: "관리기록.카테고리표"
+        from: "category_table"
+    hitl: false
+
+  - id: "step-02"
+    name: "완전성 검토"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "ir_icd_coverage_pct"
+        type: "number"
+        question: "IR↔ICD 매핑 커버리지(%)는?"
+        required: true
+        validation: "0 <= x <= 100"
+      - field: "icd_7element_check"
+        type: "table"
+        question: "ICD 7요소 점검 결과는?"
+        columns: ["ICD-ID", "스키마", "프로토콜", "SLA", "에러", "재시도", "관측", "버전", "전요소 충족"]
+        required: true
+    outputs:
+      - tmp_field: "관리기록.완전성점검"
+        from: "icd_7element_check"
+    hitl: false
+
+  - id: "step-03"
+    name: "Contract Test"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "contract_test_results"
+        type: "table"
+        question: "Contract Test 결과는?"
+        columns: ["ICD-ID", "결과(Pass/Fail)", "Fail 사유", "TS 회귀 여부"]
+        required: true
+    outputs:
+      - tmp_field: "관리기록.ContractTest"
+        from: "contract_test_results"
+    hitl: false
+
+  - id: "step-04"
+    name: "변경 관리 (SP2.2)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "cr_table"
+        type: "table"
+        question: "이번 라운드 ICD 변경요청 목록은?"
+        columns: ["CR-ID", "대상 ICD", "변경 요약", "영향 컴포넌트", "승인자", "승인 일자"]
+        required: true
+    outputs:
+      - tmp_field: "관리기록.CR목록"
+        from: "cr_table"
+    hitl: false
+
+  - id: "step-05"
+    name: "베이스라인·승인"
+    section_ref: "§5.2.5~5.2.6"
+    inputs:
+      - field: "baseline_link"
+        type: "text"
+        question: "ICD ↔ PI 통합 베이스라인 매핑 ID는?"
+        required: true
+      - field: "pm_approver"
+        type: "person"
+        question: "승인 PM 은?"
+        required: true
+    outputs:
+      - tmp_field: "관리기록.결재"
+        from: "pm_approver"
+    hitl: required
+    approver_role: "Project Manager"
+
+dod_checklist:
+  - "카테고리 분류 + From↔To 매트릭스"
+  - "IR↔ICD 100% 매핑"
+  - "ICD 7요소 점검"
+  - "Contract Test 통과 또는 회귀"
+  - "변경관리 기록"
+  - "CM 베이스라인 매핑"
+  - "PM 승인 결재"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "ICD 부분 미작성"
+    rule: "TS WI-03 재실행 요청, PI 진행 보류"
+  - section: "§7.2"
+    name: "외부 시스템 비호환"
+    rule: "MOU 협의, 적응 계층 또는 외부 변경 요청"
+  - section: "§7.3"
+    name: "잦은 ICD 변경"
+    rule: "RSKM 등록, 분기 회고 실시"
+
+triggers: ["인터페이스 관리", "Interface Completeness", "Contract Test"]
+aliases: ["Interface Compatibility", "ICD Management"]
+event_triggers: ["통합 라운드 진입", "ICD 변경 발생"]
+domains: ["일반", "SW"]

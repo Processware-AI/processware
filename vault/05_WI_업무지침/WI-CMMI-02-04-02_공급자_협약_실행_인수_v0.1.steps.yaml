@@ -1,0 +1,139 @@
+wi_id:           "WI-CMMI-02-04-02"
+title:           "공급자 협약 실행·인수 (SG2: SP2.1~2.2)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-02-04"
+parent_pol:      "POL-CMMI-02"
+related_tmp:
+  - "TMP-CMMI-02-04-02-01_공급자_진행_보고서"
+  - "TMP-CMMI-02-04-02-02_인수_검토_시험_결과보고"
+scope_code:      "CMMI"
+scope_type:      "project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:15:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "공급자 진행 모니터링 (SP2.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "agreement_id"
+        type: "text"
+        question: "협약 ID는?"
+        required: true
+      - field: "supplier_milestone_status"
+        type: "table"
+        question: "공급자 마일스톤 진행 상황"
+        columns: ["마일스톤", "계획일", "실제 진척(%)", "상태"]
+        required: true
+      - field: "delay_weeks"
+        type: "number"
+        question: "누적 지연 (주)?"
+        required: true
+    derivations:
+      - id: "escalation_flag"
+        expr: |
+          if delay_weeks >= 2: "pmo_escalation"
+          else: "ok"
+        description: "Escalation 분기"
+    outputs:
+      - tmp_field: "공급자진행보고.마일스톤"
+        from: "supplier_milestone_status"
+      - tmp_field: "공급자진행보고.지연주"
+        from: "delay_weeks"
+    hitl: false
+
+  - id: "step-02"
+    name: "인수 검토 (SP2.2)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "deliverables_received"
+        type: "multitext"
+        question: "수령한 인도물 목록"
+        required: true
+      - field: "acceptance_criteria_check"
+        type: "table"
+        question: "SOW 인수 기준 평가"
+        columns: ["기준", "측정/평가", "결과(Pass/Fail)"]
+        required: true
+    derivations:
+      - id: "fail_count"
+        expr: "count where 결과 == 'Fail'"
+        description: "부적합 건수"
+    outputs:
+      - tmp_field: "인수결과보고.인수기준평가"
+        from: "acceptance_criteria_check"
+    hitl: false
+
+  - id: "step-03"
+    name: "인수 시험 (SP2.2)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "test_cases_executed"
+        type: "number"
+        question: "실행한 인수 시험 케이스 수는?"
+        required: true
+      - field: "test_pass_rate"
+        type: "number"
+        question: "Pass rate(%)?"
+        required: true
+      - field: "qa_engineer"
+        type: "person"
+        question: "QA 참여자는?"
+        required: true
+    outputs:
+      - tmp_field: "인수결과보고.시험결과"
+        from: "test_pass_rate"
+    hitl: false
+
+  - id: "step-04"
+    name: "수락/반려 결정"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "decision"
+        type: "enum"
+        question: "결정은?"
+        options: ["Accept", "Reject", "Conditional Accept"]
+        required: true
+      - field: "approver_name"
+        type: "person"
+        question: "PM 결재자 이름은?"
+        required: true
+      - field: "cm_baseline_id"
+        type: "text"
+        question: "Accept 시 CM 베이스라인 ID는?"
+        required: false
+    outputs:
+      - tmp_field: "인수결과보고.결정"
+        from: "decision"
+      - tmp_field: "인수결과보고.승인자"
+        from: "approver_name"
+    hitl: required
+    approver_role: "Project Manager"
+    rationale: "PRO §3 RACI 의 R (PM) — 인수는 PM 최종 결재"
+
+dod_checklist:
+  - "공급자 진행 보고서 정기 작성"
+  - "인수 검토·시험 결과 기재"
+  - "인수 기준 100% 충족 또는 시정 완료"
+  - "PM 수락 결재"
+  - "CM 등록 (인수 완료 산출물)"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "공급자 지연"
+    rule: "협약 벌칙 조항 발동; 지연 ≥2주 PMO escalation + 인수 일정 재조정"
+  - section: "§7.2"
+    name: "인수 부적합"
+    rule: "1차 시정 요청; 2차 Fail 시 벌칙 + 계약 종료 검토"
+  - section: "§7.3"
+    name: "SOW 변경 필요"
+    rule: "공식 협상 → SOW 개정 → 법무·재무 재결재"
+
+triggers: ["공급자 인수", "SAM SG2", "공급자 모니터링", "인수 시험"]
+aliases: ["supplier acceptance", "vendor monitoring"]
+event_triggers: ["공급자 마일스톤 도달", "인도물 수령"]
+domains: ["일반", "SW", "조달"]

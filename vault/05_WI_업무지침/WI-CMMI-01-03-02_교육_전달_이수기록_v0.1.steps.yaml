@@ -1,0 +1,242 @@
+wi_id:           "WI-CMMI-01-03-02"
+title:           "교육 전달·이수 기록 (SG2: SP2.1~2.2)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-01-03"
+parent_pol:      "POL-CMMI-01"
+related_tmp:
+  - "TMP-CMMI-01-03-02-01_교육_세션_운영기록"
+  - "TMP-CMMI-01-03-02-02_교육_이수_기록부"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:30:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "선행 WI 게이트 + 회차 사전 준비"
+    section_ref: "§5.1"
+    inputs:
+      - field: "wi_01_status"
+        type: "enum"
+        question: "WI-CMMI-01-03-01 의 상태는?"
+        options: ["done", "in_progress", "pending"]
+        required: true
+      - field: "course_id"
+        type: "text"
+        question: "이번 회차 과정 ID는?"
+        required: true
+      - field: "session_number"
+        type: "number"
+        question: "회차 번호는?"
+        required: true
+    derivations:
+      - id: "gate_pass"
+        expr: |
+          if wi_01_status == "done": "Pass"
+          else: "Block"
+    hitl: false
+
+  - id: "step-02"
+    name: "대상자 선정 및 통보 (SP2.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "candidates_table"
+        type: "table"
+        question: "대상자 명단을 작성하라"
+        columns: ["사번", "이름", "부서", "역할매트릭스기반선정", "출석/면제의사"]
+        required: true
+      - field: "notification_date"
+        type: "date"
+        question: "사전 공지 일자는?"
+        required: true
+      - field: "lead_time_days"
+        type: "number"
+        question: "공지 ~ 시작일까지 리드타임(일)은?"
+        required: true
+    derivations:
+      - id: "lead_time_ok"
+        expr: |
+          if lead_time_days >= 14: "Pass"
+          elif lead_time_days >= 3: "Conditional_emergency"
+          else: "Fail_too_short"
+        description: "기본 2주 전, 긴급 3일 전 허용"
+    outputs:
+      - tmp_field: "운영기록.대상자명단"
+        from: "candidates_table"
+    hitl: false
+
+  - id: "step-03"
+    name: "자원·일정 확정 (SP2.1)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "instructor_name"
+        type: "person"
+        question: "배정된 강사는?"
+        required: true
+      - field: "venue_or_lms"
+        type: "text"
+        question: "교육 장소 또는 LMS 슬롯은?"
+        required: true
+      - field: "materials_check"
+        type: "boolean"
+        question: "교재·실습장비 점검 완료?"
+        required: true
+    outputs:
+      - tmp_field: "운영기록.강사"
+        from: "instructor_name"
+      - tmp_field: "운영기록.장소"
+        from: "venue_or_lms"
+    hitl: false
+
+  - id: "step-04"
+    name: "교육 전달 (SP2.1)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "session_date"
+        type: "date"
+        question: "교육 실시 일자는?"
+        required: true
+      - field: "attendance_table"
+        type: "table"
+        question: "출석 결과를 기록하라"
+        columns: ["사번", "이름", "출석/지각/결석", "비고"]
+        required: true
+      - field: "satisfaction_avg"
+        type: "number"
+        question: "만족도 설문 평균(5점 척도)은?"
+        required: true
+        validation: "0 <= x <= 5"
+    derivations:
+      - id: "satisfaction_pass"
+        expr: |
+          if satisfaction_avg >= 4.0: "Pass"
+          else: "Below_target"
+        description: "PRO §7 KPI 만족도 목표 ≥ 4.0/5.0"
+    outputs:
+      - tmp_field: "운영기록.출석"
+        from: "attendance_table"
+      - tmp_field: "운영기록.만족도"
+        from: "satisfaction_avg"
+    hitl: false
+
+  - id: "step-05"
+    name: "전달 추적 (SP2.1)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "planned_attendees"
+        type: "number"
+        question: "전술계획 상 이수 목표 인원은?"
+        required: true
+      - field: "actual_attendees"
+        type: "number"
+        question: "실제 이수 인원은?"
+        required: true
+    derivations:
+      - id: "delivery_rate"
+        expr: |
+          rate = (actual_attendees / planned_attendees) * 100
+          if rate >= 90: "Pass"
+          else: "Schedule_reinforce"
+        description: "교육 계획 충족 KPI 목표 ≥ 90%"
+    outputs:
+      - tmp_field: "이수기록부.계획충족률"
+        from: "delivery_rate"
+    hitl: false
+
+  - id: "step-06"
+    name: "이수 기록 작성 (SP2.2)"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "completion_records"
+        type: "table"
+        question: "이수 결과를 기록부에 등재하라"
+        columns: ["사번", "이름", "과정ID", "평가점수", "통과여부", "이수일"]
+        required: true
+      - field: "passing_score"
+        type: "number"
+        question: "통과 기준 점수는?"
+        required: true
+      - field: "fail_count"
+        type: "number"
+        question: "불통과자 수는?"
+        required: true
+    outputs:
+      - tmp_field: "이수기록부.본문"
+        from: "completion_records"
+    hitl: false
+
+  - id: "step-07"
+    name: "waiver 처리 (SP2.2)"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "waiver_table"
+        type: "table"
+        question: "waiver 신청·심의·승인 결과는?"
+        columns: ["사번", "사유", "증빙", "승인자", "승인일"]
+        required: false
+    outputs:
+      - tmp_field: "이수기록부.waiver"
+        from: "waiver_table"
+    hitl: false
+
+  - id: "step-08"
+    name: "기록 보관 및 가용성 + 확정 승인"
+    section_ref: "§5.2.7"
+    inputs:
+      - field: "lms_record_uploaded"
+        type: "boolean"
+        question: "LMS·EDMS 등록 완료했는가?"
+        required: true
+      - field: "retention_years"
+        type: "number"
+        question: "보관 기간(년)은?"
+        required: true
+      - field: "training_mgr_name"
+        type: "person"
+        question: "이수 기록 확정 승인자(Training Manager)는?"
+        required: true
+      - field: "completion_rate"
+        type: "number"
+        question: "당해 회차 이수율(%)은?"
+        required: true
+        validation: "0 <= x <= 100"
+    derivations:
+      - id: "completion_pass"
+        expr: |
+          if completion_rate >= 95: "Pass"
+          else: "Investigate"
+        description: "PRO §7 이수율 KPI 목표 ≥ 95%"
+    outputs:
+      - tmp_field: "이수기록부.확정승인"
+        from: "training_mgr_name"
+    hitl: required
+    approver_role: "Training Manager"
+    rationale: "WI §2 승인자 = Training Manager (이수 기록 확정 책임)"
+
+dod_checklist:
+  - "회차별 운영기록 작성 (모든 회차)"
+  - "이수 기록부 등재 — 출석·평가·통과 명시"
+  - "불통과자 재교육 일정 통지"
+  - "waiver 결재 문서 보관"
+  - "만족도 설문 결과 raw data 수집·저장"
+  - "LMS/EDMS 권한 매트릭스 적용"
+  - "이수율·만족도 KPI 집계"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "출석률 저조"
+    rule: "이수율 95% 미달 시 원인 분석·재계획, 부서장 출석 협조 공식 요청"
+  - section: "§7.2"
+    name: "강사 결강·취소"
+    rule: "대체 강사 풀 활용 → 불가 시 재일정·이러닝 대체 → 수강생 즉시 공지"
+  - section: "§7.3"
+    name: "waiver 남용"
+    rule: "동일 학습자 동일 PA 2회 이상 waiver 시 EPG 협의 → 면제 기준 강화·재평가 의무화"
+
+triggers: ["교육 전달", "출석 관리", "이수 기록", "교육 waiver", "강사 운영"]
+aliases: ["교육 실시", "Training Delivery", "Attendance"]
+event_triggers: ["전술계획 회차 도래", "신규 인력 입사", "역할 변경"]
+domains: ["일반", "SW"]

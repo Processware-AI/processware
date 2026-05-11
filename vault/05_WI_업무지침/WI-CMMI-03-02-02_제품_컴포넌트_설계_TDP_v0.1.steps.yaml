@@ -1,0 +1,175 @@
+wi_id:           "WI-CMMI-03-02-02"
+title:           "제품/컴포넌트 설계 + TDP (SG2: SP2.1~2.2)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-03-02"
+parent_pol:      "POL-CMMI-03"
+related_tmp:
+  - "TMP-CMMI-03-02-02-01_제품_컴포넌트_설계서"
+  - "TMP-CMMI-03-02-02-02_기술자료패키지_TDP"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:50:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "선정 솔루션 및 표준·패턴 확보"
+    section_ref: "§5.1.1~5.1.2"
+    inputs:
+      - field: "selection_report_id"
+        type: "text"
+        question: "선정 결정 보고서 문서ID는?"
+        required: true
+      - field: "applied_standards"
+        type: "multiselect"
+        question: "적용 표준·패턴은?"
+        options: ["12-factor", "OWASP ASVS", "ISO 26262", "DO-178C", "MISRA", "GxP", "Clean Architecture", "기타"]
+        required: true
+    outputs:
+      - tmp_field: "설계서.입력.선정보고서ID"
+        from: "selection_report_id"
+    hitl: false
+
+  - id: "step-02"
+    name: "제품 아키텍처 설계"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "architecture_axes_done"
+        type: "multiselect"
+        question: "작성 완료한 아키텍처 축은?"
+        options: ["데이터", "통신", "보안"]
+        required: true
+        validation: "len(architecture_axes_done) == 3"
+      - field: "quality_arch_mapping"
+        type: "table"
+        question: "품질 8축 ↔ 아키텍처 매핑은?"
+        columns: ["품질축", "관련 아키텍처 구성요소", "달성 메커니즘"]
+        required: true
+    outputs:
+      - tmp_field: "설계서.아키텍처.축별설계"
+        from: "architecture_axes_done"
+      - tmp_field: "설계서.품질아키텍처매핑"
+        from: "quality_arch_mapping"
+    hitl: false
+
+  - id: "step-03"
+    name: "컴포넌트 상세 설계"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "components_designed"
+        type: "table"
+        question: "각 컴포넌트 상세 설계 완료 상태를 표로 작성하라"
+        columns: ["컴포넌트ID", "구조", "인터페이스", "상태기계", "핵심 알고리즘", "의존성"]
+        required: true
+    outputs:
+      - tmp_field: "설계서.컴포넌트상세"
+        from: "components_designed"
+    hitl: false
+
+  - id: "step-04"
+    name: "ADR 발행"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "adr_table"
+        type: "table"
+        question: "영향 큰 결정 ADR 목록은?"
+        columns: ["ADR-ID", "결정", "대안", "근거", "DAR ID(있는 경우)"]
+        required: true
+    outputs:
+      - tmp_field: "설계서.ADR목록"
+        from: "adr_table"
+    hitl: false
+
+  - id: "step-05"
+    name: "설계 리뷰"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "review_date"
+        type: "date"
+        question: "설계 리뷰 일자는?"
+        required: true
+      - field: "review_defects"
+        type: "number"
+        question: "리뷰 결함 수는?"
+        required: true
+        validation: ">= 0"
+      - field: "review_status"
+        type: "enum"
+        question: "결함 해소 상태는?"
+        options: ["전체해소", "부분해소", "보류"]
+        required: true
+    outputs:
+      - tmp_field: "설계서.리뷰결과"
+        from: "review_status"
+    hitl: false
+
+  - id: "step-06"
+    name: "TDP 수립 (SP2.2)"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "tdp_checklist"
+        type: "table"
+        question: "TDP 항목별 상태는?"
+        columns: ["항목(설계서/ICD/재료부품/시험명세/운영한계/매뉴얼/검증인덱스)", "상태(작성/N/A/연기)", "사유"]
+        required: true
+    outputs:
+      - tmp_field: "TDP.항목체크리스트"
+        from: "tdp_checklist"
+    hitl: false
+
+  - id: "step-07"
+    name: "CM 베이스라인 등록"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "cm_baseline_id"
+        type: "text"
+        question: "CM 베이스라인 ID는?"
+        required: true
+    outputs:
+      - tmp_field: "TDP.베이스라인ID"
+        from: "cm_baseline_id"
+    hitl: false
+
+  - id: "step-08"
+    name: "PM 승인"
+    section_ref: "§5.2.7"
+    inputs:
+      - field: "pm_approver"
+        type: "person"
+        question: "승인 PM 은?"
+        required: true
+    outputs:
+      - tmp_field: "TDP.결재"
+        from: "pm_approver"
+    hitl: required
+    approver_role: "Project Manager"
+    rationale: "WI §2 — 설계 베이스라인 확정"
+
+dod_checklist:
+  - "아키텍처 3축(데이터/통신/보안) 모두 작성"
+  - "모든 컴포넌트 상세 설계 존재"
+  - "품질 8축 ↔ 아키텍처 매핑"
+  - "영향 큰 결정 ADR 발행"
+  - "설계 리뷰 결함 0건 또는 해소"
+  - "TDP 체크리스트 100%"
+  - "CM 베이스라인 등록"
+  - "PM 승인 결재"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "요구사항 변경"
+    rule: "영향 평가 후 부분 갱신, 변경 로그 별도 시트"
+  - section: "§7.2"
+    name: "기술 성숙도 미흡"
+    rule: "PoC + 학습 일정 + 미통과 시 WI-01 재실시"
+  - section: "§7.3"
+    name: "TDP 항목 누락"
+    rule: "N/A 명시 + 사유 + CM 검토 의견 의무"
+
+triggers: ["기술 솔루션 설계", "TDP", "아키텍처 설계", "컴포넌트 설계"]
+aliases: ["Technical Data Package", "Architecture Design", "Detailed Design"]
+event_triggers: ["솔루션 선정 후", "주요 ADR 결정 시점"]
+domains: ["일반", "SW"]

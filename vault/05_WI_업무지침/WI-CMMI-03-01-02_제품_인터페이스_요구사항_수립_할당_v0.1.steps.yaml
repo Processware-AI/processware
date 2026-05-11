@@ -1,0 +1,186 @@
+wi_id:           "WI-CMMI-03-01-02"
+title:           "제품·인터페이스 요구사항 수립·할당 (SG2: SP2.1~2.3)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-03-01"
+parent_pol:      "POL-CMMI-03"
+related_tmp:
+  - "TMP-CMMI-03-01-02-01_제품_컴포넌트_요구사항_명세서"
+  - "TMP-CMMI-03-01-02-02_인터페이스_요구사항_정의서"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:10:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "고객 요구사항 베이스라인 확정"
+    section_ref: "§5.1.1"
+    inputs:
+      - field: "cr_spec_id"
+        type: "text"
+        question: "입력으로 사용할 고객 요구사항 명세서 문서ID는?"
+        required: true
+      - field: "cr_baseline_id"
+        type: "text"
+        question: "고객 요구사항 베이스라인 ID는?"
+        required: true
+    outputs:
+      - tmp_field: "제품요구사항명세서.입력.CR베이스라인"
+        from: "cr_baseline_id"
+    hitl: false
+
+  - id: "step-02"
+    name: "제품 요구사항 도출 (SP2.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "pr_table"
+        type: "table"
+        question: "각 CR 을 PR 로 변환한 결과를 표로 작성하라"
+        columns: ["PR-ID", "원 CR-ID", "PR 문장", "구분", "검증방법(Test/Analysis/Inspection/Demo)", "Derived 여부"]
+        required: true
+      - field: "derived_ratio"
+        type: "number"
+        question: "도출(Derived) 요구사항 비율(%)은?"
+        required: true
+        validation: "0 <= x <= 100"
+    derivations:
+      - id: "derived_warning"
+        expr: |
+          if derived_ratio > 30: "재elicit 검토 필요"
+          else: "정상"
+        description: "도출 30% 초과 시 §7.1 분기"
+    outputs:
+      - tmp_field: "제품요구사항명세서.PR표"
+        from: "pr_table"
+    hitl: false
+
+  - id: "step-03"
+    name: "컴포넌트 식별·할당 (SP2.2)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "component_list"
+        type: "table"
+        question: "제품 컴포넌트 분해 결과는?"
+        columns: ["컴포넌트ID", "이름", "역할", "Owner"]
+        required: true
+      - field: "allocation_table"
+        type: "table"
+        question: "각 PR 의 컴포넌트 할당 결과는?"
+        columns: ["PR-ID", "할당 컴포넌트ID(복수가능)", "할당 유형(단일/공유/도출)"]
+        required: true
+      - field: "allocation_conflicts"
+        type: "number"
+        question: "할당 충돌 항목 수는?"
+        required: true
+        validation: ">= 0"
+    outputs:
+      - tmp_field: "제품요구사항명세서.컴포넌트목록"
+        from: "component_list"
+      - tmp_field: "제품요구사항명세서.할당표"
+        from: "allocation_table"
+    hitl: false
+
+  - id: "step-04"
+    name: "인터페이스 식별 (SP2.3)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "interface_table"
+        type: "table"
+        question: "인터페이스 요구사항을 표로 작성하라"
+        columns: ["IR-ID", "유형(내부/외부)", "양 끝점(From↔To)", "데이터", "프로토콜", "SLA", "예외처리"]
+        required: true
+    outputs:
+      - tmp_field: "인터페이스요구사항정의서.IR표"
+        from: "interface_table"
+    hitl: false
+
+  - id: "step-05"
+    name: "추적성 매트릭스 수립"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "trace_tool"
+        type: "enum"
+        question: "추적성 관리 도구는?"
+        options: ["DOORS", "Jama", "Polarion", "Excel", "기타"]
+        required: true
+      - field: "trace_coverage_pct"
+        type: "number"
+        question: "CR→PR→PCR→IR 양방향 커버리지(%)는?"
+        required: true
+        validation: "0 <= x <= 100"
+    derivations:
+      - id: "trace_pass"
+        expr: |
+          if trace_coverage_pct == 100: "Pass"
+          else: "Fail"
+        description: "커버리지 100% 미만이면 보완 필요"
+    outputs:
+      - tmp_field: "제품요구사항명세서.추적성"
+        from: "trace_coverage_pct"
+    hitl: false
+
+  - id: "step-06"
+    name: "충돌·일관성 검토"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "conflicts_found"
+        type: "number"
+        question: "검토에서 발견된 충돌 수는?"
+        required: true
+        validation: ">= 0"
+      - field: "conflicts_deferred_to_balance"
+        type: "number"
+        question: "균형 분석(WI-04)으로 이관된 충돌 수는?"
+        required: true
+        validation: ">= 0"
+    outputs:
+      - tmp_field: "제품요구사항명세서.충돌로그"
+        from: "conflicts_found"
+    hitl: false
+
+  - id: "step-07"
+    name: "검토·승인"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "joint_review_date"
+        type: "date"
+        question: "Chief Eng + TS Lead + PI Lead 합동 검토 일자는?"
+        required: true
+      - field: "pm_approver"
+        type: "person"
+        question: "승인 Project Manager 는?"
+        required: true
+    outputs:
+      - tmp_field: "제품요구사항명세서.결재"
+        from: "pm_approver"
+    hitl: required
+    approver_role: "Project Manager"
+    rationale: "WI §2 승인자 — 베이스라인 확정"
+
+dod_checklist:
+  - "모든 CR 에 1개 이상의 PR/PCR 매핑 (커버리지 100%)"
+  - "도출 요구사항 식별·표기 완료"
+  - "모든 PR/PCR/IR 에 검증 방법 부여"
+  - "컴포넌트 할당 충돌 0건 (또는 해결 완료)"
+  - "인터페이스 정의서에 데이터·프로토콜·SLA·예외 4요소 명시"
+  - "추적성 매트릭스 양방향 완전"
+  - "PM 승인 결재 첨부"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "도출 요구사항 과다"
+    rule: "Derived 30% 초과 시 elicit 재실시 또는 아키텍처 가설 재정렬"
+  - section: "§7.2"
+    name: "단일 컴포넌트 제품"
+    rule: "SP2.2 할당은 외부 인터페이스에 한정, 미적용 사유 부록 기록"
+  - section: "§7.3"
+    name: "아키텍처 변경"
+    rule: "변경 영향평가 후 PCR 할당 재실시, 변경 로그 별도 시트 기록"
+
+triggers: ["제품 요구사항", "컴포넌트 할당", "인터페이스 요구", "추적성"]
+aliases: ["Product Requirements", "Interface Requirements", "Allocation"]
+event_triggers: ["CR 베이스라인 확정", "아키텍처 변경", "신규 컴포넌트 추가"]
+domains: ["일반", "SW"]

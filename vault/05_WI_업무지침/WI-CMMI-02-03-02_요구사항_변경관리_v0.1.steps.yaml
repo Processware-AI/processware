@@ -1,0 +1,158 @@
+wi_id:           "WI-CMMI-02-03-02"
+title:           "요구사항 변경 관리 (SP1.3)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-02-03"
+parent_pol:      "POL-CMMI-02"
+related_tmp:
+  - "TMP-CMMI-02-03-02-01_변경요청서"
+  - "TMP-CMMI-02-03-02-02_변경영향_평가보고서"
+scope_code:      "CMMI"
+scope_type:      "project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:05:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "변경요청 접수"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "change_id"
+        type: "text"
+        question: "변경 요청 ID는?"
+        required: true
+      - field: "requestor"
+        type: "person"
+        question: "요청자는?"
+        required: true
+      - field: "change_description"
+        type: "longtext"
+        question: "변경 내용·사유는?"
+        required: true
+      - field: "urgency"
+        type: "enum"
+        question: "긴급도는?"
+        options: ["normal", "urgent", "emergency"]
+        required: true
+    outputs:
+      - tmp_field: "변경요청서.ID"
+        from: "change_id"
+      - tmp_field: "변경요청서.요청자"
+        from: "requestor"
+      - tmp_field: "변경요청서.내용"
+        from: "change_description"
+    hitl: false
+
+  - id: "step-02"
+    name: "영향 평가"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "impact_areas"
+        type: "table"
+        question: "영향 영역별 평가 (일정·예산·범위·리스크·인접 요구사항·하위 산출물)"
+        columns: ["영역", "영향 (정성)", "정량 추정 (effort PM/비용/일수)"]
+        required: true
+      - field: "affected_requirements"
+        type: "multitext"
+        question: "영향 받는 요구사항 ID 목록"
+        required: true
+    outputs:
+      - tmp_field: "변경영향평가.영역표"
+        from: "impact_areas"
+      - tmp_field: "변경영향평가.영향요구사항"
+        from: "affected_requirements"
+    hitl: false
+
+  - id: "step-03"
+    name: "CCB 심사"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "ccb_decision"
+        type: "enum"
+        question: "CCB 결정은?"
+        options: ["approve", "conditional_approve", "hold", "reject"]
+        required: true
+      - field: "ccb_members"
+        type: "multitext"
+        question: "CCB 참여 위원 명단"
+        required: true
+      - field: "decision_rationale"
+        type: "longtext"
+        question: "결정 사유는?"
+        required: true
+    outputs:
+      - tmp_field: "변경영향평가.CCB결정"
+        from: "ccb_decision"
+      - tmp_field: "변경영향평가.결정사유"
+        from: "decision_rationale"
+    hitl: required
+    approver_role: "CCB Chair (PMO Director)"
+    rationale: "PRO §3 RACI 의 A (PMO Director) — CCB 심사 결재"
+
+  - id: "step-04"
+    name: "변경 반영 (Approve 시)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "rtm_updated"
+        type: "boolean"
+        question: "RTM 업데이트 완료?"
+        required: true
+      - field: "new_baseline_id"
+        type: "text"
+        question: "새 CM 베이스라인 ID는?"
+        required: true
+      - field: "downstream_notified"
+        type: "multiselect"
+        question: "다운스트림 통보 완료 부서"
+        options: ["RD", "TS", "PI", "VER", "VAL", "기타"]
+        required: true
+    outputs:
+      - tmp_field: "변경영향평가.새베이스라인"
+        from: "new_baseline_id"
+    hitl: false
+
+  - id: "step-05"
+    name: "요청자 피드백 + 리드타임 측정"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "lead_time_days"
+        type: "number"
+        question: "변경 리드타임 (접수→결정, 영업일)?"
+        required: true
+    derivations:
+      - id: "lead_time_check"
+        expr: |
+          if urgency == "normal" and lead_time_days > 5: "exceed_target"
+          else: "ok"
+        description: "리드타임 KPI 점검"
+    outputs:
+      - tmp_field: "변경영향평가.리드타임"
+        from: "lead_time_days"
+    hitl: false
+
+dod_checklist:
+  - "모든 변경요청 ID 부여 + 추적 가능"
+  - "영향 평가 완료 (5 영역)"
+  - "CCB 심사 결과 기록"
+  - "승인 변경 베이스라인 갱신 + 다운스트림 통보"
+  - "반려 결정 시 요청자 피드백"
+  - "변경 리드타임 ≤ 5 영업일 (긴급 외)"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "긴급 변경"
+    rule: "CCB Chair 즉시 결재 + 24h 내 사후 CCB 심사"
+  - section: "§7.2"
+    name: "변경 폭주"
+    rule: "분기 ≥10건 시 베이스라인 재수립 검토 (PP 재진입)"
+  - section: "§7.3"
+    name: "영향 평가 의견 불일치"
+    rule: "외부 전문가 청취; 합의 미도달 시 PMO Director 최종 결정"
+
+triggers: ["요구사항 변경", "변경요청", "CCB 심사", "REQM SP1.3"]
+aliases: ["change request", "RFC", "requirements change management"]
+event_triggers: ["변경요청 접수", "긴급 변경", "외부 표준 변경"]
+domains: ["일반", "SW", "엔지니어링"]

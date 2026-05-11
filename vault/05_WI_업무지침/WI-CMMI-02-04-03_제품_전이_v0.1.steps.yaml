@@ -1,0 +1,138 @@
+wi_id:           "WI-CMMI-02-04-03"
+title:           "제품 전이 (SG2: SP2.3)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-02-04"
+parent_pol:      "POL-CMMI-02"
+related_tmp:
+  - "TMP-CMMI-02-04-03-01_전이_계획서"
+scope_code:      "CMMI"
+scope_type:      "project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:16:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "운영팀 인수 준비도 확인"
+    section_ref: "§5.1"
+    inputs:
+      - field: "ops_readiness"
+        type: "boolean"
+        question: "운영팀 인력·도구·환경 준비 완료?"
+        required: true
+      - field: "security_review_required"
+        type: "boolean"
+        question: "보안 평가 필요?"
+        required: true
+    outputs: []
+    hitl: false
+
+  - id: "step-02"
+    name: "전이 계획서 작성"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "transition_items"
+        type: "multitext"
+        question: "전이 항목 (제품·도구·환경)"
+        required: true
+      - field: "transition_date"
+        type: "date"
+        question: "전이 일정은?"
+        required: true
+      - field: "training_plan"
+        type: "longtext"
+        question: "교육·문서 전달 계획은?"
+        required: true
+    outputs:
+      - tmp_field: "전이계획서.전이항목"
+        from: "transition_items"
+      - tmp_field: "전이계획서.일정"
+        from: "transition_date"
+    hitl: false
+
+  - id: "step-03"
+    name: "교육·문서 전달"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "documents_delivered"
+        type: "multiselect"
+        question: "전달 문서 목록"
+        options: ["운영매뉴얼", "운영가이드", "비상연락처", "알려진이슈", "교육자료", "기타"]
+        required: true
+      - field: "training_completed"
+        type: "boolean"
+        question: "교육 완료?"
+        required: true
+    outputs:
+      - tmp_field: "전이계획서.전달문서"
+        from: "documents_delivered"
+    hitl: false
+
+  - id: "step-04"
+    name: "운영 환경 설치 + 검증"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "deployment_pass"
+        type: "boolean"
+        question: "운영 환경 정상 동작?"
+        required: true
+      - field: "ops_signoff"
+        type: "person"
+        question: "운영팀 sign-off 담당자는?"
+        required: true
+    outputs:
+      - tmp_field: "전이계획서.운영sign-off"
+        from: "ops_signoff"
+    hitl: false
+
+  - id: "step-05"
+    name: "PMO Director 결재 + 책임 인계"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "approver_name"
+        type: "person"
+        question: "PMO Director 승인자 이름은?"
+        required: true
+      - field: "responsibility_handover_date"
+        type: "date"
+        question: "책임 인계 시점은?"
+        required: true
+      - field: "cm_record_id"
+        type: "text"
+        question: "CM 전이 record ID는?"
+        required: true
+    outputs:
+      - tmp_field: "전이계획서.승인자"
+        from: "approver_name"
+      - tmp_field: "전이계획서.인계시점"
+        from: "responsibility_handover_date"
+    hitl: required
+    approver_role: "PMO Director"
+    rationale: "PRO §3 RACI 의 A (PMO Director) — 전이는 운영팀 책임 인계로 PMO 결재"
+
+dod_checklist:
+  - "전이 계획서 작성·승인"
+  - "교육·문서 전달 완료"
+  - "운영 환경 정상 동작 확인"
+  - "운영팀 sign-off"
+  - "PMO Director 결재"
+  - "CM 전이 record 등록"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "운영팀 미준비"
+    rule: "전이 연기 + 보강 계획; ≥2주 시 PP 영향평가"
+  - section: "§7.2"
+    name: "운영 환경 설치 실패"
+    rule: "환경 차이 분석 + 공급자 보증 조항 발동 가능"
+  - section: "§7.3"
+    name: "인수자 검증 실패"
+    rule: "추가 교육 + 재검증; 2차 실패 시 PMO escalation"
+
+triggers: ["제품 전이", "운영 인계", "SAM SP2.3"]
+aliases: ["product transition", "handover to operations"]
+event_triggers: ["인수 완료 직후", "운영 사이클 시작"]
+domains: ["일반", "SW", "운영"]

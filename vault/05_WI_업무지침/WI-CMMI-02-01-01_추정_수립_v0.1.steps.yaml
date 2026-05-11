@@ -1,0 +1,202 @@
+wi_id:           "WI-CMMI-02-01-01"
+title:           "추정 수립 (SP1.1~1.4)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-02-01"
+parent_pol:      "POL-CMMI-02"
+related_tmp:
+  - "TMP-CMMI-02-01-01-01_WBS_작업패키지_기술서"
+  - "TMP-CMMI-02-01-01-02_추정_근거서"
+scope_code:      "CMMI"
+scope_type:      "project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T08:45:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "프로젝트 헌장 + PAL 데이터 확보"
+    section_ref: "§5.1"
+    inputs:
+      - field: "charter_doc_id"
+        type: "text"
+        question: "프로젝트 헌장 문서ID는?"
+        required: true
+      - field: "similar_project_ids"
+        type: "multitext"
+        question: "PAL 에서 참조할 유사 프로젝트 ID 목록은?"
+        required: false
+    outputs:
+      - tmp_field: "WBS기술서.프로젝트헌장ID"
+        from: "charter_doc_id"
+    hitl: false
+
+  - id: "step-02"
+    name: "WBS 도출 (SP1.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "wbs_table"
+        type: "table"
+        question: "WBS 작업패키지 표 (ID, 설명, 완료기준)를 입력하라"
+        columns: ["WP_ID", "설명", "완료기준", "상위WP"]
+        required: true
+      - field: "wbs_levels"
+        type: "number"
+        question: "WBS 분해 수준은 (1~5)?"
+        validation: ">=1 and <=5"
+        required: true
+    outputs:
+      - tmp_field: "WBS기술서.WBS표"
+        from: "wbs_table"
+    hitl: false
+
+  - id: "step-03"
+    name: "산출물 속성 추정 (SP1.2)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "size_metric"
+        type: "enum"
+        question: "사용할 size 메트릭은?"
+        options: ["LOC", "FP", "Story Point", "기타"]
+        required: true
+      - field: "attr_table"
+        type: "table"
+        question: "각 WP 별 size·복잡도·재사용율·친숙도를 입력하라"
+        columns: ["WP_ID", "size", "복잡도", "재사용율(%)", "친숙도"]
+        required: true
+    outputs:
+      - tmp_field: "WBS기술서.속성표"
+        from: "attr_table"
+    hitl: false
+
+  - id: "step-04"
+    name: "라이프사이클 단계 정의 (SP1.3)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "lifecycle_model"
+        type: "enum"
+        question: "선택할 라이프사이클 모델은?"
+        options: ["Waterfall", "Iterative", "Agile/Scrum", "Hybrid", "기타"]
+        required: true
+      - field: "phase_table"
+        type: "table"
+        question: "단계·게이트·단계별 산출물을 입력하라"
+        columns: ["단계", "게이트조건", "산출물"]
+        required: true
+    outputs:
+      - tmp_field: "추정근거서.라이프사이클"
+        from: "lifecycle_model"
+    hitl: false
+
+  - id: "step-05"
+    name: "노력·비용 추정 (SP1.4)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "estimation_method"
+        type: "enum"
+        question: "추정 기법은?"
+        options: ["Wide-band Delphi", "Analogy", "COCOMO", "Story Point velocity", "기타"]
+        required: true
+      - field: "total_effort_pm"
+        type: "number"
+        question: "총 추정 effort (person-month)는?"
+        validation: "> 0"
+        required: true
+      - field: "total_cost"
+        type: "number"
+        question: "총 추정 비용은?"
+        validation: "> 0"
+        required: true
+      - field: "assumptions"
+        type: "longtext"
+        question: "추정 가정·근거 데이터는?"
+        required: true
+    derivations:
+      - id: "cost_per_pm"
+        expr: "total_cost / total_effort_pm"
+        description: "PM 당 비용 도출"
+    outputs:
+      - tmp_field: "추정근거서.기법"
+        from: "estimation_method"
+      - tmp_field: "추정근거서.총effort"
+        from: "total_effort_pm"
+      - tmp_field: "추정근거서.총비용"
+        from: "total_cost"
+      - tmp_field: "추정근거서.가정"
+        from: "assumptions"
+    hitl: false
+
+  - id: "step-06"
+    name: "추정 검증 (PAL 편차 체크)"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "pal_baseline_effort"
+        type: "number"
+        question: "유사 PAL 프로젝트 평균 effort (PM)는?"
+        required: false
+      - field: "senior_review_pass"
+        type: "boolean"
+        question: "도메인 시니어 review 통과?"
+        required: true
+    derivations:
+      - id: "pal_deviation_pct"
+        expr: |
+          if pal_baseline_effort: abs(total_effort_pm - pal_baseline_effort) / pal_baseline_effort * 100
+          else: null
+        description: "PAL 편차율(%)"
+      - id: "deviation_flag"
+        expr: |
+          if pal_deviation_pct is null: "no_baseline"
+          elif pal_deviation_pct <= 30: "ok"
+          elif pal_deviation_pct <= 50: "escalate_pmo"
+          else: "escalate_sponsor"
+        description: "편차 처리 분기"
+    outputs:
+      - tmp_field: "추정근거서.PAL편차"
+        from: "pal_deviation_pct"
+    hitl: false
+
+  - id: "step-07"
+    name: "추정 베이스라인 승인"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "approver_name"
+        type: "person"
+        question: "CEO/CTO 승인자 이름은?"
+        required: true
+      - field: "approval_date"
+        type: "date"
+        question: "승인일은?"
+        required: true
+    outputs:
+      - tmp_field: "추정근거서.결재"
+        from: "approver_name"
+    hitl: required
+    approver_role: "CEO/CTO"
+    rationale: "PRO §3 RACI 의 A — 추정 베이스라인은 후속 일정·예산의 단일 기준"
+
+dod_checklist:
+  - "WBS 작성 완료 (작업패키지 ID·완료기준·예상 effort)"
+  - "산출물 속성 추정표 작성 완료"
+  - "라이프사이클 단계 정의서 작성 완료 (게이트 조건 포함)"
+  - "추정 근거서 작성 완료 (기법·가정·근거 데이터)"
+  - "도메인 시니어 review 통과 (overrun risk 0건)"
+  - "PAL 편차 ±30% 이내 또는 정당화 첨부"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "PAL 데이터 부재"
+    rule: "외부 벤치마크 또는 PoC 수행 후 재추정; source_citation 의무"
+  - section: "§7.2"
+    name: "추정 편차 초과 처리"
+    rule: "±30% 초과 시 시니어 2명 재검토 → ±50% 초과 시 sponsor escalation + RSKM 등록"
+  - section: "§7.3"
+    name: "라이프사이클 모델 미정의"
+    rule: "EPG 임시 모델 승인 → 6개월 내 OSSP 정식 등재 의무"
+
+triggers: ["프로젝트 추정", "WBS 도출", "effort 산정", "비용 추정", "라이프사이클 선택"]
+aliases: ["estimation", "WBS", "effort sizing", "PP SG1"]
+event_triggers: ["프로젝트 헌장 승인 직후", "신규 도메인 PoC 종료 시", "베이스라인 재추정 필요 시"]
+domains: ["일반", "SW", "엔지니어링"]

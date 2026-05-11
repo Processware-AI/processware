@@ -1,0 +1,185 @@
+wi_id:           "WI-CMMI-02-01-02"
+title:           "프로젝트 계획 수립 — 일정·예산·리스크·데이터관리 (SP2.1~2.4)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-02-01"
+parent_pol:      "POL-CMMI-02"
+related_tmp:
+  - "TMP-CMMI-02-01-02-01_일정_예산_계획서"
+  - "TMP-CMMI-02-01-02-02_프로젝트_리스크_목록"
+  - "TMP-CMMI-02-01-02-03_데이터관리_계획서"
+scope_code:      "CMMI"
+scope_type:      "project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T08:48:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "WI-01 추정 베이스라인 확보"
+    section_ref: "§5.1"
+    inputs:
+      - field: "wi01_baseline_id"
+        type: "text"
+        question: "WI-01 의 추정 베이스라인 ID는?"
+        required: true
+    outputs: []
+    hitl: false
+
+  - id: "step-02"
+    name: "일정 수립 (SP2.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "schedule_table"
+        type: "table"
+        question: "WBS 별 시작·종료·자원 할당 표를 입력하라"
+        columns: ["WP_ID", "시작일", "종료일", "할당자원"]
+        required: true
+      - field: "milestones"
+        type: "table"
+        question: "마일스톤·게이트 일정"
+        columns: ["마일스톤명", "예정일", "통과조건"]
+        required: true
+      - field: "critical_path"
+        type: "longtext"
+        question: "임계 경로 (Critical Path) WP 시퀀스는?"
+        required: true
+    outputs:
+      - tmp_field: "일정예산계획서.일정표"
+        from: "schedule_table"
+      - tmp_field: "일정예산계획서.마일스톤"
+        from: "milestones"
+      - tmp_field: "일정예산계획서.임계경로"
+        from: "critical_path"
+    hitl: false
+
+  - id: "step-03"
+    name: "예산 수립 (SP2.1)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "phase_budget"
+        type: "table"
+        question: "단계별 비용 분배"
+        columns: ["단계", "예산"]
+        required: true
+      - field: "contingency_pct"
+        type: "number"
+        question: "예비비 비율(%)은?"
+        validation: ">= 10"
+        required: true
+    derivations:
+      - id: "contingency_check"
+        expr: |
+          if contingency_pct >= 10: "ok"
+          else: "below_minimum"
+        description: "예비비 최소치 검증"
+    outputs:
+      - tmp_field: "일정예산계획서.단계예산"
+        from: "phase_budget"
+      - tmp_field: "일정예산계획서.예비비비율"
+        from: "contingency_pct"
+    hitl: false
+
+  - id: "step-04"
+    name: "프로젝트 리스크 식별 (SP2.2)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "risk_table"
+        type: "table"
+        question: "프로젝트 리스크 목록 (출처·설명·확률·영향·완화전략)"
+        columns: ["리스크ID", "출처", "설명", "확률(H/M/L)", "영향(H/M/L)", "완화전략"]
+        required: true
+      - field: "risk_count"
+        type: "number"
+        question: "등록된 리스크 총 개수는?"
+        validation: ">= 10"
+        required: true
+    derivations:
+      - id: "high_priority_count"
+        expr: "count where 확률=H and 영향=H"
+        description: "Top-N high priority 리스크 수"
+    outputs:
+      - tmp_field: "리스크목록.표"
+        from: "risk_table"
+      - tmp_field: "리스크목록.총수"
+        from: "risk_count"
+    hitl: false
+
+  - id: "step-05"
+    name: "데이터관리 계획 (SP2.3)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "data_types"
+        type: "multiselect"
+        question: "보유 데이터 유형은?"
+        options: ["요구사항", "설계", "시험데이터", "고객PII", "재무", "기타"]
+        required: true
+      - field: "data_table"
+        type: "table"
+        question: "데이터 유형별 분류·보관기간·접근권한·폐기정책"
+        columns: ["유형", "분류", "보관기간", "접근권한", "폐기정책"]
+        required: true
+      - field: "pii_included"
+        type: "boolean"
+        question: "PII/개인정보 포함 여부는?"
+        required: true
+    outputs:
+      - tmp_field: "데이터관리계획.유형목록"
+        from: "data_types"
+      - tmp_field: "데이터관리계획.표"
+        from: "data_table"
+      - tmp_field: "데이터관리계획.PII포함"
+        from: "pii_included"
+    hitl: false
+
+  - id: "step-06"
+    name: "PMO·Risk·Data 검토 및 승인"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "pmo_review_pass"
+        type: "boolean"
+        question: "PMO 검토 통과?"
+        required: true
+      - field: "risk_review_pass"
+        type: "boolean"
+        question: "Risk Manager 검토 통과?"
+        required: true
+      - field: "data_review_pass"
+        type: "boolean"
+        question: "Data Custodian 검토 통과?"
+        required: true
+      - field: "approver_name"
+        type: "person"
+        question: "CEO/CTO 승인자 이름은?"
+        required: true
+    outputs:
+      - tmp_field: "일정예산계획서.결재"
+        from: "approver_name"
+    hitl: required
+    approver_role: "CEO/CTO"
+    rationale: "PRO §3 RACI 의 A — 계획 4축 베이스라인은 경영진 결재"
+
+dod_checklist:
+  - "일정·예산 계획서 작성 (임계 경로 식별, 예비비 ≥10%)"
+  - "프로젝트 리스크 ≥ 10건 등록"
+  - "데이터관리 계획서 — 유형별 보관·접근·폐기 명시"
+  - "RSKM·CM·MA 인터페이스 부서 통보 완료"
+  - "PMO 검토 의견 전체 해소"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "일정 단축 요구"
+    rule: "Critical path 영향분석 후 RSKM 등록; crashing 비용 증가 ≤ 20% 권고"
+  - section: "§7.2"
+    name: "예비비 부족"
+    rule: "추정 불확실성 H 영역 > 30% 시 예비비 ≥ 15% 상향"
+  - section: "§7.3"
+    name: "데이터 보호 강화"
+    rule: "PII 포함 시 보안 계획 첨부 + 법무 검토 필수 (GDPR/개인정보보호법)"
+
+triggers: ["일정 수립", "예산 계획", "프로젝트 리스크 식별", "데이터관리 계획"]
+aliases: ["scheduling", "budgeting", "data management plan", "PP SG2"]
+event_triggers: ["WI-01 추정 베이스라인 승인 직후", "베이스라인 변경 시"]
+domains: ["일반", "SW", "엔지니어링"]

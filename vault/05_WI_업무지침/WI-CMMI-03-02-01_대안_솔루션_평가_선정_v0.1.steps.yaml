@@ -1,0 +1,177 @@
+wi_id:           "WI-CMMI-03-02-01"
+title:           "대안 솔루션 평가·선정 (SG1: SP1.1~1.2)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-03-02"
+parent_pol:      "POL-CMMI-03"
+related_tmp:
+  - "TMP-CMMI-03-02-01-01_대안_솔루션_평가_보고서"
+  - "TMP-CMMI-03-02-01-02_솔루션_선정_결정_보고서"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:40:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "베이스라인 요구사항 확보"
+    section_ref: "§5.1.1"
+    inputs:
+      - field: "req_baseline_id"
+        type: "text"
+        question: "사용할 요구사항 베이스라인 ID는?"
+        required: true
+    outputs:
+      - tmp_field: "대안평가보고서.입력.요구사항베이스라인"
+        from: "req_baseline_id"
+    hitl: false
+
+  - id: "step-02"
+    name: "영향 큰 결정 식별·DAR 적용 결정"
+    section_ref: "§5.1.2~5.1.3"
+    inputs:
+      - field: "is_high_impact"
+        type: "boolean"
+        question: "본 결정이 '영향 큰 결정' 기준(POL-CMMI-04)에 해당하는가?"
+        required: true
+      - field: "dar_application_id"
+        type: "text"
+        question: "(DAR 적용 시) DAR ID는?"
+        required_if: "is_high_impact"
+    outputs:
+      - tmp_field: "대안평가보고서.DAR적용여부"
+        from: "is_high_impact"
+    hitl: false
+
+  - id: "step-03"
+    name: "대안 후보 도출"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "alternatives_table"
+        type: "table"
+        question: "대안 후보를 표로 작성하라 (3개 이상)"
+        columns: ["대안ID", "유형(Make/Buy/Reuse/Hybrid)", "설명", "주요 가정"]
+        required: true
+        validation: "len(alternatives_table) >= 3"
+    outputs:
+      - tmp_field: "대안평가보고서.대안목록"
+        from: "alternatives_table"
+    hitl: false
+
+  - id: "step-04"
+    name: "선정 기준 정의·가중치"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "criteria_table"
+        type: "table"
+        question: "선정 기준과 가중치를 작성하라 (가중치 합 100%)"
+        columns: ["기준ID", "이름(기능/성능/비용/일정/리스크/성숙도/운영성/확장성/기타)", "가중치(%)"]
+        required: true
+        validation: "sum(weights) == 100"
+    outputs:
+      - tmp_field: "대안평가보고서.기준표"
+        from: "criteria_table"
+    hitl: false
+
+  - id: "step-05"
+    name: "대안별 평가 점수화"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "scoring_matrix"
+        type: "table"
+        question: "각 대안의 기준별 점수를 작성하라 (1-10)"
+        columns: ["대안ID", "기준ID", "점수(1-10)", "근거(한 줄)"]
+        required: true
+    derivations:
+      - id: "weighted_sums"
+        expr: |
+          # 각 대안별 가중합 = sum(점수[i] * 가중치[i] / 10)
+          # 결과를 alternative_id → score 매핑으로 산출
+          per_alternative_weighted_total
+        description: "대안별 가중 합 산출"
+    outputs:
+      - tmp_field: "대안평가보고서.가중점수표"
+        from: "weighted_sums"
+    hitl: false
+
+  - id: "step-06"
+    name: "민감도 분석"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "sensitivity_summary"
+        type: "text"
+        question: "핵심 기준 가중치 ±20% 변동 시 선정 변동 여부와 분석 요약은?"
+        required: true
+      - field: "sensitivity_changes_outcome"
+        type: "boolean"
+        question: "민감도 분석에서 선정 결과가 변동되었는가?"
+        required: true
+    outputs:
+      - tmp_field: "대안평가보고서.민감도분석"
+        from: "sensitivity_summary"
+    hitl: false
+
+  - id: "step-07"
+    name: "솔루션 선정 (SP1.2)"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "selected_alternative_id"
+        type: "text"
+        question: "선정된 대안 ID는?"
+        required: true
+      - field: "rationale"
+        type: "text"
+        question: "선정 근거(평가 결과 + 정성 분석)는?"
+        required: true
+    outputs:
+      - tmp_field: "선정결정보고서.선정대안"
+        from: "selected_alternative_id"
+      - tmp_field: "선정결정보고서.근거"
+        from: "rationale"
+    hitl: false
+
+  - id: "step-08"
+    name: "PM 승인"
+    section_ref: "§5.2.7"
+    inputs:
+      - field: "pm_approver"
+        type: "person"
+        question: "승인 PM 은?"
+        required: true
+      - field: "dar_decision_attached"
+        type: "boolean"
+        question: "(DAR 적용 시) DAR 결재 첨부 완료했는가?"
+        required: false
+    outputs:
+      - tmp_field: "선정결정보고서.결재"
+        from: "pm_approver"
+    hitl: required
+    approver_role: "Project Manager"
+    rationale: "WI §2 승인자 + 영향 큰 결정 게이트"
+
+dod_checklist:
+  - "대안 후보 3개 이상"
+  - "선정 기준 가중치 합 100%"
+  - "영향 큰 결정 시 DAR 100% 적용"
+  - "각 대안 기준별 평가 + 가중 점수"
+  - "민감도 분석 기록"
+  - "선정 근거 일관성"
+  - "PM 승인 결재"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "단일 대안"
+    rule: "사유 명시 + DAR Owner 검토 + PoC 의무"
+  - section: "§7.2"
+    name: "가중치 합의 불가"
+    rule: "PM 결정 → 경영진 격상 + 회의록 첨부"
+  - section: "§7.3"
+    name: "신규 기술 (TRL≤4)"
+    rule: "PoC 의무 + RSKM 등록 + 조건부 선정 표기"
+
+triggers: ["기술 솔루션", "대안 평가", "솔루션 선정", "DAR"]
+aliases: ["Technical Solution", "Solution Selection", "Build vs Buy"]
+event_triggers: ["요구사항 베이스라인 확정", "신규 기술 도입 검토"]
+domains: ["일반", "SW"]

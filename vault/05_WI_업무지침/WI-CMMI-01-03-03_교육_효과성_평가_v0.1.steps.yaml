@@ -1,0 +1,203 @@
+wi_id:           "WI-CMMI-01-03-03"
+title:           "교육 효과성 평가 (SG2: SP2.3)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-01-03"
+parent_pol:      "POL-CMMI-01"
+related_tmp:
+  - "TMP-CMMI-01-03-03-01_교육_효과성_평가_보고서"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:30:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "평가 대상 선정 + 평가 차원 정의"
+    section_ref: "§5.1"
+    inputs:
+      - field: "wi_02_status"
+        type: "enum"
+        question: "WI-CMMI-01-03-02 의 상태는?"
+        options: ["done", "in_progress", "pending"]
+        required: true
+      - field: "target_courses"
+        type: "multiselect"
+        question: "이번 반기 평가 대상 과정은?"
+        options: ["OSSP 입문", "테일러링 워크숍", "PMC 실습", "REQM 실무", "기타"]
+        required: true
+      - field: "kirkpatrick_levels"
+        type: "multiselect"
+        question: "적용할 Kirkpatrick 평가 단계는?"
+        options: ["L1 반응", "L2 학습", "L3 행동", "L4 결과"]
+        required: true
+    derivations:
+      - id: "gate_pass"
+        expr: |
+          if wi_02_status == "done": "Pass"
+          else: "Block"
+    hitl: false
+
+  - id: "step-02"
+    name: "반응 평가 (L1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "satisfaction_by_course"
+        type: "table"
+        question: "과정별 만족도 분석 결과는?"
+        columns: ["과정명", "응답수", "평균(5점)", "주요코멘트"]
+        required: true
+    outputs:
+      - tmp_field: "효과성보고서.L1반응"
+        from: "satisfaction_by_course"
+    hitl: false
+
+  - id: "step-03"
+    name: "학습 평가 (L2)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "pre_post_table"
+        type: "table"
+        question: "사전·사후 평가 점수 비교를 기록하라"
+        columns: ["과정명", "사전평균", "사후평균", "차이%", "통과율%"]
+        required: true
+      - field: "improvement_avg_pct"
+        type: "number"
+        question: "전체 평균 사전·사후 향상률(%)은?"
+        required: true
+    derivations:
+      - id: "l2_pass"
+        expr: |
+          if improvement_avg_pct >= 20: "Pass"
+          else: "Fail_redesign"
+        description: "PRO §7 KPI 효과성 목표 ≥ +20%"
+    outputs:
+      - tmp_field: "효과성보고서.L2학습"
+        from: "pre_post_table"
+    hitl: false
+
+  - id: "step-04"
+    name: "행동 평가 (L3, 선택)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "behavior_sample_size"
+        type: "number"
+        question: "행동 평가 표본 크기(수강생 수)는?"
+        required: false
+      - field: "behavior_observations"
+        type: "table"
+        question: "현장 관찰·인터뷰 결과는?"
+        columns: ["사번", "과정", "관찰일", "적용여부", "코멘트"]
+        required: false
+    derivations:
+      - id: "l3_validity"
+        expr: |
+          if behavior_sample_size == null or behavior_sample_size == 0: "Skipped"
+          elif behavior_sample_size >= 10: "Valid"
+          else: "Insufficient"
+        description: "표본 10% 미만 시 결론 보류"
+    outputs:
+      - tmp_field: "효과성보고서.L3행동"
+        from: "behavior_observations"
+    hitl: false
+
+  - id: "step-05"
+    name: "결과 평가 (L4)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "project_perf_correlation"
+        type: "table"
+        question: "프로젝트 성과 지표와 교육의 상관 분석 결과는?"
+        columns: ["성과지표", "교육 전 값", "교육 후 값", "변화율", "상관관계 해석"]
+        required: true
+    outputs:
+      - tmp_field: "효과성보고서.L4결과"
+        from: "project_perf_correlation"
+    hitl: false
+
+  - id: "step-06"
+    name: "강사 평가"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "instructor_ratings"
+        type: "table"
+        question: "강사별 평가 결과는?"
+        columns: ["강사", "전문성", "전달력", "자료품질", "소통", "종합점수"]
+        required: true
+      - field: "instructor_actions"
+        type: "table"
+        question: "강사 풀 조정 결정은?"
+        columns: ["강사", "조치(유지/멘토링/제외)", "사유"]
+        required: true
+    outputs:
+      - tmp_field: "효과성보고서.강사평가"
+        from: "instructor_ratings"
+    hitl: false
+
+  - id: "step-07"
+    name: "개선 제안 도출"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "improvement_proposals"
+        type: "table"
+        question: "도출된 개선 제안과 OPF 교훈 등재 여부는?"
+        columns: ["제안ID", "제안내용", "유형(커리큘럼/전달/자원)", "OPF등재여부"]
+        required: true
+    outputs:
+      - tmp_field: "효과성보고서.개선제안"
+        from: "improvement_proposals"
+    hitl: false
+
+  - id: "step-08"
+    name: "반기 보고 및 환류 + 승인"
+    section_ref: "§5.2.7"
+    inputs:
+      - field: "approver_name"
+        type: "person"
+        question: "승인자(CEO/CTO) 이름은?"
+        required: true
+      - field: "approval_date"
+        type: "date"
+        question: "승인 일자는?"
+        required: true
+      - field: "feedback_to_wi_01"
+        type: "boolean"
+        question: "차기 사이클(WI-CMMI-01-03-01 SP1.1) 입력 인계 완료했는가?"
+        required: true
+      - field: "mat001_row_id"
+        type: "text"
+        question: "MAT-001 등록 Row 번호는?"
+        required: true
+    outputs:
+      - tmp_field: "효과성보고서.결재"
+        from: "approver_name"
+    hitl: required
+    approver_role: "CEO/CTO"
+    rationale: "반기 효과성 보고는 경영진 의사결정 사안 — CEO/CTO 승인 필수"
+
+dod_checklist:
+  - "반응·학습 평가 완료 (전 과정 대상)"
+  - "행동 평가 표본 수행 (해당 과정)"
+  - "결과 평가 (프로젝트 성과 연동 분석)"
+  - "강사 평가서 작성·강사 풀 점검"
+  - "효과성 평가 보고서 작성·승인"
+  - "개선 제안 등재 + 차기 사이클 입력 인계"
+  - "CM 베이스라인 + MAT-001 등록"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "사전·사후 차이 KPI 미달"
+    rule: "원인 분석 → 동일 과정 재설계 (3개월 내 갱신 또는 폐지 결정)"
+  - section: "§7.2"
+    name: "행동 평가 표본 부족"
+    rule: "표본 10% 미만 시 결론 보류, 다음 반기 표본 확대 또는 인터뷰 추가"
+  - section: "§7.3"
+    name: "강사 평가 하위"
+    rule: "강사 풀 평균 대비 하위 10% 강사 멘토링·재교육 또는 풀 제외, 제외 시 SP1.4 절차로 대체"
+
+triggers: ["교육 효과성 평가", "Kirkpatrick", "사전·사후 평가", "강사 평가", "교육 환류"]
+aliases: ["Training Effectiveness", "Post-training Assessment"]
+event_triggers: ["반기 종료 시점", "주요 과정 완료 직후"]
+domains: ["일반", "SW"]

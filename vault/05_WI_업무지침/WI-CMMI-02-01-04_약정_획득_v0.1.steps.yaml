@@ -1,0 +1,134 @@
+wi_id:           "WI-CMMI-02-01-04"
+title:           "약정 획득 — 검토·조정·약정 (SP3.1~3.3)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-02-01"
+parent_pol:      "POL-CMMI-02"
+related_tmp:
+  - "TMP-CMMI-02-01-04-01_약정_검토_조정_기록"
+  - "TMP-CMMI-02-01-04-02_약정_서약서"
+scope_code:      "CMMI"
+scope_type:      "project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T08:52:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "약정 회의 준비"
+    section_ref: "§5.1"
+    inputs:
+      - field: "meeting_date"
+        type: "date"
+        question: "약정 회의 일자는?"
+        required: true
+      - field: "attendees"
+        type: "multitext"
+        question: "참석자 목록 (Sponsor + PMO + 인접 PA 책임자)"
+        required: true
+    outputs:
+      - tmp_field: "약정검토기록.회의일"
+        from: "meeting_date"
+      - tmp_field: "약정검토기록.참석자"
+        from: "attendees"
+    hitl: false
+
+  - id: "step-02"
+    name: "상위·인접 검토 (SP3.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "review_opinions"
+        type: "table"
+        question: "검토 의견 (검토자, 의견, 영향, 우선순위)"
+        columns: ["검토자", "의견", "영향(범위/일정/예산/리스크)", "우선순위"]
+        required: true
+    outputs:
+      - tmp_field: "약정검토기록.검토의견"
+        from: "review_opinions"
+    hitl: false
+
+  - id: "step-03"
+    name: "자원·작업 조정 (SP3.2)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "adjustments"
+        type: "table"
+        question: "조정 사항 (항목, 조정 전/후, 사유)"
+        columns: ["항목", "조정 전", "조정 후", "사유"]
+        required: true
+      - field: "escalation_needed"
+        type: "boolean"
+        question: "Sponsor escalation 필요?"
+        required: true
+    outputs:
+      - tmp_field: "약정검토기록.조정사항"
+        from: "adjustments"
+    hitl: false
+
+  - id: "step-04"
+    name: "약정 서약서 서명 획득 (SP3.3)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "signatories"
+        type: "multitext"
+        question: "약정자 명단 (이름·역할·서명일)"
+        required: true
+      - field: "all_signed"
+        type: "boolean"
+        question: "전원 서명 완료?"
+        required: true
+    outputs:
+      - tmp_field: "약정서약서.약정자"
+        from: "signatories"
+    hitl: required
+    approver_role: "CEO/CTO (Sponsor)"
+    rationale: "PRO §3 RACI 의 A — Sponsor 최종 약정"
+
+  - id: "step-05"
+    name: "베이스라인화 및 CM 등록"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "baseline_id"
+        type: "text"
+        question: "CM 베이스라인 ID는?"
+        required: true
+      - field: "mat001_row"
+        type: "text"
+        question: "MAT-001 등록 Row 번호는?"
+        required: true
+      - field: "pmc_handover_id"
+        type: "text"
+        question: "PMC 인계 ID는?"
+        required: true
+    outputs:
+      - tmp_field: "약정서약서.베이스라인ID"
+        from: "baseline_id"
+      - tmp_field: "약정서약서.PMC인계ID"
+        from: "pmc_handover_id"
+    hitl: false
+
+dod_checklist:
+  - "상위·인접 검토 의견 전건 처리"
+  - "자원·작업 조정 결과 통합 계획서 반영"
+  - "약정 서약서에 모든 약정자 서명·날인"
+  - "Sponsor 결재 첨부"
+  - "CM 베이스라인 ID 부여 + MAT-001 등록"
+  - "PMC 인계 완료 (인계 ID 발급)"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "약정자 불참/거부"
+    rule: "불참 시 2주 내 연기; 거부 시 sponsor escalation + 자원/일정 재조정"
+  - section: "§7.2"
+    name: "베이스라인 후 즉시 변경 요청"
+    rule: "1주 이내 PMC SP2.2; 그 후 30% 이상 영향 시 PP 재진입"
+  - section: "§7.3"
+    name: "Sponsor 예산 cap 초과"
+    rule: "범위 축소 → 일정 연장 → cap 재협의 순서"
+
+triggers: ["약정 회의", "검토 의견", "Sponsor 결재", "베이스라인 확정"]
+aliases: ["commitment", "sign-off", "baseline approval", "PP SG3"]
+event_triggers: ["WI-03 통합 계획서 v0 완료 시", "베이스라인 메이저 변경 후"]
+domains: ["일반", "SW", "엔지니어링"]

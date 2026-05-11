@@ -1,0 +1,103 @@
+wi_id:           "WI-CMMI-03-04-01"
+title:           "검증 준비 — 대상·환경·절차 (SG1: SP1.1~1.3)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-03-04"
+parent_pol:      "POL-CMMI-03"
+related_tmp:
+  - "TMP-CMMI-03-04-01-01_검증_계획서"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T11:00:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "검증 대상·방법 선택 (SP1.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "verification_targets"
+        type: "table"
+        question: "검증 대상·방법 매핑을 표로 작성하라"
+        columns: ["산출물ID", "유형(요구/설계/코드/문서/통합)", "방법(T/A/I/D)", "우선순위"]
+        required: true
+    outputs:
+      - tmp_field: "계획서.대상목록"
+        from: "verification_targets"
+    hitl: false
+
+  - id: "step-02"
+    name: "검증 환경 수립 (SP1.2)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "env_table"
+        type: "table"
+        question: "검증 환경 명세를 표로 작성하라"
+        columns: ["분류(HW/SW/Sim/Data)", "항목", "버전", "재현 명령", "라이선스"]
+        required: true
+      - field: "data_compliance_check"
+        type: "boolean"
+        question: "시험 데이터 개인정보·라이선스 검토 완료?"
+        required: true
+    outputs:
+      - tmp_field: "계획서.환경"
+        from: "env_table"
+    hitl: false
+
+  - id: "step-03"
+    name: "검증 절차·기준 (SP1.3)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "procedure_table"
+        type: "table"
+        question: "절차·기준 표를 작성하라"
+        columns: ["절차ID", "단계", "입력", "기대 출력", "합격 기준"]
+        required: true
+      - field: "ncr_flow_file"
+        type: "text"
+        question: "부적합 처리 흐름도 파일/링크는?"
+        required: true
+    outputs:
+      - tmp_field: "계획서.절차기준"
+        from: "procedure_table"
+    hitl: false
+
+  - id: "step-04"
+    name: "검토·PM 승인"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "pm_approver"
+        type: "person"
+        question: "승인 PM 은?"
+        required: true
+    outputs:
+      - tmp_field: "계획서.결재"
+        from: "pm_approver"
+    hitl: required
+    approver_role: "Project Manager"
+
+dod_checklist:
+  - "검증 대상 목록 + 방법(T/A/I/D) 매핑"
+  - "검증 환경 명세 + 재현성"
+  - "시험 데이터 라이선스·개인정보 검토"
+  - "절차·기준 표"
+  - "부적합 처리 흐름"
+  - "PM 승인 결재"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "검증 가능성 부재"
+    rule: "RD WI-04 회귀 + 본 WI 보류"
+  - section: "§7.2"
+    name: "시험 환경 미구축"
+    rule: "단계 분리 + RSKM 등록"
+  - section: "§7.3"
+    name: "시험 데이터 개인정보 우려"
+    rule: "합성·익명 데이터 + 대표성 별도 검증"
+
+triggers: ["검증 준비", "Verification Plan", "검증 환경"]
+aliases: ["Verification Planning", "Test Environment"]
+event_triggers: ["요구·설계 베이스라인 확정", "통합 일정 결정"]
+domains: ["일반", "SW"]

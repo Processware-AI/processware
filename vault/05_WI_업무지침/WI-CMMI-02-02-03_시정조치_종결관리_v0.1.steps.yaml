@@ -1,0 +1,186 @@
+wi_id:           "WI-CMMI-02-02-03"
+title:           "시정조치 분석·실행·종결 관리 (SP2.1~2.3)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-02-02"
+parent_pol:      "POL-CMMI-02"
+related_tmp:
+  - "TMP-CMMI-02-02-03-01_이슈_분석_결과"
+  - "TMP-CMMI-02-02-03-02_시정조치_계획서"
+  - "TMP-CMMI-02-02-03-03_시정조치_결과보고"
+scope_code:      "CMMI"
+scope_type:      "project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:00:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "이슈 RCA 분석 (SP2.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "issue_id"
+        type: "text"
+        question: "이슈 ID는?"
+        required: true
+      - field: "rca_method"
+        type: "enum"
+        question: "RCA 기법은?"
+        options: ["5-Why", "Fishbone", "Fault Tree", "기타"]
+        required: true
+      - field: "root_cause"
+        type: "longtext"
+        question: "근본 원인은?"
+        required: true
+      - field: "impact_scope"
+        type: "multiselect"
+        question: "영향 범위는?"
+        options: ["일정", "비용", "범위", "품질", "리스크"]
+        required: true
+      - field: "severity"
+        type: "enum"
+        question: "심각도는?"
+        options: ["Critical", "High", "Medium", "Low"]
+        required: true
+    outputs:
+      - tmp_field: "이슈분석결과.RCA기법"
+        from: "rca_method"
+      - tmp_field: "이슈분석결과.근본원인"
+        from: "root_cause"
+      - tmp_field: "이슈분석결과.심각도"
+        from: "severity"
+    hitl: false
+
+  - id: "step-02"
+    name: "시정조치 결정 (SP2.2)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "action_options"
+        type: "multitext"
+        question: "조치 옵션 (>= 2개 권장)"
+        required: true
+      - field: "selected_action"
+        type: "longtext"
+        question: "선택 조치는?"
+        required: true
+      - field: "responsible"
+        type: "person"
+        question: "조치 책임자는?"
+        required: true
+      - field: "deadline"
+        type: "date"
+        question: "마감일은?"
+        required: true
+      - field: "cost_impact_pct"
+        type: "number"
+        question: "예산 영향(%)은?"
+        required: true
+      - field: "schedule_impact_days"
+        type: "number"
+        question: "일정 영향(일)은?"
+        required: true
+    derivations:
+      - id: "approval_required"
+        expr: |
+          if abs(cost_impact_pct) >= 5 or abs(schedule_impact_days) >= 5: "senior_mgmt"
+          else: "pm"
+        description: "승인자 분기"
+    outputs:
+      - tmp_field: "시정조치계획.조치"
+        from: "selected_action"
+      - tmp_field: "시정조치계획.책임자"
+        from: "responsible"
+      - tmp_field: "시정조치계획.마감"
+        from: "deadline"
+    hitl: false
+
+  - id: "step-03"
+    name: "Senior Mgmt 승인 (임계치 초과 시)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "approver_name"
+        type: "person"
+        question: "Senior Mgmt 승인자 이름 (필요 시)?"
+        required: false
+    outputs:
+      - tmp_field: "시정조치계획.승인자"
+        from: "approver_name"
+    hitl: required
+    approver_role: "Senior Management"
+    rationale: "PRO §3 RACI 의 A — cost/schedule 임계치 초과 시정 조치"
+
+  - id: "step-04"
+    name: "시정조치 실행 추적 (주간 PMC)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "tracking_weeks"
+        type: "number"
+        question: "추적 주차 수는?"
+        required: true
+      - field: "execution_status"
+        type: "enum"
+        question: "현재 실행 status는?"
+        options: ["InProgress", "Delayed", "Completed"]
+        required: true
+    outputs: []
+    hitl: false
+
+  - id: "step-05"
+    name: "종결 검증 (SP2.3)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "intended_effect_achieved"
+        type: "boolean"
+        question: "의도된 효과 달성?"
+        required: true
+      - field: "recurrence_prevention"
+        type: "longtext"
+        question: "재발 방지 조치는?"
+        required: true
+      - field: "ppqa_verification"
+        type: "boolean"
+        question: "PPQA 부적합 종결 검증 통과?"
+        required: false
+      - field: "mat001_row"
+        type: "text"
+        question: "MAT-001 등록 Row는?"
+        required: true
+    derivations:
+      - id: "closure_decision"
+        expr: |
+          if intended_effect_achieved: "Closed"
+          else: "Reopen"
+        description: "종결 결정"
+    outputs:
+      - tmp_field: "시정조치결과.효과달성"
+        from: "intended_effect_achieved"
+      - tmp_field: "시정조치결과.재발방지"
+        from: "recurrence_prevention"
+      - tmp_field: "시정조치결과.결정"
+        from: "closure_decision"
+    hitl: false
+
+dod_checklist:
+  - "모든 이슈 RCA 완료 — 근본원인 확정"
+  - "시정조치 계획서 (책임자·마감·예산 영향)"
+  - "임계치 초과 조치 → Senior Mgmt 승인"
+  - "실행 결과 검증 통과"
+  - "종결 후 MAT-001 등록 (PAL 입력)"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "RCA 미완료"
+    rule: "임시 workaround + RCA 14일 내 완료 의무"
+  - section: "§7.2"
+    name: "종결 후 재발"
+    rule: "동일 근본원인 재발 시 RCA 재수행; 분기 3회 이상 시 OPF 개선 입력"
+  - section: "§7.3"
+    name: "베이스라인 변경 요구"
+    rule: "30% 이상 영향 시 PP 재진입; 그 미만은 baseline maintenance"
+
+triggers: ["시정조치", "RCA", "근본원인 분석", "이슈 종결"]
+aliases: ["corrective action", "issue resolution", "PMC SG2"]
+event_triggers: ["편차 알림", "마일스톤 Fail/Conditional", "PPQA 부적합"]
+domains: ["일반", "SW", "엔지니어링"]

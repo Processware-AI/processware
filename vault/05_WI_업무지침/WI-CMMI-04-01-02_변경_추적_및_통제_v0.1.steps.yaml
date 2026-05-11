@@ -1,0 +1,182 @@
+wi_id:           "WI-CMMI-04-01-02"
+title:           "변경 추적·통제 (SP2.1~2.2)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-04-01"
+parent_pol:      "POL-CMMI-04"
+related_tmp:
+  - "TMP-CMMI-04-01-02-01_변경요청서_CR"
+  - "TMP-CMMI-04-01-02-02_CCB_의사록_및_변경통제_대장"
+scope_code:      "CMMI"
+scope_type:      "project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T08:50:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "변경요청 접수·등록"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "cr_id"
+        type: "text"
+        question: "CR ID(자동 부여)는?"
+        required: true
+      - field: "requester"
+        type: "person"
+        question: "요청자는?"
+        required: true
+      - field: "cr_summary"
+        type: "text"
+        question: "변경 요청 요약은?"
+        required: true
+      - field: "priority"
+        type: "enum"
+        question: "임시 우선순위?"
+        options: ["Critical","High","Medium","Low"]
+        required: true
+      - field: "affected_ci_candidates"
+        type: "text"
+        question: "영향 받을 것으로 추정되는 CI ID 목록?"
+        required: true
+    outputs:
+      - tmp_field: "변경요청서.CR_ID"
+        from: "cr_id"
+      - tmp_field: "변경요청서.요청자"
+        from: "requester"
+      - tmp_field: "변경요청서.요약"
+        from: "cr_summary"
+      - tmp_field: "변경요청서.우선순위"
+        from: "priority"
+    hitl: false
+
+  - id: "step-02"
+    name: "영향평가"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "tech_impact"
+        type: "text"
+        question: "기술 영향(아키텍처·인터페이스·성능)?"
+        required: true
+      - field: "cost_impact"
+        type: "number"
+        question: "비용 영향(원/$)?"
+        required: true
+      - field: "schedule_impact_days"
+        type: "number"
+        question: "일정 영향(영업일)?"
+        required: true
+      - field: "risk_impact"
+        type: "enum"
+        question: "리스크 영향 수준?"
+        options: ["Low","Medium","High","Critical"]
+        required: true
+      - field: "final_affected_ci"
+        type: "text"
+        question: "영향 CI ID 최종 목록?"
+        required: true
+    outputs:
+      - tmp_field: "변경요청서.기술영향"
+        from: "tech_impact"
+      - tmp_field: "변경요청서.비용영향"
+        from: "cost_impact"
+      - tmp_field: "변경요청서.일정영향"
+        from: "schedule_impact_days"
+      - tmp_field: "변경요청서.리스크영향"
+        from: "risk_impact"
+      - tmp_field: "변경요청서.영향CI"
+        from: "final_affected_ci"
+    hitl: false
+
+  - id: "step-03"
+    name: "CCB 심의"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "ccb_decision"
+        type: "enum"
+        question: "CCB 결정?"
+        options: ["승인","조건부 승인","보류","반려"]
+        required: true
+      - field: "ccb_conditions"
+        type: "text"
+        question: "조건부 승인 시 조건(없으면 N/A)?"
+        required: true
+      - field: "ccb_minutes_id"
+        type: "text"
+        question: "의사록 ID?"
+        required: true
+    outputs:
+      - tmp_field: "CCB의사록.결정"
+        from: "ccb_decision"
+      - tmp_field: "CCB의사록.조건"
+        from: "ccb_conditions"
+      - tmp_field: "CCB의사록.의사록ID"
+        from: "ccb_minutes_id"
+    hitl: required
+    approver_role: "CCB Chair"
+    rationale: "PRO §3 RACI: CI 통제(SP2.2)의 Approver = CCB"
+
+  - id: "step-04"
+    name: "CI 통제(개정·체크인)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "ci_revision_table"
+        type: "table"
+        question: "개정된 CI별 신·구 버전 매핑?"
+        columns: ["CI ID","구 버전","신 버전","체크인 일시","담당자"]
+        required: true
+      - field: "diff_log_link"
+        type: "text"
+        question: "diff 로그 링크(URL/경로)?"
+        required: true
+    outputs:
+      - tmp_field: "변경통제대장.CI개정표"
+        from: "ci_revision_table"
+      - tmp_field: "변경통제대장.diff로그"
+        from: "diff_log_link"
+    hitl: false
+
+  - id: "step-05"
+    name: "변경통제 대장 갱신·통보"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "register_row_id"
+        type: "text"
+        question: "변경통제 대장 등록 Row 번호?"
+        required: true
+      - field: "notify_log"
+        type: "text"
+        question: "이해관계자 통보 기록(방법·시점)?"
+        required: true
+    outputs:
+      - tmp_field: "변경통제대장.RowID"
+        from: "register_row_id"
+      - tmp_field: "변경통제대장.통보기록"
+        from: "notify_log"
+    hitl: false
+
+dod_checklist:
+  - "모든 CR 이 CM 시스템 등록되어 추적 가능"
+  - "영향평가 의견서 첨부(기술·비용·일정·리스크)"
+  - "CCB 결정이 의사록에 명기·서명"
+  - "승인 CR 의 CI 개정·체크인·신버전 부여"
+  - "변경통제 대장 갱신 완료"
+  - "요청자·이해관계자 통보 기록 보관"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "긴급 변경(Hotfix)"
+    rule: "24h 내 적용 후 사후 CCB 보고. 사후 미승인 시 즉시 롤백"
+  - section: "§7.2"
+    name: "영향평가 의견 불일치"
+    rule: "CCB 중재 → 불가 시 DAR 발동"
+  - section: "§7.3"
+    name: "무단 변경 발견"
+    rule: "PPQA 부적합 발행 + 롤백 또는 사후 정식화"
+
+triggers: ["변경 요청", "CR", "CCB 심의", "CI 통제"]
+aliases: ["Change Request", "Configuration Control", "CCB Decision"]
+event_triggers: ["고객 변경 요청 접수", "내부 결함 수정 필요", "긴급 핫픽스 발생"]
+domains: ["일반", "SW"]

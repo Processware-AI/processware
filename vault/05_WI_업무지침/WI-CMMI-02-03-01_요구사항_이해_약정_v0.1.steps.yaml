@@ -1,0 +1,127 @@
+wi_id:           "WI-CMMI-02-03-01"
+title:           "요구사항 이해·약정 (SP1.1~1.2)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-02-03"
+parent_pol:      "POL-CMMI-02"
+related_tmp:
+  - "TMP-CMMI-02-03-01-01_요구사항_평가_수락_기준"
+  - "TMP-CMMI-02-03-01-02_요구사항_약정_기록"
+scope_code:      "CMMI"
+scope_type:      "project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:02:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "RD 인계 패키지 + Provider 확인"
+    section_ref: "§5.1"
+    inputs:
+      - field: "rd_package_id"
+        type: "text"
+        question: "RD 인계 패키지 ID는?"
+        required: true
+      - field: "providers"
+        type: "multitext"
+        question: "Requirement Provider 명단"
+        required: true
+    outputs: []
+    hitl: false
+
+  - id: "step-02"
+    name: "요구사항 이해 + 수락 기준 평가 (SP1.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "evaluation_table"
+        type: "table"
+        question: "요구사항별 수락 기준 평가"
+        columns: ["요구사항ID", "완전성", "검증성", "일관성", "실현가능성", "추적성", "총평(Pass/Modify/Reject)"]
+        required: true
+      - field: "ambiguous_count"
+        type: "number"
+        question: "모호어 발견 건수는?"
+        required: true
+    derivations:
+      - id: "modify_count"
+        expr: "count where 총평 == 'Modify'"
+        description: "수정 요청 건수"
+      - id: "reject_count"
+        expr: "count where 총평 == 'Reject'"
+        description: "반려 건수"
+    outputs:
+      - tmp_field: "요구사항평가.표"
+        from: "evaluation_table"
+      - tmp_field: "요구사항평가.모호어건수"
+        from: "ambiguous_count"
+    hitl: false
+
+  - id: "step-03"
+    name: "Provider 재협의 (Modify/Reject 시)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "renegotiation_results"
+        type: "table"
+        question: "재협의 결과 (Modify/Reject 항목별)"
+        columns: ["요구사항ID", "재협의일", "결과(수정완료/보류/반려확정)"]
+        required: false
+    outputs:
+      - tmp_field: "요구사항평가.재협의결과"
+        from: "renegotiation_results"
+    hitl: false
+
+  - id: "step-04"
+    name: "약정 획득 (SP1.2)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "accepted_requirements_count"
+        type: "number"
+        question: "수락된 요구사항 총수는?"
+        required: true
+      - field: "signatories"
+        type: "multitext"
+        question: "약정자 명단 (PM·고객·도메인 엔지니어)"
+        required: true
+      - field: "baseline_id"
+        type: "text"
+        question: "CM 베이스라인 ID는?"
+        required: true
+      - field: "approver_name"
+        type: "person"
+        question: "PMO Director 승인자 이름은?"
+        required: true
+    outputs:
+      - tmp_field: "요구사항약정기록.수락수"
+        from: "accepted_requirements_count"
+      - tmp_field: "요구사항약정기록.약정자"
+        from: "signatories"
+      - tmp_field: "요구사항약정기록.베이스라인ID"
+        from: "baseline_id"
+    hitl: required
+    approver_role: "PMO Director"
+    rationale: "PRO §3 RACI 의 A (PMO Director) — 요구사항 베이스라인 결재"
+
+dod_checklist:
+  - "모든 요구사항 평가 완료 (수락/수정/반려)"
+  - "수정 요청 재협의 후 재평가"
+  - "수락 요구사항 약정 서명 완료"
+  - "CM 베이스라인 등록"
+  - "MAT-001 등록"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "모호한 요구사항"
+    rule: "모호어 발견 시 자동 미달 → Provider 정량·측정 가능 표현으로 재작성"
+  - section: "§7.2"
+    name: "Provider 재협의 거부"
+    rule: "1회 거부 PM escalation; 2회 sponsor escalation + 요구사항 일시 보류"
+  - section: "§7.3"
+    name: "베이스라인 후 즉시 변경"
+    rule: "1주 내 변경 요청은 WI-02 변경 관리로 분기"
+
+triggers: ["요구사항 평가", "수락 기준", "약정", "REQM SP1.1", "REQM SP1.2"]
+aliases: ["requirements understanding", "commitment to requirements"]
+event_triggers: ["RD 인계 직후", "신규 요구사항 추가 시"]
+domains: ["일반", "SW", "엔지니어링"]

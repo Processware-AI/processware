@@ -1,0 +1,167 @@
+wi_id:           "WI-CMMI-04-03-01"
+title:           "프로세스·산출물 객관적 평가 (SP1.1~1.2)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-04-03"
+parent_pol:      "POL-CMMI-04"
+related_tmp:
+  - "TMP-CMMI-04-03-01-01_프로세스_평가_체크리스트_및_보고서"
+  - "TMP-CMMI-04-03-01-02_산출물_평가_체크리스트_및_부적합_보고서"
+scope_code:      "CMMI"
+scope_type:      "organization_project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:15:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "평가 계획 확정"
+    section_ref: "§5.1.1~4"
+    inputs:
+      - field: "evaluation_period"
+        type: "text"
+        question: "평가 기간(YYYY-Qn)?"
+        required: true
+      - field: "target_processes"
+        type: "multiselect"
+        question: "평가 대상 프로세스(PA 단위)?"
+        options: ["OPD","OPF","OT","PP","PMC","REQM","SAM","IPM","RSKM","RD","TS","PI","VER","VAL","CM","MA","PPQA","DAR"]
+        required: true
+      - field: "target_artifacts"
+        type: "text"
+        question: "평가 대상 산출물 목록(TMP/REC/CI ID)?"
+        required: true
+      - field: "auditors"
+        type: "text"
+        question: "평가자(객관성 충족 확인)?"
+        required: true
+    outputs:
+      - tmp_field: "평가보고서.기간"
+        from: "evaluation_period"
+      - tmp_field: "평가보고서.대상프로세스"
+        from: "target_processes"
+      - tmp_field: "평가보고서.대상산출물"
+        from: "target_artifacts"
+      - tmp_field: "평가보고서.평가자"
+        from: "auditors"
+    hitl: false
+
+  - id: "step-02"
+    name: "프로세스 객관적 평가 (SP1.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "process_checklist_results"
+        type: "table"
+        question: "프로세스 체크리스트 결과?"
+        columns: ["프로세스", "기준 항목", "증적", "판정(P/F/Obs/N/A)", "비고"]
+        required: true
+    derivations:
+      - id: "process_nc_count"
+        expr: "count(process_checklist_results where 판정=='F')"
+        description: "프로세스 부적합 수"
+    outputs:
+      - tmp_field: "프로세스평가.체크리스트결과"
+        from: "process_checklist_results"
+      - tmp_field: "프로세스평가.부적합수"
+        from: "process_nc_count"
+    hitl: false
+
+  - id: "step-03"
+    name: "산출물 객관적 평가 (SP1.2)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "artifact_checklist_results"
+        type: "table"
+        question: "산출물 체크리스트 결과?"
+        columns: ["산출물 ID", "기준 항목", "증적", "판정(P/F/Obs/N/A)", "비고"]
+        required: true
+    derivations:
+      - id: "artifact_nc_count"
+        expr: "count(artifact_checklist_results where 판정=='F')"
+        description: "산출물 부적합 수"
+    outputs:
+      - tmp_field: "산출물평가.체크리스트결과"
+        from: "artifact_checklist_results"
+      - tmp_field: "산출물평가.부적합수"
+        from: "artifact_nc_count"
+    hitl: false
+
+  - id: "step-04"
+    name: "증적 보존"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "evidence_links"
+        type: "text"
+        question: "증적 사본·링크 보관 위치?"
+        required: true
+    outputs:
+      - tmp_field: "평가보고서.증적링크"
+        from: "evidence_links"
+    hitl: false
+
+  - id: "step-05"
+    name: "보고서 작성·검토·승인"
+    section_ref: "§5.2.4~5"
+    inputs:
+      - field: "report_summary"
+        type: "text"
+        question: "결과 요약 (3~5문장)?"
+        required: true
+      - field: "po_review_status"
+        type: "enum"
+        question: "Process Owner 사실관계 검토 결과?"
+        options: ["통과","조건부","이의제기"]
+        required: true
+      - field: "approver_name"
+        type: "person"
+        question: "승인자(QA Director)?"
+        required: true
+    outputs:
+      - tmp_field: "평가보고서.요약"
+        from: "report_summary"
+      - tmp_field: "평가보고서.PO검토"
+        from: "po_review_status"
+      - tmp_field: "평가보고서.승인자"
+        from: "approver_name"
+    hitl: required
+    approver_role: "QA Director"
+    rationale: "WI §2 — 평가 결과는 QA Director 결재 필수"
+
+  - id: "step-06"
+    name: "부적합 핸드오프 (필요 시)"
+    section_ref: "§5.2"
+    inputs:
+      - field: "nc_handoff_ids"
+        type: "text"
+        question: "WI-CMMI-04-03-02 로 핸드오프할 부적합 ID 목록 (없으면 N/A)?"
+        required: true
+    outputs:
+      - tmp_field: "평가보고서.핸드오프ID"
+        from: "nc_handoff_ids"
+    hitl: false
+
+dod_checklist:
+  - "평가 계획에 따라 모든 대상 프로세스·산출물 평가 완료"
+  - "평가자 객관성 충족(작성자·실행자 배제 확인)"
+  - "체크리스트 항목별 판정 완료"
+  - "증적 보존(사본·링크)"
+  - "평가 보고서 작성·검토·승인"
+  - "부적합 발견 시 WI-CMMI-04-03-02 핸드오프"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "객관성 충족 불가"
+    rule: "외부 평가자·자매 부서 활용 또는 동료 검토 보강"
+  - section: "§7.2"
+    name: "평가 시간 부족"
+    rule: "위험 가중 표본 평가로 전환, 누락 영역 차기 우선 이월"
+  - section: "§7.3"
+    name: "중대 부적합 발견"
+    rule: "PM/QA Director 즉시 통보. 출시 영향 시 출시 보류 권고"
+
+triggers: ["객관적 평가", "PPQA 평가", "프로세스 적합성", "산출물 적합성"]
+aliases: ["Objective Evaluation", "Process Audit", "Product Audit"]
+event_triggers: ["분기 정기 평가 시점", "고객 인수 전", "외부 인증 심사 전"]
+domains: ["일반", "SW"]

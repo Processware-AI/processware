@@ -1,0 +1,187 @@
+wi_id:           "WI-CMMI-01-02-02"
+title:           "프로세스 액션 플랜 수립·실행 (SG2: SP2.1~2.2)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-01-02"
+parent_pol:      "POL-CMMI-01"
+related_tmp:
+  - "TMP-CMMI-01-02-02-01_프로세스_액션_플랜"
+  - "TMP-CMMI-01-02-02-02_액션_추진_상태_기록부"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:30:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "선행 WI 완료 게이트 확인"
+    section_ref: "§5.1.1"
+    inputs:
+      - field: "wi_01_status"
+        type: "enum"
+        question: "WI-CMMI-01-02-01 의 상태는?"
+        options: ["done", "in_progress", "pending"]
+        required: true
+      - field: "approved_recommendation_count"
+        type: "number"
+        question: "승인된 개선 권고 항목 수는?"
+        required: true
+    derivations:
+      - id: "gate_pass"
+        expr: |
+          if wi_01_status == "done" and approved_recommendation_count >= 1: "Pass"
+          else: "Block"
+        description: "엔트리 게이트 — 선행 WI done 필수"
+    hitl: false
+
+  - id: "step-02"
+    name: "액션 전략·접근법 정의 (SP2.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "action_strategies_table"
+        type: "table"
+        question: "각 개선 항목의 실행 전략을 정의하라"
+        columns: ["개선항목ID", "전략(전체/단계/파일럿)", "의존관계", "선후순서"]
+        required: true
+    outputs:
+      - tmp_field: "액션플랜.전략표"
+        from: "action_strategies_table"
+    hitl: false
+
+  - id: "step-03"
+    name: "PAT 구성 (SP2.1)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "pat_teams_table"
+        type: "table"
+        question: "Process Action Team 구성을 기록하라"
+        columns: ["액션ID", "PAT Lead", "구성원", "협조부서"]
+        required: true
+    outputs:
+      - tmp_field: "액션플랜.PAT구성"
+        from: "pat_teams_table"
+    hitl: false
+
+  - id: "step-04"
+    name: "액션 플랜 문서화 (SP2.1)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "action_plan_table"
+        type: "table"
+        question: "액션별 상세 계획을 기록하라"
+        columns: ["액션ID", "목적", "접근법", "일정", "자원", "산출물", "완료기준", "리스크"]
+        required: true
+    outputs:
+      - tmp_field: "액션플랜.본문표"
+        from: "action_plan_table"
+    hitl: false
+
+  - id: "step-05"
+    name: "승인 및 약정 체결 (SP2.1)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "approver_name"
+        type: "person"
+        question: "액션 플랜 승인자(CEO/CTO) 이름은?"
+        required: true
+      - field: "approval_date"
+        type: "date"
+        question: "승인 일자는?"
+        required: true
+      - field: "commitment_signed"
+        type: "boolean"
+        question: "PAT 약정서 서명 완료했는가?"
+        required: true
+    outputs:
+      - tmp_field: "액션플랜.결재"
+        from: "approver_name"
+    hitl: required
+    approver_role: "CEO/CTO"
+    rationale: "PRO §3 RACI: 액션 플랜 수립 단계 A=Senior Mgmt, 최종 승인 CEO/CTO"
+
+  - id: "step-06"
+    name: "파일럿 계획·실행 (SP2.2)"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "pilot_required_items"
+        type: "table"
+        question: "파일럿이 필요한 항목과 계획을 기록하라"
+        columns: ["액션ID", "파일럿범위", "기간", "성공기준", "결과(P/F)"]
+        required: false
+        required_if: "신규·중대 개선 항목 존재"
+    outputs:
+      - tmp_field: "추진상태기록부.파일럿"
+        from: "pilot_required_items"
+    hitl: false
+
+  - id: "step-07"
+    name: "액션 실행 및 추적 (SP2.2)"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "action_status_table"
+        type: "table"
+        question: "주간 진행률·이슈를 기록하라"
+        columns: ["액션ID", "주차", "진행률%", "이슈", "결정사항"]
+        required: true
+      - field: "joint_review_count"
+        type: "number"
+        question: "합동 리뷰 회의 개최 횟수는?"
+        required: true
+        validation: "x >= 1"
+    outputs:
+      - tmp_field: "추진상태기록부.주간진행"
+        from: "action_status_table"
+    hitl: false
+
+  - id: "step-08"
+    name: "이슈 관리 및 종결 (SP2.2)"
+    section_ref: "§5.2.7"
+    inputs:
+      - field: "issues_table"
+        type: "table"
+        question: "이슈 및 종결 상태를 기록하라"
+        columns: ["이슈ID", "내용", "발생일", "조치", "종결일"]
+        required: true
+      - field: "closure_rate"
+        type: "number"
+        question: "이슈 종결률(%)은?"
+        required: true
+        validation: "0 <= x <= 100"
+    derivations:
+      - id: "closure_pass"
+        expr: |
+          if closure_rate == 100: "Pass"
+          elif closure_rate >= 80: "Conditional"
+          else: "Fail"
+        description: "이슈 종결률 평가"
+    outputs:
+      - tmp_field: "추진상태기록부.이슈종결"
+        from: "closure_rate"
+    hitl: false
+
+dod_checklist:
+  - "액션 플랜 작성·CEO/CTO 승인 완료"
+  - "PAT 구성·약정서 체결 완료"
+  - "파일럿 계획·실행 완료 (해당 항목)"
+  - "액션별 진행 상태 추적 기록 보존"
+  - "합동 리뷰 회의록 저장"
+  - "이슈 종결률 100% 또는 미종결 사유 명시"
+  - "CM 베이스라인 + MAT-001 등록"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "파일럿 실패"
+    rule: "파일럿 결과 미달 시 액션 플랜 재설계·재승인 / 2회 연속 실패 시 항목 폐기"
+  - section: "§7.2"
+    name: "자원 부족·예산 미확보"
+    rule: "PAT Lead → EPG → Senior Mgmt 에스컬레이션, 우선순위 재조정"
+  - section: "§7.3"
+    name: "이해관계자 약정 불이행"
+    rule: "PCB 안건 상정 + 경영진 개입, 액션 일정 영향 평가·재조정"
+
+triggers: ["프로세스 액션 플랜", "Process Action Team", "PAT", "개선 실행", "파일럿"]
+aliases: ["개선 액션", "Action Plan", "PAT"]
+event_triggers: ["개선 권고 승인 직후", "합동 리뷰 주기", "이슈 발생"]
+domains: ["일반", "SW"]

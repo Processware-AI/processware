@@ -1,0 +1,189 @@
+wi_id:           "WI-CMMI-03-02-04"
+title:           "구현 및 지원 문서 작성 (SG3: SP3.1~3.2)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-03-02"
+parent_pol:      "POL-CMMI-03"
+related_tmp:
+  - "TMP-CMMI-03-02-04-01_구현_결과_보고서"
+  - "TMP-CMMI-03-02-04-02_지원_문서_패키지"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T10:10:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "구현 환경 준비"
+    section_ref: "§5.1"
+    inputs:
+      - field: "ci_pipeline_id"
+        type: "text"
+        question: "CI/CD 파이프라인 ID는?"
+        required: true
+      - field: "coverage_target_pct"
+        type: "number"
+        question: "코드 커버리지 목표(%)는?"
+        required: true
+        validation: "0 <= x <= 100"
+    outputs:
+      - tmp_field: "구현결과보고서.환경.파이프라인ID"
+        from: "ci_pipeline_id"
+    hitl: false
+
+  - id: "step-02"
+    name: "컴포넌트 구현 (SP3.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "implementation_status"
+        type: "table"
+        question: "컴포넌트별 구현 상태를 표로 작성하라"
+        columns: ["컴포넌트ID", "유형(Make/Buy/Reuse)", "Repo/위치", "상태(완료/진행/보류)", "비고"]
+        required: true
+    outputs:
+      - tmp_field: "구현결과보고서.구현상태표"
+        from: "implementation_status"
+    hitl: false
+
+  - id: "step-03"
+    name: "단위시험·정적 분석"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "unit_test_pass_rate"
+        type: "number"
+        question: "단위시험 통과율(%)은?"
+        required: true
+        validation: "0 <= x <= 100"
+      - field: "actual_coverage_pct"
+        type: "number"
+        question: "실측 코드 커버리지(%)는?"
+        required: true
+        validation: "0 <= x <= 100"
+      - field: "sast_critical_high"
+        type: "number"
+        question: "정적 분석 Critical+High 결함 수는?"
+        required: true
+        validation: ">= 0"
+    derivations:
+      - id: "quality_gate"
+        expr: |
+          if unit_test_pass_rate == 100 and actual_coverage_pct >= coverage_target_pct and sast_critical_high == 0: "Pass"
+          else: "Fail — §7.1 분기"
+        description: "품질 게이트 판정"
+    outputs:
+      - tmp_field: "구현결과보고서.품질게이트"
+        from: "quality_gate"
+    hitl: false
+
+  - id: "step-04"
+    name: "CM 빌드 베이스라인·SBOM"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "cm_build_baseline_id"
+        type: "text"
+        question: "CM 빌드 베이스라인 ID는?"
+        required: true
+      - field: "sbom_id"
+        type: "text"
+        question: "SBOM 등록 ID는?"
+        required: true
+    outputs:
+      - tmp_field: "구현결과보고서.베이스라인ID"
+        from: "cm_build_baseline_id"
+      - tmp_field: "구현결과보고서.SBOM_ID"
+        from: "sbom_id"
+    hitl: false
+
+  - id: "step-05"
+    name: "지원 문서 작성 (SP3.2)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "manuals_done"
+        type: "multiselect"
+        question: "작성 완료한 매뉴얼 종은?"
+        options: ["사용자", "운영", "유지보수", "교육"]
+        required: true
+        validation: "len(manuals_done) == 4"
+      - field: "manual_docs"
+        type: "table"
+        question: "매뉴얼별 문서ID·버전·Owner 는?"
+        columns: ["매뉴얼", "문서ID", "버전", "Owner", "검토자"]
+        required: true
+    outputs:
+      - tmp_field: "지원문서패키지.문서목록"
+        from: "manual_docs"
+    hitl: false
+
+  - id: "step-06"
+    name: "문서 검토"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "review_done"
+        type: "boolean"
+        question: "Chief Eng + 사용자 대표 + OT Lead 합동 검토 완료?"
+        required: true
+      - field: "review_defects"
+        type: "number"
+        question: "검토 결함 수는?"
+        required: true
+        validation: ">= 0"
+    outputs:
+      - tmp_field: "지원문서패키지.검토결과"
+        from: "review_done"
+    hitl: false
+
+  - id: "step-07"
+    name: "PI 인수문서 작성"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "pi_handover_doc_id"
+        type: "text"
+        question: "PI 인수문서 ID는?"
+        required: true
+    outputs:
+      - tmp_field: "구현결과보고서.PI인수문서ID"
+        from: "pi_handover_doc_id"
+    hitl: false
+
+  - id: "step-08"
+    name: "PM 승인"
+    section_ref: "§5.2.7"
+    inputs:
+      - field: "pm_approver"
+        type: "person"
+        question: "승인 PM 은?"
+        required: true
+    outputs:
+      - tmp_field: "구현결과보고서.결재"
+        from: "pm_approver"
+    hitl: required
+    approver_role: "Project Manager"
+    rationale: "WI §2 — 구현 베이스라인 확정"
+
+dod_checklist:
+  - "모든 Make 컴포넌트 단위시험 통과"
+  - "코드 커버리지 목표 충족"
+  - "정적 분석 Critical/High 0건"
+  - "CM 빌드 베이스라인 + SBOM 등록"
+  - "매뉴얼 4종(사용자/운영/유지보수/교육) 작성"
+  - "문서 검토 결함 0건 또는 해소"
+  - "PI 인수문서 작성"
+  - "PM 승인 결재"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "커버리지·품질 미달"
+    rule: "부족 영역 시험 추가, 시간 부족시 PM 결재 후 마일스톤 등재"
+  - section: "§7.2"
+    name: "사용자 미참여 검토"
+    rule: "대리인 + 인도 30일 내 사용자 피드백 수렴 의무"
+  - section: "§7.3"
+    name: "Buy 컴포넌트 인수 지연"
+    rule: "영향평가 + 일정 재조정 + RSKM 등록 + PM 결정"
+
+triggers: ["구현", "단위시험", "매뉴얼", "지원 문서", "SBOM"]
+aliases: ["Implementation", "Build", "User Manual"]
+event_triggers: ["설계 베이스라인 후", "Buy 컴포넌트 인수 시점"]
+domains: ["일반", "SW"]

@@ -1,0 +1,184 @@
+wi_id:           "WI-CMMI-04-02-02"
+title:           "데이터 수집·분석 (SP2.1~2.2)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-04-02"
+parent_pol:      "POL-CMMI-04"
+related_tmp:
+  - "TMP-CMMI-04-02-02-01_측정_데이터셋_레지스터"
+  - "TMP-CMMI-04-02-02-02_분석_보고서"
+scope_code:      "CMMI"
+scope_type:      "organization_project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:05:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "데이터 수집 실행 (SP2.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "collection_period"
+        type: "text"
+        question: "수집 기간(예: 2026-04-01~2026-04-30)?"
+        required: true
+      - field: "collection_log"
+        type: "table"
+        question: "수집 로그 — 측정명별 일시·출처·수집자?"
+        columns: ["측정명", "수집 일시", "출처", "수집자", "건수"]
+        required: true
+    outputs:
+      - tmp_field: "데이터셋레지스터.수집기간"
+        from: "collection_period"
+      - tmp_field: "데이터셋레지스터.수집로그"
+        from: "collection_log"
+    hitl: false
+
+  - id: "step-02"
+    name: "무결성 점검"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "integrity_results"
+        type: "table"
+        question: "무결성 점검 결과?"
+        columns: ["측정명", "전체 건수", "결측 수", "범위 위반", "타입 위반", "이상치 수"]
+        required: true
+      - field: "outlier_action"
+        type: "text"
+        question: "이상치 처리 사유·결정(제거/유지/별도분석)?"
+        required: true
+    derivations:
+      - id: "nc_ratio"
+        expr: "(integrity_results.sum(결측+범위+타입) / integrity_results.sum(전체)) * 100"
+        description: "무결성 부적합 비율 %"
+    outputs:
+      - tmp_field: "데이터셋레지스터.무결성결과"
+        from: "integrity_results"
+      - tmp_field: "데이터셋레지스터.이상치처리"
+        from: "outlier_action"
+    hitl: false
+
+  - id: "step-03"
+    name: "데이터셋 메타데이터 등록"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "dataset_id"
+        type: "text"
+        question: "데이터셋 ID?"
+        required: true
+      - field: "record_count"
+        type: "number"
+        question: "최종 레코드 수?"
+        required: true
+        validation: ">= 0"
+      - field: "checksum"
+        type: "text"
+        question: "해시/체크섬?"
+        required: true
+    outputs:
+      - tmp_field: "데이터셋레지스터.ID"
+        from: "dataset_id"
+      - tmp_field: "데이터셋레지스터.레코드수"
+        from: "record_count"
+      - tmp_field: "데이터셋레지스터.체크섬"
+        from: "checksum"
+    hitl: false
+
+  - id: "step-04"
+    name: "분석 수행 (SP2.2)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "analysis_methods_used"
+        type: "multiselect"
+        question: "사용한 분석 방법?"
+        options: ["기술통계","추세","비교","예측","상관","회귀","기타"]
+        required: true
+      - field: "context_notes"
+        type: "text"
+        question: "결과 해석을 위한 컨텍스트(프로젝트·조직 상황)?"
+        required: true
+      - field: "key_findings"
+        type: "text"
+        question: "핵심 발견 (3~5건)?"
+        required: true
+    outputs:
+      - tmp_field: "분석보고서.방법"
+        from: "analysis_methods_used"
+      - tmp_field: "분석보고서.컨텍스트"
+        from: "context_notes"
+      - tmp_field: "분석보고서.발견사항"
+        from: "key_findings"
+    hitl: false
+
+  - id: "step-05"
+    name: "결과 검증·한계 명시"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "validity_check"
+        type: "enum"
+        question: "통계적 유의성·합리성 점검 결과?"
+        options: ["통과","부분","미통과"]
+        required: true
+      - field: "limitations"
+        type: "text"
+        question: "결과의 한계·가정?"
+        required: true
+    outputs:
+      - tmp_field: "분석보고서.검증결과"
+        from: "validity_check"
+      - tmp_field: "분석보고서.한계"
+        from: "limitations"
+    hitl: false
+
+  - id: "step-06"
+    name: "분석 보고서 작성·검토"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "recommendations"
+        type: "text"
+        question: "의사결정 권고 사항?"
+        required: true
+      - field: "reviewer_name"
+        type: "person"
+        question: "검토자(QA Director) 이름?"
+        required: true
+      - field: "approver_name"
+        type: "person"
+        question: "승인자(MA Lead) 이름?"
+        required: true
+    outputs:
+      - tmp_field: "분석보고서.권고"
+        from: "recommendations"
+      - tmp_field: "분석보고서.검토자"
+        from: "reviewer_name"
+      - tmp_field: "분석보고서.승인자"
+        from: "approver_name"
+    hitl: required
+    approver_role: "Measurement Analyst Lead"
+    rationale: "WI §2 — 분석 보고서는 의사결정 입력으로 책임자 결재 필수"
+
+dod_checklist:
+  - "계획 측정값 수집 (누락 ≤5%)"
+  - "무결성 점검 통과(부적합 ≤1%)"
+  - "데이터셋 메타데이터 레지스터 등록"
+  - "분석 명세에 따른 분석 완료"
+  - "결과의 한계·가정 명기"
+  - "분석 보고서 작성·검토 완료"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "수집 누락(≥5%)"
+    rule: "백필 수집 또는 한계 명시. 반복 누락 시 자동화·이중화 검토"
+  - section: "§7.2"
+    name: "이상치 식별"
+    rule: "통계적 기준 적용. 원인 분석 없이 단순 제거 금지"
+  - section: "§7.3"
+    name: "결과-가설 상충"
+    rule: "임의 조정 금지. 재검증 후 일관 시 결과+해석 분리 보고"
+
+triggers: ["데이터 수집", "측정 분석", "분석 보고서", "데이터셋 등록"]
+aliases: ["Data Collection", "Analysis Report", "Outlier"]
+event_triggers: ["측정 주기 도래", "프로젝트 게이트 보고", "긴급 분석 요청"]
+domains: ["일반", "SW"]

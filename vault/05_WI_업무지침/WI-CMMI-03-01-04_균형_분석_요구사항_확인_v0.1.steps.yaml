@@ -1,0 +1,183 @@
+wi_id:           "WI-CMMI-03-01-04"
+title:           "균형 분석·요구사항 확인 (SG3: SP3.4~3.5)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-03-01"
+parent_pol:      "POL-CMMI-03"
+related_tmp:
+  - "TMP-CMMI-03-01-04-01_요구사항_균형_분석_보고서"
+  - "TMP-CMMI-03-01-04-02_요구사항_확인_결과_보고서"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:30:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "충돌·이슈 수집"
+    section_ref: "§5.1.1"
+    inputs:
+      - field: "conflict_log"
+        type: "table"
+        question: "이전 WI(02/03)에서 이관된 충돌 목록은?"
+        columns: ["충돌ID", "출처WI", "내용", "원 영향도", "원 빈도"]
+        required: true
+    outputs:
+      - tmp_field: "균형분석보고서.충돌목록"
+        from: "conflict_log"
+    hitl: false
+
+  - id: "step-02"
+    name: "충돌 우선순위 평가"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "priority_matrix"
+        type: "table_per_row"
+        question: "각 충돌의 영향도×빈도 매트릭스를 평가하라"
+        rows_from: "conflict_log"
+        columns: ["충돌ID", "영향도(H/M/L)", "빈도(H/M/L)", "DAR적용여부"]
+        required: true
+    outputs:
+      - tmp_field: "균형분석보고서.우선순위매트릭스"
+        from: "priority_matrix"
+    hitl: false
+
+  - id: "step-03"
+    name: "DAR 적용"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "dar_application_table"
+        type: "table"
+        question: "DAR 적용 충돌별 DAR 기록ID는?"
+        columns: ["충돌ID", "DAR 결정ID", "대안 수", "선정안", "결재자"]
+        required: true
+    outputs:
+      - tmp_field: "균형분석보고서.DAR기록"
+        from: "dar_application_table"
+    hitl: false
+
+  - id: "step-04"
+    name: "균형 결정"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "balance_decision_table"
+        type: "table"
+        question: "각 충돌의 최종 결정은?"
+        columns: ["충돌ID", "결정(수용/거부/연기/타협)", "근거", "후속 CR 번호"]
+        required: true
+    outputs:
+      - tmp_field: "균형분석보고서.최종결정"
+        from: "balance_decision_table"
+    hitl: false
+
+  - id: "step-05"
+    name: "베이스라인 갱신"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "baseline_id"
+        type: "text"
+        question: "갱신된 최종 요구사항 베이스라인 ID는?"
+        required: true
+      - field: "affected_docs"
+        type: "text"
+        question: "갱신된 산출물 문서ID 목록(쉼표구분)은?"
+        required: true
+    outputs:
+      - tmp_field: "균형분석보고서.베이스라인ID"
+        from: "baseline_id"
+    hitl: false
+
+  - id: "step-06"
+    name: "VAL 확인 실시 (SP3.5)"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "val_method"
+        type: "enum"
+        question: "VAL 확인 방법은?"
+        options: ["시연", "시뮬레이션", "프로토타입", "워크스루", "사용자시험"]
+        required: true
+      - field: "val_scenarios_covered"
+        type: "number"
+        question: "확인된 시나리오 수는?"
+        required: true
+        validation: ">= 1"
+      - field: "val_results_table"
+        type: "table"
+        question: "확인 결과 표를 작성하라"
+        columns: ["시나리오ID", "결과(충족/부분/미충족)", "관찰", "후속 조치"]
+        required: true
+    outputs:
+      - tmp_field: "요구사항확인결과보고서.확인표"
+        from: "val_results_table"
+    hitl: false
+
+  - id: "step-07"
+    name: "확인 결과 정리"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "fulfillment_rate"
+        type: "number"
+        question: "전체 시나리오 중 충족(완전 충족) 비율(%)은?"
+        required: true
+        validation: "0 <= x <= 100"
+      - field: "open_cr_count"
+        type: "number"
+        question: "발행된 변경요청(CR) 수는?"
+        required: true
+        validation: ">= 0"
+    derivations:
+      - id: "val_pass"
+        expr: |
+          if fulfillment_rate >= 95: "Pass"
+          else: "Conditional/Fail — PM 의사결정"
+        description: "충족율 95% 미만이면 재VAL 또는 후속 마일스톤"
+    outputs:
+      - tmp_field: "요구사항확인결과보고서.종합판정"
+        from: "val_pass"
+    hitl: false
+
+  - id: "step-08"
+    name: "PM 승인 및 REQM 인계"
+    section_ref: "§5.2.7"
+    inputs:
+      - field: "reqm_handover_id"
+        type: "text"
+        question: "REQM 인계 송부 ID는?"
+        required: true
+      - field: "pm_approver"
+        type: "person"
+        question: "승인 PM 은?"
+        required: true
+    outputs:
+      - tmp_field: "요구사항확인결과보고서.결재"
+        from: "pm_approver"
+    hitl: required
+    approver_role: "Project Manager"
+    rationale: "WI §2 + PRO §4 RACI A — 균형 분석 최종 결정자"
+
+dod_checklist:
+  - "이관된 모든 충돌이 결정 상태 부여"
+  - "High-High 충돌 DAR 100% 적용"
+  - "균형 결정 산출물 반영(베이스라인 갱신)"
+  - "VAL 확인 실시 — 모든 핵심 시나리오 커버"
+  - "미충족 항목 CR 발행 또는 후속 마일스톤 등록"
+  - "PM 승인 결재"
+  - "REQM 인계 송부 기록"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "결정 불가 충돌"
+    rule: "PM 격상 → C-level 회부, 결정 지연 RSKM 등록"
+  - section: "§7.2"
+    name: "VAL 환경 부재"
+    rule: "Paperware 워크스루 + 신뢰도 + PM 결재"
+  - section: "§7.3"
+    name: "사용자 불참"
+    rule: "대리인 + 비동기 회람, 후속 사용자 피드백 차이시 재VAL"
+
+triggers: ["균형 분석", "요구사항 확인", "Validation", "DAR"]
+aliases: ["Requirements Balance", "Requirements Validation"]
+event_triggers: ["WI-03 종료", "RSKM 신규 리스크", "요구사항 변경 요청 빈발"]
+domains: ["일반", "SW"]

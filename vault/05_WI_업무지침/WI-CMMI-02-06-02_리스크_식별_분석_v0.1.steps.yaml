@@ -1,0 +1,112 @@
+wi_id:           "WI-CMMI-02-06-02"
+title:           "리스크 식별·분석 (SG2: SP2.1~2.2)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-02-06"
+parent_pol:      "POL-CMMI-02"
+related_tmp:
+  - "TMP-CMMI-02-06-02-01_리스크_등록부"
+  - "TMP-CMMI-02-06-02-02_리스크_평가_우선순위"
+scope_code:      "CMMI"
+scope_type:      "project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:32:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "리스크 식별 (SP2.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "new_risks"
+        type: "table"
+        question: "신규 리스크 (ID, 카테고리, 설명, 출처)"
+        columns: ["리스크ID", "카테고리", "설명", "출처"]
+        required: true
+      - field: "input_source"
+        type: "multiselect"
+        question: "식별 입력 source"
+        options: ["brainstorming", "PP SP2.2", "PMC 모니터링", "IPM 협업회의", "외부audit", "기타"]
+        required: true
+    outputs:
+      - tmp_field: "리스크등록부.신규목록"
+        from: "new_risks"
+    hitl: false
+
+  - id: "step-02"
+    name: "평가·분류 (SP2.2)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "evaluation_table"
+        type: "table"
+        question: "확률·영향 평가 + 우선순위"
+        columns: ["리스크ID", "확률(H/M/L)", "영향(H/M/L)", "우선순위(Critical/High/Medium/Low)"]
+        required: true
+    derivations:
+      - id: "high_critical_count"
+        expr: "count where 우선순위 in ['Critical', 'High']"
+        description: "High/Critical 리스크 수"
+    outputs:
+      - tmp_field: "리스크평가우선순위.표"
+        from: "evaluation_table"
+      - tmp_field: "리스크평가우선순위.HC수"
+        from: "high_critical_count"
+    hitl: false
+
+  - id: "step-03"
+    name: "임계치 초과 alert"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "pmo_notified_count"
+        type: "number"
+        question: "PMO 통보 건수 (High/Critical)?"
+        required: true
+      - field: "notification_within_24h"
+        type: "boolean"
+        question: "24h 내 통보 완료?"
+        required: true
+    outputs: []
+    hitl: false
+
+  - id: "step-04"
+    name: "Risk Manager 결재 + 통계 보고서"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "approver_name"
+        type: "person"
+        question: "Risk Manager 결재자 이름은?"
+        required: true
+      - field: "stats_report_id"
+        type: "text"
+        question: "통계 보고서 ID는?"
+        required: true
+    outputs:
+      - tmp_field: "리스크평가우선순위.결재"
+        from: "approver_name"
+    hitl: required
+    approver_role: "Risk Manager"
+    rationale: "PRO §3 RACI — 분석 결과 Risk Manager R 결재; High/Critical 은 PMO escalation"
+
+dod_checklist:
+  - "등록부 업데이트"
+  - "모든 신규 리스크 평가·우선순위"
+  - "High/Critical 24h 내 PMO 통보"
+  - "우선순위별 통계 보고서"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "리스크 식별 누락 빈발"
+    rule: "마일스톤별 ≥3건 사후 발견 시 brainstorming 빈도 증가 + 체크리스트 보강"
+  - section: "§7.2"
+    name: "우선순위 분쟁"
+    rule: "Risk Mgr ↔ PM 차이 시 PMO 결정"
+  - section: "§7.3"
+    name: "중복 등록"
+    rule: "카테고리·키워드 중복 점검; 통합 (오래된 ID 폐기)"
+
+triggers: ["리스크 식별", "리스크 평가", "우선순위", "RSKM SP2.1", "RSKM SP2.2"]
+aliases: ["risk identification", "risk evaluation"]
+event_triggers: ["정기 brainstorming", "ad-hoc 발견"]
+domains: ["일반", "SW", "리스크"]

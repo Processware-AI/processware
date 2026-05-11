@@ -1,0 +1,141 @@
+wi_id:           "WI-CMMI-02-04-01"
+title:           "인수 유형 결정·공급자 선정·협약 (SG1: SP1.1~1.3)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-02-04"
+parent_pol:      "POL-CMMI-02"
+related_tmp:
+  - "TMP-CMMI-02-04-01-01_인수_유형_결정서"
+  - "TMP-CMMI-02-04-01-02_공급자_평가_선정_보고서"
+  - "TMP-CMMI-02-04-01-03_공급자_협약서_SOW"
+scope_code:      "CMMI"
+scope_type:      "project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:12:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "인수 유형 결정 (SP1.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "acquisition_target"
+        type: "text"
+        question: "인수 대상은?"
+        required: true
+      - field: "acquisition_type"
+        type: "enum"
+        question: "인수 유형은?"
+        options: ["COTS", "OSS", "맞춤개발", "서비스", "고객지급물", "기타"]
+        required: true
+      - field: "rationale"
+        type: "longtext"
+        question: "유형 결정 근거는?"
+        required: true
+    outputs:
+      - tmp_field: "인수유형결정서.유형"
+        from: "acquisition_type"
+      - tmp_field: "인수유형결정서.근거"
+        from: "rationale"
+    hitl: false
+
+  - id: "step-02"
+    name: "공급자 평가 (SP1.2)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "candidate_count"
+        type: "number"
+        question: "후보 공급자 수는?"
+        validation: ">= 3"
+        required: true
+      - field: "evaluation_table"
+        type: "table"
+        question: "공급자 평가 (기술·비용·일정·신뢰성·재무·법규 점수)"
+        columns: ["공급자명", "기술", "비용", "일정", "신뢰성", "재무건전성", "법규준수", "총점"]
+        required: true
+    outputs:
+      - tmp_field: "공급자평가.표"
+        from: "evaluation_table"
+    hitl: false
+
+  - id: "step-03"
+    name: "공급자 선정"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "selected_supplier"
+        type: "text"
+        question: "선정 공급자는?"
+        required: true
+      - field: "legal_finance_review"
+        type: "boolean"
+        question: "법무·재무 사전 검토 통과?"
+        required: true
+      - field: "sole_source_flag"
+        type: "boolean"
+        question: "단일 공급자 (Sole Source) 여부?"
+        required: true
+    outputs:
+      - tmp_field: "공급자평가.선정"
+        from: "selected_supplier"
+    hitl: false
+
+  - id: "step-04"
+    name: "협약 수립 (SP1.3)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "sow_sections"
+        type: "multiselect"
+        question: "SOW 포함 섹션"
+        options: ["작업기술서", "일정", "인도물", "인수기준", "보증", "IP", "기밀유지", "벌칙·인센티브"]
+        required: true
+      - field: "contract_amount"
+        type: "number"
+        question: "계약 금액은?"
+        required: true
+      - field: "legal_approver"
+        type: "person"
+        question: "법무 결재자는?"
+        required: true
+      - field: "pmo_approver"
+        type: "person"
+        question: "PMO Director 결재자 이름은?"
+        required: true
+      - field: "cm_baseline_id"
+        type: "text"
+        question: "CM 등록 베이스라인 ID는?"
+        required: true
+    outputs:
+      - tmp_field: "공급자협약서.SOW섹션"
+        from: "sow_sections"
+      - tmp_field: "공급자협약서.계약금액"
+        from: "contract_amount"
+      - tmp_field: "공급자협약서.PMO결재"
+        from: "pmo_approver"
+    hitl: required
+    approver_role: "PMO Director (협약 결재 + 법무 검토)"
+    rationale: "PRO §3 RACI 의 A — 협약은 법무 A + PMO Director 결재"
+
+dod_checklist:
+  - "인수 유형 결정서 (유형 + 근거)"
+  - "공급자 평가 보고서 (≥3 후보 비교)"
+  - "공급자 협약서 (SOW + Contract)"
+  - "법무·재무 결재 첨부"
+  - "CM 등록 + MAT-001 등록"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "단일 공급자"
+    rule: "사유 명시 + Sponsor 결재 의무"
+  - section: "§7.2"
+    name: "평가 동률"
+    rule: "재무 건전성 → 이전 평가 → Sponsor 결정 순"
+  - section: "§7.3"
+    name: "협상 결렬"
+    rule: "차순위 공급자 재협상; 차순위 부재 시 인수 유형 재검토"
+
+triggers: ["공급자 협약", "SAM SG1", "SOW", "인수 유형 결정"]
+aliases: ["supplier agreement", "vendor selection", "procurement"]
+event_triggers: ["프로젝트 외주 니즈", "공급자 변경"]
+domains: ["일반", "SW", "조달"]

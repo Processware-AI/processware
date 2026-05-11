@@ -1,0 +1,156 @@
+wi_id:           "WI-CMMI-03-03-04"
+title:           "통합 평가·패키징·인도 (SG3: SP3.3~3.4)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-03-03"
+parent_pol:      "POL-CMMI-03"
+related_tmp:
+  - "TMP-CMMI-03-03-04-01_통합_평가_패키징_인도_보고서"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T10:50:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "통합 평가 (SP3.3)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "evaluation_results"
+        type: "table"
+        question: "평가 시험 결과는?"
+        columns: ["유형(smoke/sanity/회귀/성능/보안)", "결과(Pass/Fail)", "통과율(%)", "비고"]
+        required: true
+    outputs:
+      - tmp_field: "보고서.평가결과"
+        from: "evaluation_results"
+    hitl: false
+
+  - id: "step-02"
+    name: "릴리스 노트 작성"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "release_note_id"
+        type: "text"
+        question: "릴리스 노트 문서 ID는?"
+        required: true
+      - field: "known_issues_count"
+        type: "number"
+        question: "알려진 이슈 수는?"
+        required: true
+        validation: ">= 0"
+      - field: "high_severity_known_issues"
+        type: "number"
+        question: "그중 High 등급 이슈 수는?"
+        required: true
+        validation: ">= 0"
+    outputs:
+      - tmp_field: "보고서.릴리스노트ID"
+        from: "release_note_id"
+    hitl: false
+
+  - id: "step-03"
+    name: "패키징 (SP3.4)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "package_hash"
+        type: "text"
+        question: "패키지 무결성 해시(SHA-256)는?"
+        required: true
+      - field: "signing_method"
+        type: "enum"
+        question: "보안 서명 방식은?"
+        options: ["Sigstore", "GPG", "Authenticode", "기타"]
+        required: true
+      - field: "release_baseline_id"
+        type: "text"
+        question: "CM 릴리스 베이스라인 ID는?"
+        required: true
+    outputs:
+      - tmp_field: "보고서.패키지해시"
+        from: "package_hash"
+      - tmp_field: "보고서.릴리스베이스라인ID"
+        from: "release_baseline_id"
+    hitl: false
+
+  - id: "step-04"
+    name: "인도·UAT 지원"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "uat_result"
+        type: "enum"
+        question: "UAT 결과는?"
+        options: ["Pass", "Conditional Pass", "Fail"]
+        required: true
+      - field: "uat_evidence_id"
+        type: "text"
+        question: "UAT 결과 증빙 문서 ID는?"
+        required: true
+    outputs:
+      - tmp_field: "보고서.UAT결과"
+        from: "uat_result"
+    hitl: false
+
+  - id: "step-05"
+    name: "인도 확인서·고객 서명"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "customer_signoff_id"
+        type: "text"
+        question: "고객 인도 확인서 ID는?"
+        required: true
+      - field: "customer_approver"
+        type: "person"
+        question: "고객 측 수령자는?"
+        required: true
+      - field: "delivery_date"
+        type: "date"
+        question: "인도 일자는?"
+        required: true
+    outputs:
+      - tmp_field: "보고서.인도확인서"
+        from: "customer_signoff_id"
+    hitl: required
+    approver_role: "Customer + Project Manager"
+    rationale: "WI §2 + PRO RACI A — 최종 인도 수락"
+
+  - id: "step-06"
+    name: "사후 모니터링"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "post_delivery_monitor_owner"
+        type: "person"
+        question: "인도 후 30일 모니터링 책임자는?"
+        required: true
+    outputs:
+      - tmp_field: "보고서.사후모니터링책임자"
+        from: "post_delivery_monitor_owner"
+    hitl: false
+
+dod_checklist:
+  - "smoke/sanity/회귀 모두 Pass"
+  - "비기능(성능·보안) 시험 반영"
+  - "릴리스 노트 작성"
+  - "무결성 해시 + 보안 서명"
+  - "CM 릴리스 베이스라인 등록"
+  - "UAT 결과 첨부"
+  - "고객 인도 확인서"
+  - "30일 사후 모니터링 책임자 지정"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "UAT Fail"
+    rule: "차감 정리 → 영향평가 → 시정 → 재UAT, 일정 영향시 PM+고객 합의"
+  - section: "§7.2"
+    name: "High 등급 알려진 이슈"
+    rule: "인도 보류 또는 조건부 인도 (mitigation 명시 + 고객 서명)"
+  - section: "§7.3"
+    name: "환경 호환성 문제"
+    rule: "환경 매트릭스 점검 → 패치 또는 환경 변경"
+
+triggers: ["통합 평가", "패키징", "릴리스", "인도", "UAT"]
+aliases: ["Release", "Delivery", "Packaging"]
+event_triggers: ["통합 베이스라인 완료", "UAT 일정"]
+domains: ["일반", "SW"]

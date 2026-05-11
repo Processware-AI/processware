@@ -1,0 +1,196 @@
+wi_id:           "WI-CMMI-04-01-01"
+title:           "베이스라인 수립 — CI 식별·CM 시스템·릴리즈 (SP1.1~1.3)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-04-01"
+parent_pol:      "POL-CMMI-04"
+related_tmp:
+  - "TMP-CMMI-04-01-01-01_형상항목_CI_목록"
+  - "TMP-CMMI-04-01-01-02_형상관리시스템_운영규정"
+  - "TMP-CMMI-04-01-01-03_베이스라인_기술서"
+scope_code:      "CMMI"
+scope_type:      "project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T08:45:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "산출물 목록·CCB 후보 확보"
+    section_ref: "§5.1.1~3"
+    inputs:
+      - field: "pp_artifact_list_id"
+        type: "text"
+        question: "PP SP2.3 산출물 목록 문서ID는?"
+        required: true
+      - field: "ccb_member_candidates"
+        type: "multiselect"
+        question: "CCB 위원 후보(역할 기준)는?"
+        options: ["Sponsor","CM Manager","QA Director","Lead Dev","Lead Architect","Customer Rep","Other"]
+        required: true
+    outputs:
+      - tmp_field: "CI목록.입력.PP산출물ID"
+        from: "pp_artifact_list_id"
+      - tmp_field: "CM운영규정.CCB위원후보"
+        from: "ccb_member_candidates"
+    hitl: false
+
+  - id: "step-02"
+    name: "CI 식별 (SP1.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "ci_criteria"
+        type: "multiselect"
+        question: "CI 식별 기준은?"
+        options: ["영향도 상", "재사용 자산", "계약 인도물", "외부 인터페이스", "법규 의무", "기타"]
+        required: true
+      - field: "ci_table"
+        type: "table"
+        question: "CI 목록을 작성하라"
+        columns: ["CI ID", "이름", "분류", "버전 명명규칙", "Owner"]
+        required: true
+    outputs:
+      - tmp_field: "CI목록.식별기준"
+        from: "ci_criteria"
+      - tmp_field: "CI목록.CI표"
+        from: "ci_table"
+    hitl: false
+
+  - id: "step-03"
+    name: "CM 시스템 수립 (SP1.2)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "repo_tool"
+        type: "text"
+        question: "선정 저장소·도구는? (예: Git+JFrog, SharePoint, PLM 등)"
+        required: true
+      - field: "access_matrix"
+        type: "table"
+        question: "접근 권한 매트릭스(역할별 R/W/Approve)를 정의하라"
+        columns: ["역할", "Read", "Write", "Approve"]
+        required: true
+      - field: "rto_hours"
+        type: "number"
+        question: "RTO 목표(시간)?"
+        required: true
+        validation: "> 0"
+      - field: "rpo_hours"
+        type: "number"
+        question: "RPO 목표(시간)?"
+        required: true
+        validation: ">= 0"
+    outputs:
+      - tmp_field: "CM운영규정.저장소"
+        from: "repo_tool"
+      - tmp_field: "CM운영규정.접근권한매트릭스"
+        from: "access_matrix"
+      - tmp_field: "CM운영규정.RTO"
+        from: "rto_hours"
+      - tmp_field: "CM운영규정.RPO"
+        from: "rpo_hours"
+    hitl: false
+
+  - id: "step-04"
+    name: "베이스라인 종류·CI 집합 결정 (SP1.3-전반)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "baseline_types"
+        type: "multiselect"
+        question: "수립할 베이스라인 종류는?"
+        options: ["Requirements BL", "Design BL", "Product BL", "Release BL", "기타"]
+        required: true
+      - field: "baseline_ci_table"
+        type: "table"
+        question: "각 베이스라인의 포함 CI 집합과 릴리즈 시점은?"
+        columns: ["베이스라인명", "포함 CI ID 목록", "릴리즈 예정일"]
+        required: true
+    outputs:
+      - tmp_field: "베이스라인기술서.종류"
+        from: "baseline_types"
+      - tmp_field: "베이스라인기술서.CI집합"
+        from: "baseline_ci_table"
+    hitl: false
+
+  - id: "step-05"
+    name: "CCB 승인 및 베이스라인 릴리즈 (SP1.3-후반)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "ccb_meeting_date"
+        type: "date"
+        question: "CCB 승인 회의 일자는?"
+        required: true
+      - field: "ccb_decision"
+        type: "enum"
+        question: "CCB 결정은?"
+        options: ["승인", "조건부 승인", "보류", "반려"]
+        required: true
+      - field: "baseline_id"
+        type: "text"
+        question: "발급된 베이스라인 ID는?"
+        required: true
+      - field: "stakeholder_notify_log"
+        type: "text"
+        question: "이해관계자 통보 기록 (방법·시점)?"
+        required: true
+    derivations:
+      - id: "release_status"
+        expr: |
+          if ccb_decision == "승인": "Released"
+          elif ccb_decision == "조건부 승인": "Released-Conditional"
+          else: "NotReleased"
+        description: "릴리즈 상태"
+    outputs:
+      - tmp_field: "베이스라인기술서.CCB회의일자"
+        from: "ccb_meeting_date"
+      - tmp_field: "베이스라인기술서.베이스라인ID"
+        from: "baseline_id"
+      - tmp_field: "베이스라인기술서.릴리즈상태"
+        from: "release_status"
+    hitl: required
+    approver_role: "CCB Chair"
+    rationale: "WI §2 승인자 — 베이스라인 릴리즈는 CCB 결재 필수"
+
+  - id: "step-06"
+    name: "운영규정 발효·MAT-001 등록"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "regulation_effective_date"
+        type: "date"
+        question: "CM 운영규정 발효일?"
+        required: true
+      - field: "mat001_row_id"
+        type: "text"
+        question: "MAT-001 등록 Row 번호는?"
+        required: true
+    outputs:
+      - tmp_field: "CM운영규정.발효일"
+        from: "regulation_effective_date"
+      - tmp_field: "공통.MAT001"
+        from: "mat001_row_id"
+    hitl: false
+
+dod_checklist:
+  - "CI 목록 작성·검토 완료 (ID·Owner·분류 부여)"
+  - "CM 시스템 운영규정 승인 (CCB 헌장 포함)"
+  - "베이스라인 1개 이상 CCB 승인·릴리즈 완료"
+  - "베이스라인 ID 부여·잠금 확인"
+  - "이해관계자 통보 기록 보관"
+  - "MAT-001 베이스라인 등록 완료"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "CI 식별 누락 (사후 발견)"
+    rule: "임시 CI 등록 → 차기 CCB 정식 등록. 결함 야기 시 PPQA 부적합 발행"
+  - section: "§7.2"
+    name: "CCB 정족수 미달"
+    rule: "50% 미만 참석 시 회의 연기, 긴급 시 e-CCB 허용(위원장+1)"
+  - section: "§7.3"
+    name: "CM 시스템 장애"
+    rule: "RTO 4시간 내 복구. 초과 시 백업 전환 + 형상감사 즉시 발동"
+
+triggers: ["형상 관리", "CM 베이스라인", "CI 식별", "CCB 헌장"]
+aliases: ["Configuration Management", "Baseline", "CCB"]
+event_triggers: ["프로젝트 킥오프", "주요 인도물 확정", "조직 CM 시스템 신규/교체"]
+domains: ["일반", "SW", "HW"]

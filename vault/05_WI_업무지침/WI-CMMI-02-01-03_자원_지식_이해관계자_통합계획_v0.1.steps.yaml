@@ -1,0 +1,152 @@
+wi_id:           "WI-CMMI-02-01-03"
+title:           "자원·지식·이해관계자 계획 + 통합 계획서 (SP2.5~2.7)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-02-01"
+parent_pol:      "POL-CMMI-02"
+related_tmp:
+  - "TMP-CMMI-02-01-03-01_자원_지식_스킬_계획서"
+  - "TMP-CMMI-02-01-03-02_이해관계자_참여_계획서"
+  - "TMP-CMMI-02-01-03-03_통합_프로젝트_계획서"
+scope_code:      "CMMI"
+scope_type:      "project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T08:50:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "WI-01·WI-02 산출물 + HR 데이터 확보"
+    section_ref: "§5.1"
+    inputs:
+      - field: "hr_resource_pool"
+        type: "text"
+        question: "HR 가용 인력 풀 데이터 source는?"
+        required: true
+    outputs: []
+    hitl: false
+
+  - id: "step-02"
+    name: "자원 계획 (SP2.5)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "resource_table"
+        type: "table"
+        question: "WP × 자원 배정 표"
+        columns: ["WP_ID", "역할", "인력수", "기간", "도구/시설"]
+        required: true
+      - field: "leveling_done"
+        type: "boolean"
+        question: "자원 평준화 분석 완료?"
+        required: true
+    outputs:
+      - tmp_field: "자원지식스킬계획.자원표"
+        from: "resource_table"
+    hitl: false
+
+  - id: "step-03"
+    name: "지식·스킬 갭 분석 (SP2.5)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "skill_gap_table"
+        type: "table"
+        question: "필요 스킬 vs 보유 스킬 갭"
+        columns: ["스킬셋", "필요수준(1~5)", "보유수준(1~5)", "갭", "해소방법"]
+        required: true
+      - field: "ot_request_list"
+        type: "multitext"
+        question: "OT 신청 항목 목록은?"
+        required: false
+    derivations:
+      - id: "total_gap_score"
+        expr: "sum(필요수준 - 보유수준 where 갭 > 0)"
+        description: "총 스킬 갭 점수"
+    outputs:
+      - tmp_field: "자원지식스킬계획.스킬갭"
+        from: "skill_gap_table"
+      - tmp_field: "자원지식스킬계획.OT신청"
+        from: "ot_request_list"
+    hitl: false
+
+  - id: "step-04"
+    name: "이해관계자 참여 계획 (SP2.6)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "stakeholder_table"
+        type: "table"
+        question: "이해관계자 매트릭스 (이름, 역할, 참여단계, 채널, RACI)"
+        columns: ["이해관계자", "조직", "관심영역", "참여단계", "참여빈도", "채널", "RACI"]
+        required: true
+    outputs:
+      - tmp_field: "이해관계자참여계획.매트릭스"
+        from: "stakeholder_table"
+    hitl: false
+
+  - id: "step-05"
+    name: "통합 프로젝트 계획서 작성 (SP2.7)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "integrated_plan_sections"
+        type: "multiselect"
+        question: "통합 계획서 포함 섹션 (체크 모두)"
+        options: ["WBS", "추정", "일정", "예산", "리스크", "데이터관리", "자원", "스킬", "이해관계자"]
+        required: true
+      - field: "consistency_check_pass"
+        type: "boolean"
+        question: "cross-section consistency check 통과?"
+        required: true
+    outputs:
+      - tmp_field: "통합프로젝트계획서.포함섹션"
+        from: "integrated_plan_sections"
+      - tmp_field: "통합프로젝트계획서.일관성검증"
+        from: "consistency_check_pass"
+    hitl: false
+
+  - id: "step-06"
+    name: "PMO + 인접 PA review 및 승인"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "pmo_review_pass"
+        type: "boolean"
+        question: "PMO 검토 통과?"
+        required: true
+      - field: "adjacent_pa_review"
+        type: "multitext"
+        question: "인접 PA (RD/CM/OT/MA) 검토자 목록"
+        required: true
+      - field: "approver_name"
+        type: "person"
+        question: "CEO/CTO 승인자 이름은?"
+        required: true
+    outputs:
+      - tmp_field: "통합프로젝트계획서.결재"
+        from: "approver_name"
+    hitl: required
+    approver_role: "CEO/CTO"
+    rationale: "PRO §3 RACI 의 A — 통합 계획서는 SG3 약정의 직접 입력"
+
+dod_checklist:
+  - "자원·지식·스킬 계획서 작성 (갭 해소 방안 포함)"
+  - "OT 신청 항목 PRO-CMMI-01-03 전달 완료"
+  - "이해관계자 참여 계획서 (RACI + 참여 빈도·채널)"
+  - "통합 프로젝트 계획서 v0 작성"
+  - "cross-section consistency check 편차 0건"
+  - "PMO + 인접 PA review 통과"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "자원 부족"
+    rule: "외주/일정연장/범위축소 옵션 + RSKM 등록 의무"
+  - section: "§7.2"
+    name: "OT-프로젝트 일정 충돌"
+    rule: "사전 교육·외부 교육 대체; 1주 이상은 일정·예산 반영"
+  - section: "§7.3"
+    name: "이해관계자 누락"
+    rule: "PMC SP1.5 신규 식별 시 본 WI 재실행; 분기 2건 이상 시 체크리스트 강화"
+
+triggers: ["자원 계획", "스킬 갭", "이해관계자 매트릭스", "통합 계획서"]
+aliases: ["resource plan", "stakeholder plan", "integrated project plan", "PP SP2.7"]
+event_triggers: ["WI-02 산출 직후", "이해관계자 신규 식별 시"]
+domains: ["일반", "SW", "엔지니어링"]

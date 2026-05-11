@@ -1,0 +1,168 @@
+wi_id:           "WI-CMMI-04-04-03"
+title:           "해결안 선정 (SP1.6)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-04-04"
+parent_pol:      "POL-CMMI-04"
+related_tmp:
+  - "TMP-CMMI-04-04-03-01_의사결정_근거서"
+  - "TMP-CMMI-04-04-03-02_추천_해결안_보고서"
+scope_code:      "CMMI"
+scope_type:      "organization_project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:35:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "평가 결과 종합 검토"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "top_alternatives"
+        type: "table"
+        question: "상위 2~3 대안 점수·차이?"
+        columns: ["순위", "대안", "종합점수", "전순위와 차이"]
+        required: true
+      - field: "stability_recheck"
+        type: "enum"
+        question: "민감도 분석 재확인 결과 안정성?"
+        options: ["안정","부분 안정","불안정"]
+        required: true
+    outputs:
+      - tmp_field: "근거서.상위대안"
+        from: "top_alternatives"
+      - tmp_field: "근거서.안정성"
+        from: "stability_recheck"
+    hitl: false
+
+  - id: "step-02"
+    name: "해결안 선정"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "selected_alternative"
+        type: "text"
+        question: "선정된 대안 ID·이름?"
+        required: true
+      - field: "selection_basis"
+        type: "enum"
+        question: "선정 근거?"
+        options: ["평가 1순위 채택","차순위 채택(정성 요소)","기타"]
+        required: true
+      - field: "non_top_reason"
+        type: "text"
+        question: "1순위 미채택 시 사유(해당 시)?"
+        required: false
+    outputs:
+      - tmp_field: "근거서.선정대안"
+        from: "selected_alternative"
+      - tmp_field: "근거서.선정근거"
+        from: "selection_basis"
+      - tmp_field: "근거서.차순위사유"
+        from: "non_top_reason"
+    hitl: false
+
+  - id: "step-03"
+    name: "의사결정 근거서 작성"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "evidence_completeness"
+        type: "boolean"
+        question: "사안·기준·대안·평가·선정 사유 전체 포함?"
+        required: true
+      - field: "assumptions"
+        type: "text"
+        question: "가정·전제 조건?"
+        required: true
+    outputs:
+      - tmp_field: "근거서.완전성"
+        from: "evidence_completeness"
+      - tmp_field: "근거서.가정"
+        from: "assumptions"
+    hitl: false
+
+  - id: "step-04"
+    name: "추천 해결안 보고서 작성"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "followup_actions"
+        type: "text"
+        question: "후속 조치 권고?"
+        required: true
+      - field: "target_pa"
+        type: "enum"
+        question: "결과 인수 PA?"
+        options: ["TS","SAM","OPF","IPM","RSKM","기타"]
+        required: true
+    outputs:
+      - tmp_field: "추천해결안.후속조치"
+        from: "followup_actions"
+      - tmp_field: "추천해결안.인수PA"
+        from: "target_pa"
+    hitl: false
+
+  - id: "step-05"
+    name: "Approver 결재 및 CM 베이스라인 등록"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "approver_name"
+        type: "person"
+        question: "Approver 이름?"
+        required: true
+      - field: "cm_baseline_id"
+        type: "text"
+        question: "CM 베이스라인 등록 ID?"
+        required: true
+    outputs:
+      - tmp_field: "근거서.승인자"
+        from: "approver_name"
+      - tmp_field: "근거서.베이스라인ID"
+        from: "cm_baseline_id"
+    hitl: required
+    approver_role: "Decision Approver"
+    rationale: "PRO §3 RACI: SP1.6 Approver = A — 최종 결재"
+
+  - id: "step-06"
+    name: "호출 PA 핸드오프"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "handoff_log"
+        type: "table"
+        question: "호출 PA 통보 기록?"
+        columns: ["PA", "수신자", "일시", "채널", "수신 확인"]
+        required: true
+      - field: "mat001_row_id"
+        type: "text"
+        question: "MAT-001 등록 Row ID?"
+        required: true
+    outputs:
+      - tmp_field: "추천해결안.핸드오프기록"
+        from: "handoff_log"
+      - tmp_field: "공통.MAT001"
+        from: "mat001_row_id"
+    hitl: false
+
+dod_checklist:
+  - "선정 사유가 평가 결과와 일치 또는 차이 시 사유 명기"
+  - "의사결정 근거서에 전체 평가 결과 포함"
+  - "추천 해결안 보고서에 후속 조치 권고 포함"
+  - "Approver 결재 완료"
+  - "CM 베이스라인 등록"
+  - "호출 PA 통보 기록 보관"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "차순위 채택"
+    rule: "사유 명기 의무 + Approver 별도 동의"
+  - section: "§7.2"
+    name: "결정 번복(6개월 내)"
+    rule: "번복 사유서 작성. KPI 번복율 모니터링 입력"
+  - section: "§7.3"
+    name: "후속 PA 불수용"
+    rule: "Owner/Approver 통보 후 재평가 또는 기준 재정의 환류"
+
+triggers: ["해결안 선정", "DAR 결정", "의사결정 근거서", "추천 해결안"]
+aliases: ["Solution Selection", "Decision Record", "Recommendation"]
+event_triggers: ["평가 완료 후", "Decision Owner 검토 완료"]
+domains: ["일반", "SW"]

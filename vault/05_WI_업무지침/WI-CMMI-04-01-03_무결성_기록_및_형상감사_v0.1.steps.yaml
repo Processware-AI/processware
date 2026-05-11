@@ -1,0 +1,186 @@
+wi_id:           "WI-CMMI-04-01-03"
+title:           "무결성 — CM 기록·형상감사 (SP3.1~3.2)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-04-01"
+parent_pol:      "POL-CMMI-04"
+related_tmp:
+  - "TMP-CMMI-04-01-03-01_CM_기록부"
+  - "TMP-CMMI-04-01-03-02_형상감사_체크리스트_및_결과보고"
+scope_code:      "CMMI"
+scope_type:      "project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T08:55:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "CM 기록 작성·유지 (SP3.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "log_period"
+        type: "text"
+        question: "기록 기간(YYYY-MM)?"
+        required: true
+      - field: "cr_processed_count"
+        type: "number"
+        question: "기간 내 처리된 CR 수?"
+        required: true
+        validation: ">= 0"
+      - field: "ci_status_table"
+        type: "table"
+        question: "CI별 현재 상태 표(버전·승인·잠금)?"
+        columns: ["CI ID", "현재 버전", "승인 일자", "잠금 여부"]
+        required: true
+      - field: "baseline_stats"
+        type: "table"
+        question: "베이스라인별 통계(CI 수·변경 수)?"
+        columns: ["베이스라인 ID", "포함 CI 수", "기간 내 변경 건수"]
+        required: true
+    outputs:
+      - tmp_field: "CM기록부.기록기간"
+        from: "log_period"
+      - tmp_field: "CM기록부.CR처리수"
+        from: "cr_processed_count"
+      - tmp_field: "CM기록부.CI상태표"
+        from: "ci_status_table"
+      - tmp_field: "CM기록부.베이스라인통계"
+        from: "baseline_stats"
+    hitl: false
+
+  - id: "step-02"
+    name: "감사 계획 수립 (SP3.2-전반)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "audit_type"
+        type: "multiselect"
+        question: "감사 유형?"
+        options: ["FCA(기능)","PCA(물리)","수시","외부"]
+        required: true
+      - field: "audit_scope"
+        type: "text"
+        question: "감사 범위(대상 베이스라인·프로젝트)?"
+        required: true
+      - field: "auditor_list"
+        type: "text"
+        question: "감사자 명단(객관성 충족 확인)?"
+        required: true
+      - field: "sampling_method"
+        type: "enum"
+        question: "표본 추출 방법?"
+        options: ["전수","위험 가중 표본","무작위 표본"]
+        required: true
+    outputs:
+      - tmp_field: "형상감사.유형"
+        from: "audit_type"
+      - tmp_field: "형상감사.범위"
+        from: "audit_scope"
+      - tmp_field: "형상감사.감사자"
+        from: "auditor_list"
+      - tmp_field: "형상감사.표본방법"
+        from: "sampling_method"
+    hitl: false
+
+  - id: "step-03"
+    name: "감사 수행"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "checklist_results"
+        type: "table"
+        question: "체크리스트 항목별 결과?"
+        columns: ["항목", "기준", "증적", "판정(P/F)", "비고"]
+        required: true
+      - field: "findings_count"
+        type: "number"
+        question: "발견 부적합 수?"
+        required: true
+        validation: ">= 0"
+      - field: "observations_count"
+        type: "number"
+        question: "관찰사항 수?"
+        required: true
+        validation: ">= 0"
+    derivations:
+      - id: "nc_rate"
+        expr: "findings_count / max(checklist_results.length, 1)"
+        description: "부적합 비율"
+    outputs:
+      - tmp_field: "형상감사.체크리스트결과"
+        from: "checklist_results"
+      - tmp_field: "형상감사.부적합수"
+        from: "findings_count"
+      - tmp_field: "형상감사.관찰사항수"
+        from: "observations_count"
+    hitl: false
+
+  - id: "step-04"
+    name: "감사 결과보고 (SP3.2-후반)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "report_summary"
+        type: "text"
+        question: "결과 요약 (3~5문장)?"
+        required: true
+      - field: "recommendations"
+        type: "text"
+        question: "개선 권고?"
+        required: true
+      - field: "approver_name"
+        type: "person"
+        question: "결과보고서 결재권자(CEO/CTO)?"
+        required: true
+    outputs:
+      - tmp_field: "형상감사.요약"
+        from: "report_summary"
+      - tmp_field: "형상감사.권고"
+        from: "recommendations"
+      - tmp_field: "형상감사.결재자"
+        from: "approver_name"
+    hitl: required
+    approver_role: "CEO/CTO"
+    rationale: "WI §2 승인자 — 감사 결과보고서는 경영진 결재 필수"
+
+  - id: "step-05"
+    name: "부적합 → PPQA 시정조치 핸드오프"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "ppqa_handoff_ids"
+        type: "text"
+        question: "PPQA 시정조치 등록 ID 목록(없으면 N/A)?"
+        required: true
+      - field: "mat001_row_id"
+        type: "text"
+        question: "MAT-001 등록 Row ID?"
+        required: true
+    outputs:
+      - tmp_field: "형상감사.PPQA핸드오프"
+        from: "ppqa_handoff_ids"
+      - tmp_field: "공통.MAT001"
+        from: "mat001_row_id"
+    hitl: false
+
+dod_checklist:
+  - "CM 기록부 월 1회 이상 갱신"
+  - "분기 형상감사 1회 이상 실시·보고"
+  - "모든 부적합이 PPQA 시정조치로 등록"
+  - "시정 완료 또는 기한 연장 사유 명기"
+  - "감사 결과보고서 경영진 결재"
+  - "MAT-001 등록"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "부적합 다수 발생(≥5%)"
+    rule: "감사 주기 단축(월) + OPF 개선 안건 등록"
+  - section: "§7.2"
+    name: "감사자 객관성 침해"
+    rule: "감사자 즉시 교체. 중대 결함 시 외부 감사 검토"
+  - section: "§7.3"
+    name: "기록 손실/위변조"
+    rule: "백업 대조 + Senior Mgmt 보고 + 보안팀 협조. 확인 시 롤백+인사조치"
+
+triggers: ["형상감사", "CM 기록", "FCA", "PCA", "베이스라인 무결성"]
+aliases: ["Configuration Audit", "FCA", "PCA", "Integrity"]
+event_triggers: ["분기 정기 감사 시점", "베이스라인 릴리즈 직후", "외부 인증 심사 전"]
+domains: ["일반", "SW", "HW"]

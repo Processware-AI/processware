@@ -1,0 +1,114 @@
+wi_id:           "WI-CMMI-02-05-04"
+title:           "이해관계자 협업·의존성·이슈 해결 (SG2: SP2.1~2.3)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-02-05"
+parent_pol:      "POL-CMMI-02"
+related_tmp:
+  - "TMP-CMMI-02-05-04-01_이해관계자_협업_회의록"
+  - "TMP-CMMI-02-05-04-02_의존성_관리_대장"
+  - "TMP-CMMI-02-05-04-03_이슈_해결_기록"
+scope_code:      "CMMI"
+scope_type:      "project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:25:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "이해관계자 협업 (SP2.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "meeting_date"
+        type: "date"
+        question: "회의일자?"
+        required: true
+      - field: "participants"
+        type: "multitext"
+        question: "참석자"
+        required: true
+      - field: "agenda_items"
+        type: "multitext"
+        question: "의제"
+        required: true
+      - field: "decisions"
+        type: "multitext"
+        question: "결정 사항"
+        required: true
+    outputs:
+      - tmp_field: "협업회의록.일자"
+        from: "meeting_date"
+      - tmp_field: "협업회의록.결정"
+        from: "decisions"
+    hitl: false
+
+  - id: "step-02"
+    name: "의존성 관리 (SP2.2)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "dependency_table"
+        type: "table"
+        question: "의존성 대장 (외부·내부)"
+        columns: ["의존성ID", "유형(외부/내부)", "공급자/PA", "Critical?", "상태"]
+        required: true
+    derivations:
+      - id: "critical_violation_count"
+        expr: "count where Critical == true and 상태 == 'violated'"
+        description: "Critical 위반 건수"
+    outputs:
+      - tmp_field: "의존성대장.표"
+        from: "dependency_table"
+      - tmp_field: "의존성대장.Critical위반"
+        from: "critical_violation_count"
+    hitl: false
+
+  - id: "step-03"
+    name: "이슈 해결 (SP2.3)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "issue_resolution_table"
+        type: "table"
+        question: "이슈 해결 기록"
+        columns: ["이슈ID", "유형(협업/의존성)", "발견일", "해결일", "결과"]
+        required: false
+    outputs:
+      - tmp_field: "이슈해결기록.표"
+        from: "issue_resolution_table"
+    hitl: false
+
+  - id: "step-04"
+    name: "PMO Director 승인 (분기 검토)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "approver_name"
+        type: "person"
+        question: "PMO Director 승인자 이름은?"
+        required: true
+    outputs: []
+    hitl: required
+    approver_role: "PMO Director"
+    rationale: "PRO §3 RACI — 분기 IPM 검토 시 PMO 결재"
+
+dod_checklist:
+  - "정기 협업 회의 (계획서 빈도 준수)"
+  - "의존성 대장 — 모든 의존성 추적"
+  - "Critical 의존성 위반 0건 또는 mitigation"
+  - "이슈 해결 기록 — 모든 처리"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "회의 불참 빈발"
+    rule: "3회 연속 불참 시 1:1 면담 + 참여 계획 재수립"
+  - section: "§7.2"
+    name: "Critical 의존성 위반"
+    rule: "외부=SAM 벌칙; 내부=PMC SP2 시정조치 + PA 책임자 escalation"
+  - section: "§7.3"
+    name: "이슈 해결 교착"
+    rule: "Sponsor 의견 + PMO 결정"
+
+triggers: ["이해관계자 협업", "의존성 관리", "IPM SP2.2", "이슈 해결"]
+aliases: ["stakeholder coordination", "dependency management"]
+event_triggers: ["정기 회의 일정", "의존성 위반 발견"]
+domains: ["일반", "SW", "조직"]

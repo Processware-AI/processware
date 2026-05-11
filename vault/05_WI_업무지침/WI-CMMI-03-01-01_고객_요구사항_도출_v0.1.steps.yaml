@@ -1,0 +1,181 @@
+wi_id:           "WI-CMMI-03-01-01"
+title:           "고객 요구사항 도출 (SG1: SP1.1~1.2)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-03-01"
+parent_pol:      "POL-CMMI-03"
+related_tmp:
+  - "TMP-CMMI-03-01-01-01_이해관계자_니즈_도출_결과서"
+  - "TMP-CMMI-03-01-01-02_고객_요구사항_명세서"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:00:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "이해관계자 식별표 확보"
+    section_ref: "§5.1.1"
+    inputs:
+      - field: "stakeholder_table_id"
+        type: "text"
+        question: "PP SP2.6 이해관계자 식별표 문서ID는?"
+        required: true
+      - field: "stakeholder_count"
+        type: "number"
+        question: "식별된 이해관계자 총 인원·그룹 수는?"
+        required: true
+        validation: ">= 1"
+    outputs:
+      - tmp_field: "니즈도출결과서.입력.이해관계자식별표ID"
+        from: "stakeholder_table_id"
+    hitl: false
+
+  - id: "step-02"
+    name: "elicit 기법 선정"
+    section_ref: "§5.1.2"
+    inputs:
+      - field: "elicit_methods"
+        type: "multiselect"
+        question: "적용할 elicit 기법은? (2개 이상 권장)"
+        options: ["인터뷰", "워크숍", "설문", "관찰", "프로토타입", "문서분석", "JAD"]
+        required: true
+        validation: "len(elicit_methods) >= 2"
+    outputs:
+      - tmp_field: "니즈도출결과서.기법목록"
+        from: "elicit_methods"
+    hitl: false
+
+  - id: "step-03"
+    name: "이해관계자 니즈 elicit (SP1.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "needs_table"
+        type: "table"
+        question: "수집된 니즈를 표로 작성하라"
+        columns: ["니즈ID", "이해관계자", "라이프사이클단계", "구분(기능/비기능/제약/인터페이스/규제)", "원문", "출처세션"]
+        required: true
+    outputs:
+      - tmp_field: "니즈도출결과서.니즈표"
+        from: "needs_table"
+    hitl: false
+
+  - id: "step-04"
+    name: "니즈 정제·이해관계자 검증"
+    section_ref: "§5.2.2~5.2.3"
+    inputs:
+      - field: "duplicates_removed"
+        type: "number"
+        question: "중복 병합·삭제된 항목 수는?"
+        required: true
+        validation: ">= 0"
+      - field: "stakeholder_review_done"
+        type: "boolean"
+        question: "정제 결과를 원 이해관계자에게 회람·확인 받았는가?"
+        required: true
+    outputs:
+      - tmp_field: "니즈도출결과서.정제로그"
+        from: "duplicates_removed"
+    hitl: false
+
+  - id: "step-05"
+    name: "고객 요구사항 변환 (SP1.2)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "cr_table"
+        type: "table"
+        question: "고객 요구사항으로 변환한 결과를 표로 작성하라"
+        columns: ["CR-ID", "원 니즈ID", "요구사항 문장(Who/What/Condition)", "수용기준"]
+        required: true
+    outputs:
+      - tmp_field: "고객요구사항명세서.요구사항표"
+        from: "cr_table"
+    hitl: false
+
+  - id: "step-06"
+    name: "우선순위 부여"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "priority_method"
+        type: "enum"
+        question: "우선순위 부여 방식은?"
+        options: ["MoSCoW", "가중점수법", "Kano", "기타"]
+        required: true
+      - field: "priority_table"
+        type: "table_per_row"
+        question: "각 CR 의 우선순위를 부여하라"
+        rows_from: "cr_table"
+        columns: ["CR-ID", "우선순위", "근거"]
+        required: true
+    outputs:
+      - tmp_field: "고객요구사항명세서.우선순위"
+        from: "priority_table"
+    hitl: false
+
+  - id: "step-07"
+    name: "고객 확인 결재"
+    section_ref: "§5.2.7"
+    inputs:
+      - field: "customer_signoff_method"
+        type: "enum"
+        question: "고객 확인 방식은?"
+        options: ["서명", "이메일", "전자결재", "회의록"]
+        required: true
+      - field: "customer_signoff_date"
+        type: "date"
+        question: "고객 확인 일자는?"
+        required: true
+    outputs:
+      - tmp_field: "고객요구사항명세서.고객확인"
+        from: "customer_signoff_date"
+    hitl: required
+    approver_role: "Customer (또는 대리인)"
+    rationale: "WI §5.2.7 고객 확인 결재 명시"
+
+  - id: "step-08"
+    name: "REQM 인계·승인"
+    section_ref: "§5.2.8"
+    inputs:
+      - field: "reqm_handover_id"
+        type: "text"
+        question: "REQM (PRO-CMMI-02-03 WI-01) 인계 송부 ID/티켓 번호는?"
+        required: true
+      - field: "pm_approver"
+        type: "person"
+        question: "본 WI 결과를 승인한 Project Manager 는?"
+        required: true
+    outputs:
+      - tmp_field: "고객요구사항명세서.REQM인계ID"
+        from: "reqm_handover_id"
+      - tmp_field: "고객요구사항명세서.결재"
+        from: "pm_approver"
+    hitl: required
+    approver_role: "Project Manager"
+    rationale: "WI §2 승인자 — 베이스라인 후보 인계 승인"
+
+dod_checklist:
+  - "이해관계자 식별표 100% 커버"
+  - "모든 라이프사이클 단계별 니즈 수집"
+  - "각 CR 에 수용 기준 1개 이상 부여"
+  - "우선순위 부여 완료"
+  - "고객 확인 결재 첨부"
+  - "고객 요구사항 명세서 ID·추적 ID 부여"
+  - "REQM 인계 송부 기록"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "이해관계자 접근 제한"
+    rule: "대리인/문서 elicit 시 신뢰도 등급(High/Med/Low) 명시 + PM 결재 분기"
+  - section: "§7.2"
+    name: "상충하는 니즈"
+    rule: "충돌 목록 별도 시트로 분리 후 WI-CMMI-03-01-04 SP3.4 균형 분석으로 이관"
+  - section: "§7.3"
+    name: "변경된 이해관계자"
+    rule: "신규 이해관계자 재elicit 필수, 변경 사유·일자 부록 기록"
+
+triggers: ["요구사항 도출", "고객 요구사항", "이해관계자 니즈", "elicitation"]
+aliases: ["니즈 수집", "Requirements Elicitation", "VOC"]
+event_triggers: ["프로젝트 착수", "주요 요구 변경", "고객 PM 교체"]
+domains: ["일반", "SW"]

@@ -1,0 +1,144 @@
+wi_id:           "WI-CMMI-03-05-02"
+title:           "확인 실행 (SG2: SP2.1)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-03-05"
+parent_pol:      "POL-CMMI-03"
+related_tmp:
+  - "TMP-CMMI-03-05-02-01_확인_실행_보고서_교차참조_매트릭스"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T11:50:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "세션 개시·환경 점검"
+    section_ref: "§5.1"
+    inputs:
+      - field: "env_smoke_pass"
+        type: "boolean"
+        question: "환경 smoke 시험 통과?"
+        required: true
+      - field: "consent_recorded"
+        type: "boolean"
+        question: "참여자 기록 동의 확보?"
+        required: true
+    outputs:
+      - tmp_field: "실행보고서.환경상태"
+        from: "env_smoke_pass"
+    hitl: false
+
+  - id: "step-02"
+    name: "사용자 시험·시연 실행"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "session_results"
+        type: "table"
+        question: "세션별 결과를 표로 작성하라"
+        columns: ["세션ID", "VP-ID", "사용자 그룹", "결과(충족/부분/미충족)", "5점 척도 평균", "관찰 기록 URL"]
+        required: true
+      - field: "user_voice"
+        type: "table"
+        question: "사용자 의견을 표로 기록하라"
+        columns: ["의견ID", "유형(긍정/부정/개선)", "사용자ID", "원문"]
+        required: true
+    outputs:
+      - tmp_field: "실행보고서.세션결과"
+        from: "session_results"
+      - tmp_field: "실행보고서.사용자의견"
+        from: "user_voice"
+    hitl: false
+
+  - id: "step-03"
+    name: "교차참조 매트릭스"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "trace_matrix"
+        type: "table"
+        question: "시험 시나리오 ↔ CR 교차참조 매트릭스는?"
+        columns: ["VP-ID", "관련 CR-ID(복수)", "커버 상태"]
+        required: true
+      - field: "cr_coverage_pct"
+        type: "number"
+        question: "CR 커버리지(%)는?"
+        required: true
+        validation: "0 <= x <= 100"
+    outputs:
+      - tmp_field: "실행보고서.교차참조"
+        from: "trace_matrix"
+    hitl: false
+
+  - id: "step-04"
+    name: "Blocker 처리"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "blocker_issues"
+        type: "table"
+        question: "Blocker 이슈 목록(있는 경우)은?"
+        columns: ["이슈ID", "내용", "등급", "즉시 조치"]
+        required: false
+    outputs:
+      - tmp_field: "실행보고서.Blocker"
+        from: "blocker_issues"
+    hitl: false
+
+  - id: "step-05"
+    name: "측정·집계"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "nps_score"
+        type: "number"
+        question: "전체 NPS 점수는?"
+        required: true
+      - field: "fulfillment_rate"
+        type: "number"
+        question: "충족율(%)은? (충족 / 전체 시나리오)"
+        required: true
+        validation: "0 <= x <= 100"
+    outputs:
+      - tmp_field: "실행보고서.NPS"
+        from: "nps_score"
+      - tmp_field: "실행보고서.충족율"
+        from: "fulfillment_rate"
+    hitl: false
+
+  - id: "step-06"
+    name: "PM 승인 (실행 종료)"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "pm_approver"
+        type: "person"
+        question: "승인 PM 은?"
+        required: true
+    outputs:
+      - tmp_field: "실행보고서.결재"
+        from: "pm_approver"
+    hitl: required
+    approver_role: "Project Manager"
+
+dod_checklist:
+  - "계획 절차 커버리지 ≥ 95%"
+  - "시나리오 ↔ CR 교차참조 100%"
+  - "사용자 의견 기록"
+  - "NPS / 5점 척도 측정"
+  - "Blocker 즉시 등록"
+  - "PM 승인 결재"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "환경 장애"
+    rule: "재일정 + 부분 결과 별도 기록"
+  - section: "§7.2"
+    name: "사용자 미참여"
+    rule: "대리인 + 비동기 회람 + 일반화 한계 명시"
+  - section: "§7.3"
+    name: "Critical 부적합"
+    rule: "진행 중지 + PM 보고 + WI-03 환류 우선 가동"
+
+triggers: ["확인 실행", "Validation Execution", "사용자 시험"]
+aliases: ["UAT Execution", "User Validation"]
+event_triggers: ["계획 결재 완료", "사용자 가용 일자"]
+domains: ["일반", "SW"]

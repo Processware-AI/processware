@@ -1,0 +1,204 @@
+wi_id:           "WI-CMMI-01-02-03"
+title:           "OPA·표준프로세스 배포 (SG3: SP3.1~3.2)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-01-02"
+parent_pol:      "POL-CMMI-01"
+related_tmp:
+  - "TMP-CMMI-01-02-03-01_OPA_배포_계획서"
+  - "TMP-CMMI-01-02-03-02_표준프로세스_배포_가이드"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:30:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "선행 WI 게이트 + 변경 영향 분석"
+    section_ref: "§5.1.3"
+    inputs:
+      - field: "wi_02_status"
+        type: "enum"
+        question: "WI-CMMI-01-02-02 의 상태는?"
+        options: ["done", "in_progress", "pending"]
+        required: true
+      - field: "affected_projects_list"
+        type: "table"
+        question: "갱신된 OPA·OSSP 의 영향을 받는 프로젝트 목록은?"
+        columns: ["프로젝트ID", "PM", "변경영향도", "적용여부"]
+        required: true
+    derivations:
+      - id: "gate_pass"
+        expr: |
+          if wi_02_status == "done": "Pass"
+          else: "Block"
+    hitl: false
+
+  - id: "step-02"
+    name: "배포 계획 수립 (SP3.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "deploy_scope"
+        type: "enum"
+        question: "배포 범위는?"
+        options: ["전체일괄", "단계적", "그룹별"]
+        required: true
+      - field: "deploy_schedule"
+        type: "text"
+        question: "배포 일정(시작·발효일)은?"
+        required: true
+      - field: "training_needed"
+        type: "boolean"
+        question: "교육이 필요한가? (true → OT 연계)"
+        required: true
+      - field: "risk_table"
+        type: "table"
+        question: "배포 위험·대안을 정리하라"
+        columns: ["위험", "영향도", "대안"]
+        required: true
+    outputs:
+      - tmp_field: "배포계획서.범위"
+        from: "deploy_scope"
+      - tmp_field: "배포계획서.일정"
+        from: "deploy_schedule"
+    hitl: false
+
+  - id: "step-03"
+    name: "OPA 변경 문서화 (SP3.1)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "changes_diff_table"
+        type: "table"
+        question: "변경 항목 이전·이후 비교표를 작성하라"
+        columns: ["항목", "이전", "이후", "사유", "적용기한"]
+        required: true
+    outputs:
+      - tmp_field: "배포계획서.변경비교표"
+        from: "changes_diff_table"
+    hitl: false
+
+  - id: "step-04"
+    name: "지원자료 준비 (SP3.1)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "support_materials"
+        type: "multiselect"
+        question: "준비된 지원자료는?"
+        options: ["교육슬라이드", "FAQ", "체크리스트", "예시문서", "동영상"]
+        required: true
+      - field: "pal_updated"
+        type: "boolean"
+        question: "PAL 자산 갱신 + 접근권한 확인 완료했는가?"
+        required: true
+    outputs:
+      - tmp_field: "배포가이드.지원자료"
+        from: "support_materials"
+    hitl: false
+
+  - id: "step-05"
+    name: "신규·활성 프로젝트 식별 (SP3.2)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "new_projects_6mo"
+        type: "table"
+        question: "향후 6개월 내 시작 예정 프로젝트는?"
+        columns: ["프로젝트ID", "예정시작일", "PM", "적용여부"]
+        required: true
+      - field: "active_projects_to_update"
+        type: "table"
+        question: "활성 프로젝트 중 적용 권장 대상은?"
+        columns: ["프로젝트ID", "현재상태", "적용시점", "이유"]
+        required: true
+    outputs:
+      - tmp_field: "배포계획서.대상프로젝트"
+        from: "new_projects_6mo"
+    hitl: false
+
+  - id: "step-06"
+    name: "신규 프로젝트 OSSP 적용 지원 (SP3.2)"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "tailoring_consult_records"
+        type: "table"
+        question: "PM별 테일러링 컨설팅 기록은?"
+        columns: ["프로젝트ID", "PM", "컨설팅일자", "결정사항"]
+        required: true
+    outputs:
+      - tmp_field: "배포가이드.테일러링기록"
+        from: "tailoring_consult_records"
+    hitl: false
+
+  - id: "step-07"
+    name: "공지 및 발효 + 승인"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "announcement_channels"
+        type: "multiselect"
+        question: "공지 채널은?"
+        options: ["이메일", "인트라넷", "PCB 회의", "사내 공지문"]
+        required: true
+      - field: "effective_date"
+        type: "date"
+        question: "발효일은?"
+        required: true
+      - field: "approver_name"
+        type: "person"
+        question: "배포 계획 승인자(CEO/CTO) 이름은?"
+        required: true
+    outputs:
+      - tmp_field: "배포계획서.공지"
+        from: "announcement_channels"
+      - tmp_field: "배포계획서.발효일"
+        from: "effective_date"
+    hitl: required
+    approver_role: "CEO/CTO"
+    rationale: "PRO §3 RACI: 배포 단계 R=EPG, 승인 권한자 = CEO/CTO (조직 차원 영향)"
+
+  - id: "step-08"
+    name: "PPQA 감사 등재 + MAT-001"
+    section_ref: "§5.2.7"
+    inputs:
+      - field: "ppqa_audit_scheduled"
+        type: "boolean"
+        question: "PPQA 컴플라이언스 감사 일정 등재 완료했는가?"
+        required: true
+      - field: "mat001_row_id"
+        type: "text"
+        question: "MAT-001 등록 Row 번호는?"
+        required: true
+      - field: "baseline_id"
+        type: "text"
+        question: "CM 베이스라인 ID는?"
+        required: true
+    outputs:
+      - tmp_field: "배포가이드.PPQA감사"
+        from: "ppqa_audit_scheduled"
+    hitl: false
+
+dod_checklist:
+  - "배포 계획서 작성·CEO/CTO 승인 완료"
+  - "OPA 변경 문서·이전·이후 비교표 작성"
+  - "지원자료(교육·FAQ·체크리스트) 배포 완료"
+  - "신규·활성 프로젝트 식별 + 적용 대상 명단 확정"
+  - "표준프로세스 배포 가이드 전달 + 테일러링 컨설팅 제공"
+  - "사내 공지 발신 + 발효일 명시"
+  - "PPQA 감사 대상 등재"
+  - "CM 베이스라인 + MAT-001 등록"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "활성 프로젝트 부분 적용 거부"
+    rule: "waiver 신청 → 승인 시 다음 마일스톤·차기 프로젝트에서 적용 의무화"
+  - section: "§7.2"
+    name: "긴급 핫픽스 배포"
+    rule: "보안·법규 사유 시 즉시 발효 + 48시간 내 정식 승인 보완 + 사후 PCB 보고"
+  - section: "§7.3"
+    name: "배포 후 결함 발견"
+    rule: "즉시 회수·임시 복귀·수정본 재배포, 영향 프로젝트 별도 공지"
+
+triggers: ["OPA 배포", "표준프로세스 배포", "OSSP 적용", "테일러링 컨설팅"]
+aliases: ["프로세스 자산 배포", "OSSP rollout"]
+event_triggers: ["OPA 갱신 승인 직후", "신규 프로젝트 시작 시점", "PCB 정기 회의"]
+domains: ["일반", "SW"]

@@ -1,0 +1,142 @@
+wi_id:           "WI-CMMI-02-03-03"
+title:           "양방향 추적성·정렬 유지 (SP1.4~1.5)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-02-03"
+parent_pol:      "POL-CMMI-02"
+related_tmp:
+  - "TMP-CMMI-02-03-03-01_요구사항_추적성_매트릭스"
+  - "TMP-CMMI-02-03-03-02_정렬_부적합_시정보고"
+scope_code:      "CMMI"
+scope_type:      "project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:08:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "RTM 도구·link 카테고리 확정"
+    section_ref: "§5.1"
+    inputs:
+      - field: "rtm_tool"
+        type: "enum"
+        question: "RTM 도구는?"
+        options: ["Excel", "Jira", "DOORS", "Polarion", "기타"]
+        required: true
+    outputs: []
+    hitl: false
+
+  - id: "step-02"
+    name: "RTM 초기 작성 (SP1.4)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "rtm_matrix"
+        type: "table"
+        question: "RTM (요구사항 ID × 산출물 ID Forward/Backward link)"
+        columns: ["요구사항ID", "Forward link (설계/코드/시험)", "Backward link", "link 강도(Strong/Weak)"]
+        required: true
+      - field: "total_req"
+        type: "number"
+        question: "총 요구사항 수는?"
+        required: true
+      - field: "linked_req"
+        type: "number"
+        question: "link 보유 요구사항 수는?"
+        required: true
+    derivations:
+      - id: "completeness_pct"
+        expr: "linked_req / total_req * 100"
+        description: "RTM 완전성(%)"
+    outputs:
+      - tmp_field: "RTM.매트릭스"
+        from: "rtm_matrix"
+      - tmp_field: "RTM.완전성"
+        from: "completeness_pct"
+    hitl: false
+
+  - id: "step-03"
+    name: "지속 유지 — 산출물 변경 동기"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "update_events"
+        type: "table"
+        question: "산출물 변경 동기 이벤트"
+        columns: ["산출물ID", "변경일", "관련 요구사항ID", "RTM 갱신완료"]
+        required: false
+    outputs: []
+    hitl: false
+
+  - id: "step-04"
+    name: "정렬 모니터링 (SP1.5)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "milestone_id"
+        type: "text"
+        question: "정렬 점검 대상 마일스톤은?"
+        required: true
+      - field: "unmapped_req"
+        type: "multitext"
+        question: "미대응 요구사항 ID (있는 경우)"
+        required: false
+      - field: "unjustified_artifacts"
+        type: "multitext"
+        question: "미요구 산출물 (있는 경우)"
+        required: false
+    derivations:
+      - id: "noncompliance_count"
+        expr: "count(unmapped_req) + count(unjustified_artifacts)"
+        description: "정렬 부적합 총수"
+    outputs:
+      - tmp_field: "RTM.미대응요구사항"
+        from: "unmapped_req"
+      - tmp_field: "RTM.미요구산출물"
+        from: "unjustified_artifacts"
+    hitl: false
+
+  - id: "step-05"
+    name: "시정조치 등록 + PPQA audit"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "remediation_actions"
+        type: "multitext"
+        question: "시정조치 계획 ID 목록 (PMC SP2 등록)"
+        required: false
+      - field: "ppqa_pass"
+        type: "boolean"
+        question: "PPQA audit 통과?"
+        required: true
+      - field: "approver_name"
+        type: "person"
+        question: "PMO Director 승인 (마일스톤 audit 시) 이름은?"
+        required: false
+    outputs:
+      - tmp_field: "정렬부적합시정.조치ID"
+        from: "remediation_actions"
+    hitl: required
+    approver_role: "PMO Director"
+    rationale: "PRO §3 RACI 의 A (PMO Director) — 마일스톤 RTM audit 결재"
+
+dod_checklist:
+  - "RTM 작성 완료 (모든 요구사항 link)"
+  - "산출물 변경 시 RTM 동기 갱신"
+  - "마일스톤별 RTM 완전성 100%"
+  - "정렬 부적합 0건 또는 시정조치 등록"
+  - "PPQA audit 통과"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "RTM 미관리"
+    rule: "도구 부재 시 Excel+GitHub link 최소; 갱신 지연 ≥2주 PM escalation"
+  - section: "§7.2"
+    name: "미대응 요구사항"
+    rule: "마일스톤 전 시정; 후 발견 시 PMC SP2 시정 + 마일스톤 재평가"
+  - section: "§7.3"
+    name: "미요구 산출물"
+    rule: "본 베이스라인 제거 또는 backlog; 분기 >3건 시 RD 절차 강화"
+
+triggers: ["RTM", "추적성 매트릭스", "정렬 모니터링", "REQM SP1.4", "REQM SP1.5"]
+aliases: ["traceability matrix", "requirements alignment"]
+event_triggers: ["요구사항 베이스라인 직후", "산출물 변경", "마일스톤 시점"]
+domains: ["일반", "SW", "엔지니어링"]

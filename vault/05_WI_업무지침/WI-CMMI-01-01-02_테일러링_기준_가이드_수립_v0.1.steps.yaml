@@ -1,0 +1,122 @@
+wi_id: "WI-CMMI-01-01-02"
+title: "테일러링 기준·가이드 수립 (SP1.3)"
+version: "0.1"
+parent_pro: "PRO-CMMI-01-01"
+parent_pol: "POL-CMMI-01"
+related_tmp:
+  - "TMP-CMMI-01-01-02-01_테일러링_가이드라인"
+scope_code: "CMMI"
+standards: ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at: "2026-05-11T08:45:00+09:00"
+extractor: "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "테일러링 차원 식별"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "tailoring_dimensions"
+        type: "multiselect"
+        question: "테일러링 적용 차원은?"
+        options: ["프로젝트 규모", "기간", "리스크 수준", "도메인", "팀 경험", "고객 유형"]
+        required: true
+    outputs:
+      - tmp_field: "가이드라인.차원목록"
+        from: "tailoring_dimensions"
+
+  - id: "step-02"
+    name: "차원별 기준 도출"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "criteria_table"
+        type: "table"
+        question: "각 차원별 임계값과 적용 규칙은?"
+        columns: ["차원", "임계값", "적용 규칙"]
+        required: true
+    outputs:
+      - tmp_field: "가이드라인.기준표"
+        from: "criteria_table"
+
+  - id: "step-03"
+    name: "PA별 허용·금지 항목 정의"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "pa_rules"
+        type: "table"
+        question: "각 18 PA 의 허용·금지 항목은?"
+        columns: ["PA", "허용 항목", "금지 항목", "비고"]
+        required: true
+    outputs:
+      - tmp_field: "가이드라인.PA규칙표"
+        from: "pa_rules"
+
+  - id: "step-04"
+    name: "waiver 절차 정의"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "waiver_flow"
+        type: "text"
+        question: "waiver 신청·심의·승인 흐름은?"
+        required: true
+      - field: "waiver_approver"
+        type: "enum"
+        question: "waiver 최종 승인자는?"
+        options: ["EPG Lead", "CTO", "CEO"]
+        required: true
+    outputs:
+      - tmp_field: "가이드라인.waiver절차"
+        from: "waiver_flow"
+
+  - id: "step-05"
+    name: "피어 리뷰"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "review_defects"
+        type: "number"
+        question: "결함 수는?"
+        required: true
+    derivations:
+      - id: "review_status"
+        expr: "if review_defects == 0: 'Pass' else: 'Rework'"
+
+  - id: "step-06"
+    name: "승인 및 CM 베이스라인 등록"
+    section_ref: "§5.2.7"
+    inputs:
+      - field: "approver_name"
+        type: "person"
+        question: "승인자(CEO/CTO)는?"
+        required: true
+      - field: "baseline_id"
+        type: "text"
+        question: "CM 베이스라인 ID는?"
+        required: true
+    hitl: required
+    approver_role: "CEO/CTO"
+    rationale: "WI §2 승인자 — 테일러링 가이드는 OSSP 적용 핵심 자산"
+
+dod_checklist:
+  - "테일러링 가이드라인 작성·승인 완료"
+  - "18 PA 허용·금지 항목 명시"
+  - "waiver 절차·승인 라인 명시"
+  - "피어 리뷰 결함 해소"
+  - "CM 베이스라인 + MAT-001 등록"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "신규 도메인 프로젝트"
+    rule: "임시 테일러링 허용, 1개월 내 정식 등재 의무"
+  - section: "§7.2"
+    name: "강제 표준 충돌"
+    rule: "외부 규제 우선 — waiver 불가 영역 표기"
+  - section: "§7.3"
+    name: "가이드 위반 사후 발견"
+    rule: "PPQA NCR → PMC 시정조치 흐름"
+
+triggers: ["테일러링", "프로세스 변환", "프로젝트 정의 프로세스"]
+aliases: ["Tailoring", "Process Adaptation"]
+event_triggers: ["OSSP 신규 수립", "신규 프로젝트 유형 등장"]
+domains: ["일반", "SW"]

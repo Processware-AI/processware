@@ -1,0 +1,141 @@
+wi_id:           "WI-CMMI-02-05-01"
+title:           "프로젝트 정의 프로세스 수립 + OPA 활용 (SG1: SP1.1~1.3)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-02-05"
+parent_pol:      "POL-CMMI-02"
+related_tmp:
+  - "TMP-CMMI-02-05-01-01_프로젝트_정의_프로세스_기술서"
+  - "TMP-CMMI-02-05-01-02_OPA_활용_계획서"
+  - "TMP-CMMI-02-05-01-03_프로젝트_작업환경_정의서"
+scope_code:      "CMMI"
+scope_type:      "project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:20:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "OSSP·테일러링 가이드·PAL 접근 확보"
+    section_ref: "§5.1"
+    inputs:
+      - field: "ossp_version"
+        type: "text"
+        question: "OSSP 버전은?"
+        required: true
+      - field: "tailoring_guide_version"
+        type: "text"
+        question: "테일러링 가이드 버전은?"
+        required: true
+    outputs: []
+    hitl: false
+
+  - id: "step-02"
+    name: "정의 프로세스 수립 (SP1.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "applied_pa"
+        type: "multiselect"
+        question: "본 프로젝트 적용 PA 컴포넌트"
+        options: ["OPD","OPF","OT","PP","PMC","REQM","SAM","IPM","RSKM","RD","TS","PI","VER","VAL","CM","MA","PPQA","DAR"]
+        required: true
+      - field: "tailoring_decisions"
+        type: "table"
+        question: "테일러링 결정 (PA별 필수/선택/제외, 사유)"
+        columns: ["PA", "결정(필수/선택/제외)", "테일러링 사유"]
+        required: true
+    outputs:
+      - tmp_field: "정의프로세스기술서.적용PA"
+        from: "applied_pa"
+      - tmp_field: "정의프로세스기술서.테일러링"
+        from: "tailoring_decisions"
+    hitl: false
+
+  - id: "step-03"
+    name: "OPA 활용 계획 (SP1.2)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "opa_to_use"
+        type: "table"
+        question: "활용할 OPA 자산"
+        columns: ["자산ID", "유형(측정/교훈/재사용)", "활용 목적"]
+        required: true
+      - field: "opa_to_contribute"
+        type: "multitext"
+        question: "본 프로젝트 종료 시 기여할 OPA 자산 후보"
+        required: true
+    outputs:
+      - tmp_field: "OPA활용계획.활용자산"
+        from: "opa_to_use"
+      - tmp_field: "OPA활용계획.기여후보"
+        from: "opa_to_contribute"
+    hitl: false
+
+  - id: "step-04"
+    name: "작업환경 수립 (SP1.3)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "tool_stack"
+        type: "table"
+        question: "도구 스택 (조직 표준 vs 프로젝트 차이)"
+        columns: ["도구", "용도", "조직 표준 여부", "추가/제외 사유"]
+        required: true
+      - field: "env_diff_summary"
+        type: "longtext"
+        question: "조직 표준 작업환경과의 차이 요약"
+        required: true
+    outputs:
+      - tmp_field: "작업환경정의서.도구스택"
+        from: "tool_stack"
+      - tmp_field: "작업환경정의서.차이"
+        from: "env_diff_summary"
+    hitl: false
+
+  - id: "step-05"
+    name: "EPG 자문 + PMO Director 승인"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "epg_review_pass"
+        type: "boolean"
+        question: "EPG 자문 통과?"
+        required: true
+      - field: "approver_name"
+        type: "person"
+        question: "PMO Director 승인자 이름은?"
+        required: true
+      - field: "cm_baseline_id"
+        type: "text"
+        question: "CM 베이스라인 ID는?"
+        required: true
+    outputs:
+      - tmp_field: "정의프로세스기술서.승인자"
+        from: "approver_name"
+    hitl: required
+    approver_role: "PMO Director"
+    rationale: "PRO §3 RACI 의 A — IPM 정의 프로세스는 PMO Director 결재"
+
+dod_checklist:
+  - "정의 프로세스 기술서 작성 (테일러링 결정 + 근거)"
+  - "OPA 활용 계획서 (활용 + 기여 후보)"
+  - "작업환경 정의서 (도구·환경)"
+  - "EPG 자문 의견 반영"
+  - "PMO Director 결재"
+  - "CM 등록"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "OSSP 미적용 영역"
+    rule: "EPG 임시 승인 → 6개월 내 OSSP 등재"
+  - section: "§7.2"
+    name: "테일러링 가이드 충돌"
+    rule: "EPG 결정 요청 + Conditional 적용 가능"
+  - section: "§7.3"
+    name: "PAL 자산 부재"
+    rule: "외부 벤치마크 + 종료 후 PAL 기여 약속"
+
+triggers: ["프로젝트 정의 프로세스", "테일러링", "OPA 활용", "작업환경"]
+aliases: ["project's defined process", "tailoring", "OPA usage", "IPM SP1.1"]
+event_triggers: ["프로젝트 헌장 직후", "OSSP 버전 변경"]
+domains: ["일반", "SW", "엔지니어링"]

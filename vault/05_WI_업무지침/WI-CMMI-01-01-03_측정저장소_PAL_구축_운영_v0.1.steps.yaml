@@ -1,0 +1,100 @@
+wi_id: "WI-CMMI-01-01-03"
+title: "측정저장소 및 PAL 구축·운영 (SP1.4~1.5)"
+version: "0.1"
+parent_pro: "PRO-CMMI-01-01"
+parent_pol: "POL-CMMI-01"
+related_tmp: ["TMP-CMMI-01-01-03-01_측정저장소_PAL_운영서"]
+scope_code: "CMMI"
+standards: ["CMMI-DEV-ML3-V1.3"]
+extracted_at: "2026-05-11T08:50:00+09:00"
+extractor: "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "저장소 스키마 설계"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "schema_domains"
+        type: "multiselect"
+        question: "측정 도메인은?"
+        options: ["일정", "노력", "결함", "리뷰", "테스트커버리지", "리스크"]
+        required: true
+    outputs:
+      - tmp_field: "운영서.스키마.도메인"
+        from: "schema_domains"
+
+  - id: "step-02"
+    name: "PAL 카탈로그 구조"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "pal_categories"
+        type: "table"
+        question: "PAL 자산 분류 체계는?"
+        columns: ["분류", "예시 자산", "메타필드"]
+        required: true
+    outputs:
+      - tmp_field: "운영서.PAL분류표"
+        from: "pal_categories"
+
+  - id: "step-03"
+    name: "초기 데이터 등록"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "migrated_count"
+        type: "number"
+        question: "이관 완료한 OPA 자산 수는?"
+        required: true
+        validation: ">= 0"
+
+  - id: "step-04"
+    name: "접근 권한 매트릭스"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "access_matrix"
+        type: "table"
+        question: "역할별 권한은?"
+        columns: ["역할", "조회", "등록", "수정", "삭제"]
+        required: true
+    outputs:
+      - tmp_field: "운영서.권한매트릭스"
+        from: "access_matrix"
+
+  - id: "step-05"
+    name: "승인 + CM 베이스라인"
+    section_ref: "§5.2.7"
+    inputs:
+      - field: "approver_name"
+        type: "person"
+        question: "승인자(CEO/CTO)는?"
+        required: true
+      - field: "baseline_id"
+        type: "text"
+        question: "CM 베이스라인 ID는?"
+        required: true
+    hitl: required
+    approver_role: "CEO/CTO"
+
+dod_checklist:
+  - "저장소 스키마 승인 + 운영 환경 가동"
+  - "PAL 인덱스 작성 + OPA 자산 100% 등록"
+  - "사용 가이드 배포 + 교육 완료"
+  - "접근 권한 매트릭스 적용"
+  - "CM 베이스라인 + MAT-001 등록"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "저장소 장애"
+    rule: "24시간 초과 시 OPF 평가 중단 + 백업 복구"
+  - section: "§7.2"
+    name: "데이터 품질 이슈"
+    rule: "단위 불일치 시 MA SP1.3 재검토 + 정규화"
+  - section: "§7.3"
+    name: "자산 중복"
+    rule: "CM 마스터로 통합 + alias 매핑"
+
+triggers: ["측정저장소", "PAL", "프로세스 자산 라이브러리"]
+aliases: ["Measurement Repository", "Process Asset Library"]
+event_triggers: ["OSSP 신규 수립", "MA 명세 변경", "분기 운영 점검"]
+domains: ["일반"]

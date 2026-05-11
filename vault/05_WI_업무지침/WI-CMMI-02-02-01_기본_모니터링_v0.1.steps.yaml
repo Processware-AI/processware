@@ -1,0 +1,171 @@
+wi_id:           "WI-CMMI-02-02-01"
+title:           "기본 모니터링 — 파라미터·약정·리스크·데이터 (SP1.1~1.4)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-02-02"
+parent_pol:      "POL-CMMI-02"
+related_tmp:
+  - "TMP-CMMI-02-02-01-01_프로젝트_성과_기록"
+  - "TMP-CMMI-02-02-01-02_약정_모니터링_체크리스트"
+scope_code:      "CMMI"
+scope_type:      "project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T08:55:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "모니터링 주기·임계치 확정"
+    section_ref: "§5.1"
+    inputs:
+      - field: "baseline_id"
+        type: "text"
+        question: "PP 베이스라인 ID는?"
+        required: true
+      - field: "thresholds"
+        type: "object"
+        question: "임계치 (schedule_pct, cost_pct)"
+        required: true
+    outputs: []
+    hitl: false
+
+  - id: "step-02"
+    name: "주간 파라미터 모니터링 (SP1.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "report_week"
+        type: "text"
+        question: "보고 주차는 (YYYY-WW)?"
+        required: true
+      - field: "schedule_variance_pct"
+        type: "number"
+        question: "일정 편차율(%)은?"
+        required: true
+      - field: "cost_variance_pct"
+        type: "number"
+        question: "비용 편차율 (EVM CV%)은?"
+        required: true
+      - field: "wp_complete_pct"
+        type: "number"
+        question: "WP 완료율(%)은?"
+        required: true
+    derivations:
+      - id: "alert_flag"
+        expr: |
+          if abs(schedule_variance_pct) > 10 or abs(cost_variance_pct) > 10: "alert"
+          else: "ok"
+        description: "편차 임계치 알림"
+    outputs:
+      - tmp_field: "성과기록.주차"
+        from: "report_week"
+      - tmp_field: "성과기록.일정편차"
+        from: "schedule_variance_pct"
+      - tmp_field: "성과기록.비용편차"
+        from: "cost_variance_pct"
+      - tmp_field: "성과기록.알림플래그"
+        from: "alert_flag"
+    hitl: false
+
+  - id: "step-03"
+    name: "월간 약정 모니터링 (SP1.2)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "commitment_status_table"
+        type: "table"
+        question: "약정자별 이행 상태 (이름·약정·이행/지연/미이행)"
+        columns: ["약정자", "약정사항", "상태", "비고"]
+        required: true
+    derivations:
+      - id: "noncompliant_count"
+        expr: "count where 상태 in ['지연', '미이행']"
+        description: "미이행 약정 수"
+    outputs:
+      - tmp_field: "약정체크리스트.표"
+        from: "commitment_status_table"
+      - tmp_field: "약정체크리스트.미이행수"
+        from: "noncompliant_count"
+    hitl: false
+
+  - id: "step-04"
+    name: "주간 리스크 모니터링 (SP1.3)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "risk_status_updates"
+        type: "table"
+        question: "리스크 status 변경 (ID·status·변경 사유)"
+        columns: ["리스크ID", "status (Active/Closed/Triggered)", "변경사유"]
+        required: false
+      - field: "triggered_risks"
+        type: "number"
+        question: "이번 주 Triggered 된 리스크 수는?"
+        required: true
+    outputs:
+      - tmp_field: "성과기록.리스크업데이트"
+        from: "risk_status_updates"
+    hitl: false
+
+  - id: "step-05"
+    name: "월간 데이터관리 모니터링 (SP1.4)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "data_compliance_check"
+        type: "boolean"
+        question: "데이터 분류·보관·접근·폐기 준수?"
+        required: true
+      - field: "violations"
+        type: "multitext"
+        question: "위반 발견 항목 (있는 경우)"
+        required: false
+    outputs:
+      - tmp_field: "성과기록.데이터준수"
+        from: "data_compliance_check"
+    hitl: false
+
+  - id: "step-06"
+    name: "주간/월간 보고서 발행"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "report_type"
+        type: "enum"
+        question: "보고서 유형은?"
+        options: ["weekly", "monthly"]
+        required: true
+      - field: "submitted_to"
+        type: "text"
+        question: "보고 대상 (PMO/Senior Mgmt)?"
+        required: true
+      - field: "monthly_approver"
+        type: "person"
+        question: "월간 보고 승인자 (Senior Mgmt) 이름은? (월간만)"
+        required: false
+    outputs:
+      - tmp_field: "성과기록.보고대상"
+        from: "submitted_to"
+    hitl: required
+    approver_role: "Senior Management"
+    rationale: "월간 보고는 Senior Mgmt 결재; PRO §3 RACI 진행검토(SP1.6)의 A"
+
+dod_checklist:
+  - "주간 성과 기록 작성 (매주 금요)"
+  - "월간 약정 체크리스트 완료"
+  - "임계치 초과 알림 → 이슈 분석 큐 등록"
+  - "리스크 status 주간 업데이트 (Triggered 24h 내 보고)"
+  - "데이터관리 위반 0건 또는 시정조치 등록"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "데이터 source 미가용"
+    rule: "수동 집계 + 24h 이상 시 PMO 통보"
+  - section: "§7.2"
+    name: "임계치 폭주 (≥5건 동시)"
+    rule: "ESC 회의 소집 + 패턴 발견 시 PP 재진입 검토"
+  - section: "§7.3"
+    name: "약정자 불응"
+    rule: "2주 PMO escalation, 4주 Sponsor escalation"
+
+triggers: ["프로젝트 모니터링", "EVM", "일정 편차", "약정 점검", "리스크 추적"]
+aliases: ["weekly monitoring", "monthly review", "PMC SG1"]
+event_triggers: ["매주 금요", "매월 첫째 주 월요", "임계치 초과 시"]
+domains: ["일반", "SW", "엔지니어링"]

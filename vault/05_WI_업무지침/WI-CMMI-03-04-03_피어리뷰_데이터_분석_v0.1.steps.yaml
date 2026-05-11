@@ -1,0 +1,138 @@
+wi_id:           "WI-CMMI-03-04-03"
+title:           "피어리뷰 데이터 분석 (SG2: SP2.3)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-03-04"
+parent_pol:      "POL-CMMI-03"
+related_tmp:
+  - "TMP-CMMI-03-04-03-01_피어리뷰_결함_분석_보고서"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T11:20:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "데이터 수집"
+    section_ref: "§5.1"
+    inputs:
+      - field: "session_count"
+        type: "number"
+        question: "본 분석 대상 세션 수는?"
+        required: true
+        validation: ">= 1"
+      - field: "baseline_source"
+        type: "text"
+        question: "비교 기준선(과거 평균/산업 벤치마크) 출처는?"
+        required: true
+    outputs:
+      - tmp_field: "보고서.기준선출처"
+        from: "baseline_source"
+    hitl: false
+
+  - id: "step-02"
+    name: "메트릭 집계"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "metrics_by_type"
+        type: "table"
+        question: "산출물 유형별 메트릭 집계 결과는?"
+        columns: ["유형", "세션수", "총 시간(인-시간)", "결함수", "결함밀도", "Major 비율(%)", "재리뷰율(%)"]
+        required: true
+    outputs:
+      - tmp_field: "보고서.메트릭표"
+        from: "metrics_by_type"
+    hitl: false
+
+  - id: "step-03"
+    name: "트렌드 분석"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "trend_chart_file"
+        type: "text"
+        question: "시계열 그래프 파일/링크는?"
+        required: true
+      - field: "deviation_summary"
+        type: "text"
+        question: "기준선 대비 편차 요약은?"
+        required: true
+    outputs:
+      - tmp_field: "보고서.트렌드"
+        from: "deviation_summary"
+    hitl: false
+
+  - id: "step-04"
+    name: "결함 유형 분류"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "category_distribution"
+        type: "table"
+        question: "결함 카테고리 분포는?"
+        columns: ["카테고리(논리/성능/보안/테스트성/문서/기타)", "건수", "비율(%)"]
+        required: true
+    outputs:
+      - tmp_field: "보고서.카테고리분포"
+        from: "category_distribution"
+    hitl: false
+
+  - id: "step-05"
+    name: "개선 권고"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "recommendations"
+        type: "table"
+        question: "개선 권고 항목을 표로 작성하라"
+        columns: ["권고ID", "내용", "유형(교육/체크리스트/툴)", "수신 부서(EPG/OT)", "우선순위"]
+        required: true
+        validation: "len(recommendations) >= 1"
+    outputs:
+      - tmp_field: "보고서.권고"
+        from: "recommendations"
+    hitl: false
+
+  - id: "step-06"
+    name: "보고·EPG 인계"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "epg_handover_id"
+        type: "text"
+        question: "EPG (OPF 개선) 인계 송부 ID는?"
+        required: true
+      - field: "pm_approver"
+        type: "person"
+        question: "프로젝트 승인 PM 은?"
+        required: true
+    outputs:
+      - tmp_field: "보고서.EPG인계"
+        from: "epg_handover_id"
+      - tmp_field: "보고서.결재"
+        from: "pm_approver"
+    hitl: required
+    approver_role: "Project Manager + EPG Lead"
+
+dod_checklist:
+  - "모든 세션 데이터 집계"
+  - "산출물 유형별 분리 메트릭"
+  - "시계열 그래프"
+  - "기준선 대비 편차"
+  - "결함 카테고리 분포"
+  - "개선 권고 1개 이상"
+  - "PM 결재 + EPG 인계"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "데이터 부족 (<5건)"
+    rule: "정성 분석 위주 + 다음 분기 누적 후 정량"
+  - section: "§7.2"
+    name: "메트릭 정의 변경"
+    rule: "변경점 표기, 시계열 재산정 금지"
+  - section: "§7.3"
+    name: "외부 리뷰 데이터"
+    rule: "별도 분리 + 정성 비교"
+
+triggers: ["피어리뷰 분석", "결함 분석", "메트릭 분석"]
+aliases: ["Defect Analysis", "Review Metrics"]
+event_triggers: ["분기 종료", "리뷰 5건 이상 누적"]
+domains: ["일반", "SW"]

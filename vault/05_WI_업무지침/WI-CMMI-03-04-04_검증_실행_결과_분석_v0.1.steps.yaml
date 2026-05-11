@@ -1,0 +1,139 @@
+wi_id:           "WI-CMMI-03-04-04"
+title:           "검증 실행·결과 분석 (SG3: SP3.1~3.2)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-03-04"
+parent_pol:      "POL-CMMI-03"
+related_tmp:
+  - "TMP-CMMI-03-04-04-01_검증_결과_보고서"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T11:30:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "검증 실행 (SP3.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "procedure_execution"
+        type: "table"
+        question: "절차별 실행 결과를 표로 작성하라"
+        columns: ["절차ID", "실행 일자", "결과(Pass/Fail/Blocked)", "증빙(URL/파일ID)", "비고"]
+        required: true
+      - field: "coverage_pct"
+        type: "number"
+        question: "계획 절차 대비 실행 커버리지(%)는?"
+        required: true
+        validation: "0 <= x <= 100"
+    outputs:
+      - tmp_field: "결과보고서.실행결과"
+        from: "procedure_execution"
+    hitl: false
+
+  - id: "step-02"
+    name: "결과 분석 (SP3.2)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "ncr_table"
+        type: "table"
+        question: "부적합 목록을 표로 작성하라"
+        columns: ["NCR-ID", "절차ID", "내용", "등급(Critical/High/Med/Low)", "책임 부서", "기대 vs 실제"]
+        required: true
+      - field: "critical_count"
+        type: "number"
+        question: "Critical 등급 부적합 수는?"
+        required: true
+        validation: ">= 0"
+    derivations:
+      - id: "critical_gate"
+        expr: |
+          if critical_count >= 10: "§7.3 분기 — 진행 중지"
+          else: "정상"
+        description: "Critical 10건 이상 시 §7.3"
+    outputs:
+      - tmp_field: "결과보고서.부적합"
+        from: "ncr_table"
+    hitl: false
+
+  - id: "step-03"
+    name: "부적합 환류"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "handover_to_rd"
+        type: "text"
+        question: "RD 환류 송부 ID 목록은?"
+        required: false
+      - field: "handover_to_ts"
+        type: "text"
+        question: "TS 환류 송부 ID 목록은?"
+        required: false
+      - field: "handover_to_pi"
+        type: "text"
+        question: "PI 환류 송부 ID 목록은?"
+        required: false
+    outputs:
+      - tmp_field: "결과보고서.환류송부"
+        from: "handover_to_rd"
+    hitl: false
+
+  - id: "step-04"
+    name: "재검증"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "re_verification_results"
+        type: "table"
+        question: "재검증 결과는?"
+        columns: ["NCR-ID", "재시험 일자", "결과", "Pass 여부"]
+        required: true
+    outputs:
+      - tmp_field: "결과보고서.재검증"
+        from: "re_verification_results"
+    hitl: false
+
+  - id: "step-05"
+    name: "VAL 인계·승인"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "val_handover_id"
+        type: "text"
+        question: "VAL (PRO-CMMI-03-05) 인계 송부 ID는?"
+        required: true
+      - field: "pm_approver"
+        type: "person"
+        question: "승인 PM 은?"
+        required: true
+    outputs:
+      - tmp_field: "결과보고서.VAL인계"
+        from: "val_handover_id"
+      - tmp_field: "결과보고서.결재"
+        from: "pm_approver"
+    hitl: required
+    approver_role: "Project Manager"
+
+dod_checklist:
+  - "계획 절차 실행 커버리지 100%"
+  - "결과 증빙 첨부"
+  - "부적합 등급 부여·할당"
+  - "Critical/High 0건 (또는 PM 보류)"
+  - "재검증 결과 첨부"
+  - "VAL 인계 송부"
+  - "PM 승인 결재"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "환경 불안정"
+    rule: "재시험 3회 후 보류, 환경 안정화 후 회귀"
+  - section: "§7.2"
+    name: "결과 비결정성 (Flaky)"
+    rule: "시험 격리 점검 후 안정화 시까지 결과 미합산"
+  - section: "§7.3"
+    name: "Critical 10건+"
+    rule: "즉시 PM 보고 + 진행 중지 + CAR 가동"
+
+triggers: ["검증 실행", "검증 결과", "부적합", "재검증"]
+aliases: ["Verification Execution", "Test Execution"]
+event_triggers: ["RC 빌드 완료", "통합 라운드 완료"]
+domains: ["일반", "SW"]

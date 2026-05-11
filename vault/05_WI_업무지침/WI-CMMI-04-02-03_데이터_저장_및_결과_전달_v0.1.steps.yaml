@@ -1,0 +1,170 @@
+wi_id:           "WI-CMMI-04-02-03"
+title:           "데이터 저장·결과 전달 (SP2.3~2.4)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-04-02"
+parent_pol:      "POL-CMMI-04"
+related_tmp:
+  - "TMP-CMMI-04-02-03-01_측정저장소_등록부"
+  - "TMP-CMMI-04-02-03-02_측정정보_배포기록"
+scope_code:      "CMMI"
+scope_type:      "organization_project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:10:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "저장 형식·보안 분류 결정 (SP2.3-전반)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "storage_targets"
+        type: "table"
+        question: "저장 대상별 형식·위치·보관기간?"
+        columns: ["대상(원천/가공/보고서)", "형식", "위치", "보관기간"]
+        required: true
+      - field: "security_class"
+        type: "enum"
+        question: "보안 분류?"
+        options: ["공개","내부","기밀","비밀"]
+        required: true
+    outputs:
+      - tmp_field: "저장소등록부.저장형식표"
+        from: "storage_targets"
+      - tmp_field: "저장소등록부.보안분류"
+        from: "security_class"
+    hitl: false
+
+  - id: "step-02"
+    name: "측정저장소 등록 (SP2.3-후반)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "registration_id"
+        type: "text"
+        question: "등록 ID?"
+        required: true
+      - field: "search_tags"
+        type: "text"
+        question: "검색 태그(쉼표 구분)?"
+        required: true
+      - field: "access_roles"
+        type: "multiselect"
+        question: "접근 허용 역할?"
+        options: ["경영진","PM","QA","개발팀","고객","Public","Other"]
+        required: true
+    outputs:
+      - tmp_field: "저장소등록부.등록ID"
+        from: "registration_id"
+      - tmp_field: "저장소등록부.태그"
+        from: "search_tags"
+      - tmp_field: "저장소등록부.접근역할"
+        from: "access_roles"
+    hitl: false
+
+  - id: "step-03"
+    name: "저장 무결성 점검"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "integrity_verify"
+        type: "enum"
+        question: "다운로드·해시 검증 결과?"
+        options: ["통과","실패"]
+        required: true
+      - field: "locked"
+        type: "boolean"
+        question: "등록 후 잠금 완료?"
+        required: true
+    outputs:
+      - tmp_field: "저장소등록부.무결성"
+        from: "integrity_verify"
+      - tmp_field: "저장소등록부.잠금"
+        from: "locked"
+    hitl: false
+
+  - id: "step-04"
+    name: "이해관계자 배포 (SP2.4-전반)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "distribution_log"
+        type: "table"
+        question: "배포 기록?"
+        columns: ["대상자", "채널", "일시", "형식(PDF/링크)", "수신 확인"]
+        required: true
+    outputs:
+      - tmp_field: "배포기록.배포로그"
+        from: "distribution_log"
+    hitl: false
+
+  - id: "step-05"
+    name: "피드백 수집·환류"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "feedback_collected"
+        type: "text"
+        question: "수집된 피드백 또는 미수집 사유?"
+        required: true
+      - field: "next_info_needs"
+        type: "text"
+        question: "후속 정보 니즈?"
+        required: true
+    outputs:
+      - tmp_field: "배포기록.피드백"
+        from: "feedback_collected"
+      - tmp_field: "배포기록.후속니즈"
+        from: "next_info_needs"
+    hitl: false
+
+  - id: "step-06"
+    name: "조직 측정저장소 통합 (프로젝트 종료 시)"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "project_closed"
+        type: "boolean"
+        question: "프로젝트 종료 시점인가?"
+        required: true
+      - field: "anonymization"
+        type: "boolean"
+        question: "익명화·정규화 적용?"
+        required: true
+      - field: "opd_pal_id"
+        type: "text"
+        question: "OPD PAL 통합 ID (해당 시)?"
+        required: true
+      - field: "approver_name"
+        type: "person"
+        question: "최종 승인자?"
+        required: true
+    outputs:
+      - tmp_field: "배포기록.OPD통합ID"
+        from: "opd_pal_id"
+      - tmp_field: "배포기록.승인자"
+        from: "approver_name"
+    hitl: required
+    approver_role: "CEO/CTO or PM"
+    rationale: "WI §2 — 조직 측정저장소 통합은 OPD 자산 변경으로 결재 필수"
+
+dod_checklist:
+  - "모든 데이터셋·보고서가 측정저장소에 등록"
+  - "접근 권한·보안 분류 적용"
+  - "등록 직후 무결성 검증 통과"
+  - "이해관계자 배포 기록 보관"
+  - "피드백 1건 이상 수집 또는 미수집 사유 명기"
+  - "프로젝트 종료 시 조직 측정저장소 통합 완료"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "보안 분류 위반"
+    rule: "즉시 잠금 + 보안팀 통보 + 영향 평가. 외부 노출 시 사고대응 절차"
+  - section: "§7.2"
+    name: "배포 후 결과 정정"
+    rule: "정정 공지 후 재배포. 의사결정 재검토 권고"
+  - section: "§7.3"
+    name: "이해관계자 무응답"
+    rule: "2주 후 리마인더. 지속 시 정보 니즈 재검토"
+
+triggers: ["측정 저장", "결과 배포", "측정정보 전달", "OPD 통합"]
+aliases: ["Measurement Repository", "Result Distribution", "PAL integration"]
+event_triggers: ["분석 완료 시점", "프로젝트 종료", "정기 배포 주기"]
+domains: ["일반", "SW"]

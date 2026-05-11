@@ -1,0 +1,196 @@
+wi_id:           "WI-CMMI-04-03-02"
+title:           "부적합 의사소통·해결·기록 (SP2.1~2.2)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-04-03"
+parent_pol:      "POL-CMMI-04"
+related_tmp:
+  - "TMP-CMMI-04-03-02-01_QA_시정조치_보고서"
+  - "TMP-CMMI-04-03-02-02_품질_트렌드_및_평가로그"
+scope_code:      "CMMI"
+scope_type:      "organization_project"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T09:20:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "부적합 의사소통 (SP2.1-전반)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "nc_id"
+        type: "text"
+        question: "부적합 ID?"
+        required: true
+      - field: "nc_severity"
+        type: "enum"
+        question: "부적합 등급?"
+        options: ["Critical","Major","Minor"]
+        required: true
+      - field: "notify_log"
+        type: "table"
+        question: "통보 기록?"
+        columns: ["수신자(역할·이름)", "일시", "방법", "수신 확인"]
+        required: true
+    outputs:
+      - tmp_field: "시정조치보고서.NC_ID"
+        from: "nc_id"
+      - tmp_field: "시정조치보고서.등급"
+        from: "nc_severity"
+      - tmp_field: "시정조치보고서.통보기록"
+        from: "notify_log"
+    hitl: false
+
+  - id: "step-02"
+    name: "시정조치 계획 수립"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "root_cause_analysis"
+        type: "text"
+        question: "근본원인 분석(5-Why/Fishbone 결과)?"
+        required: true
+      - field: "action_plan"
+        type: "table"
+        question: "시정조치 계획?"
+        columns: ["액션", "책임자", "기한"]
+        required: true
+      - field: "qa_review_status"
+        type: "enum"
+        question: "QA Engineer 적정성 검토?"
+        options: ["통과","보완 후 통과","재수립"]
+        required: true
+    outputs:
+      - tmp_field: "시정조치보고서.근본원인"
+        from: "root_cause_analysis"
+      - tmp_field: "시정조치보고서.액션계획"
+        from: "action_plan"
+      - tmp_field: "시정조치보고서.QA검토"
+        from: "qa_review_status"
+    hitl: false
+
+  - id: "step-03"
+    name: "시정조치 실행·검증"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "execution_result"
+        type: "text"
+        question: "실행 결과 요약?"
+        required: true
+      - field: "closure_evidence"
+        type: "text"
+        question: "종결 증적(재현 테스트·문서 갱신 등)?"
+        required: true
+      - field: "closure_decision"
+        type: "enum"
+        question: "종결 결정?"
+        options: ["종결","재발행","연장"]
+        required: true
+      - field: "closure_date"
+        type: "date"
+        question: "종결 일자?"
+        required: true
+    derivations:
+      - id: "leadtime_days"
+        expr: "closure_date - notify_date_in_log"
+        description: "식별→종결 리드타임(영업일)"
+    outputs:
+      - tmp_field: "시정조치보고서.실행결과"
+        from: "execution_result"
+      - tmp_field: "시정조치보고서.종결증적"
+        from: "closure_evidence"
+      - tmp_field: "시정조치보고서.종결결정"
+        from: "closure_decision"
+      - tmp_field: "시정조치보고서.종결일"
+        from: "closure_date"
+    hitl: false
+
+  - id: "step-04"
+    name: "에스컬레이션 (미종결 시)"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "needs_escalation"
+        type: "boolean"
+        question: "에스컬레이션 필요? (기한 초과 또는 합의 불가)"
+        required: true
+      - field: "escalation_target"
+        type: "person"
+        question: "에스컬레이션 대상(Senior Mgmt)?"
+        required: false
+      - field: "escalation_reason"
+        type: "text"
+        question: "에스컬레이션 사유?"
+        required: false
+    outputs:
+      - tmp_field: "시정조치보고서.에스컬레이션여부"
+        from: "needs_escalation"
+      - tmp_field: "시정조치보고서.에스컬레이션대상"
+        from: "escalation_target"
+    hitl: required
+    approver_role: "Senior Mgmt (escalation only)"
+    rationale: "PRO §3 RACI: SP2.1 Escalation = Senior Mgmt"
+
+  - id: "step-05"
+    name: "기록·트렌드 분석 (SP2.2)"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "period"
+        type: "text"
+        question: "트렌드 분석 기간(YYYY-Qn)?"
+        required: true
+      - field: "kpi_summary"
+        type: "table"
+        question: "분기 KPI 요약?"
+        columns: ["지표", "값", "목표", "부합"]
+        required: true
+      - field: "improvement_candidates"
+        type: "text"
+        question: "OPF 개선 안건 후보(있을 시)?"
+        required: true
+    outputs:
+      - tmp_field: "트렌드로그.기간"
+        from: "period"
+      - tmp_field: "트렌드로그.KPI"
+        from: "kpi_summary"
+      - tmp_field: "트렌드로그.개선안건"
+        from: "improvement_candidates"
+    hitl: false
+
+  - id: "step-06"
+    name: "이해관계자 보고"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "report_distribution_log"
+        type: "table"
+        question: "보고 배포 기록?"
+        columns: ["대상", "일시", "채널"]
+        required: true
+    outputs:
+      - tmp_field: "트렌드로그.배포기록"
+        from: "report_distribution_log"
+    hitl: false
+
+dod_checklist:
+  - "모든 부적합이 Process Owner·PM 통보·기록"
+  - "시정조치 계획서 작성·검토(액션·책임·기한)"
+  - "종결 증적 확인 후 종결"
+  - "기한 초과 부적합 = 0 또는 에스컬레이션 처리"
+  - "평가 로그 갱신·분기 트렌드 분석 완료"
+  - "경영진·PM 분기 보고 완료"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "부적합 이의 제기"
+    rule: "증적 공동 검토. 미합의 시 QA Director 중재 최종 판정"
+  - section: "§7.2"
+    name: "기한 초과(30일)"
+    rule: "자동 에스컬레이션. 90일 시 경영진 KPI 영향"
+  - section: "§7.3"
+    name: "동일 부적합 반복"
+    rule: "2회 이상 반복 시 OPF 개선 안건 정식 등록"
+
+triggers: ["부적합 시정", "QA 시정조치", "에스컬레이션", "품질 트렌드"]
+aliases: ["Noncompliance", "Corrective Action", "Quality Trend"]
+event_triggers: ["평가 부적합 발견", "30일 미해결 트리거", "분기 트렌드 보고 시점"]
+domains: ["일반", "SW"]

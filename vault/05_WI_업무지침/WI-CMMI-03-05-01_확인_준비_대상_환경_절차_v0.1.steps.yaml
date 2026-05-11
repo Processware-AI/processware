@@ -1,0 +1,119 @@
+wi_id:           "WI-CMMI-03-05-01"
+title:           "확인 준비 — 대상·환경·절차 (SG1: SP1.1~1.3)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-03-05"
+parent_pol:      "POL-CMMI-03"
+related_tmp:
+  - "TMP-CMMI-03-05-01-01_확인_계획서"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T11:40:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "확인 대상·방법 선택 (SP1.1)"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "val_targets"
+        type: "table"
+        question: "확인 대상·방법 표를 작성하라"
+        columns: ["대상ID", "라이프사이클 단계", "방법(시연/시뮬레이션/프로토타입/사용자시험/운영시범)", "우선순위", "사용자 그룹"]
+        required: true
+    outputs:
+      - tmp_field: "계획서.대상"
+        from: "val_targets"
+    hitl: false
+
+  - id: "step-02"
+    name: "확인 환경 (SP1.2)"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "val_env_type"
+        type: "enum"
+        question: "확인 환경 유형은?"
+        options: ["실 운영", "운영 모사", "혼합"]
+        required: true
+      - field: "env_details"
+        type: "table"
+        question: "환경 세부 사항을 표로 작성하라"
+        columns: ["분류(HW/SW/단말/통신/데이터)", "항목", "비고"]
+        required: true
+    outputs:
+      - tmp_field: "계획서.환경"
+        from: "env_details"
+    hitl: false
+
+  - id: "step-03"
+    name: "확인 절차·기준 (SP1.3)"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "procedure_table"
+        type: "table"
+        question: "절차·기준 표는?"
+        columns: ["VP-ID", "사용자 행동", "기대 결과", "합격 기준(정량)", "충족 척도(예: NPS/5점)"]
+        required: true
+    outputs:
+      - tmp_field: "계획서.절차기준"
+        from: "procedure_table"
+    hitl: false
+
+  - id: "step-04"
+    name: "사용자 참여 일정"
+    section_ref: "§5.1.3"
+    inputs:
+      - field: "participant_count"
+        type: "number"
+        question: "사용자 참여 인원수는?"
+        required: true
+        validation: ">= 3"
+      - field: "session_dates"
+        type: "text"
+        question: "세션 일정 목록은?"
+        required: true
+    outputs:
+      - tmp_field: "계획서.참여일정"
+        from: "session_dates"
+    hitl: false
+
+  - id: "step-05"
+    name: "PM 승인"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "pm_approver"
+        type: "person"
+        question: "승인 PM 은?"
+        required: true
+    outputs:
+      - tmp_field: "계획서.결재"
+        from: "pm_approver"
+    hitl: required
+    approver_role: "Project Manager"
+
+dod_checklist:
+  - "대상 목록 (라이프사이클 단계별)"
+  - "방법 매핑"
+  - "환경 명세"
+  - "사용자 참여 일정 확보"
+  - "절차·기준 정량"
+  - "부분 충족·미충족 흐름"
+  - "PM 승인 결재"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "운영 환경 사용 불가"
+    rule: "모사 환경 + 신뢰도 + 향후 운영 환경 보완 일정"
+  - section: "§7.2"
+    name: "사용자 참여 부족"
+    rule: "대리인 + 사후 피드백 + 일반화 한계 명시"
+  - section: "§7.3"
+    name: "정성 기준"
+    rule: "5점 척도/NPS 정량화 + 임계값 사전 합의"
+
+triggers: ["확인 준비", "Validation Plan", "사용자 시험 계획"]
+aliases: ["UAT Plan", "Validation Planning"]
+event_triggers: ["VER 통과", "고객 측 사용자 가용 시점"]
+domains: ["일반", "SW"]

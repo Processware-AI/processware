@@ -1,0 +1,185 @@
+wi_id:           "WI-CMMI-01-01-01"
+title:           "표준프로세스·라이프사이클 모델 정의 (SP1.1~1.2)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-01-01"
+parent_pol:      "POL-CMMI-01"
+related_tmp:
+  - "TMP-CMMI-01-01-01-01_조직표준프로세스_OSSP_정의서"
+  - "TMP-CMMI-01-01-01-02_라이프사이클모델_기술서"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T08:40:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "OPF 프로세스 니즈 확보"
+    section_ref: "§5.1.1"
+    inputs:
+      - field: "opf_needs_doc_id"
+        type: "text"
+        question: "참조할 OPF 프로세스 니즈·목표 기술서 문서ID는?"
+        required: true
+    outputs:
+      - tmp_field: "OSSP정의서.입력.OPF니즈ID"
+        from: "opf_needs_doc_id"
+    hitl: false
+
+  - id: "step-02"
+    name: "프로세스 아키텍처 도출"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "process_groups"
+        type: "multiselect"
+        question: "OSSP 에 포함할 프로세스 분류는?"
+        options: ["관리프로세스", "엔지니어링프로세스", "지원프로세스"]
+        required: true
+      - field: "pa_components"
+        type: "multiselect"
+        question: "포함할 PA 컴포넌트 프로세스(18개 중)는?"
+        options: ["OPD","OPF","OT","PP","PMC","REQM","SAM","IPM","RSKM","RD","TS","PI","VER","VAL","CM","MA","PPQA","DAR"]
+        required: true
+    outputs:
+      - tmp_field: "OSSP정의서.아키텍처.프로세스분류"
+        from: "process_groups"
+      - tmp_field: "OSSP정의서.아키텍처.컴포넌트목록"
+        from: "pa_components"
+    hitl: false
+
+  - id: "step-03"
+    name: "프로세스 요소 분해"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "element_table"
+        type: "table"
+        question: "각 표준프로세스를 요소(입력·활동·산출물·역할)로 분해하라"
+        columns: ["프로세스명", "입력", "활동", "산출물", "역할"]
+        required: true
+    outputs:
+      - tmp_field: "OSSP정의서.요소표"
+        from: "element_table"
+    hitl: false
+
+  - id: "step-04"
+    name: "OSSP 정의서 작성"
+    section_ref: "§5.2.3"
+    inputs:
+      - field: "policy_alignment_checklist"
+        type: "boolean"
+        question: "적용 정책·표준·모델 부합성 체크 완료했는가?"
+        required: true
+    outputs:
+      - tmp_field: "OSSP정의서.부합성체크"
+        from: "policy_alignment_checklist"
+    hitl: false
+
+  - id: "step-05"
+    name: "라이프사이클 모델 선정"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "lifecycle_models"
+        type: "multiselect"
+        question: "조직이 채택할 라이프사이클 모델은?"
+        options: ["Waterfall", "Iterative", "Agile/Scrum", "Hybrid", "기타"]
+        required: true
+      - field: "model_rationale"
+        type: "text"
+        question: "선정 근거(프로젝트 유형·고객·기술 관점)?"
+        required: true
+    outputs:
+      - tmp_field: "라이프사이클기술서.모델목록"
+        from: "lifecycle_models"
+      - tmp_field: "라이프사이클기술서.근거"
+        from: "model_rationale"
+    hitl: false
+
+  - id: "step-06"
+    name: "라이프사이클 기술서 작성"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "lifecycle_phases"
+        type: "table"
+        question: "각 모델의 단계·게이트·주요 산출물을 기술하라"
+        columns: ["모델", "단계", "게이트조건", "주요산출물"]
+        required: true
+    outputs:
+      - tmp_field: "라이프사이클기술서.단계표"
+        from: "lifecycle_phases"
+    hitl: false
+
+  - id: "step-07"
+    name: "피어 리뷰"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "review_defects"
+        type: "number"
+        question: "피어 리뷰에서 발견된 결함 수는?"
+        required: true
+        validation: ">= 0"
+      - field: "review_status"
+        type: "enum"
+        question: "결함 해소 상태는?"
+        options: ["전체해소", "부분해소", "보류"]
+        required: true
+    derivations:
+      - id: "review_pass"
+        expr: |
+          if review_defects == 0 or review_status == "전체해소": "Pass"
+          else: "Fail"
+        description: "리뷰 통과 판정"
+    outputs:
+      - tmp_field: "OSSP정의서.피어리뷰결과"
+        from: "review_pass"
+    hitl: false
+
+  - id: "step-08"
+    name: "경영진 승인 및 CM 베이스라인 등록"
+    section_ref: "§5.2.7"
+    inputs:
+      - field: "approver_name"
+        type: "person"
+        question: "승인자(CEO/CTO) 이름은?"
+        required: true
+      - field: "baseline_id"
+        type: "text"
+        question: "CM 시스템에서 부여받은 베이스라인 ID는?"
+        required: true
+      - field: "mat001_row_id"
+        type: "text"
+        question: "MAT-001 등록 Row 번호는?"
+        required: true
+    outputs:
+      - tmp_field: "OSSP정의서.결재"
+        from: "approver_name"
+      - tmp_field: "OSSP정의서.베이스라인ID"
+        from: "baseline_id"
+    hitl: required
+    approver_role: "CEO/CTO"
+    rationale: "WI §2 승인자 명시 — OSSP 는 조직 핵심 자산으로 경영진 승인 필수"
+
+dod_checklist:
+  - "OSSP 정의서 작성·승인 완료"
+  - "라이프사이클 모델 최소 1개 이상 기술"
+  - "피어 리뷰 결함 0건 또는 모두 해소"
+  - "CEO/CTO 승인 결재 첨부"
+  - "CM 베이스라인 ID 부여 + MAT-001 등록"
+  - "적용 정책·표준 부합성 체크리스트 통과"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "신규 표준 추가"
+    rule: "기존 OSSP 와 영향평가 후 60% 이상 변경 시 메이저 버전 증분(v2.0)"
+  - section: "§7.2"
+    name: "프로젝트별 예외 요청"
+    rule: "테일러링 범위 초과 시 waiver 절차 — EPG 검토 → CEO 승인 분기"
+  - section: "§7.3"
+    name: "라이프사이클 미정의 영역"
+    rule: "임시 모델 허용, 6개월 내 정식 등재 의무 + PPQA 모니터링"
+
+triggers: ["조직 표준프로세스", "OSSP 수립", "라이프사이클 정의", "프로세스 아키텍처"]
+aliases: ["표준 프로세스", "OSSP", "Lifecycle Model"]
+event_triggers: ["조직 신규 설립", "주요 표준 도입", "OSSP 정기 검토 시점"]
+domains: ["일반", "SW"]

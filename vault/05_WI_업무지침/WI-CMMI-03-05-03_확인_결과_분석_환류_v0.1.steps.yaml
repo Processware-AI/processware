@@ -1,0 +1,166 @@
+wi_id:           "WI-CMMI-03-05-03"
+title:           "확인 결과 분석·환류 (SG2: SP2.2)"
+version:         "0.1"
+parent_pro:      "PRO-CMMI-03-05"
+parent_pol:      "POL-CMMI-03"
+related_tmp:
+  - "TMP-CMMI-03-05-03-01_확인_결과_분석_환류_보고서"
+scope_code:      "CMMI"
+standards:       ["CMMI-DEV-ML3-V1.3"]
+
+extracted_at:    "2026-05-11T12:00:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id: "step-01"
+    name: "결과 종합·정량 산출"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "fulfilled_count"
+        type: "number"
+        question: "충족 시나리오 수는?"
+        required: true
+        validation: ">= 0"
+      - field: "partial_count"
+        type: "number"
+        question: "부분 충족 시나리오 수는?"
+        required: true
+        validation: ">= 0"
+      - field: "not_fulfilled_count"
+        type: "number"
+        question: "미충족 시나리오 수는?"
+        required: true
+        validation: ">= 0"
+      - field: "nps_score"
+        type: "number"
+        question: "전체 NPS는?"
+        required: true
+    derivations:
+      - id: "fulfillment_rate"
+        expr: |
+          total = fulfilled + partial + not_fulfilled
+          rate = fulfilled / total * 100
+          rate
+        description: "충족율 산출"
+    outputs:
+      - tmp_field: "보고서.정량지표"
+        from: "fulfillment_rate"
+    hitl: false
+
+  - id: "step-02"
+    name: "임계값 비교 판정"
+    section_ref: "§5.2.1"
+    inputs:
+      - field: "nps_threshold"
+        type: "number"
+        question: "NPS 임계값은?"
+        required: true
+      - field: "fulfillment_threshold_pct"
+        type: "number"
+        question: "충족율 임계값(%)은?"
+        required: true
+        validation: "0 <= x <= 100"
+    derivations:
+      - id: "verdict"
+        expr: |
+          if nps_score >= nps_threshold and fulfillment_rate >= fulfillment_threshold_pct: "Pass"
+          elif fulfillment_rate >= 60: "Conditional Pass"
+          else: "Fail"
+        description: "종합 판정"
+    outputs:
+      - tmp_field: "보고서.종합판정"
+        from: "verdict"
+    hitl: false
+
+  - id: "step-03"
+    name: "환류 CR 발행"
+    section_ref: "§5.2.2"
+    inputs:
+      - field: "feedback_crs"
+        type: "table"
+        question: "환류 CR 목록은?"
+        columns: ["CR-ID", "원 VP-ID", "내용", "책임 부서(RD/TS/PI)", "송부 ID", "우선순위"]
+        required: true
+    outputs:
+      - tmp_field: "보고서.환류CR"
+        from: "feedback_crs"
+    hitl: false
+
+  - id: "step-04"
+    name: "인도 진행 결정"
+    section_ref: "§5.2.4"
+    inputs:
+      - field: "delivery_decision"
+        type: "enum"
+        question: "인도 결정은?"
+        options: ["진행", "조건부 진행", "보류 (재VAL)"]
+        required: true
+      - field: "delivery_conditions"
+        type: "text"
+        question: "(조건부) 조건과 마일스톤은?"
+        required_if: "delivery_decision == '조건부 진행'"
+    outputs:
+      - tmp_field: "보고서.인도결정"
+        from: "delivery_decision"
+    hitl: false
+
+  - id: "step-05"
+    name: "고객 수락"
+    section_ref: "§5.2.5"
+    inputs:
+      - field: "customer_signoff_id"
+        type: "text"
+        question: "고객 수락 서명·결재 ID는?"
+        required: true
+      - field: "customer_signer"
+        type: "person"
+        question: "고객 측 결재자는?"
+        required: true
+    outputs:
+      - tmp_field: "보고서.고객수락"
+        from: "customer_signoff_id"
+    hitl: required
+    approver_role: "Customer"
+    rationale: "WI §2 + PRO RACI — 최종 수락"
+
+  - id: "step-06"
+    name: "PM 승인"
+    section_ref: "§5.2.6"
+    inputs:
+      - field: "pm_approver"
+        type: "person"
+        question: "승인 PM 은?"
+        required: true
+    outputs:
+      - tmp_field: "보고서.결재"
+        from: "pm_approver"
+    hitl: required
+    approver_role: "Project Manager"
+
+dod_checklist:
+  - "충족/부분/미충족 분류 + 충족율·NPS 산출"
+  - "임계값 대비 판정"
+  - "미충족·부분 충족 항목 CR 발행"
+  - "RD/TS/PI 환류 송부"
+  - "종합 판정 (Pass/Conditional/Fail)"
+  - "인도 진행 결정"
+  - "고객 수락 서명 (Pass·Conditional)"
+  - "PM 승인 결재"
+
+exception_hooks:
+  - section: "§7.1"
+    name: "정량 기준 미달 (Fail)"
+    rule: "인도 보류 + CAR + 재VAL 마일스톤"
+  - section: "§7.2"
+    name: "정량 vs 정성 충돌"
+    rule: "정성 분석 강화, 추가 라운드 또는 부분 수정 후 인도"
+  - section: "§7.3"
+    name: "환류 영향 큰 변경"
+    rule: "PP 재계획 + PM/고객/경영진 합의"
+
+triggers: ["VAL 결과 분석", "Customer needs feedback", "확인 환류"]
+aliases: ["Validation Analysis", "VAL Result"]
+event_triggers: ["VAL 실행 완료", "인도 결정 시점"]
+domains: ["일반", "SW"]
