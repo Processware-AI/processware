@@ -1,0 +1,4663 @@
+standard_id: CMMI-DEV
+version: '1.3'
+extraction_mode: full_verbatim_pass_d1_d2
+generated_at: '2026-05-11T02:00:00+09:00'
+copyright_notice:
+  holder: Carnegie Mellon University
+  year: 2010
+  source: CMU/SEI-2010-TR-033 — CMMI for Development, Version 1.3
+  license: Internal use — derivative works permitted (per CMU/SEI copyright notice, PDF p.2)
+  no_warranty: THIS CARNEGIE MELLON UNIVERSITY AND SOFTWARE ENGINEERING INSTITUTE MATERIAL IS FURNISHED ON AN 'AS-IS' BASIS. CARNEGIE MELLON UNIVERSITY MAKES NO WARRANTIES OF ANY KIND, EITHER EXPRESSED OR IMPLIED, AS TO ANY MATTER INCLUDING, BUT NOT LIMITED TO, WARRANTY OF FITNESS FOR PURPOSE OR MERCHANTABILITY, EXCLUSIVITY, OR RESULTS OBTAINED FROM USE OF THE MATERIAL. CARNEGIE MELLON UNIVERSITY DOES NOT MAKE ANY WARRANTY OF ANY KIND WITH RESPECT TO FREEDOM FROM PATENT, TRADEMARK, OR COPYRIGHT INFRINGEMENT.
+  derivative_work_disclosure: Verbatim extracts of normative components (SG/SP statements, Example Work Products, Subpractices) reproduced for internal compliance management. Elaborating prose (introductory notes, practice elaborations, examples in dashed boxes) is NOT reproduced.
+requirements:
+- id: CMMIDEV-GG1-REQ-001
+  clause: GG 1
+  clause_title: Achieve Specific Goals
+  text: 'The specific goals of the process area are supported by the process by transforming identifiable input work products into identifiable output work products.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  target_asset_candidates:
+  - POL
+  - PRO
+  evidence_candidates:
+  - specific goal achievement evidence per process area
+  applies_to:
+  - all 22 process areas
+  status: active_verbatim
+  source_page: 68
+- id: CMMIDEV-GP1.1-REQ-001
+  clause: GP 1.1
+  clause_title: Perform Specific Practices
+  text: 'Perform the specific practices of the process area to develop work products and provide services to achieve the specific goals of the process area.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  target_asset_candidates:
+  - PRO
+  - WI
+  - REC
+  parent_goal: GG1
+  status: active_verbatim
+  source_page: 68
+- id: CMMIDEV-GG2-REQ-001
+  clause: GG 2
+  clause_title: Institutionalize a Managed Process
+  text: The process is institutionalized as a managed process.
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  target_asset_candidates:
+  - POL
+  - PRO
+  - WI
+  evidence_candidates:
+  - organizational policy
+  - plan for performing the process
+  - process work products and resources
+  - stakeholder involvement evidence
+  - process monitoring/control records
+  - process adherence evaluation records
+  - management review records
+  applies_to_levels:
+  - ML2
+  - CL2
+  applies_to:
+  - all 22 process areas (at ML2 and above)
+  status: active_verbatim
+  source_page: 68
+- id: CMMIDEV-GP2.1-REQ-001
+  clause: GP 2.1
+  clause_title: Establish an Organizational Policy
+  text: 'Establish and maintain an organizational policy for planning and performing the process.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  target_asset_candidates:
+  - POL
+  parent_goal: GG2
+  status: active_verbatim
+  source_page: 69
+- id: CMMIDEV-GP2.2-REQ-001
+  clause: GP 2.2
+  clause_title: Plan the Process
+  text: Establish and maintain the plan for performing the process.
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  target_asset_candidates:
+  - PRO
+  - TMP
+  - REC
+  parent_goal: GG2
+  status: active_verbatim
+  source_page: 72
+- id: CMMIDEV-GP2.3-REQ-001
+  clause: GP 2.3
+  clause_title: Provide Resources
+  text: 'Provide adequate resources for performing the process, developing the work products, and providing the services of the process.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  target_asset_candidates:
+  - PRO
+  - REC
+  parent_goal: GG2
+  status: active_verbatim
+  source_page: 76
+- id: CMMIDEV-GP2.4-REQ-001
+  clause: GP 2.4
+  clause_title: Assign Responsibility
+  text: Assign responsibility and authority for performing the process, developing the work products, and providing the services of the process.
+  obligation: shall
+  type: normative
+  classification: role_requirement
+  component: expected
+  target_asset_candidates:
+  - POL
+  - PRO
+  - MAT
+  parent_goal: GG2
+  subpractices:
+  - Assign overall responsibility and authority for performing the process.
+  - Assign responsibility and authority for performing the specific tasks of the process.
+  - Confirm that the people assigned to the responsibilities and authorities understand and accept them.
+  status: active_verbatim
+  source_page: 82
+- id: CMMIDEV-GP2.5-REQ-001
+  clause: GP 2.5
+  clause_title: Train People
+  text: Train the people performing or supporting the process as needed.
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  target_asset_candidates:
+  - PRO
+  - REC
+  parent_goal: GG2
+  status: active_verbatim
+  source_page: 83
+- id: CMMIDEV-GP2.6-REQ-001
+  clause: GP 2.6
+  clause_title: Control Work Products
+  text: Place selected work products of the process under appropriate levels of control.
+  obligation: shall
+  type: normative
+  classification: evidence_requirement
+  component: expected
+  target_asset_candidates:
+  - PRO
+  - REC
+  parent_goal: GG2
+  status: active_verbatim
+  source_page: 88
+- id: CMMIDEV-GP2.7-REQ-001
+  clause: GP 2.7
+  clause_title: Identify and Involve Relevant Stakeholders
+  text: Identify and involve the relevant stakeholders of the process as planned.
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  target_asset_candidates:
+  - PRO
+  - MAT
+  - REC
+  parent_goal: GG2
+  subpractices:
+  - Identify stakeholders relevant to this process and their appropriate involvement.
+  - Share these identifications with project planners or other planners as appropriate.
+  - Involve relevant stakeholders as planned.
+  status: active_verbatim
+  source_page: 93
+- id: CMMIDEV-GP2.8-REQ-001
+  clause: GP 2.8
+  clause_title: Monitor and Control the Process
+  text: Monitor and control the process against the plan for performing the process and take appropriate corrective action.
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  target_asset_candidates:
+  - PRO
+  - REC
+  parent_goal: GG2
+  subpractices:
+  - Evaluate actual progress and performance against the plan for performing the process.
+  - Review accomplishments and results of the process against the plan for performing the process.
+  - Review activities, status, and results of the process with the immediate level of management responsible for the process and identify issues.
+  - Identify and evaluate the effects of significant deviations from the plan for performing the process.
+  - Identify problems in the plan for performing the process and in the execution of the process.
+  - Take corrective action when requirements and objectives are not being satisfied, when issues are identified, or when progress differs significantly from the plan for performing the process.
+  - Track corrective action to closure.
+  status: active_verbatim
+  source_page: 100
+- id: CMMIDEV-GP2.9-REQ-001
+  clause: GP 2.9
+  clause_title: Objectively Evaluate Adherence
+  text: Objectively evaluate adherence of the process and selected work products against the process description, standards, and procedures, and address noncompliance.
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  target_asset_candidates:
+  - PRO
+  - REC
+  - MAT
+  parent_goal: GG2
+  status: active_verbatim
+  source_page: 106
+- id: CMMIDEV-GP2.10-REQ-001
+  clause: GP 2.10
+  clause_title: Review Status with Higher Level Management
+  text: Review the activities, status, and results of the process with higher level management and resolve issues.
+  obligation: shall
+  type: normative
+  classification: role_requirement
+  component: expected
+  target_asset_candidates:
+  - PRO
+  - REC
+  parent_goal: GG2
+  status: active_verbatim
+  source_page: 113
+- id: CMMIDEV-GG3-REQ-001
+  clause: GG 3
+  clause_title: Institutionalize a Defined Process
+  text: The process is institutionalized as a defined process.
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  target_asset_candidates:
+  - POL
+  - PRO
+  - MAT
+  evidence_candidates:
+  - tailored project-defined process from OSSP
+  - process related experiences contributed to OPA
+  applies_to_levels:
+  - ML3
+  - CL3
+  applies_to:
+  - all 22 process areas (at ML3 and above)
+  status: active_verbatim
+  source_page: 115
+- id: CMMIDEV-GP3.1-REQ-001
+  clause: GP 3.1
+  clause_title: Establish a Defined Process
+  text: Establish and maintain the description of a defined process.
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  target_asset_candidates:
+  - PRO
+  - MAT
+  parent_goal: GG3
+  subpractices:
+  - Select from the organization's set of standard processes those processes that cover the process area and best meet the needs of the project or organizational function.
+  - Establish the defined process by tailoring the selected processes according to the organization's tailoring guidelines.
+  - Ensure that the organization's process objectives are appropriately addressed in the defined process.
+  - Document the defined process and the records of the tailoring.
+  - Revise the description of the defined process as necessary.
+  status: active_verbatim
+  source_page: 115
+- id: CMMIDEV-GP3.2-REQ-001
+  clause: GP 3.2
+  clause_title: Collect Process Related Experiences
+  text: Collect process related experiences derived from planning and performing the process to support the future use and improvement of the organization's processes and process assets.
+  obligation: shall
+  type: normative
+  classification: evidence_requirement
+  component: expected
+  target_asset_candidates:
+  - REC
+  - MAT
+  parent_goal: GG3
+  subpractices:
+  - Store process and product measures in the organization's measurement repository.
+  - Submit documentation for inclusion in the organization's process asset library.
+  - Document lessons learned from the process for inclusion in the organization's process asset library.
+  - Propose improvements to the organizational process assets.
+  status: active_verbatim
+  source_page: 115
+- id: CMMIDEV-CAR-SG1-REQ-001
+  clause: CAR SG 1
+  clause_title: Determine Causes of Selected Outcomes
+  process_area: CAR
+  text: 'Root causes of selected outcomes are systematically determined.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 128
+- id: CMMIDEV-CAR-SP1.1-REQ-001
+  clause: CAR SP 1.1
+  clause_title: Select Outcomes for Analysis
+  process_area: CAR
+  text: 'Select outcomes for analysis.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: CAR SG 1
+  example_work_products:
+  - Data to be used in the initial analysis
+  - Initial analysis results data
+  - Outcomes selected for further analysis
+  subpractices:
+  - Gather relevant data.
+  - Determine which outcomes to analyze further.
+  - Formally define the scope of the analysis, including a clear definition of the improvement needed or expected, stakeholders affected, target affected, etc.
+  status: active_verbatim
+  source_page: 129
+- id: CMMIDEV-CAR-SP1.2-REQ-001
+  clause: CAR SP 1.2
+  clause_title: Analyze Causes
+  process_area: CAR
+  text: 'Perform causal analysis of selected outcomes and propose actions to address them.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: CAR SG 1
+  example_work_products:
+  - Root cause analysis results
+  - Action proposal
+  subpractices:
+  - Conduct causal analysis with those who are responsible for performing the task.
+  - Analyze selected outcomes to determine their root causes.
+  - Combine selected outcomes into groups based on their root causes.
+  - Create an action proposal that documents actions to be taken to prevent the future occurrence of similar outcomes or to incorporate best practices into processes.
+  status: active_verbatim
+  source_page: 130
+- id: CMMIDEV-CAR-SG2-REQ-001
+  clause: CAR SG 2
+  clause_title: Address Causes of Selected Outcomes
+  process_area: CAR
+  text: 'Root causes of selected outcomes are systematically addressed.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 132
+- id: CMMIDEV-CAR-SP2.1-REQ-001
+  clause: CAR SP 2.1
+  clause_title: Implement Action Proposals
+  process_area: CAR
+  text: 'Implement selected action proposals developed in causal analysis.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: CAR SG 2
+  example_work_products:
+  - Action proposals selected for implementation
+  - Action plans
+  subpractices:
+  - Analyze action proposals and determine their priorities.
+  - Select action proposals to be implemented.
+  - Create action plans for implementing the selected action proposals.
+  - Implement action plans.
+  - Look for similar causes that may exist in other processes and work products and take action as appropriate.
+  status: active_verbatim
+  source_page: 132
+- id: CMMIDEV-CAR-SP2.2-REQ-001
+  clause: CAR SP 2.2
+  clause_title: Evaluate the Effect of Implemented Actions
+  process_area: CAR
+  text: 'Evaluate the effect of implemented actions on process performance.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: CAR SG 2
+  example_work_products:
+  - Analysis of process performance and change in process performance
+  subpractices:
+  - Measure and analyze the change in process performance of the project's affected processes or subprocesses.
+  - Determine the impact of the change on achieving the project's quality and process performance objectives.
+  - Determine and document appropriate actions if the process or subprocess improvements did not result in expected project benefits.
+  status: active_verbatim
+  source_page: 133
+- id: CMMIDEV-CAR-SP2.3-REQ-001
+  clause: CAR SP 2.3
+  clause_title: Record Causal Analysis Data
+  process_area: CAR
+  text: 'Record causal analysis and resolution data for use across projects and the organization.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: CAR SG 2
+  example_work_products:
+  - Causal analysis and resolution records
+  - Organizational improvement proposals
+  subpractices:
+  - Record causal analysis data and make the data available so that other projects can make appropriate process changes and achieve similar results.
+  - Submit process improvement proposals for the organization when the implemented actions are effective for the project as appropriate.
+  status: active_verbatim
+  source_page: 134
+- id: CMMIDEV-CM-SG1-REQ-001
+  clause: CM SG 1
+  clause_title: Establish Baselines
+  process_area: CM
+  text: 'Baselines of identified work products are established.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 140
+- id: CMMIDEV-CM-SP1.1-REQ-001
+  clause: CM SP 1.1
+  clause_title: Identify Configuration Items
+  process_area: CM
+  text: 'Identify configuration items, components, and related work products to be placed under configuration management.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: CM SG 1
+  example_work_products:
+  - Identified configuration items
+  subpractices:
+  - Select configuration items and work products that compose them based on documented criteria.
+  - Assign unique identifiers to configuration items.
+  - Specify the important characteristics of each configuration item.
+  - Specify when each configuration item is placed under configuration management.
+  - Identify the owner responsible for each configuration item.
+  - Specify relationships among configuration items.
+  status: active_verbatim
+  source_page: 140
+- id: CMMIDEV-CM-SP1.2-REQ-001
+  clause: CM SP 1.2
+  clause_title: Establish a Configuration Management System
+  process_area: CM
+  text: 'Establish and maintain a configuration management and change management system for controlling work products.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: CM SG 1
+  example_work_products:
+  - Configuration management system with controlled work products
+  - Configuration management system access control procedures
+  - Change request database
+  subpractices:
+  - Establish a mechanism to manage multiple levels of control.
+  - Provide access control to ensure authorized access to the configuration management system.
+  - Store and retrieve configuration items in a configuration management system.
+  - Share and transfer configuration items between control levels in the configuration management system.
+  - Store and recover archived versions of configuration items.
+  - Store, update, and retrieve configuration management records.
+  - Create configuration management reports from the configuration management system.
+  - Preserve the contents of the configuration management system.
+  - Revise the configuration management structure as necessary.
+  status: active_verbatim
+  source_page: 142
+- id: CMMIDEV-CM-SP1.3-REQ-001
+  clause: CM SP 1.3
+  clause_title: Create or Release Baselines
+  process_area: CM
+  text: 'Create or release baselines for internal use and for delivery to the customer.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: CM SG 1
+  example_work_products:
+  - Baselines
+  - Description of baselines
+  subpractices:
+  - Obtain authorization from the CCB before creating or releasing baselines of configuration items.
+  - Create or release baselines only from configuration items in the configuration management system.
+  - Document the set of configuration items that are contained in a baseline.
+  - Make the current set of baselines readily available.
+  status: active_verbatim
+  source_page: 143
+- id: CMMIDEV-CM-SG2-REQ-001
+  clause: CM SG 2
+  clause_title: Track and Control Changes
+  process_area: CM
+  text: 'Changes to the work products under configuration management are tracked and controlled.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 144
+- id: CMMIDEV-CM-SP2.1-REQ-001
+  clause: CM SP 2.1
+  clause_title: Track Change Requests
+  process_area: CM
+  text: 'Track change requests for configuration items.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: CM SG 2
+  example_work_products:
+  - Change requests
+  subpractices:
+  - Initiate and record change requests in the change request database.
+  - Analyze the impact of changes and fixes proposed in change requests.
+  - Categorize and prioritize change requests.
+  - Review change requests to be addressed in the next baseline with relevant stakeholders and get their agreement.
+  - Track the status of change requests to closure.
+  status: active_verbatim
+  source_page: 144
+- id: CMMIDEV-CM-SP2.2-REQ-001
+  clause: CM SP 2.2
+  clause_title: Control Configuration Items
+  process_area: CM
+  text: 'Control changes to configuration items.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: CM SG 2
+  example_work_products:
+  - Revision history of configuration items
+  - Archives of baselines
+  subpractices:
+  - Control changes to configuration items throughout the life of the product or service.
+  - Obtain appropriate authorization before changed configuration items are entered into the configuration management system.
+  - Check in and check out configuration items in the configuration management system for incorporation of changes in a manner that maintains the correctness and integrity of configuration items.
+  - Perform reviews to ensure that changes have not caused unintended effects on the baselines (e.g., ensure that changes have not compromised the safety or security of the system).
+  - Record changes to configuration items and reasons for changes as appropriate.
+  status: active_verbatim
+  source_page: 145
+- id: CMMIDEV-CM-SG3-REQ-001
+  clause: CM SG 3
+  clause_title: Establish Integrity
+  process_area: CM
+  text: 'Integrity of baselines is established and maintained.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 146
+- id: CMMIDEV-CM-SP3.1-REQ-001
+  clause: CM SP 3.1
+  clause_title: Establish Configuration Management Records
+  process_area: CM
+  text: 'Establish and maintain records describing configuration items.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: CM SG 3
+  example_work_products:
+  - Revision history of configuration items
+  - Change log
+  - Change request records
+  - Status of configuration items
+  - Differences between baselines
+  subpractices:
+  - Record configuration management actions in sufficient detail so the content and status of each configuration item is known and previous versions can be recovered.
+  - Ensure that relevant stakeholders have access to and knowledge of the configuration status of configuration items.
+  - Specify the latest version of baselines.
+  - Identify the version of configuration items that constitute a particular baseline.
+  - Describe differences between successive baselines.
+  - Revise the status and history (i.e., changes, other actions) of each configuration item as necessary.
+  status: active_verbatim
+  source_page: 146
+- id: CMMIDEV-CM-SP3.2-REQ-001
+  clause: CM SP 3.2
+  clause_title: Perform Configuration Audits
+  process_area: CM
+  text: 'Perform configuration audits to maintain the integrity of configuration baselines.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: CM SG 3
+  example_work_products:
+  - Configuration audit results
+  - Action items
+  subpractices:
+  - Assess the integrity of baselines.
+  - Confirm that configuration management records correctly identify configuration items.
+  - Review the structure and integrity of items in the configuration management system.
+  - Confirm the completeness, correctness, and consistency of items in the configuration management system.
+  - Confirm compliance with applicable configuration management standards and procedures.
+  - Track action items from the audit to closure.
+  status: active_verbatim
+  source_page: 146
+- id: CMMIDEV-DAR-SG1-REQ-001
+  clause: DAR SG 1
+  clause_title: Evaluate Alternatives
+  process_area: DAR
+  text: 'Decisions are based on an evaluation of alternatives using established criteria.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 151
+- id: CMMIDEV-DAR-SP1.1-REQ-001
+  clause: DAR SP 1.1
+  clause_title: Establish Guidelines for Decision Analysis
+  process_area: DAR
+  text: 'Establish and maintain guidelines to determine which issues are subject to a formal evaluation process.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: DAR SG 1
+  example_work_products:
+  - Guidelines for when to apply a formal evaluation process
+  subpractices:
+  - Establish guidelines for when to use a formal evaluation process.
+  - Incorporate the use of guidelines into the defined process as appropriate.
+  status: active_verbatim
+  source_page: 151
+- id: CMMIDEV-DAR-SP1.2-REQ-001
+  clause: DAR SP 1.2
+  clause_title: Establish Evaluation Criteria
+  process_area: DAR
+  text: 'Establish and maintain criteria for evaluating alternatives and the relative ranking of these criteria.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: DAR SG 1
+  example_work_products:
+  - Documented evaluation criteria
+  - Rankings of criteria importance
+  subpractices:
+  - Define the criteria for evaluating alternative solutions.
+  - Define the range and scale for ranking the evaluation criteria.
+  - Rank the criteria.
+  - Assess the criteria and their relative importance.
+  - Evolve the evaluation criteria to improve their validity.
+  - Document the rationale for the selection and rejection of evaluation criteria.
+  status: active_verbatim
+  source_page: 152
+- id: CMMIDEV-DAR-SP1.3-REQ-001
+  clause: DAR SP 1.3
+  clause_title: Identify Alternative Solutions
+  process_area: DAR
+  text: 'Identify alternative solutions to address issues.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: DAR SG 1
+  example_work_products:
+  - Identified alternatives
+  subpractices:
+  - Perform a literature search.
+  - Identify alternatives for consideration in addition to the alternatives that may be provided with the issue.
+  - Document proposed alternatives.
+  status: active_verbatim
+  source_page: 153
+- id: CMMIDEV-DAR-SP1.4-REQ-001
+  clause: DAR SP 1.4
+  clause_title: Select Evaluation Methods
+  process_area: DAR
+  text: 'Select evaluation methods.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: DAR SG 1
+  example_work_products:
+  - Selected evaluation methods
+  subpractices:
+  - Select methods based on the purpose for analyzing a decision and on the availability of the information used to support the method.
+  - Select evaluation methods based on their ability to focus on the issues at hand without being overly influenced by side issues.
+  - Determine the measures needed to support the evaluation method.
+  status: active_verbatim
+  source_page: 154
+- id: CMMIDEV-DAR-SP1.5-REQ-001
+  clause: DAR SP 1.5
+  clause_title: Evaluate Alternative Solutions
+  process_area: DAR
+  text: 'Evaluate alternative solutions using established criteria and methods.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: DAR SG 1
+  example_work_products:
+  - Evaluation results
+  subpractices:
+  - Evaluate proposed alternative solutions using the established evaluation criteria and selected methods.
+  - Evaluate assumptions related to the evaluation criteria and the evidence that supports the assumptions.
+  - Evaluate whether uncertainty in the values for alternative solutions affects the evaluation and address these uncertainties as appropriate.
+  - Perform simulations, modeling, prototypes, and pilots as necessary to exercise the evaluation criteria, methods, and alternative solutions.
+  - Consider new alternative solutions, criteria, or methods if proposed alternatives do not test well; repeat evaluations until alternatives do test well.
+  - Document the results of the evaluation.
+  status: active_verbatim
+  source_page: 155
+- id: CMMIDEV-DAR-SP1.6-REQ-001
+  clause: DAR SP 1.6
+  clause_title: Select Solutions
+  process_area: DAR
+  text: 'Select solutions from alternatives based on evaluation criteria.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: DAR SG 1
+  example_work_products:
+  - Recommended solutions to address significant issues
+  subpractices:
+  - Assess the risks associated with implementing the recommended solution.
+  - Document and communicate to relevant stakeholders the results and rationale for the recommended solution.
+  status: active_verbatim
+  source_page: 156
+- id: CMMIDEV-IPM-SG1-REQ-001
+  clause: IPM SG 1
+  clause_title: Use the Project's Defined Process
+  process_area: IPM
+  text: 'The project is conducted using a defined process tailored from the organization''s set of standard processes.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 159
+- id: CMMIDEV-IPM-SP1.1-REQ-001
+  clause: IPM SP 1.1
+  clause_title: Establish the Project's Defined Process
+  process_area: IPM
+  text: 'Establish and maintain the project''s defined process from project startup through the life of the project.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: IPM SG 1
+  example_work_products:
+  - The project's defined process
+  subpractices:
+  - Select a lifecycle model from the ones available in organizational process assets.
+  - Select standard processes from the organization's set of standard processes that best fit the needs of the project.
+  - Tailor the organization's set of standard processes and other organizational process assets according to tailoring guidelines to produce the project's defined process.
+  - Use other artifacts from the organization's process asset library as appropriate.
+  - Document the project's defined process.
+  - Conduct peer reviews of the project's defined process.
+  - Revise the project's defined process as necessary.
+  status: active_verbatim
+  source_page: 159
+- id: CMMIDEV-IPM-SP1.2-REQ-001
+  clause: IPM SP 1.2
+  clause_title: Use Organizational Process Assets for Planning Project Activities
+  process_area: IPM
+  text: 'Use organizational process assets and the measurement repository for estimating and planning project activities.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: IPM SG 1
+  example_work_products:
+  - Project estimates
+  - Project plans
+  subpractices:
+  - Use the tasks and work products of the project's defined process as a basis for estimating and planning project activities.
+  - Use the organization's measurement repository in estimating the project's planning parameters.
+  status: active_verbatim
+  source_page: 161
+- id: CMMIDEV-IPM-SP1.3-REQ-001
+  clause: IPM SP 1.3
+  clause_title: Establish the Project's Work Environment
+  process_area: IPM
+  text: 'Establish and maintain the project''s work environment based on the organization''s work environment standards.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: IPM SG 1
+  example_work_products:
+  - Equipment and tools for the project
+  - Installation, operation, and maintenance manuals for the project work environment
+  - User surveys and results
+  - Use, performance, and maintenance records
+  - Support services for the project's work environment
+  subpractices:
+  - Plan, design, and install a work environment for the project.
+  - Provide ongoing maintenance and operational support for the project's work environment.
+  - Maintain the qualification of components of the project's work environment.
+  - Periodically review how well the work environment is meeting project needs and supporting collaboration, and take action as appropriate.
+  status: active_verbatim
+  source_page: 162
+- id: CMMIDEV-IPM-SP1.4-REQ-001
+  clause: IPM SP 1.4
+  clause_title: Integrate Plans
+  process_area: IPM
+  text: 'Integrate the project plan and other plans that affect the project to describe the project''s defined process.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: IPM SG 1
+  example_work_products:
+  - Integrated plans
+  subpractices:
+  - Integrate other plans that affect the project with the project plan.
+  - Incorporate into the project plan the definitions of measures and measurement activities for managing the project.
+  - Identify and analyze product and project interface risks.
+  - Schedule tasks in a sequence that accounts for critical development and delivery factors and project risks.
+  - Incorporate plans for performing peer reviews on work products of the project's defined process.
+  - Incorporate the training needed to perform the project's defined process in the project's training plans.
+  - Establish objective entry and exit criteria to authorize the initiation and completion of tasks described in the work breakdown structure (WBS).
+  - Ensure that the project plan is appropriately compatible with the plans of relevant stakeholders.
+  - Identify how conflicts will be resolved that arise among relevant stakeholders.
+  status: active_verbatim
+  source_page: 164
+- id: CMMIDEV-IPM-SP1.5-REQ-001
+  clause: IPM SP 1.5
+  clause_title: Manage the Project Using Integrated Plans
+  process_area: IPM
+  text: 'Manage the project using the project plan, other plans that affect the project, and the project''s defined process.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: IPM SG 1
+  example_work_products:
+  - Work products created by performing the project's defined process
+  - Collected measures (i.e., actuals) and status records or reports
+  - Revised requirements, plans, and commitments
+  - Integrated plans
+  subpractices:
+  - Implement the project's defined process using the organization's process asset library.
+  - Monitor and control the project's activities and work products using the project's defined process, project plan, and other plans that affect the project.
+  - Obtain and analyze selected measurements to manage the project and support organization needs.
+  - Periodically review and align the project's performance with current and anticipated needs, objectives, and requirements of the organization, customer, and end users as appropriate.
+  - Address causes of selected issues that can affect project objectives.
+  status: active_verbatim
+  source_page: 166
+- id: CMMIDEV-IPM-SP1.6-REQ-001
+  clause: IPM SP 1.6
+  clause_title: Establish Teams
+  process_area: IPM
+  text: 'Establish and maintain teams.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: IPM SG 1
+  example_work_products:
+  - Documented shared vision
+  - List of members assigned to each team
+  - Team charters
+  - Periodic team status reports
+  subpractices:
+  - Establish and maintain the project's shared vision.
+  - Establish and maintain the team structure.
+  - Establish and maintain each team.
+  - Periodically evaluate the team structure and composition.
+  status: active_verbatim
+  source_page: 168
+- id: CMMIDEV-IPM-SP1.7-REQ-001
+  clause: IPM SP 1.7
+  clause_title: Contribute to Organizational Process Assets
+  process_area: IPM
+  text: 'Contribute process related experiences to organizational process assets.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: IPM SG 1
+  example_work_products:
+  - Proposed improvements to organizational process assets
+  - Actual process and product measures collected from the project
+  - Documentation (e.g., exemplary process descriptions, plans, training modules, checklists, lessons learned)
+  - Process artifacts associated with tailoring and implementing the organization's set of standard processes on the project
+  subpractices:
+  - Propose improvements to the organizational process assets.
+  - Store process and product measures in the organization's measurement repository.
+  - Submit documentation for possible inclusion in the organization's process asset library.
+  - Document lessons learned from the project for inclusion in the organization's process asset library.
+  - Provide process artifacts associated with tailoring and implementing the organization's set of standard processes in support of the organization's process monitoring activities.
+  status: active_verbatim
+  source_page: 169
+- id: CMMIDEV-IPM-SG2-REQ-001
+  clause: IPM SG 2
+  clause_title: Coordinate and Collaborate with Relevant Stakeholders
+  process_area: IPM
+  text: 'Coordination and collaboration between the project and relevant stakeholders are conducted.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 171
+- id: CMMIDEV-IPM-SP2.1-REQ-001
+  clause: IPM SP 2.1
+  clause_title: Manage Stakeholder Involvement
+  process_area: IPM
+  text: 'Manage the involvement of relevant stakeholders in the project.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: IPM SG 2
+  example_work_products:
+  - Agendas and schedules for collaborative activities
+  - Recommendations for resolving relevant stakeholder issues
+  - Documented issues (e.g., issues with stakeholder requirements, product and product component requirements, product architecture, product design)
+  subpractices:
+  - Coordinate with relevant stakeholders who should participate in project activities.
+  - Ensure work products that are produced to satisfy commitments meet the requirements of the recipients.
+  - Develop recommendations and coordinate actions to resolve misunderstandings and problems with requirements.
+  status: active_verbatim
+  source_page: 171
+- id: CMMIDEV-IPM-SP2.2-REQ-001
+  clause: IPM SP 2.2
+  clause_title: Manage Dependencies
+  process_area: IPM
+  text: 'Participate with relevant stakeholders to identify, negotiate, and track critical dependencies.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: IPM SG 2
+  example_work_products:
+  - Defects, issues, and action items resulting from reviews with relevant stakeholders
+  - Critical dependencies
+  - Commitments to address critical dependencies
+  - Status of critical dependencies
+  subpractices:
+  - Conduct reviews with relevant stakeholders.
+  - Identify each critical dependency.
+  - Establish need dates and plan dates for each critical dependency based on the project schedule.
+  - Review and get agreement on commitments to address each critical dependency with those who are responsible for providing or receiving the work product.
+  - Document critical dependencies and commitments.
+  - Track the critical dependencies and commitments and take corrective action as appropriate.
+  status: active_verbatim
+  source_page: 172
+- id: CMMIDEV-IPM-SP2.3-REQ-001
+  clause: IPM SP 2.3
+  clause_title: Resolve Coordination Issues
+  process_area: IPM
+  text: 'Resolve issues with relevant stakeholders.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: IPM SG 2
+  example_work_products:
+  - Relevant stakeholder coordination issues
+  - Status of relevant stakeholder coordination issues
+  subpractices:
+  - Identify and document issues.
+  - Communicate issues to relevant stakeholders.
+  - Resolve issues with relevant stakeholders.
+  - Escalate to appropriate managers the issues not resolvable with relevant stakeholders.
+  - Track issues to closure.
+  - Communicate with relevant stakeholders on the status and resolution of issues.
+  status: active_verbatim
+  source_page: 173
+- id: CMMIDEV-MA-SG1-REQ-001
+  clause: MA SG 1
+  clause_title: Align Measurement and Analysis Activities
+  process_area: MA
+  text: 'Measurement objectives and activities are aligned with identified information needs and objectives.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 177
+- id: CMMIDEV-MA-SP1.1-REQ-001
+  clause: MA SP 1.1
+  clause_title: Establish Measurement Objectives
+  process_area: MA
+  text: 'Establish and maintain measurement objectives derived from identified information needs and objectives.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: MA SG 1
+  example_work_products:
+  - Measurement objectives
+  subpractices:
+  - Document information needs and objectives.
+  - Prioritize information needs and objectives.
+  - Document, review, and update measurement objectives.
+  - Provide feedback for refining and clarifying information needs and objectives as necessary.
+  - Maintain traceability of measurement objectives to identified information needs and objectives.
+  status: active_verbatim
+  source_page: 177
+- id: CMMIDEV-MA-SP1.2-REQ-001
+  clause: MA SP 1.2
+  clause_title: Specify Measures
+  process_area: MA
+  text: 'Specify measures to address measurement objectives.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: MA SG 1
+  example_work_products:
+  - Specifications of base and derived measures
+  subpractices:
+  - Identify candidate measures based on documented measurement objectives.
+  - Maintain traceability of measures to measurement objectives.
+  - Identify existing measures that already address measurement objectives.
+  - Specify operational definitions for measures.
+  - Prioritize, review, and update measures.
+  status: active_verbatim
+  source_page: 179
+- id: CMMIDEV-MA-SP1.3-REQ-001
+  clause: MA SP 1.3
+  clause_title: Specify Data Collection and Storage Procedures
+  process_area: MA
+  text: 'Specify how measurement data are obtained and stored.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: MA SG 1
+  example_work_products:
+  - Data collection and storage procedures
+  - Data collection tools
+  subpractices:
+  - Identify existing sources of data that are generated from current work products, processes, or transactions.
+  - Identify measures for which data are needed but are not currently available.
+  - Specify how to collect and store the data for each required measure.
+  - Create data collection mechanisms and process guidance.
+  - Support automatic collection of data as appropriate and feasible.
+  - Prioritize, review, and update data collection and storage procedures.
+  - Update measures and measurement objectives as necessary.
+  status: active_verbatim
+  source_page: 182
+- id: CMMIDEV-MA-SP1.4-REQ-001
+  clause: MA SP 1.4
+  clause_title: Specify Analysis Procedures
+  process_area: MA
+  text: 'Specify how measurement data are analyzed and communicated.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: MA SG 1
+  example_work_products:
+  - Analysis specifications and procedures
+  - Data analysis tools
+  subpractices:
+  - Specify and prioritize the analyses to be conducted and the reports to be prepared.
+  - Select appropriate data analysis methods and tools.
+  - Specify administrative procedures for analyzing data and communicating results.
+  - Review and update the proposed content and format of specified analyses and reports.
+  - Update measures and measurement objectives as necessary.
+  - Specify criteria for evaluating the utility of analysis results and for evaluating the conduct of measurement and analysis activities.
+  status: active_verbatim
+  source_page: 183
+- id: CMMIDEV-MA-SG2-REQ-001
+  clause: MA SG 2
+  clause_title: Provide Measurement Results
+  process_area: MA
+  text: 'Measurement results, which address identified information needs and objectives, are provided.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 186
+- id: CMMIDEV-MA-SP2.1-REQ-001
+  clause: MA SP 2.1
+  clause_title: Obtain Measurement Data
+  process_area: MA
+  text: 'Obtain specified measurement data.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: MA SG 2
+  example_work_products:
+  - Base and derived measurement data sets
+  - Results of data integrity tests
+  subpractices:
+  - Obtain data for base measures.
+  - Generate data for derived measures.
+  - Perform data integrity checks as close to the source of data as possible.
+  status: active_verbatim
+  source_page: 186
+- id: CMMIDEV-MA-SP2.2-REQ-001
+  clause: MA SP 2.2
+  clause_title: Analyze Measurement Data
+  process_area: MA
+  text: 'Analyze and interpret measurement data.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: MA SG 2
+  example_work_products:
+  - Analysis results and draft reports
+  subpractices:
+  - Conduct initial analyses, interpret results, and draw preliminary conclusions.
+  - Conduct additional measurement and analysis as necessary and prepare results for presentation.
+  - Review initial results with relevant stakeholders.
+  - Refine criteria for future analyses.
+  status: active_verbatim
+  source_page: 187
+- id: CMMIDEV-MA-SP2.3-REQ-001
+  clause: MA SP 2.3
+  clause_title: Store Data and Results
+  process_area: MA
+  text: 'Manage and store measurement data, measurement specifications, and analysis results.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: MA SG 2
+  example_work_products:
+  - Stored data inventory
+  subpractices:
+  - Review data to ensure their completeness, integrity, accuracy, and currency.
+  - Store data according to data storage procedures.
+  - Make stored contents available for use only to appropriate groups and staff members.
+  - Prevent stored information from being used inappropriately.
+  status: active_verbatim
+  source_page: 187
+- id: CMMIDEV-MA-SP2.4-REQ-001
+  clause: MA SP 2.4
+  clause_title: Communicate Results
+  process_area: MA
+  text: 'Communicate results of measurement and analysis activities to all relevant stakeholders.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: MA SG 2
+  example_work_products:
+  - Delivered reports and related analysis results
+  - Contextual information or guidance to help interpret analysis results
+  subpractices:
+  - Keep relevant stakeholders informed of measurement results in a timely manner.
+  - Assist relevant stakeholders in understanding results.
+  status: active_verbatim
+  source_page: 189
+- id: CMMIDEV-OPD-PURPOSE
+  clause: OPD Purpose
+  type: purpose_statement
+  source_page: 191
+  status: active_verbatim
+  process_area: OPD
+  clause_title: Organizational Process Definition Purpose
+  text: The purpose of Organizational Process Definition (OPD) is to establish and maintain a usable set of organizational process assets, work environment standards, and rules and guidelines for teams.
+  component: informative
+- id: CMMIDEV-OPD-SG1-REQ-001
+  clause: OPD SG 1
+  type: normative
+  source_page: 192
+  status: active_verbatim
+  process_area: OPD
+  clause_title: Establish Organizational Process Assets
+  text: A set of organizational process assets is established and maintained.
+  component: required
+  obligation: shall
+  classification: process_requirement
+- id: CMMIDEV-OPD-SP1.1-REQ-001
+  clause: OPD SP 1.1
+  type: normative
+  source_page: 192
+  example_work_products:
+  - Organization's set of standard processes
+  subpractices:
+  - Decompose each standard process into constituent process elements to the detail needed to understand and describe the process.
+  - Specify the critical attributes of each process element.
+  - Specify relationships among process elements.
+  - Ensure that the organization's set of standard processes adheres to applicable policies, standards, and models.
+  - Ensure that the organization's set of standard processes satisfies process needs and objectives of the organization.
+  - Ensure that there is appropriate integration among processes that are included in the organization's set of standard processes.
+  - Document the organization's set of standard processes.
+  - Conduct peer reviews on the organization's set of standard processes.
+  - Revise the organization's set of standard processes as necessary.
+  status: active_verbatim
+  process_area: OPD
+  clause_title: Establish Standard Processes
+  text: Establish and maintain the organization's set of standard processes.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPD SG 1
+- id: CMMIDEV-OPD-SP1.2-REQ-001
+  clause: OPD SP 1.2
+  type: normative
+  source_page: 194
+  example_work_products:
+  - Descriptions of lifecycle models
+  subpractices:
+  - Select lifecycle models based on the needs of projects and the organization.
+  - Document descriptions of lifecycle models.
+  - Conduct peer reviews on lifecycle models.
+  - Revise the descriptions of lifecycle models as necessary.
+  status: active_verbatim
+  process_area: OPD
+  clause_title: Establish Lifecycle Model Descriptions
+  text: Establish and maintain descriptions of lifecycle models approved for use in the organization.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPD SG 1
+- id: CMMIDEV-OPD-SP1.3-REQ-001
+  clause: OPD SP 1.3
+  type: normative
+  source_page: 195
+  example_work_products:
+  - Tailoring guidelines for the organization's set of standard processes
+  subpractices:
+  - Specify selection criteria and procedures for tailoring the organization's set of standard processes.
+  - Specify the standards used for documenting defined processes.
+  - Specify the procedures used for submitting and obtaining approval of waivers from the organization's set of standard processes.
+  - Document tailoring guidelines for the organization's set of standard processes.
+  - Conduct peer reviews on the tailoring guidelines.
+  - Revise tailoring guidelines as necessary.
+  status: active_verbatim
+  process_area: OPD
+  clause_title: Establish Tailoring Criteria and Guidelines
+  text: Establish and maintain tailoring criteria and guidelines for the organization's set of standard processes.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPD SG 1
+- id: CMMIDEV-OPD-SP1.4-REQ-001
+  clause: OPD SP 1.4
+  type: normative
+  source_page: 197
+  example_work_products:
+  - Definition of the common set of product and process measures for the organization's set of standard processes
+  - Design of the organization's measurement repository
+  - Organization's measurement repository (i.e., the repository structure, support environment)
+  - Organization's measurement data
+  subpractices:
+  - Determine the organization's needs for storing, retrieving, and analyzing measurements.
+  - Define a common set of process and product measures for the organization's set of standard processes.
+  - Design and implement the measurement repository.
+  - Specify procedures for storing, updating, and retrieving measures.
+  - Conduct peer reviews on definitions of the common set of measures and procedures for storing, updating, and retrieving measures.
+  - Enter specified measures into the repository.
+  - Make the contents of the measurement repository available for use by the organization and projects as appropriate.
+  - Revise the measurement repository, the common set of measures, and procedures as the organization's needs change.
+  status: active_verbatim
+  process_area: OPD
+  clause_title: Establish the Organization's Measurement Repository
+  text: Establish and maintain the organization's measurement repository.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPD SG 1
+- id: CMMIDEV-OPD-SP1.5-REQ-001
+  clause: OPD SP 1.5
+  type: normative
+  source_page: 199
+  example_work_products:
+  - Design of the organization's process asset library
+  - The organization's process asset library
+  - Selected items to be included in the organization's process asset library
+  - The catalog of items in the organization's process asset library
+  subpractices:
+  - Design and implement the organization's process asset library, including the library structure and support environment.
+  - Specify criteria for including items in the library.
+  - Specify procedures for storing, updating, and retrieving items.
+  - Enter selected items into the library and catalog them for easy reference and retrieval.
+  - Make items available for use by projects.
+  - Periodically review the use of each item.
+  - Revise the organization's process asset library as necessary.
+  status: active_verbatim
+  process_area: OPD
+  clause_title: Establish the Organization's Process Asset Library
+  text: Establish and maintain the organization's process asset library.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPD SG 1
+- id: CMMIDEV-OPD-SP1.6-REQ-001
+  clause: OPD SP 1.6
+  type: normative
+  source_page: 200
+  example_work_products:
+  - Work environment standards
+  subpractices:
+  - Evaluate commercially available work environment standards appropriate for the organization.
+  - Adopt existing work environment standards and develop new ones to fill gaps based on the organization's process needs and objectives.
+  status: active_verbatim
+  process_area: OPD
+  clause_title: Establish Work Environment Standards
+  text: Establish and maintain work environment standards.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPD SG 1
+- id: CMMIDEV-OPD-SP1.7-REQ-001
+  clause: OPD SP 1.7
+  type: normative
+  source_page: 200
+  example_work_products:
+  - Rules and guidelines for structuring and forming teams
+  - Operating rules for teams
+  subpractices:
+  - Establish and maintain empowerment mechanisms to enable timely decision making.
+  - Establish and maintain rules and guidelines for structuring and forming teams.
+  - Define the expectations, rules, and guidelines that guide how teams work collectively.
+  status: active_verbatim
+  process_area: OPD
+  clause_title: Establish Rules and Guidelines for Teams
+  text: Establish and maintain organizational rules and guidelines for the structure, formation, and operation of teams.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPD SG 1
+- id: CMMIDEV-OPF-PURPOSE
+  clause: OPF Purpose
+  type: purpose_statement
+  source_page: 203
+  status: active_verbatim
+  process_area: OPF
+  clause_title: Organizational Process Focus Purpose
+  text: The purpose of Organizational Process Focus (OPF) is to plan, implement, and deploy organizational process improvements based on a thorough understanding of current strengths and weaknesses of the organization's processes and process assets.
+  component: informative
+- id: CMMIDEV-OPF-SG1-REQ-001
+  clause: OPF SG 1
+  type: normative
+  source_page: 204
+  status: active_verbatim
+  process_area: OPF
+  clause_title: Determine Process Improvement Opportunities
+  text: Strengths, weaknesses, and improvement opportunities for the organization's processes are identified periodically and as needed.
+  component: required
+  obligation: shall
+  classification: process_requirement
+- id: CMMIDEV-OPF-SP1.1-REQ-001
+  clause: OPF SP 1.1
+  type: normative
+  source_page: 204
+  example_work_products:
+  - The organization's process needs and objectives
+  subpractices:
+  - Identify policies, standards, and business objectives that are applicable to the organization's processes.
+  - Examine relevant process standards and models for best practices.
+  - Determine the organization's process performance objectives.
+  - Define essential characteristics of the organization's processes.
+  - Document the organization's process needs and objectives.
+  - Revise the organization's process needs and objectives as needed.
+  status: active_verbatim
+  process_area: OPF
+  clause_title: Establish Organizational Process Needs
+  text: Establish and maintain the description of process needs and objectives for the organization.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPF SG 1
+- id: CMMIDEV-OPF-SP1.2-REQ-001
+  clause: OPF SP 1.2
+  type: normative
+  source_page: 206
+  example_work_products:
+  - Plans for the organization's process appraisals
+  - Appraisal findings that address strengths and weaknesses of the organization's processes
+  - Improvement recommendations for the organization's processes
+  subpractices:
+  - Obtain sponsorship of the process appraisal from senior management.
+  - Define the scope of the process appraisal.
+  - Determine the method and criteria to be used for the process appraisal.
+  - Plan, schedule, and prepare for the process appraisal.
+  - Conduct the process appraisal.
+  - Document and deliver the appraisal's activities and findings.
+  status: active_verbatim
+  process_area: OPF
+  clause_title: Appraise the Organization's Processes
+  text: Appraise the organization's processes periodically and as needed to maintain an understanding of their strengths and weaknesses.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPF SG 1
+- id: CMMIDEV-OPF-SP1.3-REQ-001
+  clause: OPF SP 1.3
+  type: normative
+  source_page: 207
+  example_work_products:
+  - Analysis of candidate process improvements
+  - Identification of improvements for the organization's processes
+  subpractices:
+  - Determine candidate process improvements.
+  - Prioritize candidate process improvements.
+  - Identify and document the process improvements to be implemented.
+  - Revise the list of planned process improvements to keep it current.
+  status: active_verbatim
+  process_area: OPF
+  clause_title: Identify the Organization's Process Improvements
+  text: Identify improvements to the organization's processes and process assets.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPF SG 1
+- id: CMMIDEV-OPF-SG2-REQ-001
+  clause: OPF SG 2
+  type: normative
+  source_page: 208
+  status: active_verbatim
+  process_area: OPF
+  clause_title: Plan and Implement Process Actions
+  text: Process actions that address improvements to the organization's processes and process assets are planned and implemented.
+  component: required
+  obligation: shall
+  classification: process_requirement
+- id: CMMIDEV-OPF-SP2.1-REQ-001
+  clause: OPF SP 2.1
+  type: normative
+  source_page: 208
+  example_work_products:
+  - The organization's approved process action plans
+  subpractices:
+  - Identify strategies, approaches, and actions to address identified process improvements.
+  - Establish process action teams to implement actions.
+  - Document process action plans.
+  - Review and negotiate process action plans with relevant stakeholders.
+  - Revise process action plans as necessary.
+  status: active_verbatim
+  process_area: OPF
+  clause_title: Establish Process Action Plans
+  text: Establish and maintain process action plans to address improvements to the organization's processes and process assets.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPF SG 2
+- id: CMMIDEV-OPF-SP2.2-REQ-001
+  clause: OPF SP 2.2
+  type: normative
+  source_page: 209
+  example_work_products:
+  - Commitments among process action teams
+  - Status and results of implementing process action plans
+  - Plans for pilots
+  subpractices:
+  - Make process action plans readily available to relevant stakeholders.
+  - Negotiate and document commitments among process action teams and revise their process action plans as necessary.
+  - Track progress and commitments against process action plans.
+  - Conduct joint reviews with process action teams and relevant stakeholders to monitor the progress and results of process actions.
+  - Plan pilots needed to test selected process improvements.
+  - Review the activities and work products of process action teams.
+  - Identify, document, and track to closure issues encountered when implementing process action plans.
+  - Ensure that results of implementing process action plans satisfy the organization's process improvement objectives.
+  status: active_verbatim
+  process_area: OPF
+  clause_title: Implement Process Action Plans
+  text: Implement process action plans.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPF SG 2
+- id: CMMIDEV-OPF-SG3-REQ-001
+  clause: OPF SG 3
+  type: normative
+  source_page: 210
+  status: active_verbatim
+  process_area: OPF
+  clause_title: Deploy Organizational Process Assets and Incorporate Experiences
+  text: Organizational process assets are deployed across the organization and process related experiences are incorporated into organizational process assets.
+  component: required
+  obligation: shall
+  classification: process_requirement
+- id: CMMIDEV-OPF-SP3.1-REQ-001
+  clause: OPF SP 3.1
+  type: normative
+  source_page: 210
+  example_work_products:
+  - Plans for deploying organizational process assets and changes to them across the organization
+  - Training materials for deploying organizational process assets and changes to them
+  - Documentation of changes to organizational process assets
+  - Support materials for deploying organizational process assets and changes to them
+  subpractices:
+  - Deploy organizational process assets across the organization.
+  - Document changes to organizational process assets.
+  - Deploy changes that were made to organizational process assets across the organization.
+  - Provide guidance and consultation on the use of organizational process assets.
+  status: active_verbatim
+  process_area: OPF
+  clause_title: Deploy Organizational Process Assets
+  text: Deploy organizational process assets across the organization.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPF SG 3
+- id: CMMIDEV-OPF-SP3.2-REQ-001
+  clause: OPF SP 3.2
+  type: normative
+  source_page: 211
+  example_work_products:
+  - The organization's list of projects and the status of process deployment on each (i.e., existing and planned projects)
+  - Guidelines for deploying the organization's set of standard processes on new projects
+  - Records of tailoring and implementing the organization's set of standard processes
+  subpractices:
+  - Identify projects in the organization that are starting up.
+  - Identify active projects that would benefit from implementing the organization's current set of standard processes.
+  - Establish plans to implement the organization's current set of standard processes on the identified projects.
+  - Assist projects in tailoring the organization's set of standard processes to meet their needs.
+  - Maintain records of tailoring and implementing processes on the identified projects.
+  - Ensure that the defined processes resulting from process tailoring are incorporated into plans for process compliance audits.
+  - As the organization's set of standard processes is updated, identify which projects should implement the changes.
+  status: active_verbatim
+  process_area: OPF
+  clause_title: Deploy Standard Processes
+  text: Deploy the organization's set of standard processes to projects at their startup and deploy changes to them as appropriate throughout the life of each project.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPF SG 3
+- id: CMMIDEV-OPF-SP3.3-REQ-001
+  clause: OPF SP 3.3
+  type: normative
+  source_page: 212
+  example_work_products:
+  - Results of monitoring process implementation on projects
+  - Status and results of process compliance audits
+  - Results of reviewing selected process artifacts created as part of process tailoring and implementation
+  subpractices:
+  - Monitor the projects' use of organizational process assets and changes to them.
+  - Review selected process artifacts created during the life of each project.
+  - Review results of process compliance audits to determine how well the organization's set of standard processes has been deployed.
+  - Identify, document, and track to closure issues related to implementing the organization's set of standard processes.
+  status: active_verbatim
+  process_area: OPF
+  clause_title: Monitor the Implementation
+  text: Monitor the implementation of the organization's set of standard processes and use of process assets on all projects.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPF SG 3
+- id: CMMIDEV-OPF-SP3.4-REQ-001
+  clause: OPF SP 3.4
+  type: normative
+  source_page: 213
+  example_work_products:
+  - Process improvement proposals
+  - Process lessons learned
+  - Measurements of organizational process assets
+  - Improvement recommendations for organizational process assets
+  - Records of the organization's process improvement activities
+  - Information on organizational process assets and improvements to them
+  subpractices:
+  - Conduct periodic reviews of the effectiveness and suitability of the organization's set of standard processes and related organizational process assets relative to the process needs and objectives derived from the organization's business objectives.
+  - Obtain feedback about the use of organizational process assets.
+  - Derive lessons learned from defining, piloting, implementing, and deploying organizational process assets.
+  - Make lessons learned available to people in the organization as appropriate.
+  - Analyze measurement data obtained from the use of the organization's common set of measures.
+  - Appraise processes, methods, and tools in use in the organization and develop recommendations for improving organizational process assets.
+  - Make the best of the organization's processes, methods, and tools available to people in the organization as appropriate.
+  - Manage process improvement proposals.
+  - Establish and maintain records of the organization's process improvement activities.
+  status: active_verbatim
+  process_area: OPF
+  clause_title: Incorporate Experiences into Organizational Process Assets
+  text: Incorporate process related experiences derived from planning and performing the process into organizational process assets.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPF SG 3
+- id: CMMIDEV-OPM-PURPOSE
+  clause: OPM Purpose
+  type: purpose_statement
+  source_page: 217
+  maturity_level: 5
+  status: active_verbatim
+  process_area: OPM
+  clause_title: Organizational Performance Management Purpose
+  text: The purpose of Organizational Performance Management (OPM) is to proactively manage the organization's performance to meet its business objectives.
+  component: informative
+- id: CMMIDEV-OPM-SG1-REQ-001
+  clause: OPM SG 1
+  type: normative
+  source_page: 219
+  maturity_level: 5
+  status: active_verbatim
+  process_area: OPM
+  clause_title: Manage Business Performance
+  text: The organization's business performance is managed using statistical and other quantitative techniques to understand process performance shortfalls, and to identify areas for process improvement.
+  component: required
+  obligation: shall
+  classification: process_requirement
+- id: CMMIDEV-OPM-SP1.1-REQ-001
+  clause: OPM SP 1.1
+  type: normative
+  source_page: 220
+  maturity_level: 5
+  example_work_products:
+  - Revised business objectives
+  - Revised quality and process performance objectives
+  - Senior management approval of revised business objectives and quality and process performance objectives
+  - Communication of all revised objectives
+  - Updated process performance measures
+  subpractices:
+  - Evaluate business objectives periodically to ensure they are aligned with business strategies.
+  - Compare business objectives with actual process performance results to ensure they are realistic.
+  - Prioritize business objectives based on documented criteria, such as the ability to win new business, retain existing clients, or accomplish other key business strategies.
+  - Maintain quality and process performance objectives to address changes in business objectives.
+  - Revise process performance measures to align with quality and process performance objectives.
+  status: active_verbatim
+  process_area: OPM
+  clause_title: Maintain Business Objectives
+  text: Maintain business objectives based on an understanding of business strategies and actual performance results.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPM SG 1
+- id: CMMIDEV-OPM-SP1.2-REQ-001
+  clause: OPM SP 1.2
+  type: normative
+  source_page: 221
+  maturity_level: 5
+  example_work_products:
+  - Analysis of current capability vs. business objectives
+  - Process performance shortfalls
+  - Risks associated with meeting business objectives
+  subpractices:
+  - Periodically compare quality and process performance objectives to current process performance baselines to evaluate the ability of the organization to meet its business objectives.
+  - Identify shortfalls where the actual process performance is not satisfying the business objectives.
+  - Identify and analyze risks associated with not meeting business objectives.
+  - Report results of the process performance and risk analyses to organizational leadership.
+  status: active_verbatim
+  process_area: OPM
+  clause_title: Analyze Process Performance Data
+  text: Analyze process performance data to determine the organization's ability to meet identified business objectives.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPM SG 1
+- id: CMMIDEV-OPM-SP1.3-REQ-001
+  clause: OPM SP 1.3
+  type: normative
+  source_page: 222
+  maturity_level: 5
+  example_work_products:
+  - Potential areas for improvement
+  subpractices:
+  - Identify potential improvement areas based on the analysis of process performance shortfalls.
+  - Document the rationale for the potential improvement areas, including references to applicable business objectives and process performance data.
+  - Document anticipated costs and benefits associated with addressing potential improvement areas.
+  - Communicate the set of potential improvement areas for further evaluation, prioritization, and use.
+  status: active_verbatim
+  process_area: OPM
+  clause_title: Identify Potential Areas for Improvement
+  text: Identify potential areas for improvement that could contribute to meeting business objectives.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPM SG 1
+- id: CMMIDEV-OPM-SG2-REQ-001
+  clause: OPM SG 2
+  type: normative
+  source_page: 222
+  maturity_level: 5
+  status: active_verbatim
+  process_area: OPM
+  clause_title: Select Improvements
+  text: Improvements are proactively identified, evaluated using statistical and other quantitative techniques, and selected for deployment based on their contribution to meeting quality and process performance objectives.
+  component: required
+  obligation: shall
+  classification: process_requirement
+- id: CMMIDEV-OPM-SP2.1-REQ-001
+  clause: OPM SP 2.1
+  type: normative
+  source_page: 223
+  maturity_level: 5
+  example_work_products:
+  - Suggested incremental improvements
+  - Suggested innovative improvements
+  subpractices:
+  - Elicit suggested improvements.
+  - Identify suggested improvements as incremental or innovative.
+  - Investigate innovative improvements that may improve the organization's processes and technologies.
+  status: active_verbatim
+  process_area: OPM
+  clause_title: Elicit Suggested Improvements
+  text: Elicit and categorize suggested improvements.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPM SG 2
+- id: CMMIDEV-OPM-SP2.2-REQ-001
+  clause: OPM SP 2.2
+  type: normative
+  source_page: 225
+  maturity_level: 5
+  example_work_products:
+  - Suggested improvement proposals
+  - Selected improvements to be validated
+  subpractices:
+  - Analyze the costs and benefits of suggested improvements.
+  - Identify potential barriers and risks to deploying each suggested improvement.
+  - Estimate the cost, effort, and schedule required for implementing, verifying, and deploying each suggested improvement.
+  - Select suggested improvements for validation and possible implementation and deployment based on the evaluations.
+  - Document the evaluation results of each selected improvement suggestion in an improvement proposal.
+  - Determine the detailed changes needed to implement the improvement and document them in the improvement proposal.
+  - Determine the validation method that will be used before broad-scale deployment of the change and document it in the improvement proposal.
+  - Document results of the selection process.
+  status: active_verbatim
+  process_area: OPM
+  clause_title: Analyze Suggested Improvements
+  text: Analyze suggested improvements for their possible impact on achieving the organization's quality and process performance objectives.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPM SG 2
+- id: CMMIDEV-OPM-SP2.3-REQ-001
+  clause: OPM SP 2.3
+  type: normative
+  source_page: 227
+  maturity_level: 5
+  example_work_products:
+  - Validation plans
+  - Validation evaluation reports
+  - Documented lessons learned from validation
+  subpractices:
+  - Plan the validation.
+  - Review and get relevant stakeholder agreement on validation plans.
+  - Consult with and assist those who perform the validation.
+  - Create a trial implementation, in accordance with the validation plan, for selected improvements to be piloted.
+  - Perform each validation in an environment that is similar to the environment present in a broad scale deployment.
+  - Track validation against validation plans.
+  - Review and document the results of validation.
+  status: active_verbatim
+  process_area: OPM
+  clause_title: Validate Improvements
+  text: Validate selected improvements.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPM SG 2
+- id: CMMIDEV-OPM-SP2.4-REQ-001
+  clause: OPM SP 2.4
+  type: normative
+  source_page: 229
+  maturity_level: 5
+  example_work_products:
+  - Improvements selected for deployment
+  - Updated process documentation and training
+  subpractices:
+  - Prioritize improvements for deployment.
+  - Select improvements to be deployed.
+  - Determine how to deploy each improvement.
+  - Document results of the selection process.
+  - Review any changes needed to implement the improvements.
+  - Update the organizational process assets.
+  status: active_verbatim
+  process_area: OPM
+  clause_title: Select and Implement Improvements for Deployment
+  text: Select and implement improvements for deployment throughout the organization based on an evaluation of costs, benefits, and other factors.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPM SG 2
+- id: CMMIDEV-OPM-SG3-REQ-001
+  clause: OPM SG 3
+  type: normative
+  source_page: 230
+  maturity_level: 5
+  status: active_verbatim
+  process_area: OPM
+  clause_title: Deploy Improvements
+  text: Measurable improvements to the organization's processes and technologies are deployed and evaluated using statistical and other quantitative techniques.
+  component: required
+  obligation: shall
+  classification: process_requirement
+- id: CMMIDEV-OPM-SP3.1-REQ-001
+  clause: OPM SP 3.1
+  type: normative
+  source_page: 230
+  maturity_level: 5
+  example_work_products:
+  - Deployment plans for selected improvements
+  subpractices:
+  - Determine how each improvement should be adjusted for deployment.
+  - Identify strategies that address the potential barriers to deploying each improvement that were defined in the improvement proposals.
+  - Identify the target project population for deployment of the improvement.
+  - Establish measures and objectives for determining the value of each improvement with respect to the organization's quality and process performance objectives.
+  - Document the plans for deploying selected improvements.
+  - Review and get agreement with relevant stakeholders on the plans for deploying selected improvements.
+  - Revise the plans for deploying selected improvements as necessary.
+  status: active_verbatim
+  process_area: OPM
+  clause_title: Plan the Deployment
+  text: Establish and maintain plans for deploying selected improvements.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPM SG 3
+- id: CMMIDEV-OPM-SP3.2-REQ-001
+  clause: OPM SP 3.2
+  type: normative
+  source_page: 232
+  maturity_level: 5
+  example_work_products:
+  - Updated training materials (to reflect deployed improvements)
+  - Documented results of improvement deployment activities
+  - Revised improvement measures, objectives, priorities, and deployment plans
+  subpractices:
+  - Monitor the deployment of improvements using deployment plans.
+  - Coordinate the deployment of improvements across the organization.
+  - Deploy improvements in a controlled and disciplined manner.
+  - Coordinate the deployment of improvements into the projects' defined processes as appropriate.
+  - Provide consulting as appropriate to support deployment of improvements.
+  - Provide updated training materials or develop communication packages to reflect improvements to organizational process assets.
+  - Confirm that the deployment of all improvements is completed in accordance with the deployment plan.
+  - Document and review results of improvement deployment.
+  status: active_verbatim
+  process_area: OPM
+  clause_title: Manage the Deployment
+  text: Manage the deployment of selected improvements.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPM SG 3
+- id: CMMIDEV-OPM-SP3.3-REQ-001
+  clause: OPM SP 3.3
+  type: normative
+  source_page: 233
+  maturity_level: 5
+  example_work_products:
+  - Documented measures of the effects resulting from deployed improvements
+  subpractices:
+  - Measure the results of each improvement as implemented on the target projects, using the measures defined in the deployment plans.
+  - Measure and analyze progress toward achieving the organization's quality and process performance objectives using statistical and other quantitative techniques and take corrective action as needed.
+  status: active_verbatim
+  process_area: OPM
+  clause_title: Evaluate Improvement Effects
+  text: Evaluate the effects of deployed improvements on quality and process performance using statistical and other quantitative techniques.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPM SG 3
+- id: CMMIDEV-OPP-PURPOSE
+  clause: OPP Purpose
+  type: purpose_statement
+  source_page: 235
+  maturity_level: 4
+  status: active_verbatim
+  process_area: OPP
+  clause_title: Organizational Process Performance Purpose
+  text: The purpose of Organizational Process Performance (OPP) is to establish and maintain a quantitative understanding of the performance of selected processes in the organization's set of standard processes in support of achieving quality and process performance objectives, and to provide process performance data, baselines, and models to quantitatively manage the organization's projects.
+  component: informative
+- id: CMMIDEV-OPP-SG1-REQ-001
+  clause: OPP SG 1
+  type: normative
+  source_page: 237
+  maturity_level: 4
+  status: active_verbatim
+  process_area: OPP
+  clause_title: Establish Performance Baselines and Models
+  text: Baselines and models, which characterize the expected process performance of the organization's set of standard processes, are established and maintained.
+  component: required
+  obligation: shall
+  classification: process_requirement
+- id: CMMIDEV-OPP-SP1.1-REQ-001
+  clause: OPP SP 1.1
+  type: normative
+  source_page: 237
+  maturity_level: 4
+  example_work_products:
+  - Organization's quality and process performance objectives
+  subpractices:
+  - Review the organization's business objectives related to quality and process performance.
+  - Define the organization's quantitative objectives for quality and process performance.
+  - Define the priorities of the organization's objectives for quality and process performance.
+  - Review, negotiate, and obtain commitment to the organization's quality and process performance objectives and their priorities from relevant stakeholders.
+  - Revise the organization's quantitative objectives for quality and process performance as necessary.
+  status: active_verbatim
+  process_area: OPP
+  clause_title: Establish Quality and Process Performance Objectives
+  text: Establish and maintain the organization's quantitative objectives for quality and process performance, which are traceable to business objectives.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPP SG 1
+- id: CMMIDEV-OPP-SP1.2-REQ-001
+  clause: OPP SP 1.2
+  type: normative
+  source_page: 239
+  maturity_level: 4
+  example_work_products:
+  - List of processes or subprocesses identified for process performance analyses with rationale for their selection including traceability to business objectives
+  subpractices:
+  - Establish the criteria to use when selecting subprocesses.
+  - Select the subprocesses and document the rationale for their selection.
+  - Establish and maintain traceability between the selected subprocesses, quality and process performance objectives, and business objectives.
+  - Revise the selection as necessary.
+  status: active_verbatim
+  process_area: OPP
+  clause_title: Select Processes
+  text: Select processes or subprocesses in the organization's set of standard processes to be included in the organization's process performance analyses and maintain traceability to business objectives.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPP SG 1
+- id: CMMIDEV-OPP-SP1.3-REQ-001
+  clause: OPP SP 1.3
+  type: normative
+  source_page: 241
+  maturity_level: 4
+  example_work_products:
+  - Definitions of selected measures of process performance with rationale for their selection including traceability to selected processes or subprocesses
+  subpractices:
+  - Select measures that reflect appropriate attributes of the selected processes or subprocesses to provide insight into the organization's quality and process performance.
+  - Establish operational definitions for the selected measures.
+  - Incorporate selected measures into the organization's set of common measures.
+  - Revise the set of measures as necessary.
+  status: active_verbatim
+  process_area: OPP
+  clause_title: Establish Process Performance Measures
+  text: Establish and maintain definitions of measures to be included in the organization's process performance analyses.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPP SG 1
+- id: CMMIDEV-OPP-SP1.4-REQ-001
+  clause: OPP SP 1.4
+  type: normative
+  source_page: 242
+  maturity_level: 4
+  example_work_products:
+  - Analysis of process performance data
+  - Baseline data on the organization's process performance
+  subpractices:
+  - Collect the selected measurements for the selected processes and subprocesses.
+  - Analyze the collected measures to establish a distribution or range of results that characterize the expected performance of selected processes or subprocesses when used on a project.
+  - Establish and maintain the process performance baselines from collected measurements and analyses.
+  - Review and get agreement with relevant stakeholders about the process performance baselines.
+  - Make the process performance information available across the organization in the measurement repository.
+  - Compare the process performance baselines to associated quality and process performance objectives to determine if those quality and process performance objectives are being achieved.
+  - Revise the process performance baselines as necessary.
+  status: active_verbatim
+  process_area: OPP
+  clause_title: Analyze Process Performance and Establish Process Performance Baselines
+  text: Analyze the performance of the selected processes, and establish and maintain the process performance baselines.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPP SG 1
+- id: CMMIDEV-OPP-SP1.5-REQ-001
+  clause: OPP SP 1.5
+  type: normative
+  source_page: 244
+  maturity_level: 4
+  example_work_products:
+  - Process performance models
+  subpractices:
+  - Establish process performance models based on the organization's set of standard processes and process performance baselines.
+  - Calibrate process performance models based on the past results and current needs.
+  - Review process performance models and get agreement with relevant stakeholders.
+  - Support the projects' use of process performance models.
+  - Revise process performance models as necessary.
+  status: active_verbatim
+  process_area: OPP
+  clause_title: Establish Process Performance Models
+  text: Establish and maintain process performance models for the organization's set of standard processes.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OPP SG 1
+- id: CMMIDEV-OT-PURPOSE
+  clause: OT Purpose
+  type: purpose_statement
+  source_page: 247
+  status: active_verbatim
+  process_area: OT
+  clause_title: Organizational Training Purpose
+  text: The purpose of Organizational Training (OT) is to develop skills and knowledge of people so they can perform their roles effectively and efficiently.
+  component: informative
+- id: CMMIDEV-OT-SG1-REQ-001
+  clause: OT SG 1
+  type: normative
+  source_page: 248
+  status: active_verbatim
+  process_area: OT
+  clause_title: Establish an Organizational Training Capability
+  text: A training capability, which supports the roles in the organization, is established and maintained.
+  component: required
+  obligation: shall
+  classification: process_requirement
+- id: CMMIDEV-OT-SP1.1-REQ-001
+  clause: OT SP 1.1
+  type: normative
+  source_page: 248
+  example_work_products:
+  - Training needs
+  - Assessment analysis
+  subpractices:
+  - Analyze the organization's strategic business objectives and process improvement plan to identify potential training needs.
+  - Document the strategic training needs of the organization.
+  - Determine the roles and skills needed to perform the organization's set of standard processes.
+  - Document the training needed to perform roles in the organization's set of standard processes.
+  - Document the training needed to maintain the safe, secure, and continued operation of the business.
+  - Revise the organization's strategic needs and required training as necessary.
+  status: active_verbatim
+  process_area: OT
+  clause_title: Establish Strategic Training Needs
+  text: Establish and maintain strategic training needs of the organization.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OT SG 1
+- id: CMMIDEV-OT-SP1.2-REQ-001
+  clause: OT SP 1.2
+  type: normative
+  source_page: 250
+  example_work_products:
+  - Common project and support group training needs
+  - Training commitments
+  subpractices:
+  - Analyze the training needs identified by projects and support groups.
+  - Negotiate with projects and support groups on how their training needs will be satisfied.
+  - Document commitments for providing training support to projects and support groups.
+  status: active_verbatim
+  process_area: OT
+  clause_title: Determine Which Training Needs Are the Responsibility of the Organization
+  text: Determine which training needs are the responsibility of the organization and which are left to the individual project or support group.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OT SG 1
+- id: CMMIDEV-OT-SP1.3-REQ-001
+  clause: OT SP 1.3
+  type: normative
+  source_page: 250
+  example_work_products:
+  - Organizational training tactical plan
+  subpractices:
+  - Establish the content of the plan.
+  - Establish commitments to the plan.
+  - Revise the plan and commitments as necessary.
+  status: active_verbatim
+  process_area: OT
+  clause_title: Establish an Organizational Training Tactical Plan
+  text: Establish and maintain an organizational training tactical plan.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OT SG 1
+- id: CMMIDEV-OT-SP1.4-REQ-001
+  clause: OT SP 1.4
+  type: normative
+  source_page: 251
+  example_work_products:
+  - Training materials and supporting artifacts
+  subpractices:
+  - Select appropriate approaches to satisfy organizational training needs.
+  - Determine whether to develop training materials internally or to acquire them externally.
+  - Develop or obtain training materials.
+  - Develop or obtain qualified instructors, instructional designers, or mentors.
+  - Describe the training in the organization's training curriculum.
+  - Revise training materials and supporting artifacts as necessary.
+  status: active_verbatim
+  process_area: OT
+  clause_title: Establish a Training Capability
+  text: Establish and maintain a training capability to address organizational training needs.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OT SG 1
+- id: CMMIDEV-OT-SG2-REQ-001
+  clause: OT SG 2
+  type: normative
+  source_page: 253
+  status: active_verbatim
+  process_area: OT
+  clause_title: Provide Training
+  text: Training for individuals to perform their roles effectively is provided.
+  component: required
+  obligation: shall
+  classification: process_requirement
+- id: CMMIDEV-OT-SP2.1-REQ-001
+  clause: OT SP 2.1
+  type: normative
+  source_page: 254
+  example_work_products:
+  - Delivered training course
+  subpractices:
+  - Select those who will receive the training necessary to perform their roles effectively.
+  - Schedule the training, including any resources, as necessary (e.g., facilities, instructors).
+  - Deliver the training.
+  - Track the delivery of training against the plan.
+  status: active_verbatim
+  process_area: OT
+  clause_title: Deliver Training
+  text: Deliver training following the organizational training tactical plan.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OT SG 2
+- id: CMMIDEV-OT-SP2.2-REQ-001
+  clause: OT SP 2.2
+  type: normative
+  source_page: 254
+  example_work_products:
+  - Training records
+  - Training updates to the organizational repository
+  subpractices:
+  - Keep records of all students who successfully complete each training course or other approved training activity as well as those who are unsuccessful.
+  - Keep records of all staff who are waived from training.
+  - Keep records of all students who successfully complete their required training.
+  - Make training records available to the appropriate people for consideration in assignments.
+  status: active_verbatim
+  process_area: OT
+  clause_title: Establish Training Records
+  text: Establish and maintain records of organizational training.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OT SG 2
+- id: CMMIDEV-OT-SP2.3-REQ-001
+  clause: OT SP 2.3
+  type: normative
+  source_page: 255
+  example_work_products:
+  - Training effectiveness surveys
+  - Training program performance assessments
+  - Instructor evaluation forms
+  - Training examinations
+  subpractices:
+  - Assess in-progress or completed projects to determine whether staff knowledge is adequate for performing project tasks.
+  - Provide a mechanism for assessing the effectiveness of each training course with respect to established organizational, project, or individual learning (or performance) objectives.
+  - Obtain student evaluations of how well training activities met their needs.
+  status: active_verbatim
+  process_area: OT
+  clause_title: Assess Training Effectiveness
+  text: Assess the effectiveness of the organization's training program.
+  component: expected
+  obligation: shall
+  classification: process_requirement
+  parent_goal: OT SG 2
+- id: CMMIDEV-PI-SG1-REQ-001
+  clause: PI SG 1
+  clause_title: Prepare for Product Integration
+  text: Preparation for product integration is conducted.
+  obligation: shall
+  type: normative
+  classification: process_goal
+  component: required
+  target_asset_candidates:
+  - PRO
+  - WI
+  status: active_verbatim
+  source_page: 259
+  process_area: PI
+- id: CMMIDEV-PI-SP1.1-REQ-001
+  clause: PI SP 1.1
+  clause_title: Establish an Integration Strategy
+  text: Establish and maintain a product integration strategy.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Product integration strategy
+  - Rationale for selecting or rejecting alternative product integration strategies
+  subpractices:
+  - Identify the product components to be integrated.
+  - Identify the verifications to be performed during the integration of the product components.
+  - Identify alternative product component integration strategies.
+  - Select the best integration strategy.
+  - Periodically review the product integration strategy and revise as needed.
+  - Record the rationale for decisions made and deferred.
+  status: active_verbatim
+  source_page: 259
+  process_area: PI
+  parent_goal: PI SG 1
+- id: CMMIDEV-PI-SP1.2-REQ-001
+  clause: PI SP 1.2
+  clause_title: Establish the Product Integration Environment
+  text: Establish and maintain the environment needed to support the integration of the product components.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Verified environment for product integration
+  - Support documentation for the product integration environment
+  subpractices:
+  - Identify the requirements for the product integration environment.
+  - Identify verification procedures and criteria for the product integration environment.
+  - Decide whether to make or buy the needed product integration environment.
+  - Develop an integration environment if a suitable environment cannot be acquired.
+  - Maintain the product integration environment throughout the project.
+  - Dispose of those portions of the environment that are no longer useful.
+  status: active_verbatim
+  source_page: 261
+  process_area: PI
+  parent_goal: PI SG 1
+- id: CMMIDEV-PI-SP1.3-REQ-001
+  clause: PI SP 1.3
+  clause_title: Establish Product Integration Procedures and Criteria
+  text: Establish and maintain procedures and criteria for integration of the product components.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Product integration procedures
+  - Product integration criteria
+  subpractices:
+  - Establish and maintain product integration procedures for the product components.
+  - Establish and maintain criteria for product component integration and evaluation.
+  - Establish and maintain criteria for validation and delivery of the integrated product.
+  status: active_verbatim
+  source_page: 262
+  process_area: PI
+  parent_goal: PI SG 1
+- id: CMMIDEV-PI-SG2-REQ-001
+  clause: PI SG 2
+  clause_title: Ensure Interface Compatibility
+  text: The product component interfaces, both internal and external, are compatible.
+  obligation: shall
+  type: normative
+  classification: process_goal
+  component: required
+  status: active_verbatim
+  source_page: 263
+  process_area: PI
+- id: CMMIDEV-PI-SP2.1-REQ-001
+  clause: PI SP 2.1
+  clause_title: Review Interface Descriptions for Completeness
+  text: Review interface descriptions for coverage and completeness.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Categories of interfaces
+  - List of interfaces per category
+  - Mapping of the interfaces to the product components and the product integration environment
+  subpractices:
+  - Review interface data for completeness and ensure complete coverage of all interfaces.
+  - Ensure that product components and interfaces are marked to ensure easy and correct connection to the joining product component.
+  - Periodically review the adequacy of interface descriptions.
+  status: active_verbatim
+  source_page: 263
+  process_area: PI
+  parent_goal: PI SG 2
+- id: CMMIDEV-PI-SP2.2-REQ-001
+  clause: PI SP 2.2
+  clause_title: Manage Interfaces
+  text: Manage internal and external interface definitions, designs, and changes for products and product components.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Table of relationships among the product components and the external environment
+  - Table of relationships among the different product components
+  - List of agreed-to interfaces defined for each pair of product components, when applicable
+  - Reports from the interface control working group meetings
+  - Action items for updating interfaces
+  - Application program interface (API)
+  - Updated interface description or agreement
+  subpractices:
+  - Ensure the compatibility of the interfaces throughout the life of the product.
+  - Resolve conflict, noncompliance, and change issues.
+  - Maintain a repository for interface data accessible to project participants.
+  status: active_verbatim
+  source_page: 264
+  process_area: PI
+  parent_goal: PI SG 2
+- id: CMMIDEV-PI-SG3-REQ-001
+  clause: PI SG 3
+  clause_title: Assemble Product Components and Deliver the Product
+  text: Verified product components are assembled and the integrated, verified, and validated product is delivered.
+  obligation: shall
+  type: normative
+  classification: process_goal
+  component: required
+  status: active_verbatim
+  source_page: 266
+  process_area: PI
+- id: CMMIDEV-PI-SP3.1-REQ-001
+  clause: PI SP 3.1
+  clause_title: Confirm Readiness of Product Components for Integration
+  text: Confirm, prior to assembly, that each product component required to assemble the product has been properly identified, behaves according to its description, and that the product component interfaces comply with the interface descriptions.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Acceptance documents for the received product components
+  - Delivery receipts
+  - Checked packing lists
+  - Exception reports
+  - Waivers
+  subpractices:
+  - Track the status of all product components as soon as they become available for integration.
+  - Ensure that product components are delivered to the product integration environment in accordance with the product integration strategy and procedures.
+  - Confirm the receipt of each properly identified product component.
+  - Ensure that each received product component meets its description.
+  - Check the configuration status against the expected configuration.
+  - Perform a pre-check (e.g., by a visual inspection, using basic measures) of all the physical interfaces before connecting product components together.
+  status: active_verbatim
+  source_page: 266
+  process_area: PI
+  parent_goal: PI SG 3
+- id: CMMIDEV-PI-SP3.2-REQ-001
+  clause: PI SP 3.2
+  clause_title: Assemble Product Components
+  text: Assemble product components according to the product integration strategy and procedures.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Assembled product or product components
+  subpractices:
+  - Ensure the readiness of the product integration environment.
+  - Conduct integration in accordance with the product integration strategy, procedures, and criteria.
+  - Revise the product integration strategy, procedures, and criteria as appropriate.
+  status: active_verbatim
+  source_page: 267
+  process_area: PI
+  parent_goal: PI SG 3
+- id: CMMIDEV-PI-SP3.3-REQ-001
+  clause: PI SP 3.3
+  clause_title: Evaluate Assembled Product Components
+  text: Evaluate assembled product components for interface compatibility.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Exception reports
+  - Interface evaluation reports
+  - Product integration summary reports
+  subpractices:
+  - Conduct the evaluation of assembled product components following the product integration strategy, procedures, and criteria.
+  - Record the evaluation results.
+  status: active_verbatim
+  source_page: 267
+  process_area: PI
+  parent_goal: PI SG 3
+- id: CMMIDEV-PI-SP3.4-REQ-001
+  clause: PI SP 3.4
+  clause_title: Package and Deliver the Product or Product Component
+  text: Package the assembled product or product component and deliver it to the customer.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Packaged product or product components
+  - Delivery documentation
+  subpractices:
+  - Review the requirements, design, product, verification results, and documentation to ensure that issues affecting the packaging and delivery of the product are identified and resolved.
+  - Use effective methods to package and deliver the assembled product.
+  - Satisfy the applicable requirements and standards for packaging and delivering the product.
+  - Prepare the operational site for installation of the product.
+  - Deliver the product and related documentation and confirm receipt.
+  - Install the product at the operational site and confirm correct operation.
+  status: active_verbatim
+  source_page: 268
+  process_area: PI
+  parent_goal: PI SG 3
+- id: CMMIDEV-PMC-SG1-REQ-001
+  clause: PMC SG 1
+  clause_title: Monitor the Project Against the Plan
+  process_area: PMC
+  text: 'Actual project progress and performance are monitored against the project plan.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 272
+- id: CMMIDEV-PMC-SP1.1-REQ-001
+  clause: PMC SP 1.1
+  clause_title: Monitor Project Planning Parameters
+  process_area: PMC
+  text: 'Monitor actual values of project planning parameters against the project plan.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PMC SG 1
+  example_work_products:
+  - Records of project performance
+  - Records of significant deviations
+  - Cost performance reports
+  subpractices:
+  - Monitor progress against the schedule.
+  - Monitor the project's costs and expended effort.
+  - Monitor the attributes of work products and tasks.
+  - Monitor resources provided and used.
+  - Monitor the knowledge and skills of project staff.
+  - Document significant deviations in project planning parameters.
+  status: active_verbatim
+  source_page: 272
+- id: CMMIDEV-PMC-SP1.2-REQ-001
+  clause: PMC SP 1.2
+  clause_title: Monitor Commitments
+  process_area: PMC
+  text: 'Monitor commitments against those identified in the project plan.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PMC SG 1
+  example_work_products:
+  - Records of commitment reviews
+  subpractices:
+  - Regularly review commitments (both external and internal).
+  - Identify commitments that have not been satisfied or are at significant risk of not being satisfied.
+  - Document the results of commitment reviews.
+  status: active_verbatim
+  source_page: 274
+- id: CMMIDEV-PMC-SP1.3-REQ-001
+  clause: PMC SP 1.3
+  clause_title: Monitor Project Risks
+  process_area: PMC
+  text: 'Monitor risks against those identified in the project plan.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PMC SG 1
+  example_work_products:
+  - Records of project risk monitoring
+  subpractices:
+  - Periodically review the documentation of risks in the context of the project's current status and circumstances.
+  - Revise the documentation of risks as additional information becomes available.
+  - Communicate the risk status to relevant stakeholders.
+  status: active_verbatim
+  source_page: 274
+- id: CMMIDEV-PMC-SP1.4-REQ-001
+  clause: PMC SP 1.4
+  clause_title: Monitor Data Management
+  process_area: PMC
+  text: 'Monitor the management of project data against the project plan.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PMC SG 1
+  example_work_products:
+  - Records of data management
+  subpractices:
+  - Periodically review data management activities against their description in the project plan.
+  - Identify and document significant issues and their impacts.
+  - Document results of data management activity reviews.
+  status: active_verbatim
+  source_page: 275
+- id: CMMIDEV-PMC-SP1.5-REQ-001
+  clause: PMC SP 1.5
+  clause_title: Monitor Stakeholder Involvement
+  process_area: PMC
+  text: 'Monitor stakeholder involvement against the project plan.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PMC SG 1
+  example_work_products:
+  - Records of stakeholder involvement
+  subpractices:
+  - Periodically review the status of stakeholder involvement.
+  - Identify and document significant issues and their impacts.
+  - Document the results of stakeholder involvement status reviews.
+  status: active_verbatim
+  source_page: 275
+- id: CMMIDEV-PMC-SP1.6-REQ-001
+  clause: PMC SP 1.6
+  clause_title: Conduct Progress Reviews
+  process_area: PMC
+  text: 'Periodically review the project''s progress, performance, and issues.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PMC SG 1
+  example_work_products:
+  - Documented project review results
+  subpractices:
+  - Regularly communicate status on assigned activities and work products to relevant stakeholders.
+  - Review the results of collecting and analyzing measures for controlling the project.
+  - Identify and document significant issues and deviations from the plan.
+  - Document change requests and problems identified in work products and processes.
+  - Document the results of reviews.
+  - Track change requests and problem reports to closure.
+  status: active_verbatim
+  source_page: 276
+- id: CMMIDEV-PMC-SP1.7-REQ-001
+  clause: PMC SP 1.7
+  clause_title: Conduct Milestone Reviews
+  process_area: PMC
+  text: 'Review the project''s accomplishments and results at selected project milestones.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PMC SG 1
+  example_work_products:
+  - Documented milestone review results
+  subpractices:
+  - Conduct milestone reviews with relevant stakeholders at meaningful points in the project's schedule, such as the completion of selected phases.
+  - Review commitments, the plan, status, and risks of the project.
+  - Identify and document significant issues and their impacts.
+  - Document results of the review, action items, and decisions.
+  - Track action items to closure.
+  status: active_verbatim
+  source_page: 276
+- id: CMMIDEV-PMC-SG2-REQ-001
+  clause: PMC SG 2
+  clause_title: Manage Corrective Action to Closure
+  process_area: PMC
+  text: 'Corrective actions are managed to closure when the project''s performance or results deviate significantly from the plan.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 277
+- id: CMMIDEV-PMC-SP2.1-REQ-001
+  clause: PMC SP 2.1
+  clause_title: Analyze Issues
+  process_area: PMC
+  text: 'Collect and analyze issues and determine corrective actions to address them.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PMC SG 2
+  example_work_products:
+  - List of issues requiring corrective actions
+  subpractices:
+  - Gather issues for analysis.
+  - Analyze issues to determine the need for corrective action.
+  status: active_verbatim
+  source_page: 277
+- id: CMMIDEV-PMC-SP2.2-REQ-001
+  clause: PMC SP 2.2
+  clause_title: Take Corrective Action
+  process_area: PMC
+  text: 'Take corrective action on identified issues.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PMC SG 2
+  example_work_products:
+  - Corrective action plans
+  subpractices:
+  - Determine and document the appropriate actions needed to address identified issues.
+  - Review and get agreement with relevant stakeholders on the actions to be taken.
+  - Negotiate changes to internal and external commitments.
+  status: active_verbatim
+  source_page: 278
+- id: CMMIDEV-PMC-SP2.3-REQ-001
+  clause: PMC SP 2.3
+  clause_title: Manage Corrective Actions
+  process_area: PMC
+  text: 'Manage corrective actions to closure.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PMC SG 2
+  example_work_products:
+  - Corrective action results
+  subpractices:
+  - Monitor corrective actions for their completion.
+  - Analyze results of corrective actions to determine the effectiveness of the corrective actions.
+  - Determine and document appropriate actions to correct deviations from planned results from performing corrective actions.
+  status: active_verbatim
+  source_page: 279
+- id: CMMIDEV-PP-SG1-REQ-001
+  clause: PP SG 1
+  clause_title: Establish Estimates
+  process_area: PP
+  text: 'Estimates of project planning parameters are established and maintained.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 283
+- id: CMMIDEV-PP-SP1.1-REQ-001
+  clause: PP SP 1.1
+  clause_title: Estimate the Scope of the Project
+  process_area: PP
+  text: 'Establish a top-level work breakdown structure (WBS) to estimate the scope of the project.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PP SG 1
+  example_work_products:
+  - Task descriptions
+  - Work package descriptions
+  - WBS
+  subpractices:
+  - Develop a WBS.
+  - Define the work packages in sufficient detail so that estimates of project tasks, responsibilities, and schedule can be specified.
+  - Identify products and product components to be externally acquired.
+  - Identify work products to be reused.
+  status: active_verbatim
+  source_page: 283
+- id: CMMIDEV-PP-SP1.2-REQ-001
+  clause: PP SP 1.2
+  clause_title: Establish Estimates of Work Product and Task Attributes
+  process_area: PP
+  text: 'Establish and maintain estimates of work product and task attributes.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PP SG 1
+  example_work_products:
+  - Size and complexity of tasks and work products
+  - Estimating models
+  - Attribute estimates
+  - Technical approach
+  subpractices:
+  - Determine the technical approach for the project.
+  - Use appropriate methods to determine the attributes of the work products and tasks to be used to estimate resource requirements.
+  - Estimate the attributes of work products and tasks.
+  status: active_verbatim
+  source_page: 284
+- id: CMMIDEV-PP-SP1.3-REQ-001
+  clause: PP SP 1.3
+  clause_title: Define Project Lifecycle Phases
+  process_area: PP
+  text: 'Define project lifecycle phases on which to scope the planning effort.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PP SG 1
+  example_work_products:
+  - Project lifecycle phases
+  subpractices: []
+  status: active_verbatim
+  source_page: 286
+- id: CMMIDEV-PP-SP1.4-REQ-001
+  clause: PP SP 1.4
+  clause_title: Estimate Effort and Cost
+  process_area: PP
+  text: 'Estimate the project''s effort and cost for work products and tasks based on estimation rationale.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PP SG 1
+  example_work_products:
+  - Estimation rationale
+  - Project effort estimates
+  - Project cost estimates
+  subpractices:
+  - Collect models or historical data to be used to transform the attributes of work products and tasks into estimates of labor hours and costs.
+  - Include supporting infrastructure needs when estimating effort and cost.
+  - Estimate effort and cost using models, historical data, or a combination of both.
+  status: active_verbatim
+  source_page: 287
+- id: CMMIDEV-PP-SG2-REQ-001
+  clause: PP SG 2
+  clause_title: Develop a Project Plan
+  process_area: PP
+  text: 'A project plan is established and maintained as the basis for managing the project.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 288
+- id: CMMIDEV-PP-SP2.1-REQ-001
+  clause: PP SP 2.1
+  clause_title: Establish the Budget and Schedule
+  process_area: PP
+  text: 'Establish and maintain the project''s budget and schedule.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PP SG 2
+  example_work_products:
+  - Project schedules
+  - Schedule dependencies
+  - Project budget
+  subpractices:
+  - Identify major milestones.
+  - Identify schedule assumptions.
+  - Identify constraints.
+  - Identify task dependencies.
+  - Establish and maintain the budget and schedule.
+  - Establish corrective action criteria.
+  status: active_verbatim
+  source_page: 289
+- id: CMMIDEV-PP-SP2.2-REQ-001
+  clause: PP SP 2.2
+  clause_title: Identify Project Risks
+  process_area: PP
+  text: 'Identify and analyze project risks.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PP SG 2
+  example_work_products:
+  - Identified risks
+  - Risk impacts and probability of occurrence
+  - Risk priorities
+  subpractices:
+  - Identify risks.
+  - Document risks.
+  - Review and obtain agreement with relevant stakeholders on the completeness and correctness of documented risks.
+  - Revise risks as appropriate.
+  status: active_verbatim
+  source_page: 290
+- id: CMMIDEV-PP-SP2.3-REQ-001
+  clause: PP SP 2.3
+  clause_title: Plan Data Management
+  process_area: PP
+  text: 'Plan for the management of project data.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PP SG 2
+  example_work_products:
+  - Data management plan
+  - Master list of managed data
+  - Data content and format description
+  - Lists of data requirements for acquirers and suppliers
+  - Privacy requirements
+  - Security requirements
+  - Security procedures
+  - Mechanisms for data retrieval, reproduction, and distribution
+  - Schedule for the collection of project data
+  - List of project data to be collected
+  subpractices:
+  - Establish requirements and procedures to ensure privacy and the security of data.
+  - Establish a mechanism to archive data and to access archived data.
+  - Determine the project data to be identified, collected, and distributed.
+  - Determine the requirements for providing access to and distribution of data to relevant stakeholders.
+  - Decide which project data and plans require version control or other levels of configuration control and establish mechanisms to ensure project data are controlled.
+  status: active_verbatim
+  source_page: 292
+- id: CMMIDEV-PP-SP2.4-REQ-001
+  clause: PP SP 2.4
+  clause_title: Plan the Project's Resources
+  process_area: PP
+  text: 'Plan for resources to perform the project.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PP SG 2
+  example_work_products:
+  - Work packages
+  - WBS task dictionary
+  - Staffing requirements based on project size and scope
+  - Critical facilities and equipment list
+  - Process and workflow definitions and diagrams
+  - Project administration requirements list
+  - Status reports
+  subpractices:
+  - Determine process requirements.
+  - Determine communication requirements.
+  - Determine staffing requirements.
+  - Determine facility, equipment, and component requirements.
+  - Determine other continuing resource requirements.
+  status: active_verbatim
+  source_page: 293
+- id: CMMIDEV-PP-SP2.5-REQ-001
+  clause: PP SP 2.5
+  clause_title: Plan Needed Knowledge and Skills
+  process_area: PP
+  text: 'Plan for knowledge and skills needed to perform the project.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PP SG 2
+  example_work_products:
+  - Inventory of skill needs
+  - Staffing and new hire plans
+  - Databases (e.g., skills, training)
+  - Training plans
+  subpractices:
+  - Identify the knowledge and skills needed to perform the project.
+  - Assess the knowledge and skills available.
+  - Select mechanisms for providing needed knowledge and skills.
+  - Incorporate selected mechanisms into the project plan.
+  status: active_verbatim
+  source_page: 294
+- id: CMMIDEV-PP-SP2.6-REQ-001
+  clause: PP SP 2.6
+  clause_title: Plan Stakeholder Involvement
+  process_area: PP
+  text: 'Plan the involvement of identified stakeholders.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PP SG 2
+  example_work_products:
+  - Stakeholder involvement plan
+  subpractices: []
+  status: active_verbatim
+  source_page: 295
+- id: CMMIDEV-PP-SP2.7-REQ-001
+  clause: PP SP 2.7
+  clause_title: Establish the Project Plan
+  process_area: PP
+  text: 'Establish and maintain the overall project plan.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PP SG 2
+  example_work_products:
+  - Overall project plan
+  subpractices: []
+  status: active_verbatim
+  source_page: 296
+- id: CMMIDEV-PP-SG3-REQ-001
+  clause: PP SG 3
+  clause_title: Obtain Commitment to the Plan
+  process_area: PP
+  text: 'Commitments to the project plan are established and maintained.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 297
+- id: CMMIDEV-PP-SP3.1-REQ-001
+  clause: PP SP 3.1
+  clause_title: Review Plans That Affect the Project
+  process_area: PP
+  text: 'Review all plans that affect the project to understand project commitments.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PP SG 3
+  example_work_products:
+  - Record of the reviews of plans that affect the project
+  subpractices: []
+  status: active_verbatim
+  source_page: 297
+- id: CMMIDEV-PP-SP3.2-REQ-001
+  clause: PP SP 3.2
+  clause_title: Reconcile Work and Resource Levels
+  process_area: PP
+  text: 'Adjust the project plan to reconcile available and estimated resources.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PP SG 3
+  example_work_products:
+  - Revised methods and corresponding estimating parameters (e.g., better tools, the use of off-the-shelf components)
+  - Renegotiated budgets
+  - Revised schedules
+  - Revised requirements list
+  - Renegotiated stakeholder agreements
+  subpractices: []
+  status: active_verbatim
+  source_page: 298
+- id: CMMIDEV-PP-SP3.3-REQ-001
+  clause: PP SP 3.3
+  clause_title: Obtain Plan Commitment
+  process_area: PP
+  text: 'Obtain commitment from relevant stakeholders responsible for performing and supporting plan execution.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PP SG 3
+  example_work_products:
+  - Documented requests for commitments
+  - Documented commitments
+  subpractices:
+  - Identify needed support and negotiate commitments with relevant stakeholders.
+  - Document all organizational commitments, both full and provisional, ensuring the appropriate level of signatories.
+  - Review internal commitments with senior management as appropriate.
+  - Review external commitments with senior management as appropriate.
+  - Identify commitments regarding interfaces between project elements and other projects and organizational units so that these commitments can be monitored.
+  status: active_verbatim
+  source_page: 298
+- id: CMMIDEV-PPQA-SG1-REQ-001
+  clause: PPQA SG 1
+  clause_title: Objectively Evaluate Processes and Work Products
+  process_area: PPQA
+  text: 'Adherence of the performed process and associated work products to applicable process descriptions, standards, and procedures is objectively evaluated.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 303
+- id: CMMIDEV-PPQA-SP1.1-REQ-001
+  clause: PPQA SP 1.1
+  clause_title: Objectively Evaluate Processes
+  process_area: PPQA
+  text: 'Objectively evaluate selected performed processes against applicable process descriptions, standards, and procedures.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PPQA SG 1
+  example_work_products:
+  - Evaluation reports
+  - Noncompliance reports
+  - Corrective actions
+  subpractices:
+  - Promote an environment (created as part of project management) that encourages staff participation in identifying and reporting quality issues.
+  - Establish and maintain clearly stated criteria for evaluations.
+  - Use the stated criteria to evaluate selected performed processes for adherence to process descriptions, standards, and procedures.
+  - Identify each noncompliance found during the evaluation.
+  - Identify lessons learned that could improve processes.
+  status: active_verbatim
+  source_page: 303
+- id: CMMIDEV-PPQA-SP1.2-REQ-001
+  clause: PPQA SP 1.2
+  clause_title: Objectively Evaluate Work Products
+  process_area: PPQA
+  text: 'Objectively evaluate selected work products against applicable process descriptions, standards, and procedures.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PPQA SG 1
+  example_work_products:
+  - Evaluation reports
+  - Noncompliance reports
+  - Corrective actions
+  subpractices:
+  - Select work products to be evaluated based on documented sampling criteria if sampling is used.
+  - Establish and maintain clearly stated criteria for the evaluation of selected work products.
+  - Use the stated criteria during evaluations of selected work products.
+  - Evaluate selected work products at selected times.
+  - Identify each case of noncompliance found during evaluations.
+  - Identify lessons learned that could improve processes.
+  status: active_verbatim
+  source_page: 304
+- id: CMMIDEV-PPQA-SG2-REQ-001
+  clause: PPQA SG 2
+  clause_title: Provide Objective Insight
+  process_area: PPQA
+  text: 'Noncompliance issues are objectively tracked and communicated, and resolution is ensured.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 305
+- id: CMMIDEV-PPQA-SP2.1-REQ-001
+  clause: PPQA SP 2.1
+  clause_title: Communicate and Resolve Noncompliance Issues
+  process_area: PPQA
+  text: 'Communicate quality issues and ensure the resolution of noncompliance issues with the staff and managers.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PPQA SG 2
+  example_work_products:
+  - Corrective action reports
+  - Evaluation reports
+  - Quality trends
+  subpractices:
+  - Resolve each noncompliance with the appropriate members of the staff if possible.
+  - Document noncompliance issues when they cannot be resolved in the project.
+  - Escalate noncompliance issues that cannot be resolved in the project to the appropriate level of management designated to receive and act on noncompliance issues.
+  - Analyze noncompliance issues to see if there are quality trends that can be identified and addressed.
+  - Ensure that relevant stakeholders are aware of results of evaluations and quality trends in a timely manner.
+  - Periodically review open noncompliance issues and trends with the manager designated to receive and act on noncompliance issues.
+  - Track noncompliance issues to resolution.
+  status: active_verbatim
+  source_page: 305
+- id: CMMIDEV-PPQA-SP2.2-REQ-001
+  clause: PPQA SP 2.2
+  clause_title: Establish Records
+  process_area: PPQA
+  text: 'Establish and maintain records of quality assurance activities.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: PPQA SG 2
+  example_work_products:
+  - Evaluation logs
+  - Quality assurance reports
+  - Status reports of corrective actions
+  - Reports of quality trends
+  subpractices:
+  - Record process and product quality assurance activities in sufficient detail so that status and results are known.
+  - Revise the status and history of quality assurance activities as necessary.
+  status: active_verbatim
+  source_page: 306
+- id: CMMIDEV-QPM-SG1-REQ-001
+  clause: QPM SG 1
+  clause_title: Prepare for Quantitative Management
+  process_area: QPM
+  text: 'Preparation for quantitative management is conducted.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 310
+- id: CMMIDEV-QPM-SP1.1-REQ-001
+  clause: QPM SP 1.1
+  clause_title: Establish the Project's Objectives
+  process_area: QPM
+  text: 'Establish and maintain the project''s quality and process performance objectives.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: QPM SG 1
+  example_work_products:
+  - The project's quality and process performance objectives
+  - Assessment of the risk of not achieving the project's objectives
+  subpractices:
+  - Review the organization's objectives for quality and process performance.
+  - Identify the quality and process performance needs and priorities of the customer, suppliers, end users, and other relevant stakeholders.
+  - Define and document measurable quality and process performance objectives for the project.
+  - Derive interim objectives to monitor progress toward achieving the project's objectives.
+  - Determine the risk of not achieving the project's quality and process performance objectives.
+  - Resolve conflicts among the project's quality and process performance objectives (e.g., if one objective cannot be achieved without compromising another).
+  - Establish traceability to the project's quality and process performance objectives from their sources.
+  - Define and negotiate quality and process performance objectives for suppliers.
+  - Revise the project's quality and process performance objectives as necessary.
+  status: active_verbatim
+  source_page: 310
+- id: CMMIDEV-QPM-SP1.2-REQ-001
+  clause: QPM SP 1.2
+  clause_title: Compose the Defined Process
+  process_area: QPM
+  text: 'Using statistical and other quantitative techniques, compose a defined process that enables the project to achieve its quality and process performance objectives.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: QPM SG 1
+  example_work_products:
+  - Criteria used to evaluate alternatives for the project
+  - Alternative subprocesses
+  - Subprocesses to be included in the project's defined process
+  - Assessment of risk of not achieving the project's objectives
+  subpractices:
+  - Establish the criteria to use in evaluating process alternatives for the project.
+  - Identify alternative processes and subprocesses for the project.
+  - Analyze the interaction of alternative subprocesses to understand relationships among the subprocesses, including their attributes.
+  - Evaluate alternative subprocesses against the criteria.
+  - Select the alternative subprocesses that best meet the criteria.
+  - Evaluate the risk of not achieving the project's quality and process performance objectives.
+  status: active_verbatim
+  source_page: 313
+- id: CMMIDEV-QPM-SP1.3-REQ-001
+  clause: QPM SP 1.3
+  clause_title: Select Subprocesses and Attributes
+  process_area: QPM
+  text: 'Select subprocesses and attributes critical to evaluating performance and that help to achieve the project''s quality and process performance objectives.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: QPM SG 1
+  example_work_products:
+  - Criteria used to select subprocesses that are key contributors to achieving the project's objectives
+  - Selected subprocesses
+  - Attributes of selected subprocesses that help in predicting future project performance
+  subpractices:
+  - Analyze how subprocesses, their attributes, other factors, and project performance results relate to each other.
+  - Identify criteria to be used in selecting subprocesses that are key contributors to achieving the project's quality and process performance objectives.
+  - Select subprocesses using the identified criteria.
+  - Identify product and process attributes to be monitored.
+  status: active_verbatim
+  source_page: 315
+- id: CMMIDEV-QPM-SP1.4-REQ-001
+  clause: QPM SP 1.4
+  clause_title: Select Measures and Analytic Techniques
+  process_area: QPM
+  text: 'Select measures and analytic techniques to be used in quantitative management.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: QPM SG 1
+  example_work_products:
+  - Definitions of measures and analytic techniques to be used in quantitative management
+  - Traceability of measures back to the project's quality and process performance objectives
+  - Quality and process performance objectives for selected subprocesses and their attributes
+  - Process performance baselines and models for use by the project
+  subpractices:
+  - Identify common measures from the organizational process assets that support quantitative management.
+  - Identify additional measures that may be needed to cover critical product and process attributes of the selected subprocesses.
+  - Identify the measures to be used in managing subprocesses.
+  - Specify the operational definitions of measures, their collection points in subprocesses, and how the integrity of measures will be determined.
+  - Analyze the relationship of identified measures to the project quality and process performance objectives and derive subprocess quality and process performance objectives that state targets (e.g., thresholds, ranges) to be met for each measured attribute of each selected subprocess.
+  - Identify the statistical and other quantitative techniques to be used in quantitative management.
+  - Determine what process performance baselines and models may be needed to support identified analyses.
+  - Instrument the organizational or project support environment to support collection, derivation, and analysis of measures.
+  - Revise measures and statistical analysis techniques as necessary.
+  status: active_verbatim
+  source_page: 317
+- id: CMMIDEV-QPM-SG2-REQ-001
+  clause: QPM SG 2
+  clause_title: Quantitatively Manage the Project
+  process_area: QPM
+  text: 'The project is quantitatively managed.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 320
+- id: CMMIDEV-QPM-SP2.1-REQ-001
+  clause: QPM SP 2.1
+  clause_title: Monitor the Performance of Selected Subprocesses
+  process_area: QPM
+  text: 'Monitor the performance of selected subprocesses using statistical and other quantitative techniques.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: QPM SG 2
+  example_work_products:
+  - Natural bounds of process performance for each selected subprocess attribute
+  - The actions needed to address deficiencies in the process stability or capability of each selected subprocess
+  subpractices:
+  - Collect data, as defined by the selected measures, on the subprocesses as they execute.
+  - Monitor the variation and stability of the selected subprocesses and address deficiencies.
+  - Monitor the capability and performance of the selected subprocesses and address deficiencies.
+  status: active_verbatim
+  source_page: 320
+- id: CMMIDEV-QPM-SP2.2-REQ-001
+  clause: QPM SP 2.2
+  clause_title: Manage Project Performance
+  process_area: QPM
+  text: 'Manage the project using statistical and other quantitative techniques to determine whether or not the project''s objectives for quality and process performance will be satisfied.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: QPM SG 2
+  example_work_products:
+  - Predictions of results to be achieved relative to the project's quality and process performance objectives
+  - Graphical displays and data tabulations for other subprocesses, which support quantitative management
+  - Assessment of risks of not achieving the project's quality and process performance objectives
+  - Actions needed to address deficiencies in achieving project objectives
+  subpractices:
+  - Periodically review the performance of subprocesses.
+  - Monitor and analyze suppliers' progress toward achieving their quality and process performance objectives.
+  - Periodically review and analyze actual results achieved against established interim objectives.
+  - Use process performance models calibrated with project data to assess progress toward achieving the project's quality and process performance objectives.
+  - Identify and manage risks associated with achieving the project's quality and process performance objectives.
+  - Determine and implement actions needed to address deficiencies in achieving the project's quality and process performance objectives.
+  status: active_verbatim
+  source_page: 321
+- id: CMMIDEV-QPM-SP2.3-REQ-001
+  clause: QPM SP 2.3
+  clause_title: Perform Root Cause Analysis
+  process_area: QPM
+  text: 'Perform root cause analysis of selected issues to address deficiencies in achieving the project''s quality and process performance objectives.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: QPM SG 2
+  example_work_products:
+  - Subprocess and project performance measurements and analyses (including statistical analyses) recorded in the organization's measurement repository
+  - Graphical displays of data used to understand subprocess and project performance and performance trends
+  - Identified root causes and potential actions to take
+  subpractices:
+  - Perform root cause analysis, as appropriate, to diagnose process performance deficiencies.
+  - Identify and analyze potential actions.
+  - Implement selected actions.
+  - Assess the impact of the actions on subprocess performance.
+  status: active_verbatim
+  source_page: 323
+- id: CMMIDEV-RD-SG1-REQ-001
+  clause: RD SG 1
+  clause_title: Develop Customer Requirements
+  text: Stakeholder needs, expectations, constraints, and interfaces are collected and translated into customer requirements.
+  obligation: shall
+  type: normative
+  classification: process_goal
+  component: required
+  status: active_verbatim
+  source_page: 328
+  process_area: RD
+- id: CMMIDEV-RD-SP1.1-REQ-001
+  clause: RD SP 1.1
+  clause_title: Elicit Needs
+  text: Elicit stakeholder needs, expectations, constraints, and interfaces for all phases of the product lifecycle.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Results of requirements elicitation activities
+  subpractices:
+  - Engage relevant stakeholders using methods for eliciting needs, expectations, constraints, and external interfaces.
+  status: active_verbatim
+  source_page: 329
+  process_area: RD
+  parent_goal: RD SG 1
+- id: CMMIDEV-RD-SP1.2-REQ-001
+  clause: RD SP 1.2
+  clause_title: Transform Stakeholder Needs into Customer Requirements
+  text: Transform stakeholder needs, expectations, constraints, and interfaces into prioritized customer requirements.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Prioritized customer requirements
+  - Customer constraints on the conduct of verification
+  - Customer constraints on the conduct of validation
+  subpractices:
+  - Translate stakeholder needs, expectations, constraints, and interfaces into documented customer requirements.
+  - Establish and maintain a prioritization of customer functional and quality attribute requirements.
+  - Define constraints for verification and validation.
+  status: active_verbatim
+  source_page: 330
+  process_area: RD
+  parent_goal: RD SG 1
+- id: CMMIDEV-RD-SG2-REQ-001
+  clause: RD SG 2
+  clause_title: Develop Product Requirements
+  text: Customer requirements are refined and elaborated to develop product and product component requirements.
+  obligation: shall
+  type: normative
+  classification: process_goal
+  component: required
+  status: active_verbatim
+  source_page: 331
+  process_area: RD
+- id: CMMIDEV-RD-SP2.1-REQ-001
+  clause: RD SP 2.1
+  clause_title: Establish Product and Product Component Requirements
+  text: Establish and maintain product and product component requirements, which are based on the customer requirements.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Derived requirements
+  - Product requirements
+  - Product component requirements
+  - Architectural requirements, which specify or constrain the relationships among product components
+  subpractices:
+  - Develop requirements in technical terms necessary for product and product component design.
+  - Derive requirements that result from design decisions.
+  - Develop architectural requirements capturing critical quality attributes and quality attribute measures necessary for establishing the product architecture and design.
+  - Establish and maintain relationships between requirements for consideration during change management and requirements allocation.
+  status: active_verbatim
+  source_page: 331
+  process_area: RD
+  parent_goal: RD SG 2
+- id: CMMIDEV-RD-SP2.2-REQ-001
+  clause: RD SP 2.2
+  clause_title: Allocate Product Component Requirements
+  text: Allocate the requirements for each product component.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Requirement allocation sheets
+  - Provisional requirement allocations
+  - Design constraints
+  - Derived requirements
+  - Relationships among derived requirements
+  subpractices:
+  - Allocate requirements to functions.
+  - Allocate requirements to product components and the architecture.
+  - Allocate design constraints to product components and the architecture.
+  - Allocate requirements to delivery increments.
+  - Document relationships among allocated requirements.
+  status: active_verbatim
+  source_page: 333
+  process_area: RD
+  parent_goal: RD SG 2
+- id: CMMIDEV-RD-SP2.3-REQ-001
+  clause: RD SP 2.3
+  clause_title: Identify Interface Requirements
+  text: Identify interface requirements.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Interface requirements
+  subpractices:
+  - Identify interfaces both external to the product and internal to the product (e.g., between functional partitions or objects).
+  - Develop the requirements for the identified interfaces.
+  status: active_verbatim
+  source_page: 334
+  process_area: RD
+  parent_goal: RD SG 2
+- id: CMMIDEV-RD-SG3-REQ-001
+  clause: RD SG 3
+  clause_title: Analyze and Validate Requirements
+  text: The requirements are analyzed and validated.
+  obligation: shall
+  type: normative
+  classification: process_goal
+  component: required
+  status: active_verbatim
+  source_page: 334
+  process_area: RD
+- id: CMMIDEV-RD-SP3.1-REQ-001
+  clause: RD SP 3.1
+  clause_title: Establish Operational Concepts and Scenarios
+  text: Establish and maintain operational concepts and associated scenarios.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Operational concept
+  - Product or product component development, installation, operational, maintenance, and support concepts
+  - Disposal concepts
+  - Use cases
+  - Timeline scenarios
+  - New requirements
+  subpractices:
+  - Develop operational concepts and scenarios that include operations, installation, development, maintenance, support, and disposal as appropriate.
+  - Define the environment in which the product or product component will operate, including boundaries and constraints.
+  - Review operational concepts and scenarios to refine and discover requirements.
+  - Develop a detailed operational concept, as products and product components are selected, that defines the interaction of the product, the end user, and the environment, and that satisfies the operational, maintenance, support, and disposal needs.
+  status: active_verbatim
+  source_page: 335
+  process_area: RD
+  parent_goal: RD SG 3
+- id: CMMIDEV-RD-SP3.2-REQ-001
+  clause: RD SP 3.2
+  clause_title: Establish a Definition of Required Functionality and Quality Attributes
+  text: Establish and maintain a definition of required functionality and quality attributes.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Definition of required functionality and quality attributes
+  - Functional architecture
+  - Activity diagrams and use cases
+  - Object oriented analysis with services or methods identified
+  - Architecturally significant quality attribute requirements
+  subpractices:
+  - Determine key mission and business drivers.
+  - Identify desirable functionality and quality attributes.
+  - Determine architecturally significant quality attributes based on key mission and business drivers.
+  - Analyze and quantify functionality required by end users.
+  - Analyze requirements to identify logical or functional partitions (e.g., subfunctions).
+  - Partition requirements into groups, based on established criteria (e.g., similar functionality, similar quality attribute requirements, coupling), to facilitate and focus the requirements analysis.
+  - Allocate customer requirements to functional partitions, objects, people, or support elements to support the synthesis of solutions.
+  - Allocate requirements to functions and subfunctions (or other logical entities).
+  status: active_verbatim
+  source_page: 336
+  process_area: RD
+  parent_goal: RD SG 3
+- id: CMMIDEV-RD-SP3.3-REQ-001
+  clause: RD SP 3.3
+  clause_title: Analyze Requirements
+  text: Analyze requirements to ensure that they are necessary and sufficient.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Requirements defects reports
+  - Proposed requirements changes to resolve defects
+  - Key requirements
+  - Technical performance measures
+  subpractices:
+  - Analyze stakeholder needs, expectations, constraints, and external interfaces to organize them into related subjects and remove conflicts.
+  - Analyze requirements to determine whether they satisfy the objectives of higher level requirements.
+  - Analyze requirements to ensure that they are complete, feasible, realizable, and verifiable.
+  - Identify key requirements that have a strong influence on cost, schedule, performance, or risk.
+  - Identify technical performance measures that will be tracked during the development effort.
+  - Analyze operational concepts and scenarios to refine the customer needs, constraints, and interfaces and to discover new requirements.
+  status: active_verbatim
+  source_page: 337
+  process_area: RD
+  parent_goal: RD SG 3
+- id: CMMIDEV-RD-SP3.4-REQ-001
+  clause: RD SP 3.4
+  clause_title: Analyze Requirements to Achieve Balance
+  text: Analyze requirements to balance stakeholder needs and constraints.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Assessment of risks related to requirements
+  subpractices:
+  - Use proven models, simulations, and prototyping to analyze the balance of stakeholder needs and constraints.
+  - Perform a risk assessment on the requirements and definition of required functionality and quality attributes.
+  - Examine product lifecycle concepts for impacts of requirements on risks.
+  - Assess the impact of the architecturally significant quality attribute requirements on the product and product development costs and risks.
+  status: active_verbatim
+  source_page: 339
+  process_area: RD
+  parent_goal: RD SG 3
+- id: CMMIDEV-RD-SP3.5-REQ-001
+  clause: RD SP 3.5
+  clause_title: Validate Requirements
+  text: Validate requirements to ensure the resulting product will perform as intended in the end user's environment.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Record of analysis methods and results
+  subpractices:
+  - Analyze the requirements to determine the risk that the resulting product will not perform appropriately in its intended use environment.
+  - Explore the adequacy and completeness of requirements by developing product representations (e.g., prototypes, simulations, models, scenarios, storyboards) and by obtaining feedback about them from relevant stakeholders.
+  - Assess the design as it matures in the context of the requirements validation environment to identify validation issues and expose unstated needs and customer requirements.
+  status: active_verbatim
+  source_page: 339
+  process_area: RD
+  parent_goal: RD SG 3
+- id: CMMIDEV-REQM-SG1-REQ-001
+  clause: REQM SG 1
+  clause_title: Manage Requirements
+  process_area: REQM
+  text: 'Requirements are managed and inconsistencies with project plans and work products are identified.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 343
+- id: CMMIDEV-REQM-SP1.1-REQ-001
+  clause: REQM SP 1.1
+  clause_title: Understand Requirements
+  process_area: REQM
+  text: 'Develop an understanding with the requirements providers on the meaning of the requirements.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: REQM SG 1
+  example_work_products:
+  - Lists of criteria for distinguishing appropriate requirements providers
+  - Criteria for evaluation and acceptance of requirements
+  - Results of analyses against criteria
+  - A set of approved requirements
+  subpractices:
+  - Establish criteria for distinguishing appropriate requirements providers.
+  - Establish objective criteria for the evaluation and acceptance of requirements.
+  - Analyze requirements to ensure that established criteria are met.
+  - Reach an understanding of requirements with requirements providers so that project participants can commit to them.
+  status: active_verbatim
+  source_page: 343
+- id: CMMIDEV-REQM-SP1.2-REQ-001
+  clause: REQM SP 1.2
+  clause_title: Obtain Commitment to Requirements
+  process_area: REQM
+  text: 'Obtain commitment to requirements from project participants.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: REQM SG 1
+  example_work_products:
+  - Requirements impact assessments
+  - Documented commitments to requirements and requirements changes
+  subpractices:
+  - Assess the impact of requirements on existing commitments.
+  - Negotiate and record commitments.
+  status: active_verbatim
+  source_page: 344
+- id: CMMIDEV-REQM-SP1.3-REQ-001
+  clause: REQM SP 1.3
+  clause_title: Manage Requirements Changes
+  process_area: REQM
+  text: 'Manage changes to requirements as they evolve during the project.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: REQM SG 1
+  example_work_products:
+  - Requirements change requests
+  - Requirements change impact reports
+  - Requirements status
+  - Requirements database
+  subpractices:
+  - Document all requirements and requirements changes that are given to or generated by the project.
+  - Maintain a requirements change history, including the rationale for changes.
+  - Evaluate the impact of requirement changes from the standpoint of relevant stakeholders.
+  - Make requirements and change data available to the project.
+  status: active_verbatim
+  source_page: 345
+- id: CMMIDEV-REQM-SP1.4-REQ-001
+  clause: REQM SP 1.4
+  clause_title: Maintain Bidirectional Traceability of Requirements
+  process_area: REQM
+  text: 'Maintain bidirectional traceability among requirements and work products.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: REQM SG 1
+  example_work_products:
+  - Requirements traceability matrix
+  - Requirements tracking system
+  subpractices:
+  - Maintain requirements traceability to ensure that the source of lower level (i.e., derived) requirements is documented.
+  - Maintain requirements traceability from a requirement to its derived requirements and allocation to work products.
+  - Generate a requirements traceability matrix.
+  status: active_verbatim
+  source_page: 345
+- id: CMMIDEV-REQM-SP1.5-REQ-001
+  clause: REQM SP 1.5
+  clause_title: Ensure Alignment Between Project Work and Requirements
+  process_area: REQM
+  text: 'Ensure that project plans and work products remain aligned with requirements.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  target_asset_candidates:
+  - PRO
+  - REC
+  parent_goal: REQM SG 1
+  example_work_products:
+  - Documentation of inconsistencies between requirements and project plans and work products, including sources and conditions
+  - Corrective actions
+  subpractices:
+  - Review project plans, activities, and work products for consistency with requirements and changes made to them.
+  - Identify the source of the inconsistency (if any).
+  - Identify any changes that should be made to plans and work products resulting from changes to the requirements baseline.
+  - Initiate any necessary corrective actions.
+  status: active_verbatim
+  source_page: 346
+- id: CMMIDEV-RSKM-SP1.1-REQ-001
+  clause: RSKM SP 1.1
+  clause_title: Determine Risk Sources and Categories
+  process_area: RSKM
+  text: Determine risk sources and categories.
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: RSKM SG 1
+  example_work_products:
+  - Risk source lists (external and internal)
+  - Risk categories list
+  status: active_verbatim
+  source_page: 351
+- id: CMMIDEV-RSKM-SP1.2-REQ-001
+  clause: RSKM SP 1.2
+  clause_title: Define Risk Parameters
+  process_area: RSKM
+  text: 'Define parameters used to analyze and categorize risks and to control the risk management effort.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: RSKM SG 1
+  example_work_products:
+  - Risk evaluation, categorization, and prioritization criteria
+  - Risk management requirements (e.g., control and approval levels, reassessment intervals)
+  status: active_verbatim
+  source_page: 352
+- id: CMMIDEV-RSKM-SP1.3-REQ-001
+  clause: RSKM SP 1.3
+  clause_title: Establish a Risk Management Strategy
+  process_area: RSKM
+  text: Establish and maintain the strategy to be used for risk management.
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: RSKM SG 1
+  example_work_products:
+  - Project risk management strategy
+  status: active_verbatim
+  source_page: 353
+- id: CMMIDEV-RSKM-SG2-REQ-001
+  clause: RSKM SG 2
+  clause_title: Identify and Analyze Risks
+  process_area: RSKM
+  text: 'Risks are identified and analyzed to determine their relative importance.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 354
+- id: CMMIDEV-RSKM-SP2.1-REQ-001
+  clause: RSKM SP 2.1
+  clause_title: Identify Risks
+  process_area: RSKM
+  text: Identify and document risks.
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: RSKM SG 2
+  example_work_products:
+  - List of identified risks, including the context, conditions, and consequences of risk occurrence
+  status: active_verbatim
+  source_page: 354
+- id: CMMIDEV-RSKM-SP2.2-REQ-001
+  clause: RSKM SP 2.2
+  clause_title: Evaluate, Categorize, and Prioritize Risks
+  process_area: RSKM
+  text: 'Evaluate and categorize each identified risk using defined risk categories and parameters, and determine its relative priority.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: RSKM SG 2
+  example_work_products:
+  - List of risks and their assigned priority
+  subpractices:
+  - Evaluate identified risks using defined risk parameters.
+  - Categorize and group risks according to defined risk categories.
+  - Prioritize risks for mitigation.
+  status: active_verbatim
+  source_page: 357
+- id: CMMIDEV-RSKM-SG3-REQ-001
+  clause: RSKM SG 3
+  clause_title: Mitigate Risks
+  process_area: RSKM
+  text: 'Risks are handled and mitigated as appropriate to reduce adverse impacts on achieving objectives.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 358
+- id: CMMIDEV-RSKM-SP3.1-REQ-001
+  clause: RSKM SP 3.1
+  clause_title: Develop Risk Mitigation Plans
+  process_area: RSKM
+  text: 'Develop a risk mitigation plan in accordance with the risk management strategy.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: RSKM SG 3
+  example_work_products:
+  - Documented handling options for each identified risk
+  - Risk mitigation plans
+  - Contingency plans
+  - List of those who are responsible for tracking and addressing each risk
+  subpractices:
+  - Determine the levels and thresholds that define when a risk becomes unacceptable and triggers the execution of a risk mitigation plan or contingency plan.
+  - Identify the person or group responsible for addressing each risk.
+  - Determine the costs and benefits of implementing the risk mitigation plan for each risk.
+  - Develop an overall risk mitigation plan for the project to orchestrate the implementation of individual risk mitigation and contingency plans.
+  - Develop contingency plans for selected critical risks in the event their impacts are realized.
+  status: active_verbatim
+  source_page: 358
+- id: CMMIDEV-RSKM-SP3.2-REQ-001
+  clause: RSKM SP 3.2
+  clause_title: Implement Risk Mitigation Plans
+  process_area: RSKM
+  text: 'Monitor the status of each risk periodically and implement the risk mitigation plan as appropriate.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: RSKM SG 3
+  example_work_products:
+  - Updated lists of risk status
+  - Updated assessments of risk likelihood, consequence, and thresholds
+  - Updated list of risk handling options
+  - Updated list of actions taken to handle risks
+  - Risk mitigation plans of risk handling options
+  subpractices:
+  - Monitor risk status.
+  - Provide a method for tracking open risk handling action items to closure.
+  - Invoke selected risk handling options when monitored risks exceed defined thresholds.
+  - Establish a schedule or period of performance for each risk handling activity that includes a start date and anticipated completion date.
+  - Provide a continued commitment of resources for each plan to allow the successful execution of risk handling activities.
+  - Collect performance measures on risk handling activities.
+  status: active_verbatim
+  source_page: 360
+- id: CMMIDEV-SAM-SG1-REQ-001
+  clause: SAM SG 1
+  clause_title: Establish Supplier Agreements
+  process_area: SAM
+  text: 'Agreements with the suppliers are established and maintained.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 365
+- id: CMMIDEV-SAM-SP1.1-REQ-001
+  clause: SAM SP 1.1
+  clause_title: Determine Acquisition Type
+  process_area: SAM
+  text: 'Determine the type of acquisition for each product or product component to be acquired.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: SAM SG 1
+  example_work_products:
+  - List of the acquisition types that will be used for all products and product components to be acquired
+  subpractices: []
+  status: active_verbatim
+  source_page: 365
+- id: CMMIDEV-SAM-SP1.2-REQ-001
+  clause: SAM SP 1.2
+  clause_title: Select Suppliers
+  process_area: SAM
+  text: 'Select suppliers based on an evaluation of their ability to meet the specified requirements and established criteria.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: SAM SG 1
+  example_work_products:
+  - Market studies
+  - List of candidate suppliers
+  - Preferred supplier list
+  - Trade study or other record of evaluation criteria, advantages and disadvantages of candidate suppliers, and rationale for selection of suppliers
+  - Solicitation materials and requirements
+  subpractices:
+  - Establish and document criteria for evaluating potential suppliers.
+  - Identify potential suppliers and distribute solicitation material and requirements to them.
+  - Evaluate proposals according to evaluation criteria.
+  - Evaluate risks associated with each proposed supplier.
+  - Evaluate proposed suppliers' abilities to perform the work.
+  - Select the supplier.
+  status: active_verbatim
+  source_page: 366
+- id: CMMIDEV-SAM-SP1.3-REQ-001
+  clause: SAM SP 1.3
+  clause_title: Establish Supplier Agreements
+  process_area: SAM
+  text: 'Establish and maintain supplier agreements.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: SAM SG 1
+  example_work_products:
+  - Statements of work
+  - Contracts
+  - Memoranda of agreement
+  - Licensing agreement
+  subpractices:
+  - Revise the requirements (e.g., product requirements, service level requirements) to be fulfilled by the supplier to reflect negotiations with the supplier when necessary.
+  - Document what the project will provide to the supplier.
+  - Document the supplier agreement.
+  - Periodically review the supplier agreement to ensure it accurately reflects the project's relationship with the supplier and current risks and market conditions.
+  - Ensure that all parties to the supplier agreement understand and agree to all requirements before implementing the agreement or any changes.
+  - Revise the supplier agreement as necessary to reflect changes to the supplier's processes or work products.
+  - Revise the project's plans and commitments, including changes to the project's processes or work products, as necessary to reflect the supplier agreement.
+  status: active_verbatim
+  source_page: 367
+- id: CMMIDEV-SAM-SG2-REQ-001
+  clause: SAM SG 2
+  clause_title: Satisfy Supplier Agreements
+  process_area: SAM
+  text: 'Agreements with suppliers are satisfied by both the project and the supplier.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  status: active_verbatim
+  source_page: 369
+- id: CMMIDEV-SAM-SP2.1-REQ-001
+  clause: SAM SP 2.1
+  clause_title: Execute the Supplier Agreement
+  process_area: SAM
+  text: 'Perform activities with the supplier as specified in the supplier agreement.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: SAM SG 2
+  example_work_products:
+  - Supplier progress reports and performance measures
+  - Supplier review materials and reports
+  - Action items tracked to closure
+  - Product and documentation deliveries
+  subpractices:
+  - Monitor supplier progress and performance (e.g., schedule, effort, cost, technical performance) as defined in the supplier agreement.
+  - Select, monitor, and analyze processes used by the supplier as defined in the supplier agreement.
+  - Select and evaluate work products from the supplier as defined in the supplier agreement.
+  - Conduct reviews with the supplier as specified in the supplier agreement.
+  - Conduct technical reviews with the supplier as defined in the supplier agreement.
+  - Conduct management reviews with the supplier as defined in the supplier agreement.
+  - Use the results of reviews to improve the supplier's performance and to establish and nurture long-term relationships with preferred suppliers.
+  - Monitor risks involving the supplier and take corrective action as necessary.
+  status: active_verbatim
+  source_page: 369
+- id: CMMIDEV-SAM-SP2.2-REQ-001
+  clause: SAM SP 2.2
+  clause_title: Accept the Acquired Product
+  process_area: SAM
+  text: 'Ensure that the supplier agreement is satisfied before accepting the acquired product.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: SAM SG 2
+  example_work_products:
+  - Acceptance procedures
+  - Acceptance reviews or test results
+  - Discrepancy reports or corrective action plans
+  subpractices:
+  - Define the acceptance procedures.
+  - Review and obtain agreement from relevant stakeholders on the acceptance procedures before the acceptance review or test.
+  - Verify that the acquired products satisfy their requirements.
+  - Confirm that the nontechnical commitments associated with the acquired work product are satisfied.
+  - Document the results of the acceptance review or test.
+  - Establish an action plan and obtain supplier agreement to take action to correct acquired work products that do not pass their acceptance review or test.
+  - Identify, document, and track action items to closure.
+  status: active_verbatim
+  source_page: 371
+- id: CMMIDEV-SAM-SP2.3-REQ-001
+  clause: SAM SP 2.3
+  clause_title: Ensure Transition of Products
+  process_area: SAM
+  text: 'Ensure the transition of products acquired from the supplier.
+
+    '
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: expected
+  parent_goal: SAM SG 2
+  example_work_products:
+  - Transition plans
+  - Training reports
+  - Support and maintenance reports
+  subpractices:
+  - Ensure that facilities exist to receive, store, integrate, and maintain the acquired products as appropriate.
+  - Ensure that appropriate training is provided for those who are involved in receiving, storing, integrating, and maintaining acquired products.
+  - Ensure that acquired products are stored, distributed, and integrated according to the terms and conditions specified in the supplier agreement or license.
+  status: active_verbatim
+  source_page: 372
+- id: CMMIDEV-TS-SG1-REQ-001
+  clause: TS SG 1
+  clause_title: Select Product Component Solutions
+  text: Product or product component solutions are selected from alternative solutions.
+  obligation: shall
+  type: normative
+  classification: process_goal
+  component: required
+  status: active_verbatim
+  source_page: 375
+  process_area: TS
+- id: CMMIDEV-TS-SP1.1-REQ-001
+  clause: TS SP 1.1
+  clause_title: Develop Alternative Solutions and Selection Criteria
+  text: Develop alternative solutions and selection criteria.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Alternative solution screening criteria
+  - Evaluation reports of new technologies
+  - Alternative solutions
+  - Selection criteria for final selection
+  - Evaluation reports of COTS products
+  subpractices:
+  - Identify screening criteria to select a set of alternative solutions for consideration.
+  - Identify technologies currently in use and new product technologies for competitive advantage.
+  - Identify candidate COTS products that satisfy the requirements.
+  - Identify re-usable solution components or applicable architecture patterns.
+  - Generate alternative solutions.
+  - Obtain a complete requirements allocation for each alternative.
+  - Develop the criteria for selecting the best alternative solution.
+  status: active_verbatim
+  source_page: 376
+  process_area: TS
+  parent_goal: TS SG 1
+- id: CMMIDEV-TS-SP1.2-REQ-001
+  clause: TS SP 1.2
+  clause_title: Select Product Component Solutions
+  text: Select the product component solutions based on selection criteria.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Product component selection decisions and rationale
+  - Documented relationships between requirements and product components
+  - Documented solutions, evaluations, and rationale
+  subpractices:
+  - Evaluate each alternative solution/set of solutions against the selection criteria established in the context of the operational concepts and scenarios.
+  - Based on the evaluation of alternatives, assess the adequacy of the selection criteria and update these criteria as necessary.
+  - Identify and resolve issues with the alternative solutions and requirements.
+  - Select the best set of alternative solutions that satisfy the established selection criteria.
+  - Establish the functional and quality attribute requirements associated with the selected set of alternatives as the set of allocated requirements to those product components.
+  - Identify the product component solutions that will be reused or acquired.
+  - Establish and maintain the documentation of the solutions, evaluations, and rationale.
+  status: active_verbatim
+  source_page: 378
+  process_area: TS
+  parent_goal: TS SG 1
+- id: CMMIDEV-TS-SG2-REQ-001
+  clause: TS SG 2
+  clause_title: Develop the Design
+  text: Product or product component designs are developed.
+  obligation: shall
+  type: normative
+  classification: process_goal
+  component: required
+  status: active_verbatim
+  source_page: 379
+  process_area: TS
+- id: CMMIDEV-TS-SP2.1-REQ-001
+  clause: TS SP 2.1
+  clause_title: Design the Product or Product Component
+  text: Develop a design for the product or product component.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Product architecture
+  - Product component design
+  subpractices:
+  - Establish and maintain criteria against which the design can be evaluated.
+  - Identify, develop, or acquire the design methods appropriate for the product.
+  - Ensure that the design adheres to applicable design standards and criteria.
+  - Ensure that the design adheres to allocated requirements.
+  - Document the design.
+  status: active_verbatim
+  source_page: 380
+  process_area: TS
+  parent_goal: TS SG 2
+- id: CMMIDEV-TS-SP2.2-REQ-001
+  clause: TS SP 2.2
+  clause_title: Establish a Technical Data Package
+  text: Establish and maintain a technical data package.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Technical data package
+  subpractices:
+  - Determine the number of levels of design and the appropriate level of documentation for each design level.
+  - Determine the views to be used to document the architecture.
+  - Base detailed design descriptions on the allocated product component requirements, architecture, and higher level designs.
+  - Document the design in the technical data package.
+  - Document the key (i.e., significant effect on cost, schedule, or technical performance) decisions made or defined, including their rationale.
+  - Revise the technical data package as necessary.
+  status: active_verbatim
+  source_page: 383
+  process_area: TS
+  parent_goal: TS SG 2
+- id: CMMIDEV-TS-SP2.3-REQ-001
+  clause: TS SP 2.3
+  clause_title: Design Interfaces Using Criteria
+  text: Design product component interfaces using established criteria.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Interface design specifications
+  - Interface control documents
+  - Interface specification criteria
+  - Rationale for selected interface design
+  subpractices:
+  - Define interface criteria.
+  - Identify interfaces associated with other product components.
+  - Identify interfaces associated with external items.
+  - Identify interfaces between product components and the product related lifecycle processes.
+  - Apply the criteria to the interface design alternatives.
+  - Document the selected interface designs and the rationale for the selection.
+  status: active_verbatim
+  source_page: 385
+  process_area: TS
+  parent_goal: TS SG 2
+- id: CMMIDEV-TS-SP2.4-REQ-001
+  clause: TS SP 2.4
+  clause_title: Perform Make, Buy, or Reuse Analyses
+  text: Evaluate whether the product components should be developed, purchased, or reused based on established criteria.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Criteria for design and product component reuse
+  - Make-or-buy analyses
+  - Guidelines for choosing COTS product components
+  subpractices:
+  - Develop criteria for the reuse of product component designs.
+  - Analyze designs to determine if product components should be developed, reused, or purchased.
+  - Analyze implications for maintenance when considering purchased or nondevelopmental (e.g., COTS, government off the shelf, reuse) items.
+  status: active_verbatim
+  source_page: 386
+  process_area: TS
+  parent_goal: TS SG 2
+- id: CMMIDEV-TS-SG3-REQ-001
+  clause: TS SG 3
+  clause_title: Implement the Product Design
+  text: Product components, and associated support documentation, are implemented from their designs.
+  obligation: shall
+  type: normative
+  classification: process_goal
+  component: required
+  status: active_verbatim
+  source_page: 387
+  process_area: TS
+- id: CMMIDEV-TS-SP3.1-REQ-001
+  clause: TS SP 3.1
+  clause_title: Implement the Design
+  text: Implement the designs of the product components.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Implemented design
+  subpractices:
+  - Use effective methods to implement the product components.
+  - Adhere to applicable standards and criteria.
+  - Conduct peer reviews of the selected product components.
+  - Perform unit testing of the product component as appropriate.
+  - Revise the product component as necessary.
+  status: active_verbatim
+  source_page: 388
+  process_area: TS
+  parent_goal: TS SG 3
+- id: CMMIDEV-TS-SP3.2-REQ-001
+  clause: TS SP 3.2
+  clause_title: Develop Product Support Documentation
+  text: Develop and maintain the end-use documentation.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - End-user training materials
+  - User's manual
+  - Operator's manual
+  - Maintenance manual
+  - Online help
+  subpractices:
+  - Review the requirements, design, product, and test results to ensure that issues affecting the installation, operation, and maintenance documentation are identified and resolved.
+  - Use effective methods to develop the installation, operation, and maintenance documentation.
+  - Adhere to the applicable documentation standards.
+  - Develop preliminary versions of the installation, operation, and maintenance documentation in early phases of the project lifecycle for review by the relevant stakeholders.
+  - Conduct peer reviews of the installation, operation, and maintenance documentation.
+  - Revise the installation, operation, and maintenance documentation as necessary.
+  status: active_verbatim
+  source_page: 390
+  process_area: TS
+  parent_goal: TS SG 3
+- id: CMMIDEV-VAL-SG1-REQ-001
+  clause: VAL SG 1
+  clause_title: Prepare for Validation
+  text: Preparation for validation is conducted.
+  obligation: shall
+  type: normative
+  classification: process_goal
+  component: required
+  status: active_verbatim
+  source_page: 394
+  process_area: VAL
+- id: CMMIDEV-VAL-SP1.1-REQ-001
+  clause: VAL SP 1.1
+  clause_title: Select Products for Validation
+  text: Select products and product components to be validated and validation methods to be used.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Lists of products and product components selected for validation
+  - Validation methods for each product or product component
+  - Requirements for performing validation for each product or product component
+  - Validation constraints for each product or product component
+  subpractices:
+  - Identify the key principles, features, and phases for product or product component validation throughout the life of the project.
+  - Determine which categories of end user needs (operational, maintenance, training, or support) are to be validated.
+  - Select the product and product components to be validated.
+  - Select the evaluation methods for product or product component validation.
+  - Review the validation selection, constraints, and methods with relevant stakeholders.
+  status: active_verbatim
+  source_page: 395
+  process_area: VAL
+  parent_goal: VAL SG 1
+- id: CMMIDEV-VAL-SP1.2-REQ-001
+  clause: VAL SP 1.2
+  clause_title: Establish the Validation Environment
+  text: Establish and maintain the environment needed to support validation.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Validation environment
+  subpractices:
+  - Identify requirements for the validation environment.
+  - Identify customer supplied products.
+  - Identify test equipment and tools.
+  - Identify validation resources that are available for reuse and modification.
+  - Plan the availability of resources in detail.
+  status: active_verbatim
+  source_page: 397
+  process_area: VAL
+  parent_goal: VAL SG 1
+- id: CMMIDEV-VAL-SP1.3-REQ-001
+  clause: VAL SP 1.3
+  clause_title: Establish Validation Procedures and Criteria
+  text: Establish and maintain procedures and criteria for validation.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Validation procedures
+  - Validation criteria
+  - Test and evaluation procedures for maintenance, training, and support
+  subpractices:
+  - Review the product requirements to ensure that issues affecting validation of the product or product component are identified and resolved.
+  - Document the environment, operational scenario, procedures, inputs, outputs, and criteria for the validation of the selected product or product component.
+  - Assess the design as it matures in the context of the validation environment to identify validation issues.
+  status: active_verbatim
+  source_page: 398
+  process_area: VAL
+  parent_goal: VAL SG 1
+- id: CMMIDEV-VAL-SG2-REQ-001
+  clause: VAL SG 2
+  clause_title: Validate Product or Product Components
+  text: The product or product components are validated to ensure they are suitable for use in their intended operating environment.
+  obligation: shall
+  type: normative
+  classification: process_goal
+  component: required
+  status: active_verbatim
+  source_page: 398
+  process_area: VAL
+- id: CMMIDEV-VAL-SP2.1-REQ-001
+  clause: VAL SP 2.1
+  clause_title: Perform Validation
+  text: Perform validation on selected products and product components.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Validation reports
+  - Validation results
+  - Validation cross reference matrix
+  - As-run procedures log
+  - Operational demonstrations
+  status: active_verbatim
+  source_page: 398
+  process_area: VAL
+  parent_goal: VAL SG 2
+- id: CMMIDEV-VAL-SP2.2-REQ-001
+  clause: VAL SP 2.2
+  clause_title: Analyze Validation Results
+  text: Analyze results of validation activities.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Validation deficiency reports
+  - Validation issues
+  - Procedure change request
+  subpractices:
+  - Compare actual results to expected results.
+  - Based on the established validation criteria, identify products and product components that do not perform suitably in their intended operating environments, or identify problems with methods, criteria, or the environment.
+  - Analyze validation data for defects.
+  - Record results of the analysis and identify issues.
+  - Use validation results to compare actual measurements and performance to the intended use or operational need.
+  - Provide information on how defects can be resolved (including validation methods, criteria, and validation environment) and initiate corrective action.
+  status: active_verbatim
+  source_page: 399
+  process_area: VAL
+  parent_goal: VAL SG 2
+- id: CMMIDEV-VER-SG1-REQ-001
+  clause: VER SG 1
+  clause_title: Prepare for Verification
+  text: Preparation for verification is conducted.
+  obligation: shall
+  type: normative
+  classification: process_goal
+  component: required
+  status: active_verbatim
+  source_page: 403
+  process_area: VER
+- id: CMMIDEV-VER-SP1.1-REQ-001
+  clause: VER SP 1.1
+  clause_title: Select Work Products for Verification
+  text: Select work products to be verified and verification methods to be used.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Lists of work products selected for verification
+  - Verification methods for each selected work product
+  subpractices:
+  - Identify work products for verification.
+  - Identify requirements to be satisfied by each selected work product.
+  - Identify verification methods available for use.
+  - Define verification methods to be used for each selected work product.
+  - Submit for integration with the project plan the identification of work products to be verified, the requirements to be satisfied, and the methods to be used.
+  status: active_verbatim
+  source_page: 403
+  process_area: VER
+  parent_goal: VER SG 1
+- id: CMMIDEV-VER-SP1.2-REQ-001
+  clause: VER SP 1.2
+  clause_title: Establish the Verification Environment
+  text: Establish and maintain the environment needed to support verification.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Verification environment
+  subpractices:
+  - Identify verification environment requirements.
+  - Identify verification resources that are available for reuse or modification.
+  - Identify verification equipment and tools.
+  - Acquire verification support equipment and an environment (e.g., test equipment, software).
+  status: active_verbatim
+  source_page: 405
+  process_area: VER
+  parent_goal: VER SG 1
+- id: CMMIDEV-VER-SP1.3-REQ-001
+  clause: VER SP 1.3
+  clause_title: Establish Verification Procedures and Criteria
+  text: Establish and maintain verification procedures and criteria for the selected work products.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Verification procedures
+  - Verification criteria
+  subpractices:
+  - Generate a set of comprehensive, integrated verification procedures for work products and commercial off-the-shelf products, as necessary.
+  - Develop and refine verification criteria as necessary.
+  - Identify the expected results, tolerances allowed, and other criteria for satisfying the requirements.
+  - Identify equipment and environmental components needed to support verification.
+  status: active_verbatim
+  source_page: 405
+  process_area: VER
+  parent_goal: VER SG 1
+- id: CMMIDEV-VER-SG2-REQ-001
+  clause: VER SG 2
+  clause_title: Perform Peer Reviews
+  text: Peer reviews are performed on selected work products.
+  obligation: shall
+  type: normative
+  classification: process_goal
+  component: required
+  status: active_verbatim
+  source_page: 406
+  process_area: VER
+- id: CMMIDEV-VER-SP2.1-REQ-001
+  clause: VER SP 2.1
+  clause_title: Prepare for Peer Reviews
+  text: Prepare for peer reviews of selected work products.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Peer review schedule
+  - Peer review checklist
+  - Entry and exit criteria for work products
+  - Criteria for requiring another peer review
+  - Peer review training material
+  - Selected work products to be reviewed
+  subpractices:
+  - Determine the type of peer review to be conducted.
+  - Define requirements for collecting data during the peer review.
+  - Establish and maintain entry and exit criteria for the peer review.
+  - Establish and maintain criteria for requiring another peer review.
+  - Establish and maintain checklists to ensure that work products are reviewed consistently.
+  - Develop a detailed peer review schedule, including the dates for peer review training and for when materials for peer reviews will be available.
+  - Ensure that the work product satisfies the peer review entry criteria prior to distribution.
+  - Distribute the work product to be reviewed and related information to participants early enough to enable them to adequately prepare for the peer review.
+  - Assign roles for the peer review as appropriate.
+  - Prepare for the peer review by reviewing the work product prior to conducting the peer review.
+  status: active_verbatim
+  source_page: 406
+  process_area: VER
+  parent_goal: VER SG 2
+- id: CMMIDEV-VER-SP2.2-REQ-001
+  clause: VER SP 2.2
+  clause_title: Conduct Peer Reviews
+  text: Conduct peer reviews of selected work products and identify issues resulting from these reviews.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Peer review results
+  - Peer review issues
+  - Peer review data
+  subpractices:
+  - Perform the assigned roles in the peer review.
+  - Identify and document defects and other issues in the work product.
+  - Record results of the peer review, including action items.
+  - Collect peer review data.
+  - Identify action items and communicate issues to relevant stakeholders.
+  - Conduct an additional peer review if needed.
+  - Ensure that the exit criteria for the peer review are satisfied.
+  status: active_verbatim
+  source_page: 408
+  process_area: VER
+  parent_goal: VER SG 2
+- id: CMMIDEV-VER-SP2.3-REQ-001
+  clause: VER SP 2.3
+  clause_title: Analyze Peer Review Data
+  text: Analyze data about the preparation, conduct, and results of the peer reviews.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Peer review data
+  - Peer review action items
+  subpractices:
+  - Record data related to the preparation, conduct, and results of the peer reviews.
+  - Store the data for future reference and analysis.
+  - Protect the data to ensure that peer review data are not used inappropriately.
+  - Analyze the peer review data.
+  status: active_verbatim
+  source_page: 408
+  process_area: VER
+  parent_goal: VER SG 2
+- id: CMMIDEV-VER-SG3-REQ-001
+  clause: VER SG 3
+  clause_title: Verify Selected Work Products
+  text: Selected work products are verified against their specified requirements.
+  obligation: shall
+  type: normative
+  classification: process_goal
+  component: required
+  status: active_verbatim
+  source_page: 409
+  process_area: VER
+- id: CMMIDEV-VER-SP3.1-REQ-001
+  clause: VER SP 3.1
+  clause_title: Perform Verification
+  text: Perform verification on selected work products.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Verification results
+  - Verification reports
+  - Demonstrations
+  - As-run procedures log
+  subpractices:
+  - Perform the verification of selected work products against their requirements.
+  - Record the results of verification activities.
+  - Identify action items resulting from the verification of work products.
+  - Document the "as-run" verification method and deviations from available methods and procedures discovered during its performance.
+  status: active_verbatim
+  source_page: 409
+  process_area: VER
+  parent_goal: VER SG 3
+- id: CMMIDEV-VER-SP3.2-REQ-001
+  clause: VER SP 3.2
+  clause_title: Analyze Verification Results
+  text: Analyze results of all verification activities.
+  obligation: shall
+  type: normative
+  classification: process_practice
+  component: expected
+  example_work_products:
+  - Analysis report (e.g., statistics on performance, causal analysis of nonconformances, comparison of the behavior between the real product and models, trends)
+  - Trouble reports
+  - Change requests for verification methods, criteria, and the environment
+  subpractices:
+  - Compare actual results to expected results.
+  - Based on the established verification criteria, identify products that do not meet their requirements or identify problems with methods, procedures, criteria, and the verification environment.
+  - Analyze defect data.
+  - Record all results of the analysis in a report.
+  - Use verification results to compare actual measurements and performance to technical performance parameters.
+  - Provide information on how defects can be resolved (including verification methods, criteria, and verification environment) and initiate corrective action.
+  status: active_verbatim
+  source_page: 410
+  process_area: VER
+  parent_goal: VER SG 3
+summary:
+  total_requirements: 236
+  by_component:
+    required: 51
+    expected: 180
+    informative: 5
+  by_status:
+    active_verbatim: 236
+  pdf_verbatim_count: 236
+  by_process_area:
+    CAR: 7
+    CM: 10
+    DAR: 7
+    IPM: 12
+    MA: 10
+    OPD: 9
+    OPF: 13
+    OPM: 14
+    OPP: 7
+    OT: 10
+    PI: 12
+    PMC: 12
+    PP: 17
+    PPQA: 6
+    QPM: 9
+    RD: 13
+    REQM: 6
+    RSKM: 9
+    SAM: 8
+    TS: 11
+    VAL: 7
+    VER: 11
+  extraction_passes:
+    backbone_pass_v1: GG (3) + GP (12) + 47 SG canonical + 5 SP samples — superseded by D-1
+    d1_pass: All 22 PAs verbatim SG + SP + EWP + Subpractices (this file)
+    d2_pass: GP 2.4-2.10, GP 3.1, GP 3.2, GG 3 (10 canonical → verbatim)

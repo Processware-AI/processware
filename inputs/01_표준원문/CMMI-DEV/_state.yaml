@@ -1,0 +1,81 @@
+standard_id: CMMI-DEV
+version: "1.3"
+source_file: sources/CMMI_for_development_.pdf
+source_hash: "sha256:96eba600c648f547cbe66eb6bacd6f5ce89020ddf4895e0a2350b1035ac8554b"
+category: "01_표준원문"
+mode: new
+extraction_mode: full_verbatim_pass_complete   # D-1~D-5 verbatim + D-6 version confirmed
+overall_status: done
+current_phase: handoff
+started_at: "2026-05-11T00:00:00+09:00"
+qa_generated_at: "2026-05-11T00:30:00+09:00"
+confirmed_at: "2026-05-11T00:45:00+09:00"
+d1_completed_at: "2026-05-11T02:00:00+09:00"
+d2_completed_at: "2026-05-11T03:00:00+09:00"
+d3_completed_at: "2026-05-11T04:00:00+09:00"
+d4_completed_at: "2026-05-11T05:00:00+09:00"
+confirmed_by: user_explicit_confirm
+ocr_processed: false
+phases:
+  intake: done
+  extraction: done
+  parsing: done
+  mining: done
+  classification: done
+  traceability: done
+  qa: done
+  handoff: done
+  d1_full_verbatim: done
+  d2_gp_verbatim: done
+  d3_glossary_verbatim: done
+  d4_ch4_5_verbatim: done
+  d5_spotcheck: done
+  d6_version_confirmed: done
+counts:
+  process_areas: 22
+  generic_goals: 3
+  generic_practices: 12
+  specific_goals: 48
+  specific_practices: 168
+  purpose_statements: 5
+  requirements_total: 236
+  pdf_verbatim: 236
+  canonical_derived: 0
+  glossary_terms: 227
+  pa_relationship_principles: 10
+  appraisal_classes: 6      # ARC A/B/C + SCAMPI A/B/C
+  flagged_and_reviewed: 0
+deferred_decisions_resolved:
+  D-1: "✅ 완료 (2026-05-11) — 20 PA SP verbatim 추출"
+  D-2: "✅ 완료 (2026-05-11) — GP 2.4-3.2 + GG3 verbatim 승격"
+  D-3: "✅ 완료 (2026-05-11) — Appendix D Glossary 227 terms verbatim"
+  D-4: "✅ 완료 (2026-05-11) — Part One Ch 4-5 verbatim (informative)"
+  D-5: "✅ 완료 (2026-05-11) — retroactive spot-check 7/7 exact match (backbone canonical ↔ D-1 verbatim 일치 확인)"
+  D-6: "✅ 확정 (2026-05-11) — V1.3 그대로 사용 (사용자 명시적 결정)"
+extraction_coverage:
+  pages_total: ~480
+  pages_extracted: ~370    # 표지/머리말 + Ch 2-5 + GG/GP + 22 PA + Glossary
+  coverage_percent: ~77
+version_decision:
+  selected: "V1.3"
+  publication_date: "2010-11"
+  rationale: "사용자 명시적 확정 (V2.0/V3.0 업그레이드 미실시)"
+  successor_versions_acknowledged:
+    - "CMMI V2.0 (2018, ISACA/CMMI Institute)"
+    - "CMMI V3.0 (2023, ISACA)"
+  implication: |
+    본 inputs/ 패키지는 V1.3 기반. 후속 인증 또는 외부 심사 시
+    V2.0/V3.0 요건 매핑이 필요하면 추가 ingest 수행 필요.
+    V1.3 의 핵심 SG/SP 구조는 V2.0/V3.0 에서도 상당 부분 호환되나,
+    Maturity Level 4/5 의 일부 PA (OPM, OPP 등) 변경이 있음.
+
+copyright_compliance:
+  license: "Internal use derivative work — CMU/SEI permitted per PDF p.2"
+  no_warranty_included: true
+  source_attribution: "CMU/SEI-2010-TR-033 — CMMI for Development, Version 1.3"
+  derivative_works:
+    - "requirements.yaml — 236 normative entries"
+    - "definitions.yaml — 227 Glossary terms"
+    - "pa_relationships.yaml — informative PA dependency model"
+    - "adoption_guide.yaml — informative adoption/appraisal guidance"
+next_command: "/process-plan \"CMMI-DEV 기반 사내 표준\""

@@ -1,0 +1,201 @@
+standard_id: CMMI-DEV
+version: "1.3"
+section: "Part One Chapter 4 — Relationships Among Process Areas"
+extraction_mode: pa_relationships_d4
+generated_at: "2026-05-11T05:00:00+09:00"
+copyright_notice:
+  holder: "Carnegie Mellon University"
+  year: 2010
+  source: "CMU/SEI-2010-TR-033 — CMMI for Development, Version 1.3"
+  license: "Internal use — derivative works permitted (per CMU/SEI copyright notice, PDF p.2)"
+  derivative_work_disclosure: "Verbatim PA category groupings and inter-PA data flow descriptions reproduced for internal compliance management."
+
+# ============================================================================
+# PA Categorization (Basic vs Advanced within each category)
+# Source: Part One Ch 4 (p.39-53)
+# ============================================================================
+
+categories:
+
+  - id: process_management
+    name: "Process Management"
+    description: "Cross-project activities related to defining, planning, deploying, implementing, monitoring, controlling, appraising, measuring, and improving processes."
+    source_page: 39
+    basic_pas:
+      - acronym: OPD
+        name: "Organizational Process Definition"
+        role: "establishes and maintains the organization's set of standard processes, work environment standards, and other assets based on the process needs and objectives of the organization"
+      - acronym: OPF
+        name: "Organizational Process Focus"
+        role: "helps the organization to plan, implement, and deploy organizational process improvements based on an understanding of the current strengths and weaknesses of the organization's processes and process assets"
+      - acronym: OT
+        name: "Organizational Training"
+        role: "identifies the strategic training needs of the organization as well as the tactical training needs that are common across projects and support groups"
+      description: "Provide the organization with a capability to document and share best practices, organizational process assets, and learning across the organization."
+      figure_ref: "Figure 4.1: Basic Process Management Process Areas"
+      source_page_range: "40-41"
+    advanced_pas:
+      - acronym: OPP
+        name: "Organizational Process Performance"
+        role: "derives quantitative objectives for quality and process performance from the organization's business objectives; provides projects and support groups with common measures, process performance baselines, and process performance models"
+      - acronym: OPM
+        name: "Organizational Performance Management"
+        role: "analyzes process performance baselines and models to understand the organization's ability to meet its business objectives and to derive quality and process performance objectives; proactively selects and deploys incremental and innovative improvements"
+      description: "Provide the organization with an improved capability to achieve its quantitative objectives for quality and process performance. Each Advanced Process Management process area depends on the ability to develop and deploy processes and supporting assets, provided by the Basic Process Management process areas."
+      figure_ref: "Figure 4.2: Advanced Process Management Process Areas"
+      source_page_range: "41-43"
+
+  - id: project_management
+    name: "Project Management"
+    description: "Project management activities related to planning, monitoring, and controlling the project."
+    source_page: 43
+    basic_pas:
+      - acronym: PP
+        name: "Project Planning"
+        role: "includes developing the project plan, involving relevant stakeholders, obtaining commitment to the plan, and maintaining the plan"
+      - acronym: PMC
+        name: "Project Monitoring and Control"
+        role: "contains practices for monitoring and controlling activities and taking corrective action; the project plan specifies the frequency of progress reviews and the measures used to monitor progress"
+      - acronym: REQM
+        name: "Requirements Management"
+        role: "maintains the requirements; describes activities for obtaining and controlling requirement changes and ensuring that other relevant plans and data are kept current; provides traceability of requirements from customer requirements to product requirements to product component requirements"
+      - acronym: SAM
+        name: "Supplier Agreement Management"
+        role: "addresses the need of the project to acquire those portions of work that are produced by suppliers; supplier is selected, agreement is established, progress and performance are tracked, acceptance reviews and tests are conducted"
+      description: "Address the activities related to establishing and maintaining the project plan, establishing and maintaining commitments, monitoring progress against the plan, taking corrective action, and managing supplier agreements."
+      figure_ref: "Figure 4.3: Basic Project Management Process Areas"
+      source_page_range: "43-45"
+    advanced_pas:
+      - acronym: IPM
+        name: "Integrated Project Management"
+        role: "establishes and maintains the project's defined process that is tailored from the organization's set of standard processes; project is managed using the project's defined process; teams are established using the organization's rules and guidelines"
+      - acronym: QPM
+        name: "Quantitative Project Management"
+        role: "establishes objectives for quality and process performance, composes a defined process that can help achieve those objectives, and quantitatively manages the project; the project's quality and process performance objectives are based on the objectives established by the organization and the customer"
+      - acronym: RSKM
+        name: "Risk Management"
+        role: "takes a continuing, forward-looking approach to managing risks with activities that include identification of risk parameters, risk assessments, and risk mitigation"
+      description: "Address activities such as establishing a defined process that is tailored from the organization's set of standard processes, establishing the project work environment from the organization's work environment standards, coordinating and collaborating with relevant stakeholders, forming and sustaining teams for the conduct of projects, quantitatively managing the project, and managing risk."
+      figure_ref: "Figure 4.4: Advanced Project Management Process Areas"
+      source_page_range: "45-47"
+
+  - id: engineering
+    name: "Engineering"
+    description: "Development and maintenance activities that are shared across engineering disciplines. The Engineering process areas were written using general engineering terminology so that any technical discipline involved in the product development process (e.g., software engineering, mechanical engineering) can use them for process improvement."
+    source_page: 47
+    pas:
+      - acronym: RD
+        name: "Requirements Development"
+        role: "identifies customer needs and translates these needs into product requirements; supplies requirements to the Technical Solution process area"
+      - acronym: TS
+        name: "Technical Solution"
+        role: "develops technical data packages for product components to be used by the Product Integration or Supplier Agreement Management process area; alternative solutions are examined to select the optimum design based on established criteria; relies on the specific practices in the Verification process area to perform design verification and peer reviews"
+      - acronym: PI
+        name: "Product Integration"
+        role: "contains the specific practices associated with generating an integration strategy, integrating product components, and delivering the product to the customer; uses the specific practices of both Verification and Validation"
+      - acronym: VER
+        name: "Verification"
+        role: "ensures that selected work products meet the specified requirements; selects work products and verification methods that will be used to verify work products against specified requirements; also addresses peer reviews"
+      - acronym: VAL
+        name: "Validation"
+        role: "incrementally validates products against the customer's needs; can be performed in the operational environment or in a simulated operational environment; coordinates with the customer on validation requirements"
+    figure_ref: "Figure 4.5: Engineering Process Areas"
+    source_page_range: "47-49"
+    engineering_process_flow:
+      description: "Customer needs → RD → TS → PI → Customer (with VER + VAL feedback loops to RD/TS/PI)"
+      external_inputs:
+        - source: "Customer (needs)"
+          target: "RD"
+        - source: "Project Management process areas (Product and product component requirements)"
+          target: "RD"
+      internal_flows:
+        - from: RD
+          to: TS
+          payload: "Requirements"
+        - from: TS
+          to: RD
+          payload: "Alternative solutions"
+        - from: TS
+          to: PI
+          payload: "Product components"
+        - from: PI
+          to: Customer
+          payload: "Product"
+        - from: VER
+          to_all: [RD, TS, PI]
+          payload: "Requirements, Product components, work products, verification reports"
+        - from: VAL
+          to_all: [RD, TS, PI]
+          payload: "Customer needs feedback"
+    recursion_and_iteration:
+      source_page_range: "50"
+      recursion: "Process is applied to successive levels of system elements within a system structure. Outcomes of one application are used as inputs to the next level. For example, the verification process is designed to apply to the entire assembled product, the major product components, and even components of components."
+      iteration: "Processes are repeated at the same system level. New information is created by the implementation of one process that feeds that information back into a related process. For example, iteration will most likely occur between requirements development and technical solution."
+
+  - id: support
+    name: "Support"
+    description: "Activities that support product development and maintenance. The Support process areas address processes that are used in the context of performing other processes."
+    source_page: 50
+    basic_pas:
+      - acronym: CM
+        name: "Configuration Management"
+        role: "supports all process areas by establishing and maintaining the integrity of work products using configuration identification, configuration control, configuration status accounting, and configuration audits"
+      - acronym: MA
+        name: "Measurement and Analysis"
+        role: "supports all process areas by providing specific practices that guide projects and organizations in aligning measurement needs and objectives with a measurement approach that is used to support management information needs"
+      - acronym: PPQA
+        name: "Process and Product Quality Assurance"
+        role: "supports all process areas by providing specific practices for objectively evaluating performed processes, work products, and services against the applicable process descriptions, standards, and procedures, and ensuring that any issues arising from these reviews are addressed"
+      description: "Address fundamental support functions that are used by all process areas. Although all Support process areas rely on the other process areas for input, the Basic Support process areas provide support functions that also help implement several generic practices."
+      figure_ref: "Figure 4.6: Basic Support Process Areas"
+      source_page_range: "51-52"
+    advanced_pas:
+      - acronym: CAR
+        name: "Causal Analysis and Resolution"
+        role: "project members identify causes of selected outcomes and take action to prevent negative outcomes from occurring in the future or to leverage positive outcomes; effective process changes can result in process improvement proposals submitted to the organization's set of standard processes"
+      - acronym: DAR
+        name: "Decision Analysis and Resolution"
+        role: "supports all the process areas by determining which issues should be subjected to a formal evaluation process and then applying a formal evaluation process to them"
+      description: "Provide the projects and organization with an improved support capability. Each of these process areas relies on specific inputs or practices from other process areas."
+      figure_ref: "Figure 4.7: Advanced Support Process Areas"
+      source_page_range: "52-53"
+
+
+# ============================================================================
+# Cross-Cutting Concepts
+# ============================================================================
+
+cross_cutting_principles:
+  - id: BPM-feeds-OT
+    description: "OPF/OPD feed OT with organization's process needs and objectives; OT provides training for projects and support groups in standard process and assets"
+    source_page: 40
+  - id: OPP-feeds-OPM
+    description: "OPP provides quality and process measures, baselines, performance objectives, and models to OPM"
+    source_page: 42
+  - id: PP-baseline-for-PMC
+    description: "Project plan from PP becomes the monitoring baseline for PMC"
+    source_page: 44
+  - id: REQM-feeds-RD-TS
+    description: "Requirements management changes propagate to Engineering process areas; requirements management is fundamental to a controlled and disciplined engineering process"
+    source_page: 45
+  - id: BPM-enables-APM
+    description: "Each Advanced Project Management process area depends on the ability to plan, monitor, and control the project. The Basic Project Management process areas provide this ability."
+    source_page: 45
+  - id: VER-before-VAL
+    description: "Verification ensures 'you built it right'; Validation ensures 'you built the right thing' — typical order is verification → validation"
+    source_page: 49
+  - id: CM-supports-all
+    description: "Configuration Management supports all process areas by establishing and maintaining the integrity of work products"
+    source_page: 52
+  - id: MA-supports-all
+    description: "Measurement and Analysis supports all process areas by providing measurement information"
+    source_page: 51
+  - id: PPQA-supports-all
+    description: "Process and Product Quality Assurance supports all process areas by objectively evaluating performed processes and work products"
+    source_page: 51
+  - id: DAR-supports-all
+    description: "Decision Analysis and Resolution supports all process areas by determining which issues should be subjected to formal evaluation"
+    source_page: 53
+  - id: CAR-improves-all
+    description: "CAR identifies causes of selected outcomes; effective changes can result in process improvement proposals submitted to OSSP"
+    source_page: 53

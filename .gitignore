@@ -16,7 +16,7 @@
 !/sources/
 !/sources/README.md
 
-# inputs/ — ingest 출력 패키지 (YAML·MD 만, 바이너리 금지)
+# inputs/ — ingest 출력 패키지 (YAML·MD·py 만, 바이너리 금지)
 /inputs/**
 !/inputs/
 !/inputs/README.md
@@ -25,6 +25,12 @@
 !/inputs/*/*/
 !/inputs/*/*/*.yaml
 !/inputs/*/*/*.md
+# level-3 subdirs (_d1_batch/, qa/, ...) 안의 YAML·MD·py·tmp 도 허용 (audit evidence)
+!/inputs/*/*/*/
+!/inputs/*/*/*/*.yaml
+!/inputs/*/*/*/*.md
+!/inputs/*/*/*/*.py
+!/inputs/*/*/*/*.tmp
 
 # 02_적용요건 하위 실데이터 제외 (README만 추적)
 !/vault/02_적용요건/

@@ -1,0 +1,1033 @@
+batch: 3
+category: Engineering
+generated_at: "2026-05-11T00:00:00+09:00"
+pas_extracted: [PI, RD, TS, VAL, VER]
+
+# ============================================================================
+# CMMI-DEV V1.3 — Engineering category (5 Process Areas)
+# Verbatim extraction of Specific Goals (SG) and Specific Practices (SP)
+# statements (italic statements) from PDF.
+#
+# Page reference: physical pages (PDF page = physical page + 12)
+# Status: active_verbatim for all entries
+# ============================================================================
+
+requirements:
+
+  # ────────────────────────────────────────────────────────────────────────
+  # PI — Product Integration (Engineering, ML3)
+  # PDF physical pages 257-269
+  # ────────────────────────────────────────────────────────────────────────
+
+  - id: CMMIDEV-PI-SG1-REQ-001
+    clause: "PI SG 1"
+    clause_title: "Prepare for Product Integration"
+    text: "Preparation for product integration is conducted."
+    obligation: shall
+    type: normative
+    classification: process_goal
+    component: required
+    target_asset_candidates: [PRO, WI]
+    status: active_verbatim
+    source_page: 259
+
+  - id: CMMIDEV-PI-SP1.1-REQ-001
+    clause: "PI SP 1.1"
+    clause_title: "Establish an Integration Strategy"
+    text: "Establish and maintain a product integration strategy."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Product integration strategy"
+      - "Rationale for selecting or rejecting alternative product integration strategies"
+    subpractices:
+      - "Identify the product components to be integrated."
+      - "Identify the verifications to be performed during the integration of the product components."
+      - "Identify alternative product component integration strategies."
+      - "Select the best integration strategy."
+      - "Periodically review the product integration strategy and revise as needed."
+      - "Record the rationale for decisions made and deferred."
+    status: active_verbatim
+    source_page: 259
+
+  - id: CMMIDEV-PI-SP1.2-REQ-001
+    clause: "PI SP 1.2"
+    clause_title: "Establish the Product Integration Environment"
+    text: "Establish and maintain the environment needed to support the integration of the product components."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Verified environment for product integration"
+      - "Support documentation for the product integration environment"
+    subpractices:
+      - "Identify the requirements for the product integration environment."
+      - "Identify verification procedures and criteria for the product integration environment."
+      - "Decide whether to make or buy the needed product integration environment."
+      - "Develop an integration environment if a suitable environment cannot be acquired."
+      - "Maintain the product integration environment throughout the project."
+      - "Dispose of those portions of the environment that are no longer useful."
+    status: active_verbatim
+    source_page: 261
+
+  - id: CMMIDEV-PI-SP1.3-REQ-001
+    clause: "PI SP 1.3"
+    clause_title: "Establish Product Integration Procedures and Criteria"
+    text: "Establish and maintain procedures and criteria for integration of the product components."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Product integration procedures"
+      - "Product integration criteria"
+    subpractices:
+      - "Establish and maintain product integration procedures for the product components."
+      - "Establish and maintain criteria for product component integration and evaluation."
+      - "Establish and maintain criteria for validation and delivery of the integrated product."
+    status: active_verbatim
+    source_page: 262
+
+  - id: CMMIDEV-PI-SG2-REQ-001
+    clause: "PI SG 2"
+    clause_title: "Ensure Interface Compatibility"
+    text: "The product component interfaces, both internal and external, are compatible."
+    obligation: shall
+    type: normative
+    classification: process_goal
+    component: required
+    status: active_verbatim
+    source_page: 263
+
+  - id: CMMIDEV-PI-SP2.1-REQ-001
+    clause: "PI SP 2.1"
+    clause_title: "Review Interface Descriptions for Completeness"
+    text: "Review interface descriptions for coverage and completeness."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Categories of interfaces"
+      - "List of interfaces per category"
+      - "Mapping of the interfaces to the product components and the product integration environment"
+    subpractices:
+      - "Review interface data for completeness and ensure complete coverage of all interfaces."
+      - "Ensure that product components and interfaces are marked to ensure easy and correct connection to the joining product component."
+      - "Periodically review the adequacy of interface descriptions."
+    status: active_verbatim
+    source_page: 263
+
+  - id: CMMIDEV-PI-SP2.2-REQ-001
+    clause: "PI SP 2.2"
+    clause_title: "Manage Interfaces"
+    text: "Manage internal and external interface definitions, designs, and changes for products and product components."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Table of relationships among the product components and the external environment"
+      - "Table of relationships among the different product components"
+      - "List of agreed-to interfaces defined for each pair of product components, when applicable"
+      - "Reports from the interface control working group meetings"
+      - "Action items for updating interfaces"
+      - "Application program interface (API)"
+      - "Updated interface description or agreement"
+    subpractices:
+      - "Ensure the compatibility of the interfaces throughout the life of the product."
+      - "Resolve conflict, noncompliance, and change issues."
+      - "Maintain a repository for interface data accessible to project participants."
+    status: active_verbatim
+    source_page: 264
+
+  - id: CMMIDEV-PI-SG3-REQ-001
+    clause: "PI SG 3"
+    clause_title: "Assemble Product Components and Deliver the Product"
+    text: "Verified product components are assembled and the integrated, verified, and validated product is delivered."
+    obligation: shall
+    type: normative
+    classification: process_goal
+    component: required
+    status: active_verbatim
+    source_page: 266
+
+  - id: CMMIDEV-PI-SP3.1-REQ-001
+    clause: "PI SP 3.1"
+    clause_title: "Confirm Readiness of Product Components for Integration"
+    text: "Confirm, prior to assembly, that each product component required to assemble the product has been properly identified, behaves according to its description, and that the product component interfaces comply with the interface descriptions."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Acceptance documents for the received product components"
+      - "Delivery receipts"
+      - "Checked packing lists"
+      - "Exception reports"
+      - "Waivers"
+    subpractices:
+      - "Track the status of all product components as soon as they become available for integration."
+      - "Ensure that product components are delivered to the product integration environment in accordance with the product integration strategy and procedures."
+      - "Confirm the receipt of each properly identified product component."
+      - "Ensure that each received product component meets its description."
+      - "Check the configuration status against the expected configuration."
+      - "Perform a pre-check (e.g., by a visual inspection, using basic measures) of all the physical interfaces before connecting product components together."
+    status: active_verbatim
+    source_page: 266
+
+  - id: CMMIDEV-PI-SP3.2-REQ-001
+    clause: "PI SP 3.2"
+    clause_title: "Assemble Product Components"
+    text: "Assemble product components according to the product integration strategy and procedures."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Assembled product or product components"
+    subpractices:
+      - "Ensure the readiness of the product integration environment."
+      - "Conduct integration in accordance with the product integration strategy, procedures, and criteria."
+      - "Revise the product integration strategy, procedures, and criteria as appropriate."
+    status: active_verbatim
+    source_page: 267
+
+  - id: CMMIDEV-PI-SP3.3-REQ-001
+    clause: "PI SP 3.3"
+    clause_title: "Evaluate Assembled Product Components"
+    text: "Evaluate assembled product components for interface compatibility."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Exception reports"
+      - "Interface evaluation reports"
+      - "Product integration summary reports"
+    subpractices:
+      - "Conduct the evaluation of assembled product components following the product integration strategy, procedures, and criteria."
+      - "Record the evaluation results."
+    status: active_verbatim
+    source_page: 267
+
+  - id: CMMIDEV-PI-SP3.4-REQ-001
+    clause: "PI SP 3.4"
+    clause_title: "Package and Deliver the Product or Product Component"
+    text: "Package the assembled product or product component and deliver it to the customer."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Packaged product or product components"
+      - "Delivery documentation"
+    subpractices:
+      - "Review the requirements, design, product, verification results, and documentation to ensure that issues affecting the packaging and delivery of the product are identified and resolved."
+      - "Use effective methods to package and deliver the assembled product."
+      - "Satisfy the applicable requirements and standards for packaging and delivering the product."
+      - "Prepare the operational site for installation of the product."
+      - "Deliver the product and related documentation and confirm receipt."
+      - "Install the product at the operational site and confirm correct operation."
+    status: active_verbatim
+    source_page: 268
+
+  # ────────────────────────────────────────────────────────────────────────
+  # RD — Requirements Development (Engineering, ML3)
+  # PDF physical pages 325-340
+  # ────────────────────────────────────────────────────────────────────────
+
+  - id: CMMIDEV-RD-SG1-REQ-001
+    clause: "RD SG 1"
+    clause_title: "Develop Customer Requirements"
+    text: "Stakeholder needs, expectations, constraints, and interfaces are collected and translated into customer requirements."
+    obligation: shall
+    type: normative
+    classification: process_goal
+    component: required
+    status: active_verbatim
+    source_page: 328
+
+  - id: CMMIDEV-RD-SP1.1-REQ-001
+    clause: "RD SP 1.1"
+    clause_title: "Elicit Needs"
+    text: "Elicit stakeholder needs, expectations, constraints, and interfaces for all phases of the product lifecycle."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Results of requirements elicitation activities"
+    subpractices:
+      - "Engage relevant stakeholders using methods for eliciting needs, expectations, constraints, and external interfaces."
+    status: active_verbatim
+    source_page: 329
+
+  - id: CMMIDEV-RD-SP1.2-REQ-001
+    clause: "RD SP 1.2"
+    clause_title: "Transform Stakeholder Needs into Customer Requirements"
+    text: "Transform stakeholder needs, expectations, constraints, and interfaces into prioritized customer requirements."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Prioritized customer requirements"
+      - "Customer constraints on the conduct of verification"
+      - "Customer constraints on the conduct of validation"
+    subpractices:
+      - "Translate stakeholder needs, expectations, constraints, and interfaces into documented customer requirements."
+      - "Establish and maintain a prioritization of customer functional and quality attribute requirements."
+      - "Define constraints for verification and validation."
+    status: active_verbatim
+    source_page: 330
+
+  - id: CMMIDEV-RD-SG2-REQ-001
+    clause: "RD SG 2"
+    clause_title: "Develop Product Requirements"
+    text: "Customer requirements are refined and elaborated to develop product and product component requirements."
+    obligation: shall
+    type: normative
+    classification: process_goal
+    component: required
+    status: active_verbatim
+    source_page: 331
+
+  - id: CMMIDEV-RD-SP2.1-REQ-001
+    clause: "RD SP 2.1"
+    clause_title: "Establish Product and Product Component Requirements"
+    text: "Establish and maintain product and product component requirements, which are based on the customer requirements."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Derived requirements"
+      - "Product requirements"
+      - "Product component requirements"
+      - "Architectural requirements, which specify or constrain the relationships among product components"
+    subpractices:
+      - "Develop requirements in technical terms necessary for product and product component design."
+      - "Derive requirements that result from design decisions."
+      - "Develop architectural requirements capturing critical quality attributes and quality attribute measures necessary for establishing the product architecture and design."
+      - "Establish and maintain relationships between requirements for consideration during change management and requirements allocation."
+    status: active_verbatim
+    source_page: 331
+
+  - id: CMMIDEV-RD-SP2.2-REQ-001
+    clause: "RD SP 2.2"
+    clause_title: "Allocate Product Component Requirements"
+    text: "Allocate the requirements for each product component."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Requirement allocation sheets"
+      - "Provisional requirement allocations"
+      - "Design constraints"
+      - "Derived requirements"
+      - "Relationships among derived requirements"
+    subpractices:
+      - "Allocate requirements to functions."
+      - "Allocate requirements to product components and the architecture."
+      - "Allocate design constraints to product components and the architecture."
+      - "Allocate requirements to delivery increments."
+      - "Document relationships among allocated requirements."
+    status: active_verbatim
+    source_page: 333
+
+  - id: CMMIDEV-RD-SP2.3-REQ-001
+    clause: "RD SP 2.3"
+    clause_title: "Identify Interface Requirements"
+    text: "Identify interface requirements."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Interface requirements"
+    subpractices:
+      - "Identify interfaces both external to the product and internal to the product (e.g., between functional partitions or objects)."
+      - "Develop the requirements for the identified interfaces."
+    status: active_verbatim
+    source_page: 334
+
+  - id: CMMIDEV-RD-SG3-REQ-001
+    clause: "RD SG 3"
+    clause_title: "Analyze and Validate Requirements"
+    text: "The requirements are analyzed and validated."
+    obligation: shall
+    type: normative
+    classification: process_goal
+    component: required
+    status: active_verbatim
+    source_page: 334
+
+  - id: CMMIDEV-RD-SP3.1-REQ-001
+    clause: "RD SP 3.1"
+    clause_title: "Establish Operational Concepts and Scenarios"
+    text: "Establish and maintain operational concepts and associated scenarios."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Operational concept"
+      - "Product or product component development, installation, operational, maintenance, and support concepts"
+      - "Disposal concepts"
+      - "Use cases"
+      - "Timeline scenarios"
+      - "New requirements"
+    subpractices:
+      - "Develop operational concepts and scenarios that include operations, installation, development, maintenance, support, and disposal as appropriate."
+      - "Define the environment in which the product or product component will operate, including boundaries and constraints."
+      - "Review operational concepts and scenarios to refine and discover requirements."
+      - "Develop a detailed operational concept, as products and product components are selected, that defines the interaction of the product, the end user, and the environment, and that satisfies the operational, maintenance, support, and disposal needs."
+    status: active_verbatim
+    source_page: 335
+
+  - id: CMMIDEV-RD-SP3.2-REQ-001
+    clause: "RD SP 3.2"
+    clause_title: "Establish a Definition of Required Functionality and Quality Attributes"
+    text: "Establish and maintain a definition of required functionality and quality attributes."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Definition of required functionality and quality attributes"
+      - "Functional architecture"
+      - "Activity diagrams and use cases"
+      - "Object oriented analysis with services or methods identified"
+      - "Architecturally significant quality attribute requirements"
+    subpractices:
+      - "Determine key mission and business drivers."
+      - "Identify desirable functionality and quality attributes."
+      - "Determine architecturally significant quality attributes based on key mission and business drivers."
+      - "Analyze and quantify functionality required by end users."
+      - "Analyze requirements to identify logical or functional partitions (e.g., subfunctions)."
+      - "Partition requirements into groups, based on established criteria (e.g., similar functionality, similar quality attribute requirements, coupling), to facilitate and focus the requirements analysis."
+      - "Allocate customer requirements to functional partitions, objects, people, or support elements to support the synthesis of solutions."
+      - "Allocate requirements to functions and subfunctions (or other logical entities)."
+    status: active_verbatim
+    source_page: 336
+
+  - id: CMMIDEV-RD-SP3.3-REQ-001
+    clause: "RD SP 3.3"
+    clause_title: "Analyze Requirements"
+    text: "Analyze requirements to ensure that they are necessary and sufficient."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Requirements defects reports"
+      - "Proposed requirements changes to resolve defects"
+      - "Key requirements"
+      - "Technical performance measures"
+    subpractices:
+      - "Analyze stakeholder needs, expectations, constraints, and external interfaces to organize them into related subjects and remove conflicts."
+      - "Analyze requirements to determine whether they satisfy the objectives of higher level requirements."
+      - "Analyze requirements to ensure that they are complete, feasible, realizable, and verifiable."
+      - "Identify key requirements that have a strong influence on cost, schedule, performance, or risk."
+      - "Identify technical performance measures that will be tracked during the development effort."
+      - "Analyze operational concepts and scenarios to refine the customer needs, constraints, and interfaces and to discover new requirements."
+    status: active_verbatim
+    source_page: 337
+
+  - id: CMMIDEV-RD-SP3.4-REQ-001
+    clause: "RD SP 3.4"
+    clause_title: "Analyze Requirements to Achieve Balance"
+    text: "Analyze requirements to balance stakeholder needs and constraints."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Assessment of risks related to requirements"
+    subpractices:
+      - "Use proven models, simulations, and prototyping to analyze the balance of stakeholder needs and constraints."
+      - "Perform a risk assessment on the requirements and definition of required functionality and quality attributes."
+      - "Examine product lifecycle concepts for impacts of requirements on risks."
+      - "Assess the impact of the architecturally significant quality attribute requirements on the product and product development costs and risks."
+    status: active_verbatim
+    source_page: 339
+
+  - id: CMMIDEV-RD-SP3.5-REQ-001
+    clause: "RD SP 3.5"
+    clause_title: "Validate Requirements"
+    text: "Validate requirements to ensure the resulting product will perform as intended in the end user's environment."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Record of analysis methods and results"
+    subpractices:
+      - "Analyze the requirements to determine the risk that the resulting product will not perform appropriately in its intended use environment."
+      - "Explore the adequacy and completeness of requirements by developing product representations (e.g., prototypes, simulations, models, scenarios, storyboards) and by obtaining feedback about them from relevant stakeholders."
+      - "Assess the design as it matures in the context of the requirements validation environment to identify validation issues and expose unstated needs and customer requirements."
+    status: active_verbatim
+    source_page: 339
+
+  # ────────────────────────────────────────────────────────────────────────
+  # TS — Technical Solution (Engineering, ML3)
+  # PDF physical pages 373-391
+  # ────────────────────────────────────────────────────────────────────────
+
+  - id: CMMIDEV-TS-SG1-REQ-001
+    clause: "TS SG 1"
+    clause_title: "Select Product Component Solutions"
+    text: "Product or product component solutions are selected from alternative solutions."
+    obligation: shall
+    type: normative
+    classification: process_goal
+    component: required
+    status: active_verbatim
+    source_page: 375
+
+  - id: CMMIDEV-TS-SP1.1-REQ-001
+    clause: "TS SP 1.1"
+    clause_title: "Develop Alternative Solutions and Selection Criteria"
+    text: "Develop alternative solutions and selection criteria."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Alternative solution screening criteria"
+      - "Evaluation reports of new technologies"
+      - "Alternative solutions"
+      - "Selection criteria for final selection"
+      - "Evaluation reports of COTS products"
+    subpractices:
+      - "Identify screening criteria to select a set of alternative solutions for consideration."
+      - "Identify technologies currently in use and new product technologies for competitive advantage."
+      - "Identify candidate COTS products that satisfy the requirements."
+      - "Identify re-usable solution components or applicable architecture patterns."
+      - "Generate alternative solutions."
+      - "Obtain a complete requirements allocation for each alternative."
+      - "Develop the criteria for selecting the best alternative solution."
+    status: active_verbatim
+    source_page: 376
+
+  - id: CMMIDEV-TS-SP1.2-REQ-001
+    clause: "TS SP 1.2"
+    clause_title: "Select Product Component Solutions"
+    text: "Select the product component solutions based on selection criteria."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Product component selection decisions and rationale"
+      - "Documented relationships between requirements and product components"
+      - "Documented solutions, evaluations, and rationale"
+    subpractices:
+      - "Evaluate each alternative solution/set of solutions against the selection criteria established in the context of the operational concepts and scenarios."
+      - "Based on the evaluation of alternatives, assess the adequacy of the selection criteria and update these criteria as necessary."
+      - "Identify and resolve issues with the alternative solutions and requirements."
+      - "Select the best set of alternative solutions that satisfy the established selection criteria."
+      - "Establish the functional and quality attribute requirements associated with the selected set of alternatives as the set of allocated requirements to those product components."
+      - "Identify the product component solutions that will be reused or acquired."
+      - "Establish and maintain the documentation of the solutions, evaluations, and rationale."
+    status: active_verbatim
+    source_page: 378
+
+  - id: CMMIDEV-TS-SG2-REQ-001
+    clause: "TS SG 2"
+    clause_title: "Develop the Design"
+    text: "Product or product component designs are developed."
+    obligation: shall
+    type: normative
+    classification: process_goal
+    component: required
+    status: active_verbatim
+    source_page: 379
+
+  - id: CMMIDEV-TS-SP2.1-REQ-001
+    clause: "TS SP 2.1"
+    clause_title: "Design the Product or Product Component"
+    text: "Develop a design for the product or product component."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Product architecture"
+      - "Product component design"
+    subpractices:
+      - "Establish and maintain criteria against which the design can be evaluated."
+      - "Identify, develop, or acquire the design methods appropriate for the product."
+      - "Ensure that the design adheres to applicable design standards and criteria."
+      - "Ensure that the design adheres to allocated requirements."
+      - "Document the design."
+    status: active_verbatim
+    source_page: 380
+
+  - id: CMMIDEV-TS-SP2.2-REQ-001
+    clause: "TS SP 2.2"
+    clause_title: "Establish a Technical Data Package"
+    text: "Establish and maintain a technical data package."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Technical data package"
+    subpractices:
+      - "Determine the number of levels of design and the appropriate level of documentation for each design level."
+      - "Determine the views to be used to document the architecture."
+      - "Base detailed design descriptions on the allocated product component requirements, architecture, and higher level designs."
+      - "Document the design in the technical data package."
+      - "Document the key (i.e., significant effect on cost, schedule, or technical performance) decisions made or defined, including their rationale."
+      - "Revise the technical data package as necessary."
+    status: active_verbatim
+    source_page: 383
+
+  - id: CMMIDEV-TS-SP2.3-REQ-001
+    clause: "TS SP 2.3"
+    clause_title: "Design Interfaces Using Criteria"
+    text: "Design product component interfaces using established criteria."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Interface design specifications"
+      - "Interface control documents"
+      - "Interface specification criteria"
+      - "Rationale for selected interface design"
+    subpractices:
+      - "Define interface criteria."
+      - "Identify interfaces associated with other product components."
+      - "Identify interfaces associated with external items."
+      - "Identify interfaces between product components and the product related lifecycle processes."
+      - "Apply the criteria to the interface design alternatives."
+      - "Document the selected interface designs and the rationale for the selection."
+    status: active_verbatim
+    source_page: 385
+
+  - id: CMMIDEV-TS-SP2.4-REQ-001
+    clause: "TS SP 2.4"
+    clause_title: "Perform Make, Buy, or Reuse Analyses"
+    text: "Evaluate whether the product components should be developed, purchased, or reused based on established criteria."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Criteria for design and product component reuse"
+      - "Make-or-buy analyses"
+      - "Guidelines for choosing COTS product components"
+    subpractices:
+      - "Develop criteria for the reuse of product component designs."
+      - "Analyze designs to determine if product components should be developed, reused, or purchased."
+      - "Analyze implications for maintenance when considering purchased or nondevelopmental (e.g., COTS, government off the shelf, reuse) items."
+    status: active_verbatim
+    source_page: 386
+
+  - id: CMMIDEV-TS-SG3-REQ-001
+    clause: "TS SG 3"
+    clause_title: "Implement the Product Design"
+    text: "Product components, and associated support documentation, are implemented from their designs."
+    obligation: shall
+    type: normative
+    classification: process_goal
+    component: required
+    status: active_verbatim
+    source_page: 387
+
+  - id: CMMIDEV-TS-SP3.1-REQ-001
+    clause: "TS SP 3.1"
+    clause_title: "Implement the Design"
+    text: "Implement the designs of the product components."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Implemented design"
+    subpractices:
+      - "Use effective methods to implement the product components."
+      - "Adhere to applicable standards and criteria."
+      - "Conduct peer reviews of the selected product components."
+      - "Perform unit testing of the product component as appropriate."
+      - "Revise the product component as necessary."
+    status: active_verbatim
+    source_page: 388
+
+  - id: CMMIDEV-TS-SP3.2-REQ-001
+    clause: "TS SP 3.2"
+    clause_title: "Develop Product Support Documentation"
+    text: "Develop and maintain the end-use documentation."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "End-user training materials"
+      - "User's manual"
+      - "Operator's manual"
+      - "Maintenance manual"
+      - "Online help"
+    subpractices:
+      - "Review the requirements, design, product, and test results to ensure that issues affecting the installation, operation, and maintenance documentation are identified and resolved."
+      - "Use effective methods to develop the installation, operation, and maintenance documentation."
+      - "Adhere to the applicable documentation standards."
+      - "Develop preliminary versions of the installation, operation, and maintenance documentation in early phases of the project lifecycle for review by the relevant stakeholders."
+      - "Conduct peer reviews of the installation, operation, and maintenance documentation."
+      - "Revise the installation, operation, and maintenance documentation as necessary."
+    status: active_verbatim
+    source_page: 390
+
+  # ────────────────────────────────────────────────────────────────────────
+  # VAL — Validation (Engineering, ML3)
+  # PDF physical pages 393-400
+  # ────────────────────────────────────────────────────────────────────────
+
+  - id: CMMIDEV-VAL-SG1-REQ-001
+    clause: "VAL SG 1"
+    clause_title: "Prepare for Validation"
+    text: "Preparation for validation is conducted."
+    obligation: shall
+    type: normative
+    classification: process_goal
+    component: required
+    status: active_verbatim
+    source_page: 394
+
+  - id: CMMIDEV-VAL-SP1.1-REQ-001
+    clause: "VAL SP 1.1"
+    clause_title: "Select Products for Validation"
+    text: "Select products and product components to be validated and validation methods to be used."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Lists of products and product components selected for validation"
+      - "Validation methods for each product or product component"
+      - "Requirements for performing validation for each product or product component"
+      - "Validation constraints for each product or product component"
+    subpractices:
+      - "Identify the key principles, features, and phases for product or product component validation throughout the life of the project."
+      - "Determine which categories of end user needs (operational, maintenance, training, or support) are to be validated."
+      - "Select the product and product components to be validated."
+      - "Select the evaluation methods for product or product component validation."
+      - "Review the validation selection, constraints, and methods with relevant stakeholders."
+    status: active_verbatim
+    source_page: 395
+
+  - id: CMMIDEV-VAL-SP1.2-REQ-001
+    clause: "VAL SP 1.2"
+    clause_title: "Establish the Validation Environment"
+    text: "Establish and maintain the environment needed to support validation."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Validation environment"
+    subpractices:
+      - "Identify requirements for the validation environment."
+      - "Identify customer supplied products."
+      - "Identify test equipment and tools."
+      - "Identify validation resources that are available for reuse and modification."
+      - "Plan the availability of resources in detail."
+    status: active_verbatim
+    source_page: 397
+
+  - id: CMMIDEV-VAL-SP1.3-REQ-001
+    clause: "VAL SP 1.3"
+    clause_title: "Establish Validation Procedures and Criteria"
+    text: "Establish and maintain procedures and criteria for validation."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Validation procedures"
+      - "Validation criteria"
+      - "Test and evaluation procedures for maintenance, training, and support"
+    subpractices:
+      - "Review the product requirements to ensure that issues affecting validation of the product or product component are identified and resolved."
+      - "Document the environment, operational scenario, procedures, inputs, outputs, and criteria for the validation of the selected product or product component."
+      - "Assess the design as it matures in the context of the validation environment to identify validation issues."
+    status: active_verbatim
+    source_page: 398
+
+  - id: CMMIDEV-VAL-SG2-REQ-001
+    clause: "VAL SG 2"
+    clause_title: "Validate Product or Product Components"
+    text: "The product or product components are validated to ensure they are suitable for use in their intended operating environment."
+    obligation: shall
+    type: normative
+    classification: process_goal
+    component: required
+    status: active_verbatim
+    source_page: 398
+
+  - id: CMMIDEV-VAL-SP2.1-REQ-001
+    clause: "VAL SP 2.1"
+    clause_title: "Perform Validation"
+    text: "Perform validation on selected products and product components."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Validation reports"
+      - "Validation results"
+      - "Validation cross reference matrix"
+      - "As-run procedures log"
+      - "Operational demonstrations"
+    status: active_verbatim
+    source_page: 398
+
+  - id: CMMIDEV-VAL-SP2.2-REQ-001
+    clause: "VAL SP 2.2"
+    clause_title: "Analyze Validation Results"
+    text: "Analyze results of validation activities."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Validation deficiency reports"
+      - "Validation issues"
+      - "Procedure change request"
+    subpractices:
+      - "Compare actual results to expected results."
+      - "Based on the established validation criteria, identify products and product components that do not perform suitably in their intended operating environments, or identify problems with methods, criteria, or the environment."
+      - "Analyze validation data for defects."
+      - "Record results of the analysis and identify issues."
+      - "Use validation results to compare actual measurements and performance to the intended use or operational need."
+      - "Provide information on how defects can be resolved (including validation methods, criteria, and validation environment) and initiate corrective action."
+    status: active_verbatim
+    source_page: 399
+
+  # ────────────────────────────────────────────────────────────────────────
+  # VER — Verification (Engineering, ML3)
+  # PDF physical pages 401-411
+  # ────────────────────────────────────────────────────────────────────────
+
+  - id: CMMIDEV-VER-SG1-REQ-001
+    clause: "VER SG 1"
+    clause_title: "Prepare for Verification"
+    text: "Preparation for verification is conducted."
+    obligation: shall
+    type: normative
+    classification: process_goal
+    component: required
+    status: active_verbatim
+    source_page: 403
+
+  - id: CMMIDEV-VER-SP1.1-REQ-001
+    clause: "VER SP 1.1"
+    clause_title: "Select Work Products for Verification"
+    text: "Select work products to be verified and verification methods to be used."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Lists of work products selected for verification"
+      - "Verification methods for each selected work product"
+    subpractices:
+      - "Identify work products for verification."
+      - "Identify requirements to be satisfied by each selected work product."
+      - "Identify verification methods available for use."
+      - "Define verification methods to be used for each selected work product."
+      - "Submit for integration with the project plan the identification of work products to be verified, the requirements to be satisfied, and the methods to be used."
+    status: active_verbatim
+    source_page: 403
+
+  - id: CMMIDEV-VER-SP1.2-REQ-001
+    clause: "VER SP 1.2"
+    clause_title: "Establish the Verification Environment"
+    text: "Establish and maintain the environment needed to support verification."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Verification environment"
+    subpractices:
+      - "Identify verification environment requirements."
+      - "Identify verification resources that are available for reuse or modification."
+      - "Identify verification equipment and tools."
+      - "Acquire verification support equipment and an environment (e.g., test equipment, software)."
+    status: active_verbatim
+    source_page: 405
+
+  - id: CMMIDEV-VER-SP1.3-REQ-001
+    clause: "VER SP 1.3"
+    clause_title: "Establish Verification Procedures and Criteria"
+    text: "Establish and maintain verification procedures and criteria for the selected work products."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Verification procedures"
+      - "Verification criteria"
+    subpractices:
+      - "Generate a set of comprehensive, integrated verification procedures for work products and commercial off-the-shelf products, as necessary."
+      - "Develop and refine verification criteria as necessary."
+      - "Identify the expected results, tolerances allowed, and other criteria for satisfying the requirements."
+      - "Identify equipment and environmental components needed to support verification."
+    status: active_verbatim
+    source_page: 405
+
+  - id: CMMIDEV-VER-SG2-REQ-001
+    clause: "VER SG 2"
+    clause_title: "Perform Peer Reviews"
+    text: "Peer reviews are performed on selected work products."
+    obligation: shall
+    type: normative
+    classification: process_goal
+    component: required
+    status: active_verbatim
+    source_page: 406
+
+  - id: CMMIDEV-VER-SP2.1-REQ-001
+    clause: "VER SP 2.1"
+    clause_title: "Prepare for Peer Reviews"
+    text: "Prepare for peer reviews of selected work products."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Peer review schedule"
+      - "Peer review checklist"
+      - "Entry and exit criteria for work products"
+      - "Criteria for requiring another peer review"
+      - "Peer review training material"
+      - "Selected work products to be reviewed"
+    subpractices:
+      - "Determine the type of peer review to be conducted."
+      - "Define requirements for collecting data during the peer review."
+      - "Establish and maintain entry and exit criteria for the peer review."
+      - "Establish and maintain criteria for requiring another peer review."
+      - "Establish and maintain checklists to ensure that work products are reviewed consistently."
+      - "Develop a detailed peer review schedule, including the dates for peer review training and for when materials for peer reviews will be available."
+      - "Ensure that the work product satisfies the peer review entry criteria prior to distribution."
+      - "Distribute the work product to be reviewed and related information to participants early enough to enable them to adequately prepare for the peer review."
+      - "Assign roles for the peer review as appropriate."
+      - "Prepare for the peer review by reviewing the work product prior to conducting the peer review."
+    status: active_verbatim
+    source_page: 406
+
+  - id: CMMIDEV-VER-SP2.2-REQ-001
+    clause: "VER SP 2.2"
+    clause_title: "Conduct Peer Reviews"
+    text: "Conduct peer reviews of selected work products and identify issues resulting from these reviews."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Peer review results"
+      - "Peer review issues"
+      - "Peer review data"
+    subpractices:
+      - "Perform the assigned roles in the peer review."
+      - "Identify and document defects and other issues in the work product."
+      - "Record results of the peer review, including action items."
+      - "Collect peer review data."
+      - "Identify action items and communicate issues to relevant stakeholders."
+      - "Conduct an additional peer review if needed."
+      - "Ensure that the exit criteria for the peer review are satisfied."
+    status: active_verbatim
+    source_page: 408
+
+  - id: CMMIDEV-VER-SP2.3-REQ-001
+    clause: "VER SP 2.3"
+    clause_title: "Analyze Peer Review Data"
+    text: "Analyze data about the preparation, conduct, and results of the peer reviews."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Peer review data"
+      - "Peer review action items"
+    subpractices:
+      - "Record data related to the preparation, conduct, and results of the peer reviews."
+      - "Store the data for future reference and analysis."
+      - "Protect the data to ensure that peer review data are not used inappropriately."
+      - "Analyze the peer review data."
+    status: active_verbatim
+    source_page: 408
+
+  - id: CMMIDEV-VER-SG3-REQ-001
+    clause: "VER SG 3"
+    clause_title: "Verify Selected Work Products"
+    text: "Selected work products are verified against their specified requirements."
+    obligation: shall
+    type: normative
+    classification: process_goal
+    component: required
+    status: active_verbatim
+    source_page: 409
+
+  - id: CMMIDEV-VER-SP3.1-REQ-001
+    clause: "VER SP 3.1"
+    clause_title: "Perform Verification"
+    text: "Perform verification on selected work products."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Verification results"
+      - "Verification reports"
+      - "Demonstrations"
+      - "As-run procedures log"
+    subpractices:
+      - "Perform the verification of selected work products against their requirements."
+      - "Record the results of verification activities."
+      - "Identify action items resulting from the verification of work products."
+      - "Document the \"as-run\" verification method and deviations from available methods and procedures discovered during its performance."
+    status: active_verbatim
+    source_page: 409
+
+  - id: CMMIDEV-VER-SP3.2-REQ-001
+    clause: "VER SP 3.2"
+    clause_title: "Analyze Verification Results"
+    text: "Analyze results of all verification activities."
+    obligation: shall
+    type: normative
+    classification: process_practice
+    component: expected
+    example_work_products:
+      - "Analysis report (e.g., statistics on performance, causal analysis of nonconformances, comparison of the behavior between the real product and models, trends)"
+      - "Trouble reports"
+      - "Change requests for verification methods, criteria, and the environment"
+    subpractices:
+      - "Compare actual results to expected results."
+      - "Based on the established verification criteria, identify products that do not meet their requirements or identify problems with methods, procedures, criteria, and the verification environment."
+      - "Analyze defect data."
+      - "Record all results of the analysis in a report."
+      - "Use verification results to compare actual measurements and performance to technical performance parameters."
+      - "Provide information on how defects can be resolved (including verification methods, criteria, and verification environment) and initiate corrective action."
+    status: active_verbatim
+    source_page: 410
+
+# ============================================================================
+# Summary
+# ============================================================================
+# PI:  3 SG + 9 SP
+# RD:  3 SG + 10 SP
+# TS:  3 SG + 8 SP
+# VAL: 2 SG + 5 SP
+# VER: 3 SG + 8 SP
+# ---------------------------------------------------------------------------
+# Total: 14 SG + 40 SP = 54 entries
+# ============================================================================
