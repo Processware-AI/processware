@@ -3742,6 +3742,24 @@ requirements:
   - Initiate any necessary corrective actions.
   status: active_verbatim
   source_page: 346
+- id: CMMIDEV-RSKM-SG1-REQ-001
+  clause: RSKM SG 1
+  clause_title: Prepare for Risk Management
+  process_area: RSKM
+  text: Preparation for risk management is conducted.
+  obligation: shall
+  type: normative
+  classification: process_requirement
+  component: required
+  target_asset_candidates:
+  - POL
+  - PRO
+  - WI
+  - TMP
+  - REC
+  status: active_verbatim
+  source_page: 350
+  notes: "QA-002 fix (2026-05-11) — backbone 패스에서 verbatim 추출했으나 D-1 merge 과정에서 preservation 로직 누락으로 사라짐. Batch 2 는 '이미 추출됨' 으로 인식해 재추출 안 함. 본 entry 는 backbone 단계 PDF 직접 인용 (p.350) 을 복원."
 - id: CMMIDEV-RSKM-SP1.1-REQ-001
   clause: RSKM SP 1.1
   clause_title: Determine Risk Sources and Categories
@@ -4626,14 +4644,14 @@ requirements:
   process_area: VER
   parent_goal: VER SG 3
 summary:
-  total_requirements: 236
+  total_requirements: 237
   by_component:
-    required: 51
+    required: 52    # 3 GG + 49 SG (RSKM SG1 복원)
     expected: 180
     informative: 5
   by_status:
-    active_verbatim: 236
-  pdf_verbatim_count: 236
+    active_verbatim: 237
+  pdf_verbatim_count: 237
   by_process_area:
     CAR: 7
     CM: 10
@@ -4652,7 +4670,7 @@ summary:
     QPM: 9
     RD: 13
     REQM: 6
-    RSKM: 9
+    RSKM: 10    # SG1 복원 (9 → 10)
     SAM: 8
     TS: 11
     VAL: 7
