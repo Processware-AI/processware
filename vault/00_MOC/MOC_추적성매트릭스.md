@@ -1,7 +1,7 @@
 ---
 type: moc
 title: 추적성·통합매핑 인덱스
-updated: 2026-05-06
+updated: 2026-05-11
 tags: [moc, traceability, mat]
 ---
 
@@ -27,10 +27,11 @@ tags: [moc, traceability, mat]
 ## 표준별 추적성 매트릭스
 번호는 **MAT-011 부터 순차 부여** (편입 순서). 상세: [[02_문서번호체계]] §MAT 번호 할당 원칙.
 
-### CMMI-DEV-ML3 (편입일: 2026-04-29)
-- [[MAT-011_CMMI-DEV-ML3_추적성_v1.0]] — 126 Req-ID × 5 POL × 20 PRO × 142 WI × 14 TMP × 14 EX
-  - ✅ 18 / 🟡 108 / ⛔ 0 (Req-ID 단위)
-  - 출처: [[01_CMMI-DEV-ML3_요구사항분해]] (ISACA paraphrase only)
+### CMMI-DEV-ML3-V1.3 (편입일: 2026-05-11 — v1.3 빌드로 재구성)
+- [[MAT-011_CMMI-DEV-ML3-V1.3_추적성_v0.1]] — 216 Req-ID × 5 POL × 18 PRO × 60 WI × 117 TMP × 117 EX
+  - ✅ 215 / 🟡 1 (RSKM SG1 ingest 누락) / ⛔ 0 (Req-ID 단위)
+  - 출처: `inputs/01_표준원문/CMMI-DEV/requirements.yaml` (CMU/SEI-2010-TR-033 verbatim 100%)
+  - 모드: interface_only (HLS POL/PRO 미통합)
 
 ### 후속 표준 (예상)
 - (예약) `[[MAT-012_ISO9001_추적성]]`
@@ -45,6 +46,7 @@ tags: [moc, traceability, mat]
 |---|---|---|
 | — | 2026-04-29 | 최초 작성 — 통합 MAT 6종 목록, CMMI-DEV-ML3 MAT-011 등록, 교차 매핑 |
 | — | 2026-05-06 | "통합 MAT 6종" → 10종 체계(9종 운영+MAT-010 예약) 정정, MAT-007~010 링크 및 역할 설명 추가 |
+| — | 2026-05-11 | MAT-011 CMMI-DEV-ML3 v1.0 → v1.3 빌드로 교체 — 216 Req × 5 POL × 18 PRO × 60 WI × 117 TMP × 117 EX, interface_only 모드, verbatim 출처 100% (traceability-mapper Phase 4) |
 
 ## 교차 매핑 (Cross-Standard)
 - HLS 공통 조항 → 통합 경영 프로세스(PRO-MGT-*)
