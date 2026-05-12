@@ -1,0 +1,52 @@
+standard_id: SI_Project
+version: "2026.04"
+source_file: sources/RFP.hwpx
+source_hash: "sha256:d23ab3e152b0ef744d7033696a7f5cca9730fa7fc82868825950d6a5ba2b0934"
+category: "04_AsIs"
+mode: new
+overall_status: done
+current_phase: handoff
+started_at: "2026-05-13T01:13:48"
+confirmed_at: "2026-05-13T01:18:00"
+confirmed_by: "vway.claude@gmail.com"
+phases:
+  intake: done
+  extraction: done
+  parsing: done
+  mining: done
+  classification: done
+  traceability: done
+  qa: done
+  handoff: done
+counts:
+  chapters: 5
+  requirement_categories: 11
+  requirements: 78
+  list_table_entries: 77
+  normative: 78
+  recommendation: 0
+  informative: 0
+  shall: 77
+  should: 1
+  may: 0
+  flagged_items: 9
+  flagged_and_reviewed: 0
+  flagged_delegated_via_confirm: 9
+category_counts:
+  ECR: 4
+  SFR: 20
+  PER: 2
+  SIR: 4
+  DAR: 8
+  TER: 3
+  SER: 5
+  QUR: 2
+  COR: 8
+  PMR: 16
+  PSR: 6
+project_metadata:
+  project_name: "보건환경종합정보시스템 고도화 사업"
+  project_owner: "대구광역시 보건환경연구원"
+  budget: "342백만원(부가가치세 포함)"
+  duration: "계약체결일로부터 180일"
+  bid_method: "제한경쟁입찰(협상에 의한 계약)"

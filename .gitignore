@@ -3,6 +3,7 @@
 # ==========================================
 .DS_Store
 ._*
+**/._*
 .Spotlight-V100
 .Trashes
 
@@ -22,6 +23,9 @@
 !/inputs/README.md
 !/inputs/*/
 !/inputs/*/README.md
+# 카테고리 직속 YAML·MD (예: 06_목표흐름/business_flow.yaml, 06_목표흐름/business_flow.md)
+!/inputs/*/*.yaml
+!/inputs/*/*.md
 !/inputs/*/*/
 !/inputs/*/*/*.yaml
 !/inputs/*/*/*.md
@@ -31,6 +35,10 @@
 !/inputs/*/*/*/*.md
 !/inputs/*/*/*/*.py
 !/inputs/*/*/*/*.tmp
+
+# macOS metadata 재제외 (위 negation 규칙으로 다시 포함되지 않도록 마지막에 명시)
+inputs/**/._*
+inputs/**/.__*
 
 # 02_적용요건 하위 실데이터 제외 (README만 추적)
 !/vault/02_적용요건/
@@ -68,6 +76,8 @@ vault/02_적용요건/**/99_QA리포트_*.md
 # ==========================================
 .claude/sessions/
 .claude/cache/
+# ingest 임시 작업 폴더 (sources/ 에서 재생성 가능, 바이너리 포함 가능)
+.claude/runs/ingest_*
 
 # ==========================================
 # 차원 2 (Do) 실행 캐시 — 재생성 가능

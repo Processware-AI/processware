@@ -1,0 +1,109 @@
+# RFP 문서 구조 — 대구광역시 보건환경연구원 / 보건환경종합정보시스템 고도화 사업
+standard_id: SI_Project
+version: "2026.04"
+source_type: rfp_document
+source_category: 04_AsIs
+source_file: sources/RFP.hwpx
+project_name: "보건환경종합정보시스템 고도화 사업"
+project_owner: "대구광역시 보건환경연구원"
+
+document_structure:
+  - id: "I"
+    title: "사업안내"
+    sub_sections:
+      - id: "I.1"
+        title: "사업개요"
+      - id: "I.2"
+        title: "추진목표"
+      - id: "I.3"
+        title: "추진방침"
+      - id: "I.4"
+        title: "사업범위"
+      - id: "I.5"
+        title: "추진계획"
+  - id: "II"
+    title: "현황"
+    sub_sections:
+      - id: "II.1"
+        title: "현 보건환경종합정보시스템(HEIS)"
+      - id: "II.2"
+        title: "HEIS 시스템 구성"
+      - id: "II.3"
+        title: "고도화대상(HEIS) 프로그램 프로세스"
+  - id: "III"
+    title: "제안 요청사항"
+    sub_sections:
+      - id: "III.1"
+        title: "제안요청 개요"
+      - id: "III.2"
+        title: "과업 주요내용"
+      - id: "III.3"
+        title: "요구사항 목록"
+      - id: "III.4"
+        title: "상세 요구사항"
+  - id: "IV"
+    title: "제안안내"
+    sub_sections:
+      - id: "IV.1"
+        title: "사업자 선정방식"
+      - id: "IV.2"
+        title: "제안서 평가 방법"
+      - id: "IV.3"
+        title: "제안 안내 사항"
+      - id: "IV.4"
+        title: "기타사항"
+  - id: "V"
+    title: "제안서 작성요령"
+    sub_sections:
+      - id: "V.1"
+        title: "제안서의 효력"
+      - id: "V.2"
+        title: "제안서 작성지침 및 유의사항"
+
+requirement_categories:
+  - code: ECR
+    name: "시스템 장비 구성 요구사항"
+    list_table_count: 4
+    detail_count: 4
+  - code: SFR
+    name: "기능 요구사항"
+    list_table_count: 20
+    detail_count: 20
+  - code: PER
+    name: "성능 요구사항"
+    list_table_count: 2
+    detail_count: 2
+  - code: SIR
+    name: "인터페이스 요구사항"
+    list_table_count: 4
+    detail_count: 4
+  - code: DAR
+    name: "데이터 요구사항"
+    list_table_count: 7
+    detail_count: 8
+  - code: TER
+    name: "테스트 요구사항"
+    list_table_count: 3
+    detail_count: 3
+  - code: SER
+    name: "보안 요구사항"
+    list_table_count: 5
+    detail_count: 5
+  - code: QUR
+    name: "품질 요구사항"
+    list_table_count: 2
+    detail_count: 2
+  - code: COR
+    name: "제약사항"
+    list_table_count: 8
+    detail_count: 8
+  - code: PMR
+    name: "프로젝트 관리 요구사항"
+    list_table_count: 16
+    detail_count: 16
+  - code: PSR
+    name: "프로젝트 지원 요구사항"
+    list_table_count: 6
+    detail_count: 6
+
+total_requirements: 78
