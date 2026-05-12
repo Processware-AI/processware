@@ -122,21 +122,21 @@ mapping_rules:
 
 ## 5. 현재 상태 및 분리 로드맵
 
-### 5.1 현재 단계 (2026-05-13)
+### 5.1 현재 단계 (2026-05-13 — 모든 분리 단계 완료)
 
 | 구성 요소 | 위치 | 상태 |
 |---|---|---|
-| 코어 vault | `vault/` (본 repo) | 운영 중 (CMMI-DEV-ML3 ingest 완료, POL/PRO/WI 빌드 진행 중) |
-| 파생 ① prototype | `subproducts/rfp-to-proposal/` (본 repo 내) | **prototype** — RFP 분석 단계만 구현, 제안서 작문 미구현 |
+| 코어 vault | `vault/` (본 repo) | 표준 빌드 미시작 — 인프라·하네스만 운영 |
+| 파생 ① | [processware-rfp-to-proposal](https://github.com/Processware-AI/processware-rfp-to-proposal) (별도 repo) | **별도 repo 분리 완료** — prototype 단계 |
 | 파생 ② | 미착수 | 설계 단계 |
 
-### 5.2 단기 로드맵 (Q3 2026)
+### 5.2 분리 로드맵 (완료 이력)
 
-**[C] 아키텍처 문서화** ← **본 문서 (완료)**
-
-**[A] Sub-folder 분리** — 본 repo 내 `subproducts/rfp-to-proposal/` 로 코드·자산 격리. 메인 vault 와 명확히 구분.
-
-**[B] 별도 repo 분리** — `processware-rfp-to-proposal` repo spawn. 본 repo 의 sub-folder 는 archive 처리.
+| 단계 | 작업 | 일자 | 상태 |
+|---|---|---|---|
+| **[C]** 아키텍처 문서화 | 본 문서 작성 | 2026-05-13 | ✅ 완료 |
+| **[A]** Sub-folder 격리 | `subproducts/rfp-to-proposal/` 로 코드·자산 격리 | 2026-05-13 | ✅ 완료 |
+| **[B]** 별도 repo 분리 | `processware-rfp-to-proposal` repo spawn + 본 repo `subproducts/` 제거 | 2026-05-13 | ✅ 완료 |
 
 ### 5.3 중장기 로드맵
 
@@ -152,7 +152,7 @@ mapping_rules:
 
 - ✅ 본 repo 의 input 카테고리(`inputs/01_표준원문/`, `inputs/02_법규/`, `inputs/03_해설서/`, `inputs/05_산업가이드/`)는 **표준·법규·가이드** 만 받는다.
 - ✅ `inputs/04_AsIs/` 는 **기존 조직 내부 표준 자산**(현 품질매뉴얼·기존 절차서 등) 만 받는다.
-- ❌ **RFP·발주문서·SoW·고객 입찰 명세 등은 본 repo 의 입력이 아니다** — 이들은 파생 ① (`subproducts/rfp-to-proposal/`) 영역.
+- ❌ **RFP·발주문서·SoW·고객 입찰 명세 등은 본 repo 의 입력이 아니다** — 이들은 별도 repo [processware-rfp-to-proposal](https://github.com/Processware-AI/processware-rfp-to-proposal) (파생 ①) 영역.
 - ❌ 본 repo 에서 `/process-plan "RFP기반-사업명"` 같은 호출은 부적합 — RFP 는 표준이 아니므로 vault 의 영속 자산이 될 수 없다.
 
 본 경계가 흐려지면 vault 가 오염되고, 표준 자산의 재사용성이 떨어진다.
@@ -164,4 +164,4 @@ mapping_rules:
 - `vault/00_공통관리/01_문서체계.md` — 8종 문서 유형 (POL/PRO/WI/TMP/EX/REC/MAT/REF)
 - `vault/00_공통관리/02_문서번호체계.md` — MAT 번호 할당 원칙
 - `vault/00_공통관리/07_표준분류레지스트리.md` — 표준 분류 3축 (Layer/Structure/Integration)
-- `subproducts/rfp-to-proposal/README.md` — 파생 ① 현 상태 및 사용법
+- [processware-rfp-to-proposal/README.md](https://github.com/Processware-AI/processware-rfp-to-proposal/blob/main/README.md) — 파생 ① 현 상태 및 사용법 (별도 repo)
