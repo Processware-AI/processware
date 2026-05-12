@@ -1,24 +1,28 @@
 ---
 type: sources-root
-title: 전처리 소스 파일
-updated: 2026-05-05
+title: 코어 vault 전처리 소스 파일
+updated: 2026-05-13
 tags: [sources, ingest]
 ---
 
-# sources/
+# sources/ — 코어 vault 전용
 
-`/process-ingest` 의 입력 원본 파일 보관 폴더.
+`/process-ingest` 의 입력 원본 파일 보관 폴더 — **코어 Processware vault** 용 표준/법규/가이드 원본만 받는다.
+
+> ⚠️ **본 디렉토리에 들어가지 않는 것**: RFP·발주문서·SoW 같은 1회성 사업 명세서. 이런 자료는 `subproducts/rfp-to-proposal/sources/` 로 가야 한다.
+> 상세: `../docs/architecture/derivative-products.md`
 
 ## 들어가는 것
-- 국제표준 PDF (ISO·IEC·KS·ANSI 등)
+- 국제표준 PDF (ISO·IEC·KS·ANSI 등) — 조직이 항상 따르는 영속 기준
 - 국내 법령·고시·규정 PDF
 - 해설서·가이드라인 DOCX·PDF
-- 기존 조직 내부 문서 (DOCX·PPTX·XLSX)
+- 기존 조직 내부 표준 문서 (현 품질매뉴얼·기존 절차서 등)
 - 표준 개정사항 delta 문서
 
 ## 들어가지 않는 것
 - 텍스트·YAML·MD 파일 → `inputs/` 에 직접 배치
 - ingest 완료된 정규화 파일 → `inputs/` 에 자동 생성됨
+- **RFP·발주문서·SoW 등 1회성 사업 명세** → `subproducts/rfp-to-proposal/sources/` 로 분리
 
 ## 파일명 권장 규칙
 ```

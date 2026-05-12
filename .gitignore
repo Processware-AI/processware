@@ -40,6 +40,18 @@
 inputs/**/._*
 inputs/**/.__*
 
+# ==========================================
+# subproducts/ — 파생 프로덕트 (별도 vault)
+# 각 sub-product 가 자기 영역 관리. 코어와 분리.
+# ==========================================
+# sub-product 원본 바이너리(sources/)는 제외, 그 외 코드·YAML·MD는 추적
+subproducts/*/sources/**
+!subproducts/*/sources/
+!subproducts/*/sources/README.md
+# macOS metadata 재제외
+subproducts/**/._*
+subproducts/**/.__*
+
 # 02_적용요건 하위 실데이터 제외 (README만 추적)
 !/vault/02_적용요건/
 !/vault/02_적용요건/README.md

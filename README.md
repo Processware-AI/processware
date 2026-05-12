@@ -2,7 +2,11 @@
 
 국제/국내 표준(ISO·IEC·KS·IATF 등)의 **수립(Plan) → 이행(Do) → 심사(Check) → 제·개정(Act)** 4 차원 전체를 AI 에이전트로 자동화하는 플랫폼. **4차원 PDCA 폐쇄 루프** PoC 검증 완료 (Plan→Do→Check→Act→Plan' 사이클로 KPI 회복 실증).
 
+본 메인 repo 의 본업은 **코어 vault — 조직 표준 프로세스 자산 (POL/PRO/WI/TMP/EX/MAT/REF) 구축**.
+입력은 국제표준·법규·해설서·산업가이드·기존 조직 자산 같은 **영속 기준** 만 받는다. RFP·발주문서·SoW 등 1회성 사업 명세는 본 repo 가 아니라 파생 프로덕트(`subproducts/`)의 영역.
+
 > 상위 개념: `AI-Driven CMMI Operating Platform.md` (Layer 1/2/3 비전) · `표준프로세스_AI관리체계_4차원PDCA.md` (4차원 PDCA 설계)
+> 파생 프로덕트 비전: `docs/architecture/derivative-products.md` (3-Vault 생태계 — 코어 + RFP-to-Proposal + Project Asset Generator)
 > 차원별 운영 가이드: `표준_빌드_워크플로우_가이드.md` (1) · `표준_프로세스_실행_가이드.md` (2) · `표준_프로세스_심사_가이드.md` (3) · `표준_프로세스_제개정_가이드.md` (4)
 
 ## 5단계 자동화 매트릭스
@@ -102,6 +106,15 @@
 ```
 STD_Process_Builder/
 ├── README.md
+├── docs/
+│   └── architecture/
+│       └── derivative-products.md           ← 파생 프로덕트 3-Vault 비전 + 분리 로드맵
+├── subproducts/                             ← 파생 프로덕트 (별도 vault, 코어와 분리)
+│   └── rfp-to-proposal/                     ← 파생 ① (prototype) — RFP → 제안서(Proposal)
+│       ├── sources/                         ← RFP 원본 (HWPX/PDF/DOCX)
+│       ├── inputs/                          ← RFP 분석 결과 (정규화 패키지)
+│       ├── tools/                           ← hwpx/RFP 분석 엔진 (Python)
+│       └── docs/
 ├── AI-Driven CMMI Operating Platform.md     ← Layer 1/2/3 비전 (ML3→ML4→ML5)
 ├── 표준프로세스_AI관리체계_4차원PDCA.md      ← 4차원 PDCA 설계
 ├── 전용AI에이전트_프레임워크_설계안.md       ← 차원 1 독립 제품화 설계 (Python/SDK)
