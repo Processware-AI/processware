@@ -1,0 +1,679 @@
+standard_id: AutoCyberSec
+full_name: ISO/SAE 21434:2021 — Road vehicles — Cybersecurity engineering
+version: '2021'
+source_type: international_standard
+normative_clauses: 5-15 (clauses 1-4 are scope/references/terms/general)
+requirement_notation: '[RQ-NN-MM]=requirement(shall), [RC-NN-MM]=recommendation(should), [PM-NN-MM]=permission(may),
+  [WP-NN-MM]=work product. NN=clause, MM=sequential provision.'
+document_structure:
+- id: '1'
+  title: Scope
+  page: 7
+- id: '2'
+  title: Normative references
+  page: 7
+- id: '3'
+  title: Terms, definitions and abbreviated terms
+  page: 7
+  sub_clauses:
+  - id: '3.1'
+    title: Terms and definitions
+    page: 7
+  - id: '3.2'
+    title: Abbreviated terms
+    page: 11
+- id: '4'
+  title: General considerations
+  page: 11
+- id: '5'
+  title: Organizational cybersecurity management
+  page: 13
+  sub_clauses:
+  - id: '5.1'
+    title: General
+    page: 13
+  - id: '5.2'
+    title: Objectives
+    page: 13
+  - id: '5.3'
+    title: Inputs
+    page: 14
+    sub_clauses:
+    - id: 5.3.1
+      title: Prerequisites
+      page: 14
+    - id: 5.3.2
+      title: Further supporting information
+      page: 14
+  - id: '5.4'
+    title: Requirements and recommendations
+    page: 14
+    sub_clauses:
+    - id: 5.4.1
+      title: Cybersecurity governance
+      page: 14
+    - id: 5.4.2
+      title: Cybersecurity culture
+      page: 15
+    - id: 5.4.3
+      title: Information sharing
+      page: 16
+    - id: 5.4.4
+      title: Management systems
+      page: 16
+    - id: 5.4.5
+      title: Tool management
+      page: 17
+    - id: 5.4.6
+      title: Information security management
+      page: 17
+    - id: 5.4.7
+      title: Organizational cybersecurity audit
+      page: 17
+  - id: '5.5'
+    title: Work products
+    page: 18
+- id: '6'
+  title: Project dependent cybersecurity management
+  page: 18
+  sub_clauses:
+  - id: '6.1'
+    title: General
+    page: 18
+  - id: '6.2'
+    title: Objectives
+    page: 19
+  - id: '6.3'
+    title: Inputs
+    page: 19
+    sub_clauses:
+    - id: 6.3.1
+      title: Prerequisites
+      page: 19
+    - id: 6.3.2
+      title: Further supporting information
+      page: 20
+  - id: '6.4'
+    title: Requirements and recommendations
+    page: 20
+    sub_clauses:
+    - id: 6.4.1
+      title: Cybersecurity responsibilities
+      page: 20
+    - id: 6.4.2
+      title: Cybersecurity planning
+      page: 20
+    - id: 6.4.3
+      title: Tailoring
+      page: 21
+    - id: 6.4.4
+      title: Reuse
+      page: 21
+    - id: 6.4.5
+      title: Component out-of-context
+      page: 23
+    - id: 6.4.6
+      title: Off-the-shelf component
+      page: 23
+    - id: 6.4.7
+      title: Cybersecurity case
+      page: 23
+    - id: 6.4.8
+      title: Cybersecurity assessment
+      page: 23
+    - id: 6.4.9
+      title: Release for post-development
+      page: 25
+  - id: '6.5'
+    title: Work products
+    page: 25
+- id: '7'
+  title: Distributed cybersecurity activities
+  page: 26
+  sub_clauses:
+  - id: '7.1'
+    title: General
+    page: 26
+  - id: '7.2'
+    title: Objectives
+    page: 26
+  - id: '7.3'
+    title: Inputs
+    page: 26
+  - id: '7.4'
+    title: Requirements and recommendations
+    page: 26
+    sub_clauses:
+    - id: 7.4.1
+      title: Supplier capability
+      page: 26
+    - id: 7.4.2
+      title: Request for quotation
+      page: 27
+    - id: 7.4.3
+      title: Alignment of responsibilities
+      page: 27
+  - id: '7.5'
+    title: Work products
+    page: 28
+- id: '8'
+  title: Continual cybersecurity activities
+  page: 28
+  sub_clauses:
+  - id: '8.1'
+    title: General
+    page: 28
+  - id: '8.2'
+    title: Objectives
+    page: 28
+  - id: '8.3'
+    title: Cybersecurity monitoring
+    page: 28
+    sub_clauses:
+    - id: 8.3.1
+      title: Inputs
+      page: 28
+      sub_clauses:
+      - id: 8.3.1.1
+        title: Prerequisites
+        page: 28
+      - id: 8.3.1.2
+        title: Further supporting information
+        page: 29
+    - id: 8.3.2
+      title: Requirements and recommendations
+      page: 29
+    - id: 8.3.3
+      title: Work products
+      page: 29
+  - id: '8.4'
+    title: Cybersecurity event evaluation
+    page: 30
+    sub_clauses:
+    - id: 8.4.1
+      title: Inputs
+      page: 30
+      sub_clauses:
+      - id: 8.4.1.1
+        title: Prerequisites
+        page: 30
+      - id: 8.4.1.2
+        title: Further supporting information
+        page: 30
+    - id: 8.4.2
+      title: Requirements and recommendations
+      page: 30
+    - id: 8.4.3
+      title: Work products
+      page: 30
+  - id: '8.5'
+    title: Vulnerability analysis
+    page: 30
+    sub_clauses:
+    - id: 8.5.1
+      title: Inputs
+      page: 30
+      sub_clauses:
+      - id: 8.5.1.1
+        title: Prerequisites
+        page: 30
+      - id: 8.5.1.2
+        title: Further supporting information
+        page: 30
+    - id: 8.5.2
+      title: Requirements and recommendations
+      page: 31
+    - id: 8.5.3
+      title: Work products
+      page: 31
+  - id: '8.6'
+    title: Vulnerability management
+    page: 31
+    sub_clauses:
+    - id: 8.6.1
+      title: Inputs
+      page: 31
+      sub_clauses:
+      - id: 8.6.1.1
+        title: Prerequisites
+        page: 31
+      - id: 8.6.1.2
+        title: Further supporting information
+        page: 31
+    - id: 8.6.2
+      title: Requirements and recommendations
+      page: 31
+    - id: 8.6.3
+      title: Work products
+      page: 32
+- id: '9'
+  title: Concept
+  page: 32
+  sub_clauses:
+  - id: '9.1'
+    title: General
+    page: 32
+  - id: '9.2'
+    title: Objectives
+    page: 32
+  - id: '9.3'
+    title: Item definition
+    page: 32
+    sub_clauses:
+    - id: 9.3.1
+      title: Inputs
+      page: 32
+      sub_clauses:
+      - id: 9.3.1.1
+        title: Prerequisites
+        page: 32
+      - id: 9.3.1.2
+        title: Further supporting information
+        page: 32
+    - id: 9.3.2
+      title: Requirements and recommendations
+      page: 33
+    - id: 9.3.3
+      title: Work products
+      page: 33
+  - id: '9.4'
+    title: Cybersecurity goals
+    page: 33
+    sub_clauses:
+    - id: 9.4.1
+      title: Inputs
+      page: 33
+      sub_clauses:
+      - id: 9.4.1.1
+        title: Prerequisites
+        page: 33
+      - id: 9.4.1.2
+        title: Further supporting information
+        page: 33
+    - id: 9.4.2
+      title: Requirements and recommendations
+      page: 34
+    - id: 9.4.3
+      title: Work products
+      page: 34
+  - id: '9.5'
+    title: Cybersecurity concept
+    page: 35
+    sub_clauses:
+    - id: 9.5.1
+      title: Inputs
+      page: 35
+      sub_clauses:
+      - id: 9.5.1.1
+        title: Prerequisites
+        page: 35
+      - id: 9.5.1.2
+        title: Further supporting information
+        page: 35
+    - id: 9.5.2
+      title: Requirements and recommendations
+      page: 35
+    - id: 9.5.3
+      title: Work products
+      page: 36
+- id: '10'
+  title: Product development
+  page: 36
+  sub_clauses:
+  - id: '10.1'
+    title: General
+    page: 36
+  - id: '10.2'
+    title: Objectives
+    page: 37
+  - id: '10.3'
+    title: Inputs
+    page: 38
+    sub_clauses:
+    - id: 10.3.1
+      title: Prerequisites
+      page: 38
+    - id: 10.3.2
+      title: Further supporting information
+      page: 38
+  - id: '10.4'
+    title: Requirements and recommendations
+    page: 38
+    sub_clauses:
+    - id: 10.4.1
+      title: Design
+      page: 38
+    - id: 10.4.2
+      title: Integration and verification
+      page: 40
+  - id: '10.5'
+    title: Work products
+    page: 41
+- id: '11'
+  title: Cybersecurity validation
+  page: 41
+  sub_clauses:
+  - id: '11.1'
+    title: General
+    page: 41
+  - id: '11.2'
+    title: Objectives
+    page: 42
+  - id: '11.3'
+    title: Inputs
+    page: 42
+    sub_clauses:
+    - id: 11.3.1
+      title: Prerequisites
+      page: 42
+    - id: 11.3.2
+      title: Further supporting information
+      page: 42
+  - id: '11.4'
+    title: Requirements and recommendations
+    page: 42
+  - id: '11.5'
+    title: Work products
+    page: 43
+- id: '12'
+  title: Production
+  page: 43
+  sub_clauses:
+  - id: '12.1'
+    title: General
+    page: 43
+  - id: '12.2'
+    title: Objectives
+    page: 43
+  - id: '12.3'
+    title: Inputs
+    page: 43
+    sub_clauses:
+    - id: 12.3.1
+      title: Prerequisites
+      page: 43
+    - id: 12.3.2
+      title: Further supporting information
+      page: 43
+  - id: '12.4'
+    title: Requirements and recommendations
+    page: 43
+  - id: '12.5'
+    title: Work products
+    page: 44
+- id: '13'
+  title: Operations and maintenance
+  page: 44
+  sub_clauses:
+  - id: '13.1'
+    title: General
+    page: 44
+  - id: '13.2'
+    title: Objectives
+    page: 44
+  - id: '13.3'
+    title: Cybersecurity incident response
+    page: 44
+    sub_clauses:
+    - id: 13.3.1
+      title: Inputs
+      page: 44
+      sub_clauses:
+      - id: 13.3.1.1
+        title: Prerequisites
+        page: 44
+      - id: 13.3.1.2
+        title: Further supporting information
+        page: 44
+    - id: 13.3.2
+      title: Requirements and recommendations
+      page: 45
+    - id: 13.3.3
+      title: Work products
+      page: 45
+  - id: '13.4'
+    title: Updates
+    page: 46
+    sub_clauses:
+    - id: 13.4.1
+      title: Inputs
+      page: 46
+      sub_clauses:
+      - id: 13.4.1.1
+        title: Prerequisites
+        page: 46
+      - id: 13.4.1.2
+        title: Further supporting information
+        page: 46
+    - id: 13.4.2
+      title: Requirements and recommendations
+      page: 46
+    - id: 13.4.3
+      title: Work products
+      page: 46
+- id: '14'
+  title: End of cybersecurity support and decommissioning
+  page: 46
+  sub_clauses:
+  - id: '14.1'
+    title: General
+    page: 46
+  - id: '14.2'
+    title: Objectives
+    page: 46
+  - id: '14.3'
+    title: End of cybersecurity support
+    page: 46
+    sub_clauses:
+    - id: 14.3.1
+      title: Inputs
+      page: 46
+    - id: 14.3.2
+      title: Requirements and recommendations
+      page: 47
+    - id: 14.3.3
+      title: Work products
+      page: 47
+  - id: '14.4'
+    title: Decommissioning
+    page: 47
+    sub_clauses:
+    - id: 14.4.1
+      title: Inputs
+      page: 47
+      sub_clauses:
+      - id: 14.4.1.1
+        title: Prerequisites
+        page: 47
+      - id: 14.4.1.2
+        title: Further supporting information
+        page: 47
+    - id: 14.4.2
+      title: Requirements and recommendations
+      page: 47
+    - id: 14.4.3
+      title: Work products
+      page: 47
+- id: '15'
+  title: Threat analysis and risk assessment methods
+  page: 47
+  sub_clauses:
+  - id: '15.1'
+    title: General
+    page: 47
+  - id: '15.2'
+    title: Objectives
+    page: 48
+  - id: '15.3'
+    title: Asset identification
+    page: 48
+    sub_clauses:
+    - id: 15.3.1
+      title: Inputs
+      page: 48
+      sub_clauses:
+      - id: 15.3.1.1
+        title: Prerequisites
+        page: 48
+      - id: 15.3.1.2
+        title: Further supporting information
+        page: 48
+    - id: 15.3.2
+      title: Requirements and recommendations
+      page: 48
+    - id: 15.3.3
+      title: Work products
+      page: 49
+  - id: '15.4'
+    title: Threat scenario identification
+    page: 49
+    sub_clauses:
+    - id: 15.4.1
+      title: Inputs
+      page: 49
+      sub_clauses:
+      - id: 15.4.1.1
+        title: Prerequisites
+        page: 49
+      - id: 15.4.1.2
+        title: Further supporting information
+        page: 49
+    - id: 15.4.2
+      title: Requirements and recommendations
+      page: 49
+    - id: 15.4.3
+      title: Work products
+      page: 50
+  - id: '15.5'
+    title: Impact rating
+    page: 50
+    sub_clauses:
+    - id: 15.5.1
+      title: Inputs
+      page: 50
+      sub_clauses:
+      - id: 15.5.1.1
+        title: Prerequisites
+        page: 50
+      - id: 15.5.1.2
+        title: Further supporting information
+        page: 50
+    - id: 15.5.2
+      title: Requirements and recommendations
+      page: 50
+    - id: 15.5.3
+      title: Work products
+      page: 51
+  - id: '15.6'
+    title: Attack path analysis
+    page: 51
+    sub_clauses:
+    - id: 15.6.1
+      title: Inputs
+      page: 51
+      sub_clauses:
+      - id: 15.6.1.1
+        title: Prerequisites
+        page: 51
+      - id: 15.6.1.2
+        title: Further supporting information
+        page: 51
+    - id: 15.6.2
+      title: Requirements and recommendations
+      page: 51
+    - id: 15.6.3
+      title: Work products
+      page: 52
+  - id: '15.7'
+    title: Attack feasibility rating
+    page: 52
+    sub_clauses:
+    - id: 15.7.1
+      title: Inputs
+      page: 52
+      sub_clauses:
+      - id: 15.7.1.1
+        title: Prerequisites
+        page: 52
+      - id: 15.7.1.2
+        title: Further supporting information
+        page: 52
+    - id: 15.7.2
+      title: Requirements and recommendations
+      page: 52
+    - id: 15.7.3
+      title: Work products
+      page: 53
+  - id: '15.8'
+    title: Risk value determination
+    page: 53
+    sub_clauses:
+    - id: 15.8.1
+      title: Inputs
+      page: 53
+      sub_clauses:
+      - id: 15.8.1.1
+        title: Prerequisites
+        page: 53
+      - id: 15.8.1.2
+        title: Further supporting information
+        page: 54
+    - id: 15.8.2
+      title: Requirements and recommendations
+      page: 54
+    - id: 15.8.3
+      title: Work products
+      page: 54
+  - id: '15.9'
+    title: Risk treatment decision
+    page: 54
+    sub_clauses:
+    - id: 15.9.1
+      title: Inputs
+      page: 54
+      sub_clauses:
+      - id: 15.9.1.1
+        title: Prerequisites
+        page: 54
+      - id: 15.9.1.2
+        title: Further supporting information
+        page: 54
+    - id: 15.9.2
+      title: Requirements and recommendations
+      page: 55
+    - id: 15.9.3
+      title: Work products
+      page: 55
+annexes:
+- id: Annex A
+  type: informative
+  title: Summary of cybersecurity activities and work products
+  page: 56
+- id: Annex B
+  type: informative
+  title: Examples of cybersecurity culture
+  page: 58
+- id: Annex C
+  type: informative
+  title: Example of cybersecurity interface agreement template
+  page: 60
+- id: Annex D
+  type: informative
+  title: Cybersecurity relevance — example methods and criteria
+  page: 62
+- id: Annex E
+  type: informative
+  title: Cybersecurity assurance levels (CAL)
+  page: 64
+- id: Annex F
+  type: informative
+  title: Guidelines for impact rating
+  page: 69
+- id: Annex G
+  type: informative
+  title: Guidelines for attack feasibility rating
+  page: 71
+- id: Annex H
+  type: informative
+  title: Examples of application of TARA methods — headlamp system
+  page: 77

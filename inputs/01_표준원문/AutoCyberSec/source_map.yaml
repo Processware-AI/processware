@@ -1,0 +1,1096 @@
+source_map:
+- requirement_id: AutoCyberSec-05-RQ-01
+  native_id: '[RQ-05-01]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 14
+  clause: '05'
+  source_text: >-
+    The organization shall define a cybersecurity policy that includes: a) acknowledgement of road vehicle
+    cybersecurity risks; and b) the executive management's commitment to manage the corresponding cybersecurity
+    risks.
+  source_text_hash: sha256:6164ff3652f35c31
+- requirement_id: AutoCyberSec-05-RQ-02
+  native_id: '[RQ-05-02]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 14
+  clause: '05'
+  source_text: >-
+    The organization shall establish and maintain rules and processes to: a) enable the implementation
+    of the requirements of this document; and b) support the execution of the corresponding activities.
+  source_text_hash: sha256:a7212a40d15c7189
+- requirement_id: AutoCyberSec-05-RQ-03
+  native_id: '[RQ-05-03]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 15
+  clause: '05'
+  source_text: >-
+    The organization shall assign and communicate the responsibilities and corresponding organizational
+    authority to achieve and maintain cybersecurity.
+  source_text_hash: sha256:c5bb506815b86c94
+- requirement_id: AutoCyberSec-05-RQ-04
+  native_id: '[RQ-05-04]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 15
+  clause: '05'
+  source_text: >-
+    The organization shall provide the resources to address cybersecurity.
+  source_text_hash: sha256:b08ee47925acb52b
+- requirement_id: AutoCyberSec-05-RQ-05
+  native_id: '[RQ-05-05]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 15
+  clause: '05'
+  source_text: >-
+    The organization shall identify disciplines related to, or interacting with, cybersecurity and establish
+    and maintain communication channels between those disciplines in order to: a) determine if and how
+    cybersecurity will be integrated into existing processes; and b) coordinate the exchange of relevant
+    information.
+  source_text_hash: sha256:a79f8ca3dab8e810
+- requirement_id: AutoCyberSec-05-RQ-06
+  native_id: '[RQ-05-06]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 15
+  clause: '05'
+  source_text: >-
+    The organization shall foster and maintain a strong cybersecurity culture.
+  source_text_hash: sha256:ea1588c71d349989
+- requirement_id: AutoCyberSec-05-RQ-07
+  native_id: '[RQ-05-07]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 15
+  clause: '05'
+  source_text: >-
+    The organization shall ensure that persons to which cybersecurity roles and responsibilities are assigned
+    have the competences and awareness to fulfil these.
+  source_text_hash: sha256:1684265cee2b1d27
+- requirement_id: AutoCyberSec-05-RQ-08
+  native_id: '[RQ-05-08]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 16
+  clause: '05'
+  source_text: >-
+    The organization shall institute and maintain a continuous improvement process.
+  source_text_hash: sha256:77a33dd143dadf96
+- requirement_id: AutoCyberSec-05-RQ-09
+  native_id: '[RQ-05-09]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 16
+  clause: '05'
+  source_text: >-
+    The organization shall define the circumstances under which information sharing related to cybersecurity
+    is required, permitted, or prohibited, internal or external to the organization.
+  source_text_hash: sha256:c2f436f13d344a98
+- requirement_id: AutoCyberSec-05-RC-10
+  native_id: '[RC-05-10]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 16
+  clause: '05'
+  source_text: >-
+    The organization should align its information security management of the shared data with other parties
+    in accordance with [RQ-05-09].
+  source_text_hash: sha256:482efe5b7969ad40
+- requirement_id: AutoCyberSec-05-RQ-11
+  native_id: '[RQ-05-11]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 16
+  clause: '05'
+  source_text: >-
+    The organization shall institute and maintain a quality management system in accordance with International
+    Standards, or equivalent, to support cybersecurity engineering, addressing: a) change management;
+    b) documentation management; c) configuration management; and d) requirements management.
+  source_text_hash: sha256:3ac3c44a0541760b
+- requirement_id: AutoCyberSec-05-RQ-12
+  native_id: '[RQ-05-12]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 17
+  clause: '05'
+  source_text: >-
+    The configuration information required for maintaining cybersecurity of a product in the field shall
+    remain available until the end of cybersecurity support for the product, in order to enable remedial
+    actions.
+  source_text_hash: sha256:711abc858643b08e
+- requirement_id: AutoCyberSec-05-RC-13
+  native_id: '[RC-05-13]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 17
+  clause: '05'
+  source_text: >-
+    A cybersecurity management system for the production processes should be established in order to support
+    the activities of Clause 12.
+  source_text_hash: sha256:4378e8c6f81dca8b
+- requirement_id: AutoCyberSec-05-RQ-14
+  native_id: '[RQ-05-14]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 17
+  clause: '05'
+  source_text: >-
+    Tools that can influence the cybersecurity of an item or component shall be managed.
+  source_text_hash: sha256:c11101148cf45f08
+- requirement_id: AutoCyberSec-05-RC-15
+  native_id: '[RC-05-15]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 17
+  clause: '05'
+  source_text: >-
+    An appropriate environment to support remedial actions for cybersecurity incidents (see 13.3) should
+    be reproducible until the end of cybersecurity support for the product.
+  source_text_hash: sha256:911ab17b34f19eaa
+- requirement_id: AutoCyberSec-05-RC-16
+  native_id: '[RC-05-16]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 17
+  clause: '05'
+  source_text: >-
+    Work products should be managed in accordance with an information security management system.
+  source_text_hash: sha256:3f214338343971f3
+- requirement_id: AutoCyberSec-05-RQ-17
+  native_id: '[RQ-05-17]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 17
+  clause: '05'
+  source_text: >-
+    A cybersecurity audit shall be performed independently to judge whether the organizational processes
+    achieve the objectives of this document.
+  source_text_hash: sha256:a57510acea96a849
+- requirement_id: AutoCyberSec-06-RQ-01
+  native_id: '[RQ-06-01]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 20
+  clause: '06'
+  source_text: >-
+    The responsibilities regarding the project's cybersecurity activities shall be assigned and communicated
+    in accordance with [RQ-05-03].
+  source_text_hash: sha256:a3e138611f3806a3
+- requirement_id: AutoCyberSec-06-RQ-02
+  native_id: '[RQ-06-02]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 20
+  clause: '06'
+  source_text: >-
+    In order to decide cybersecurity activities needed for the item or component, the item or component
+    shall be analysed to determine: a) whether the item or component is cybersecurity relevant; b) if
+    the item or component is cybersecurity relevant, whether the item or component is a new development
+    or a reuse; and c) whether tailoring in accordance with 6.4.3 is applied.
+  source_text_hash: sha256:bafe569a5ac85cf3
+- requirement_id: AutoCyberSec-06-RQ-03
+  native_id: '[RQ-06-03]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 20
+  clause: '06'
+  source_text: >-
+    The cybersecurity plan shall include the: a) objective of an activity; b) dependencies on other activities
+    or information; c) personnel responsible for performing an activity; d) required resources for performing
+    an activity; e) starting point or end point, and the expected duration of an activity; and f) identification
+    of the work products to be produced.
+  source_text_hash: sha256:419eb4acff624abe
+- requirement_id: AutoCyberSec-06-RQ-04
+  native_id: '[RQ-06-04]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 20
+  clause: '06'
+  source_text: >-
+    The responsibilities for developing and maintaining the cybersecurity plan, and for tracking the progress
+    of the cybersecurity activities against the cybersecurity plan shall be assigned in accordance with
+    [RQ-05-03] and [RQ-05-04].
+  source_text_hash: sha256:6c755c9354621a61
+- requirement_id: AutoCyberSec-06-RQ-05
+  native_id: '[RQ-06-05]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 20
+  clause: '06'
+  source_text: >-
+    The cybersecurity plan shall either be: a) referenced in the project plan for the development; or
+    b) included in the project plan, such that the cybersecurity activities are distinguishable.
+  source_text_hash: sha256:e330574edf9942f6
+- requirement_id: AutoCyberSec-06-RQ-06
+  native_id: '[RQ-06-06]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 21
+  clause: '06'
+  source_text: >-
+    The cybersecurity plan shall specify the activities that are required for cybersecurity during the
+    concept and product development phases in accordance with the relevant requirements of Clauses 9,
+    10, 11 and 15.
+  source_text_hash: sha256:1521501a1138a417
+- requirement_id: AutoCyberSec-06-RQ-07
+  native_id: '[RQ-06-07]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 21
+  clause: '06'
+  source_text: >-
+    The cybersecurity plan shall be updated when a change or a refinement of the activities to be performed
+    is identified.
+  source_text_hash: sha256:e9ec5c123c98f8f4
+- requirement_id: AutoCyberSec-06-PM-08
+  native_id: '[PM-06-08]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 21
+  clause: '06'
+  source_text: >-
+    For threat scenarios of risk value 1 that are determined from an analysis in accordance with 15.8,
+    conformity with 9.5, Clause 10 and Clause 11 may be omitted.
+  source_text_hash: sha256:0977693f05bc17ed
+- requirement_id: AutoCyberSec-06-RQ-09
+  native_id: '[RQ-06-09]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 21
+  clause: '06'
+  source_text: >-
+    The work products identified in the cybersecurity plan shall be updated and maintained for accuracy
+    until and at the release for post-development.
+  source_text_hash: sha256:2984446f73cf292b
+- requirement_id: AutoCyberSec-06-RQ-10
+  native_id: '[RQ-06-10]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 21
+  clause: '06'
+  source_text: >-
+    If cybersecurity activities are distributed, customer and supplier shall each define a cybersecurity
+    plan regarding their respective cybersecurity activities and interfaces in accordance with Clause
+    7.
+  source_text_hash: sha256:35d51f2d11b64ea8
+- requirement_id: AutoCyberSec-06-RQ-11
+  native_id: '[RQ-06-11]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 21
+  clause: '06'
+  source_text: >-
+    The cybersecurity plan shall be subject to configuration management and documentation management,
+    in accordance with 5.4.4.
+  source_text_hash: sha256:cbebb417e169d1f2
+- requirement_id: AutoCyberSec-06-RQ-12
+  native_id: '[RQ-06-12]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 21
+  clause: '06'
+  source_text: >-
+    The work products identified in the cybersecurity plan shall be subject to configuration management,
+    change management, requirements management, and documentation management, in accordance with 5.4.4.
+  source_text_hash: sha256:fde8973d0438adc8
+- requirement_id: AutoCyberSec-06-PM-13
+  native_id: '[PM-06-13]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 21
+  clause: '06'
+  source_text: >-
+    A cybersecurity activity may be tailored.
+  source_text_hash: sha256:b782808f5f46b2c0
+- requirement_id: AutoCyberSec-06-RQ-14
+  native_id: '[RQ-06-14]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 21
+  clause: '06'
+  source_text: >-
+    If a cybersecurity activity is tailored, then a rationale why the tailoring is adequate and sufficient
+    to achieve the relevant objectives of this document shall be provided and reviewed.
+  source_text_hash: sha256:ddf9181b2b4fc8c1
+- requirement_id: AutoCyberSec-06-RQ-15
+  native_id: '[RQ-06-15]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 21
+  clause: '06'
+  source_text: >-
+    A reuse analysis shall be carried out if an item or component has been developed and: a) modifications
+    are planned; b) is planned to be reused in another operational environment; or c) is planned to be
+    reused without modification and there are relevant changes to the information concerning the item
+    or component.
+  source_text_hash: sha256:2b1235b7aadbaeec
+- requirement_id: AutoCyberSec-06-RQ-16
+  native_id: '[RQ-06-16]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 22
+  clause: '06'
+  source_text: >-
+    A reuse analysis of an item or component shall: a) identify the modifications to the item or component
+    and the modifications of its operational environment; b) analyse the cybersecurity implications of
+    the modifications, including the effects on the validity of cybersecurity claims and previously made
+    assumptions; c) identify the affected or missing work products; and d) specify the cybersecurity activities
+    necessary to conform with this document in the cybersecurity plan (see 6.4.2).
+  source_text_hash: sha256:cc24f05499cf0e84
+- requirement_id: AutoCyberSec-06-RQ-17
+  native_id: '[RQ-06-17]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 22
+  clause: '06'
+  source_text: >-
+    A reuse analysis of a component shall evaluate whether: a) the component is able to fulfil the allocated
+    cybersecurity requirements from the item or component, in which it is to be integrated; and b) the
+    existing documentation is sufficient to support the integration into an item, or into another component.
+  source_text_hash: sha256:291d59b64e0f689c
+- requirement_id: AutoCyberSec-06-RQ-18
+  native_id: '[RQ-06-18]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 23
+  clause: '06'
+  source_text: >-
+    Assumptions on the intended use and context, including the external interfaces, for a component developed
+    out-of-context shall be documented in the corresponding work products.
+  source_text_hash: sha256:cf3ad04f84803c69
+- requirement_id: AutoCyberSec-06-RQ-19
+  native_id: '[RQ-06-19]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 23
+  clause: '06'
+  source_text: >-
+    For the development of a component out-of-context, the cybersecurity requirements shall be based on
+    the assumptions of [RQ-06-18].
+  source_text_hash: sha256:e0153bd2484ea5ed
+- requirement_id: AutoCyberSec-06-RQ-20
+  native_id: '[RQ-06-20]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 23
+  clause: '06'
+  source_text: >-
+    For the integration of a component developed out-of-context, the cybersecurity claims and assumptions
+    of [RQ-06-18] shall be validated.
+  source_text_hash: sha256:4e0ec134fbad8786
+- requirement_id: AutoCyberSec-06-RQ-21
+  native_id: '[RQ-06-21]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 23
+  clause: '06'
+  source_text: >-
+    When integrating an off-the-shelf component, the cybersecurity-relevant documentation shall be gathered
+    and analysed to determine whether: a) allocated cybersecurity requirements can be fulfilled; b) the
+    component is suitable for the specific application context of the intended use; and c) existing documentation
+    is sufficient to support the cybersecurity activities.
+  source_text_hash: sha256:8128eaad4827d309
+- requirement_id: AutoCyberSec-06-RQ-22
+  native_id: '[RQ-06-22]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 23
+  clause: '06'
+  source_text: >-
+    If the existing documentation is insufficient to support the integration of the off-the-shelf component,
+    then the cybersecurity activities to conform with this document shall be identified and performed.
+  source_text_hash: sha256:10a68fd4e8540b09
+- requirement_id: AutoCyberSec-06-RQ-23
+  native_id: '[RQ-06-23]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 23
+  clause: '06'
+  source_text: >-
+    A cybersecurity case shall be created to provide the argument for the cybersecurity of the item or
+    component, supported by work products.
+  source_text_hash: sha256:4a115020fdd56959
+- requirement_id: AutoCyberSec-06-RQ-24
+  native_id: '[RQ-06-24]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 23
+  clause: '06'
+  source_text: >-
+    A decision whether to perform a cybersecurity assessment for an item or component shall be made supported
+    by a rationale applying a risk-based approach.
+  source_text_hash: sha256:0250ba803b70831e
+- requirement_id: AutoCyberSec-06-RQ-25
+  native_id: '[RQ-06-25]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 24
+  clause: '06'
+  source_text: >-
+    The rationale of [RQ-06-24] shall be reviewed independently.
+  source_text_hash: sha256:8c62dabf70897807
+- requirement_id: AutoCyberSec-06-RQ-26
+  native_id: '[RQ-06-26]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 24
+  clause: '06'
+  source_text: >-
+    The cybersecurity assessment shall judge the cybersecurity of the item or component.
+  source_text_hash: sha256:1a65203baffb4fbc
+- requirement_id: AutoCyberSec-06-RQ-27
+  native_id: '[RQ-06-27]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 24
+  clause: '06'
+  source_text: >-
+    A person responsible to plan and perform independently a cybersecurity assessment shall be appointed
+    in accordance with [RQ-06-01].
+  source_text_hash: sha256:d89c9a4bcad0abbf
+- requirement_id: AutoCyberSec-06-RQ-28
+  native_id: '[RQ-06-28]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 24
+  clause: '06'
+  source_text: >-
+    A person who carries out a cybersecurity assessment shall have: a) access to the relevant information
+    and tools; and b) the cooperation of the personnel performing the cybersecurity activities.
+  source_text_hash: sha256:d55561980b5cdc3e
+- requirement_id: AutoCyberSec-06-PM-29
+  native_id: '[PM-06-29]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 24
+  clause: '06'
+  source_text: >-
+    A cybersecurity assessment may be based on a judgement of whether the objectives of this document
+    are achieved.
+  source_text_hash: sha256:2e8c4c482aeb2de4
+- requirement_id: AutoCyberSec-06-RQ-30
+  native_id: '[RQ-06-30]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 24
+  clause: '06'
+  source_text: >-
+    The scope of a cybersecurity assessment shall include: a) the cybersecurity plan and all work products
+    identified in the cybersecurity plan; b) the treatment of the cybersecurity risks; c) the appropriateness
+    and effectiveness of implemented cybersecurity controls and cybersecurity activities performed for
+    the project; and d) the rationales, if provided, that demonstrate the achievement of the objectives
+    of this document.
+  source_text_hash: sha256:0408e75049599f63
+- requirement_id: AutoCyberSec-06-RQ-31
+  native_id: '[RQ-06-31]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 25
+  clause: '06'
+  source_text: >-
+    A cybersecurity assessment report shall include a recommendation for acceptance, conditional acceptance,
+    or rejection of the cybersecurity of the item or component.
+  source_text_hash: sha256:4b988116b3ea8771
+- requirement_id: AutoCyberSec-06-RQ-32
+  native_id: '[RQ-06-32]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 25
+  clause: '06'
+  source_text: >-
+    If a recommendation for conditional acceptance in accordance with [RQ-06-31] is made, then the cybersecurity
+    assessment report shall include the conditions for acceptance.
+  source_text_hash: sha256:a41b388df9a349ad
+- requirement_id: AutoCyberSec-06-RQ-33
+  native_id: '[RQ-06-33]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 25
+  clause: '06'
+  source_text: >-
+    The following work products shall be available prior to the release for post-development: a) the cybersecurity
+    case [WP-06-02]; b) if applicable, the cybersecurity assessment report [WP-06-03]; and c) the cybersecurity
+    requirements for post-development [WP-10-02].
+  source_text_hash: sha256:57b939297da982cb
+- requirement_id: AutoCyberSec-06-RQ-34
+  native_id: '[RQ-06-34]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 25
+  clause: '06'
+  source_text: >-
+    The following conditions shall be fulfilled for the release for post-development of the item or component:
+    a) the argument for cybersecurity provided by the cybersecurity case is convincing; b) the cybersecurity
+    case is confirmed by the cybersecurity assessment, if applicable; and c) the cybersecurity requirements
+    for the post-development phases are accepted.
+  source_text_hash: sha256:76efc076101bc297
+- requirement_id: AutoCyberSec-07-RQ-01
+  native_id: '[RQ-07-01]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 26
+  clause: '07'
+  source_text: >-
+    The capability of a candidate supplier to develop and, if applicable, perform post- development activities
+    in accordance with this document shall be evaluated.
+  source_text_hash: sha256:082f8a24a1056721
+- requirement_id: AutoCyberSec-07-RC-02
+  native_id: '[RC-07-02]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 26
+  clause: '07'
+  source_text: >-
+    To support a customer's evaluation of supplier capability, a supplier should provide a record of cybersecurity
+    capability.
+  source_text_hash: sha256:5a500741d4ce50a5
+- requirement_id: AutoCyberSec-07-RQ-03
+  native_id: '[RQ-07-03]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 27
+  clause: '07'
+  source_text: >-
+    A request for quotation from a customer to a candidate supplier shall include: a) a formal request
+    to conform to this document; b) the expectation that cybersecurity responsibilities will be taken
+    on by the supplier in accordance with 7.4.3; and c) the cybersecurity goals and/or set of cybersecurity
+    requirements relevant to the item or component for which the supplier is quoting.
+  source_text_hash: sha256:276b055b82c2f885
+- requirement_id: AutoCyberSec-07-RQ-04
+  native_id: '[RQ-07-04]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 27
+  clause: '07'
+  source_text: >-
+    A customer and a supplier shall specify the distributed cybersecurity activities in a cybersecurity
+    interface agreement including: a) appointment of customer's and supplier's points of contact regarding
+    cybersecurity; b) identification of cybersecurity activities that are to be performed by customer
+    and supplier, respectively; c) if applicable, a joint tailoring of cybersecurity activities in accordance
+    with 6.4.3; d) the information and the work products to be shared; e) milestones regarding the distributed
+    cybersecurity activities; and f) definition of the end of cybersecurity support for the item or component.
+  source_text_hash: sha256:34d05c39dd8f3eb4
+- requirement_id: AutoCyberSec-07-RC-05
+  native_id: '[RC-07-05]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 27
+  clause: '07'
+  source_text: >-
+    The cybersecurity interface agreement should be mutually agreed upon between customer and supplier
+    prior to the start of the distributed cybersecurity activities.
+  source_text_hash: sha256:210ab9ea804e03bc
+- requirement_id: AutoCyberSec-07-RQ-06
+  native_id: '[RQ-07-06]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 28
+  clause: '07'
+  source_text: >-
+    If there is an identified vulnerability to be managed in accordance with [RQ-08-07], the customer
+    and supplier shall agree on actions and responsibility for those actions.
+  source_text_hash: sha256:56808ec3833cfdaa
+- requirement_id: AutoCyberSec-07-RQ-07
+  native_id: '[RQ-07-07]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 28
+  clause: '07'
+  source_text: >-
+    If requirements are unclear, not feasible, or conflict with other cybersecurity requirements or requirements
+    from other disciplines, then customer and supplier shall each notify the other so that appropriate
+    decisions and actions can be taken.
+  source_text_hash: sha256:38f844f0344ad345
+- requirement_id: AutoCyberSec-07-RC-08
+  native_id: '[RC-07-08]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 28
+  clause: '07'
+  source_text: >-
+    Responsibilities should be specified in a responsibility assignment matrix.
+  source_text_hash: sha256:6f7085f77ac5af50
+- requirement_id: AutoCyberSec-08-RQ-01
+  native_id: '[RQ-08-01]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 29
+  clause: 08
+  source_text: >-
+    Sources shall be selected for collection of cybersecurity information.
+  source_text_hash: sha256:68359a56cd3dc475
+- requirement_id: AutoCyberSec-08-RQ-02
+  native_id: '[RQ-08-02]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 29
+  clause: 08
+  source_text: >-
+    Triggers shall be defined and maintained for the triage of cybersecurity information.
+  source_text_hash: sha256:41ac2c2881d777d7
+- requirement_id: AutoCyberSec-08-RQ-03
+  native_id: '[RQ-08-03]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 29
+  clause: 08
+  source_text: >-
+    Cybersecurity information shall be collected and triaged to determine if the cybersecurity information
+    becomes one or more cybersecurity events.
+  source_text_hash: sha256:1329966fe4c733d7
+- requirement_id: AutoCyberSec-08-RQ-04
+  native_id: '[RQ-08-04]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 30
+  clause: 08
+  source_text: >-
+    A cybersecurity event shall be evaluated to identify weaknesses in an item and/or component.
+  source_text_hash: sha256:b22fdf5d90141966
+- requirement_id: AutoCyberSec-08-RQ-05
+  native_id: '[RQ-08-05]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 31
+  clause: 08
+  source_text: >-
+    Weaknesses shall be analysed to identify vulnerabilities.
+  source_text_hash: sha256:6d22754a6651cb99
+- requirement_id: AutoCyberSec-08-RQ-06
+  native_id: '[RQ-08-06]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 31
+  clause: 08
+  source_text: >-
+    A rationale shall be provided for a weakness that is not identified as a vulnerability.
+  source_text_hash: sha256:2ecaa9e11210ba96
+- requirement_id: AutoCyberSec-08-RQ-07
+  native_id: '[RQ-08-07]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 31
+  clause: 08
+  source_text: >-
+    Vulnerabilities shall be managed such that for each vulnerability: a) the corresponding cybersecurity
+    risks are assessed and treated in accordance with 15.9 such that no unreasonable risks remain; or
+    b) the vulnerability is eliminated by applying an available remediation independent of a TARA.
+  source_text_hash: sha256:86df51a57e123eb5
+- requirement_id: AutoCyberSec-08-RQ-08
+  native_id: '[RQ-08-08]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 32
+  clause: 08
+  source_text: >-
+    If a risk treatment decision in accordance with 15.9 necessitates cybersecurity incident response,
+    then 13.3 shall be applied.
+  source_text_hash: sha256:157e78ab801086ee
+- requirement_id: AutoCyberSec-09-RQ-01
+  native_id: '[RQ-09-01]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 33
+  clause: 09
+  source_text: >-
+    The following information on the item shall be identified: a) item boundary; b) item functions; and
+    c) preliminary architecture.
+  source_text_hash: sha256:1d78e5a33e71ab5a
+- requirement_id: AutoCyberSec-09-RQ-02
+  native_id: '[RQ-09-02]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 33
+  clause: 09
+  source_text: >-
+    Information about the operational environment of the item relevant to cybersecurity shall be described.
+  source_text_hash: sha256:2d2d89d444580055
+- requirement_id: AutoCyberSec-09-RQ-03
+  native_id: '[RQ-09-03]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 34
+  clause: 09
+  source_text: >-
+    An analysis based on the item definition shall be performed that involves: a) asset identification
+    in accordance with 15.3; b) threat scenario identification in accordance with 15.4; c) impact rating
+    in accordance with 15.5; d) attack path analysis in accordance with 15.6; e) attack feasibility rating
+    in accordance with 15.7; and f) risk value determination in accordance with 15.8.
+  source_text_hash: sha256:0d29482281e688e9
+- requirement_id: AutoCyberSec-09-RQ-04
+  native_id: '[RQ-09-04]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 34
+  clause: 09
+  source_text: >-
+    Based on the results of [RQ-09-03], risk treatment options shall be determined for each threat scenario
+    in accordance with 15.9.
+  source_text_hash: sha256:5fe283dcf583b612
+- requirement_id: AutoCyberSec-09-RQ-05
+  native_id: '[RQ-09-05]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 34
+  clause: 09
+  source_text: >-
+    If the risk treatment decision for a threat scenario includes reducing the risk, then one or more
+    corresponding cybersecurity goals shall be specified.
+  source_text_hash: sha256:5076132e880d7a2e
+- requirement_id: AutoCyberSec-09-RQ-06
+  native_id: '[RQ-09-06]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 34
+  clause: 09
+  source_text: >-
+    If the risk treatment decision for a threat scenario includes: a) sharing the risk; or b) retaining
+    the risk due to one or more assumptions used during the analysis of [RQ-09-03], then one or more corresponding
+    cybersecurity claims shall be specified.
+  source_text_hash: sha256:3f228c015a975a55
+- requirement_id: AutoCyberSec-09-RQ-07
+  native_id: '[RQ-09-07]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 34
+  clause: 09
+  source_text: >-
+    A verification shall be performed to confirm: a) correctness and completeness of the result of [RQ-09-03]
+    with respect to the item definition; b) completeness, correctness and consistency of the risk treatment
+    decisions of [RQ-09-04] with respect to the results of [RQ-09-03]; c) completeness, correctness and
+    consistency of the cybersecurity goals of [RQ-09-05] and of the cybersecurity claims of [RQ-09-06]
+    with respect to the risk treatment decisions of [RQ-09-04]; and d) consistency of all cybersecurity
+    goals of [RQ-09-05] and cybersecurity claims of [RQ-09-06] of the item.
+  source_text_hash: sha256:80ac8c3cb174b172
+- requirement_id: AutoCyberSec-09-RQ-08
+  native_id: '[RQ-09-08]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 35
+  clause: 09
+  source_text: >-
+    Technical and/or operational cybersecurity controls and their interactions to achieve the cybersecurity
+    goals shall be described, taking into account: a) dependencies between the functions of the item;
+    and/or b) cybersecurity claims.
+  source_text_hash: sha256:827635f96b068cd3
+- requirement_id: AutoCyberSec-09-RQ-09
+  native_id: '[RQ-09-09]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 35
+  clause: 09
+  source_text: >-
+    Cybersecurity requirements of the item and requirements on the operational environment shall be defined
+    for the cybersecurity goals in accordance with the description of [RQ-09-08].
+  source_text_hash: sha256:f89b383ef66d4302
+- requirement_id: AutoCyberSec-09-RQ-10
+  native_id: '[RQ-09-10]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 35
+  clause: 09
+  source_text: >-
+    The cybersecurity requirements shall be allocated to the item, and if applicable to one or more of
+    its components.
+  source_text_hash: sha256:a96aae34c09bd287
+- requirement_id: AutoCyberSec-09-RQ-11
+  native_id: '[RQ-09-11]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 36
+  clause: 09
+  source_text: >-
+    The results of [RQ-09-08], [RQ-09-09] and [RQ-09-10] shall be verified to confirm: a) completeness,
+    correctness, and consistency with respect to cybersecurity goals; and b) consistency with respect
+    to cybersecurity claims.
+  source_text_hash: sha256:9716b3ae3856b740
+- requirement_id: AutoCyberSec-10-RQ-01
+  native_id: '[RQ-10-01]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 38
+  clause: '10'
+  source_text: >-
+    Cybersecurity specifications shall be defined based on: a) cybersecurity specifications from higher
+    levels of architectural abstraction; b) cybersecurity controls selected for implementation, if applicable;
+    and c) existing architectural design, if applicable.
+  source_text_hash: sha256:6930ea7f312f7ab4
+- requirement_id: AutoCyberSec-10-RQ-02
+  native_id: '[RQ-10-02]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 39
+  clause: '10'
+  source_text: >-
+    The defined cybersecurity requirements shall be allocated to components of the architectural design.
+  source_text_hash: sha256:454e9914fbb9fc02
+- requirement_id: AutoCyberSec-10-RQ-03
+  native_id: '[RQ-10-03]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 39
+  clause: '10'
+  source_text: >-
+    Procedures to ensure cybersecurity after the development of the component shall be specified, if applicable.
+  source_text_hash: sha256:8d69f3aaf8dd7c3b
+- requirement_id: AutoCyberSec-10-RQ-04
+  native_id: '[RQ-10-04]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 39
+  clause: '10'
+  source_text: >-
+    If design, modelling or programming notations or languages are used for the cybersecurity specifications
+    or their implementation, the following shall be considered when selecting such a notation or language:
+    a) an unambiguous and comprehensible definition in both syntax and semantics; b) support for achievement
+    of modularity, abstraction and encapsulation; c) support for the use of structured constructs; d)
+    support for the use of secure design and implementation techniques; e) ability to integrate already
+    existing components; and f) resilience of the language against vulnerabilities due to its improper
+    use.
+  source_text_hash: sha256:754cc9d76a14679f
+- requirement_id: AutoCyberSec-10-RQ-05
+  native_id: '[RQ-10-05]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 39
+  clause: '10'
+  source_text: >-
+    Criteria (see [RQ-10-04]) for suitable design, modelling or programming languages for cybersecurity
+    that are not addressed by the language itself shall be covered by design, modelling and coding guidelines,
+    or by the development environment.
+  source_text_hash: sha256:b18466d34fcc873f
+- requirement_id: AutoCyberSec-10-RC-06
+  native_id: '[RC-10-06]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 39
+  clause: '10'
+  source_text: >-
+    Established and trusted design and implementation principles should be applied to avoid or minimize
+    the introduction of weaknesses.
+  source_text_hash: sha256:c057fe2cf566f848
+- requirement_id: AutoCyberSec-10-RQ-07
+  native_id: '[RQ-10-07]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 39
+  clause: '10'
+  source_text: >-
+    The architectural design defined in [RQ-10-01] shall be analysed to identify weaknesses.
+  source_text_hash: sha256:a0469d6c514db2af
+- requirement_id: AutoCyberSec-10-RQ-08
+  native_id: '[RQ-10-08]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 40
+  clause: '10'
+  source_text: >-
+    The defined cybersecurity specifications shall be verified to ensure completeness, correctness, and
+    consistency with the cybersecurity specifications from higher levels of architectural abstraction.
+  source_text_hash: sha256:1489ba2a8f21a041
+- requirement_id: AutoCyberSec-10-RQ-09
+  native_id: '[RQ-10-09]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 40
+  clause: '10'
+  source_text: >-
+    Integration and verification activities shall verify that the implementation and integration of components
+    fulfil the defined cybersecurity specifications.
+  source_text_hash: sha256:e4eb90d946951e90
+- requirement_id: AutoCyberSec-10-RQ-10
+  native_id: '[RQ-10-10]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 40
+  clause: '10'
+  source_text: >-
+    The integration and verification activities of [RQ-10-09] shall be specified considering: a) the defined
+    cybersecurity specifications; b) configurations intended for series production, if applicable; c)
+    sufficient capability to support the functionality specified in the defined cybersecurity specifications;
+    and d) conformity with the modelling, design and coding guidelines of [RQ-10-05], if applicable.
+  source_text_hash: sha256:815f9ed6942a00e8
+- requirement_id: AutoCyberSec-10-RQ-11
+  native_id: '[RQ-10-11]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 41
+  clause: '10'
+  source_text: >-
+    If verification by testing is adopted, test coverage shall be evaluated using defined test coverage
+    metrics to determine sufficiency of the test activities.
+  source_text_hash: sha256:4cda95e763395423
+- requirement_id: AutoCyberSec-10-RC-12
+  native_id: '[RC-10-12]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 41
+  clause: '10'
+  source_text: >-
+    Testing should be performed in order to confirm that unidentified weaknesses and vulnerabilities remaining
+    in the component are minimized.
+  source_text_hash: sha256:6449d147d723295b
+- requirement_id: AutoCyberSec-10-RQ-13
+  native_id: '[RQ-10-13]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 41
+  clause: '10'
+  source_text: >-
+    If testing in accordance with [RC-10-12] is not performed, then a rationale shall be provided.
+  source_text_hash: sha256:6c02024ee97f95ba
+- requirement_id: AutoCyberSec-11-RQ-01
+  native_id: '[RQ-11-01]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 42
+  clause: '11'
+  source_text: >-
+    Validation activities at the vehicle level for the item considering the configurations for series
+    production shall confirm: a) adequacy of the cybersecurity goals with respect to the threat scenarios
+    and corresponding risk; b) achievement of the cybersecurity goals of the item; c) validity of the
+    cybersecurity claims; and d) validity of the requirements on the operational environment, if applicable.
+  source_text_hash: sha256:ded0a98bdbd4ec16
+- requirement_id: AutoCyberSec-11-RQ-02
+  native_id: '[RQ-11-02]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 42
+  clause: '11'
+  source_text: >-
+    A rationale for the selection of validation activities shall be provided.
+  source_text_hash: sha256:ecd4c6dcc3c988ef
+- requirement_id: AutoCyberSec-12-RQ-01
+  native_id: '[RQ-12-01]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 43
+  clause: '12'
+  source_text: >-
+    A production control plan shall be created that applies the cybersecurity requirements for post-development.
+  source_text_hash: sha256:368cbf762708d711
+- requirement_id: AutoCyberSec-12-RQ-02
+  native_id: '[RQ-12-02]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 43
+  clause: '12'
+  source_text: >-
+    The production control plan shall include: a) sequence of steps that apply the cybersecurity requirements
+    for post-development; b) production tools and equipment; c) cybersecurity controls to prevent unauthorized
+    alteration during production; and d) methods to confirm that the cybersecurity requirements for post-development
+    are met.
+  source_text_hash: sha256:046ea49416831573
+- requirement_id: AutoCyberSec-12-RQ-03
+  native_id: '[RQ-12-03]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 44
+  clause: '12'
+  source_text: >-
+    The production control plan shall be implemented.
+  source_text_hash: sha256:554ce871ce21938a
+- requirement_id: AutoCyberSec-13-RQ-01
+  native_id: '[RQ-13-01]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 45
+  clause: '13'
+  source_text: >-
+    For each cybersecurity incident, a cybersecurity incident response plan shall be created that includes:
+    a) remedial actions; b) a communication plan; c) assigned responsibilities for the remedial actions;
+    d) a procedure for recording new cybersecurity information relevant to the cybersecurity incident;
+    e) a method for determining progress; f) criteria for closure of the cybersecurity incident response;
+    and g) actions for the closure.
+  source_text_hash: sha256:ea0ba8eb576b777f
+- requirement_id: AutoCyberSec-13-RQ-02
+  native_id: '[RQ-13-02]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 45
+  clause: '13'
+  source_text: >-
+    The cybersecurity incident response plan shall be implemented.
+  source_text_hash: sha256:79df32c4c3a3a957
+- requirement_id: AutoCyberSec-13-RQ-03
+  native_id: '[RQ-13-03]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 46
+  clause: '13'
+  source_text: >-
+    Updates and update-related capabilities within the vehicle shall be developed in accordance with this
+    document.
+  source_text_hash: sha256:c0a8e5b7db0c3c88
+- requirement_id: AutoCyberSec-14-RQ-01
+  native_id: '[RQ-14-01]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 47
+  clause: '14'
+  source_text: >-
+    A procedure shall be created to communicate to customers when an organization decides to end cybersecurity
+    support for an item or component.
+  source_text_hash: sha256:a4d38db7f557c0bd
+- requirement_id: AutoCyberSec-14-RQ-02
+  native_id: '[RQ-14-02]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 47
+  clause: '14'
+  source_text: >-
+    The cybersecurity requirements for post-development with regard to decommissioning shall be made available.
+  source_text_hash: sha256:087a3f5ea0b02185
+- requirement_id: AutoCyberSec-15-RQ-01
+  native_id: '[RQ-15-01]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 48
+  clause: '15'
+  source_text: >-
+    Damage scenarios shall be identified.
+  source_text_hash: sha256:1ee8a75a61fbbc7c
+- requirement_id: AutoCyberSec-15-RQ-02
+  native_id: '[RQ-15-02]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 49
+  clause: '15'
+  source_text: >-
+    Assets with cybersecurity properties whose compromise leads to a damage scenario shall be identified.
+  source_text_hash: sha256:5f9b26817b03fe09
+- requirement_id: AutoCyberSec-15-RQ-03
+  native_id: '[RQ-15-03]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 49
+  clause: '15'
+  source_text: >-
+    Threat scenarios shall be identified and include: -- targeted asset; -- compromised cybersecurity
+    property of the asset; and -- cause of compromise of the cybersecurity property.
+  source_text_hash: sha256:ff43384707201ef7
+- requirement_id: AutoCyberSec-15-RQ-04
+  native_id: '[RQ-15-04]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 50
+  clause: '15'
+  source_text: >-
+    The damage scenarios shall be assessed against potential adverse consequences for road users in the
+    impact categories of safety, financial, operational, and privacy (S, F, O, P) respectively.
+  source_text_hash: sha256:b9dce917de63bb30
+- requirement_id: AutoCyberSec-15-RQ-05
+  native_id: '[RQ-15-05]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 50
+  clause: '15'
+  source_text: >-
+    The impact rating of a damage scenario shall be determined for each impact category to be one of the
+    following: -- severe; -- major; -- moderate; or -- negligible.
+  source_text_hash: sha256:f664a9ec660694a1
+- requirement_id: AutoCyberSec-15-RQ-06
+  native_id: '[RQ-15-06]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 50
+  clause: '15'
+  source_text: >-
+    Safety related impact ratings shall be derived from ISO 26262-3:2018, 6.4.3.
+  source_text_hash: sha256:885d1a397394a6aa
+- requirement_id: AutoCyberSec-15-PM-07
+  native_id: '[PM-15-07]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 51
+  clause: '15'
+  source_text: >-
+    If a damage scenario results in an impact rating and an argument can be made that every impact of
+    another impact category is considered less critical, then further analysis for that other impact category
+    may be omitted.
+  source_text_hash: sha256:0a0b23ff98732207
+- requirement_id: AutoCyberSec-15-RQ-08
+  native_id: '[RQ-15-08]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 51
+  clause: '15'
+  source_text: >-
+    The threat scenarios shall be analysed to identify attack paths.
+  source_text_hash: sha256:2e7eafbbfa78b197
+- requirement_id: AutoCyberSec-15-RQ-09
+  native_id: '[RQ-15-09]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 52
+  clause: '15'
+  source_text: >-
+    An attack path shall be associated with the threat scenarios that can be realized by the attack path.
+  source_text_hash: sha256:2df51e09fbd99526
+- requirement_id: AutoCyberSec-15-RQ-10
+  native_id: '[RQ-15-10]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 52
+  clause: '15'
+  source_text: >-
+    For each attack path, the attack feasibility rating shall be determined as described in Table 1.
+  source_text_hash: sha256:34314ba13361af01
+- requirement_id: AutoCyberSec-15-RC-11
+  native_id: '[RC-15-11]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 53
+  clause: '15'
+  source_text: >-
+    The attack feasibility rating method should be defined based on one of the following approaches: a)
+    attack potential-based approach; b) CVSS-based approach; or c) attack vector-based approach.
+  source_text_hash: sha256:0e37d6d5ab3d058c
+- requirement_id: AutoCyberSec-15-RC-12
+  native_id: '[RC-15-12]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 53
+  clause: '15'
+  source_text: >-
+    If an attack potential-based approach is used, the attack feasibility rating should be determined
+    based on core factors including: a) elapsed time; b) specialist expertise; c) knowledge of the item
+    or component; d) window of opportunity; and e) equipment.
+  source_text_hash: sha256:2baa05df83c420c0
+- requirement_id: AutoCyberSec-15-RC-13
+  native_id: '[RC-15-13]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 53
+  clause: '15'
+  source_text: >-
+    If a CVSS-based approach is used, the attack feasibility rating should be determined based on the
+    exploitability metrics of the base metric group, including: a) attack vector; b) attack complexity;
+    c) privileges required; and d) user interaction.
+  source_text_hash: sha256:167190b62f5f1c4f
+- requirement_id: AutoCyberSec-15-RC-14
+  native_id: '[RC-15-14]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 53
+  clause: '15'
+  source_text: >-
+    If an attack vector-based approach is used, the attack feasibility rating should be determined based
+    on evaluating the predominant attack vector (cf. CVSS [24] 2.1.1) of the attack path.
+  source_text_hash: sha256:1da288e0af3a19aa
+- requirement_id: AutoCyberSec-15-RQ-15
+  native_id: '[RQ-15-15]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 54
+  clause: '15'
+  source_text: >-
+    For each threat scenario the risk value shall be determined from the impact of the associated damage
+    scenarios and the attack feasibility of the associated attack paths.
+  source_text_hash: sha256:958917d00c713bc2
+- requirement_id: AutoCyberSec-15-RQ-16
+  native_id: '[RQ-15-16]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 54
+  clause: '15'
+  source_text: >-
+    The risk value of a threat scenario shall be a value between (and including) 1 and 5, where a value
+    of 1 represents minimal risk.
+  source_text_hash: sha256:7205e9f4fc148805
+- requirement_id: AutoCyberSec-15-RQ-17
+  native_id: '[RQ-15-17]'
+  source_file: sources/ISO_SAE_21434_2021(en).pdf
+  page: 55
+  clause: '15'
+  source_text: >-
+    For each threat scenario, considering its risk values, one or more of the following risk treatment
+    option(s) shall be determined: a) avoiding the risk; b) reducing the risk; c) sharing the risk; d)
+    retaining the risk.
+  source_text_hash: sha256:c39e9ba82fd2e6da

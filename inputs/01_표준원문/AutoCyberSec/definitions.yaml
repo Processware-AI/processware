@@ -1,0 +1,294 @@
+standard_id: AutoCyberSec
+terms_and_definitions:
+- id: 3.1.1
+  term: architectural design
+  page: 7
+  definition: >-
+    representation that allows for identification of components (3.1.7), their boundaries, interfaces
+    and interactions
+- id: 3.1.2
+  term: asset
+  page: 7
+  definition: >-
+    object that has value, or contributes to value
+  note: >-
+    Note 1 to entry: An asset has one or more cybersecurity properties (3.1.20) whose compromise can lead
+    to one or more damage scenarios (3.1.22).
+- id: 3.1.3
+  term: attack feasibility
+  page: 7
+  definition: >-
+    attribute of an attack path (3.1.4) describing the ease of successfully carrying out the corresponding
+    set of actions
+- id: 3.1.4
+  term: attack path
+  page: 8
+  synonyms:
+  - attack
+  definition: >-
+    set of deliberate actions to realize a threat scenario (3.1.33)
+- id: 3.1.5
+  term: attacker
+  page: 8
+  definition: >-
+    person, group, or organization that carries out an attack path (3.1.4)
+- id: 3.1.6
+  term: audit
+  page: 8
+  definition: >-
+    examination of a process to determine the extent to which the process objectives are achieved
+  source: >-
+    [SOURCE: ISO 26262-1:2018 [1], 3.5, modified -- The phrase "with regard to" was substituted by "to
+    determine the extent to which" and "are achieved" was added.]
+- id: 3.1.7
+  term: component
+  page: 8
+  definition: >-
+    part that is logically and technically separable
+- id: 3.1.8
+  term: customer
+  page: 8
+  definition: >-
+    person or organization that receives a service or product
+  source: >-
+    [SOURCE: ISO 9000:2015 [2], 3.2.4, modified -- The phrase "could or does receive" was replaced by
+    "receives", the phrase "that is intended for or required by this person or organization" was omitted,
+    and the example and note 1 to entry were omitted.]
+- id: 3.1.9
+  term: cybersecurity
+  page: 8
+  synonyms:
+  - road vehicle cybersecurity
+  definition: >-
+    condition in which assets (3.1.2) are sufficiently protected against threat scenarios (3.1.33) to
+    items (3.1.25) of road vehicles, their functions and their electrical or electronic components (3.1.7)
+  note: >-
+    Note 1 to entry: In this document, for the sake of brevity, the term cybersecurity is used instead
+    of road vehicle cybersecurity.
+- id: 3.1.10
+  term: cybersecurity assessment
+  page: 8
+  definition: >-
+    judgement of cybersecurity (3.1.9)
+- id: 3.1.11
+  term: cybersecurity case
+  page: 8
+  definition: >-
+    structured argument supported by evidence to state that risks (3.1.29) are not unreasonable
+- id: 3.1.12
+  term: cybersecurity claim
+  page: 8
+  definition: >-
+    statement about a risk (3.1.29)
+  note: >-
+    Note 1 to entry: The cybersecurity claim can include a justification for retaining or sharing the
+    risk.
+- id: 3.1.13
+  term: cybersecurity concept
+  page: 8
+  definition: >-
+    cybersecurity requirements of the item (3.1.25) and requirements on the operational environment (3.1.26),
+    with associated information on cybersecurity controls (3.1.14)
+- id: 3.1.14
+  term: cybersecurity control
+  page: 8
+  definition: >-
+    measure that is modifying risk (3.1.29)
+  source: >-
+    [SOURCE: ISO 31000:2018 [3], 3.8, modified -- The word "cybersecurity" was added to the term, the
+    phrase "maintains and/or" was deleted, the notes to entry were deleted.]
+- id: 3.1.15
+  term: cybersecurity event
+  page: 9
+  definition: >-
+    cybersecurity information (3.1.18) that is relevant for an item (3.1.25) or component (3.1.7)
+- id: 3.1.16
+  term: cybersecurity goal
+  page: 9
+  definition: >-
+    concept-level cybersecurity requirement associated with one or more threat scenarios (3.1.33)
+- id: 3.1.17
+  term: cybersecurity incident
+  page: 9
+  definition: >-
+    situation in the field that can involve vulnerability (3.1.38) exploitation
+- id: 3.1.18
+  term: cybersecurity information
+  page: 9
+  definition: >-
+    information with regard to cybersecurity (3.1.9) for which relevance is not yet determined
+- id: 3.1.19
+  term: cybersecurity interface agreement
+  page: 9
+  definition: >-
+    agreement between customer (3.1.8) and supplier concerning distributed cybersecurity activities (3.1.23)
+- id: 3.1.20
+  term: cybersecurity property
+  page: 9
+  synonyms:
+  - attribute that can be worth protecting
+  definition: ""
+  note: >-
+    Note 1 to entry: Attributes include confidentiality, integrity and/or availability.
+- id: 3.1.21
+  term: cybersecurity specification
+  page: 9
+  definition: >-
+    cybersecurity requirements and corresponding architectural design (3.1.1)
+- id: 3.1.22
+  term: damage scenario
+  page: 9
+  definition: >-
+    adverse consequence involving a vehicle or vehicle function and affecting a road user (3.1.31)
+- id: 3.1.23
+  term: distributed cybersecurity activities
+  page: 9
+  definition: >-
+    cybersecurity activities for the item (3.1.25) or component (3.1.7) whose responsibilities are distributed
+    between customer (3.1.8) and supplier
+- id: 3.1.24
+  term: impact
+  page: 9
+  definition: >-
+    estimate of magnitude of damage or physical harm from a damage scenario (3.1.22)
+- id: 3.1.25
+  term: item
+  page: 9
+  definition: >-
+    component or set of components (3.1.7) that implements a function at the vehicle level
+  source: >-
+    [SOURCE: ISO 26262-1:2018 [1], 3.8, modified -- The term "system" has been replaced by "component",
+    the phrases "to which ISO 26262 is applied" and "or part of a function" have been omitted and the
+    Note 1 to entry has been replaced.]
+  note: >-
+    Note 1 to entry: A system can be an item if it implements a function at the vehicle level, otherwise
+    it is a component.
+- id: 3.1.26
+  term: operational environment
+  page: 9
+  synonyms:
+  - context considering interactions in operational use
+  definition: ""
+  note: >-
+    Note 1 to entry: Operational use of an item (3.1.25) or a component (3.1.7) can include use in a vehicle
+    function, in production, and/or in service and repair.
+- id: 3.1.27
+  term: out-of-context
+  page: 10
+  definition: >-
+    not developed in the context of a specific item (3.1.25) EXAMPLE Processing unit with assumed cybersecurity
+    requirements to be integrated in different items.
+- id: 3.1.28
+  term: penetration testing
+  page: 10
+  definition: >-
+    cybersecurity testing in which real-world attacks are mimicked to identify ways to compromise cybersecurity
+    goals (3.1.16)
+- id: 3.1.29
+  term: risk
+  page: 10
+  synonyms:
+  - cybersecurity risk
+  definition: >-
+    effect of uncertainty on road vehicle cybersecurity (3.1.9) expressed in terms of attack feasibility
+    (3.1.3) and impact (3.1.24)
+- id: 3.1.30
+  term: risk management
+  page: 10
+  definition: >-
+    coordinated activities to direct and control an organization with regard to risk (3.1.29)
+  source: >-
+    [SOURCE: ISO 31000:2018 [3], 3.2]
+- id: 3.1.31
+  term: road user
+  page: 10
+  synonyms:
+  - person who uses a road
+  definition: >-
+    EXAMPLE Passenger, pedestrian, cyclist, motorist, or vehicle owner.
+- id: 3.1.32
+  term: tailor, verb
+  page: 10
+  definition: >-
+    to omit or perform an activity in a different manner compared to its description in this document
+- id: 3.1.33
+  term: threat scenario
+  page: 10
+  definition: >-
+    potential cause of compromise of cybersecurity properties (3.1.20) of one or more assets (3.1.2) in
+    order to realize a damage scenario (3.1.22)
+- id: 3.1.34
+  term: triage
+  page: 10
+  definition: >-
+    analysis to determine the relevance of cybersecurity information (3.1.18) to an item (3.1.25) or component
+    (3.1.7)
+- id: 3.1.35
+  term: trigger
+  page: 10
+  definition: >-
+    criterion for triage (3.1.34)
+- id: 3.1.36
+  term: validation
+  page: 10
+  definition: >-
+    confirmation, through the provision of objective evidence, that the cybersecurity goals (3.1.16) of
+    the item (3.1.25) are adequate and are achieved
+  source: >-
+    [SOURCE: ISO/IEC/IEEE 15288:2015 [4], 4.1.53, modified -- The phrase "requirements for a specific
+    intended use or application have been fulfilled" has been replaced by "cybersecurity goals of the
+    item are adequate and are achieved", note 1 to entry has been omitted.]
+- id: 3.1.37
+  term: verification
+  page: 10
+  definition: >-
+    confirmation, through the provision of objective evidence, that specified requirements have been fulfilled
+  source: >-
+    [SOURCE: ISO/IEC/IEEE 15288:2015 [4], 4.1.54, modified -- The note 1 to entry has been omitted.]
+- id: 3.1.38
+  term: vulnerability
+  page: 11
+  definition: >-
+    weakness (3.1.40) that can be exploited as part of an attack path (3.1.4)
+  source: >-
+    [SOURCE: ISO/IEC 27000:2018 [5], 3.77, modified -- The phrase "of an asset or control" has been omitted;
+    the phrase "by one or more threats" has been replaced by "as part of an attack path".]
+- id: 3.1.39
+  term: vulnerability analysis
+  page: 11
+  definition: >-
+    systematic identification and evaluation of vulnerabilities (3.1.38)
+- id: 3.1.40
+  term: weakness
+  page: 11
+  definition: >-
+    defect or characteristic that can lead to undesirable behaviour EXAMPLE 1 Missing requirement or specification.
+    EXAMPLE 2 Architectural or design flaw, including incorrect design of a security protocol. EXAMPLE
+    3 Implementation weakness, including hardware and software defect, incorrect implementation of a security
+    protocol. EXAMPLE 4 Flaw in the operational process or procedure, including misuse and inadequate
+    user training. EXAMPLE 5 Use of an outdated or deprecated function, including cryptographic algorithms.
+abbreviated_terms:
+- abbr: CAL
+  expansion: cybersecurity assurance level
+- abbr: CVSS
+  expansion: common vulnerability scoring system
+- abbr: E/E
+  expansion: electrical and electronic
+- abbr: ECU
+  expansion: electronic control unit
+- abbr: OBD
+  expansion: on-board diagnostic
+- abbr: OEM
+  expansion: original equipment manufacturer
+- abbr: PM
+  expansion: permission
+- abbr: RC
+  expansion: recommendation
+- abbr: RQ
+  expansion: requirement
+- abbr: RASIC
+  expansion: responsible, accountable, supporting, informed, consulted
+- abbr: TARA
+  expansion: threat analysis and risk assessment
+- abbr: WP
+  expansion: work product

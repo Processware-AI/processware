@@ -1,0 +1,797 @@
+standard_basis: [AutoCyberSec]   # ISO/SAE 21434:2021 — Road vehicles — Cybersecurity engineering
+generated_at: "2026-06-14T00:00:00Z"
+confirmed_at: "2026-06-14T00:00:00Z"
+
+# ---------------------------------------------------------------------------
+# 비고
+# - 본 파일은 ISO/SAE 21434:2021 인제스트 패키지(요건 118 / WP 42 / Clause 5-15)에서
+#   도출한 자동차 사이버보안 엔지니어링 업무 시나리오의 정규화 데이터다.
+# - selection: confirmed = 핵심 시나리오 / optional = 부가 시나리오(사람이 비활성 가능).
+# - 각 시나리오는 ISO/SAE 21434 의 실제 조항(standard_clauses)과 작업산출물(work_products)에
+#   추적 가능하다.
+# - 시각화 동반본: business_flow.md (동일 시나리오 ID·매핑 유지).
+# ---------------------------------------------------------------------------
+
+scenario_groups:
+  - id: SG-1
+    name: 거버넌스 체계 수립
+    sub_groups:
+      - id: SG-1-1
+        name: 사이버보안 거버넌스
+        scenarios: [SC-001, SC-002, SC-003, SC-004]
+  - id: SG-2
+    name: 프로젝트 사이버보안 관리
+    sub_groups:
+      - id: SG-2-1
+        name: 계획·테일러링
+        scenarios: [SC-005, SC-006]
+      - id: SG-2-2
+        name: 케이스·평가·릴리스
+        scenarios: [SC-007]
+  - id: SG-3
+    name: TARA 수행
+    sub_groups:
+      - id: SG-3-1
+        name: 위협분석·리스크평가
+        scenarios: [SC-008]
+  - id: SG-4
+    name: 컨셉·개발 보안 엔지니어링
+    sub_groups:
+      - id: SG-4-1
+        name: 컨셉
+        scenarios: [SC-009]
+      - id: SG-4-2
+        name: 제품 개발 (V-model)
+        scenarios: [SC-010]
+      - id: SG-4-3
+        name: 검증·생산
+        scenarios: [SC-011, SC-012]
+  - id: SG-5
+    name: 공급망 사이버보안
+    sub_groups:
+      - id: SG-5-1
+        name: 분산 사이버보안 활동
+        scenarios: [SC-013]
+  - id: SG-6
+    name: 지속적 활동·운영
+    sub_groups:
+      - id: SG-6-1
+        name: 모니터링·취약점
+        scenarios: [SC-014]
+      - id: SG-6-2
+        name: 사고대응·업데이트
+        scenarios: [SC-015, SC-016]
+  - id: SG-7
+    name: 종료·폐기
+    sub_groups:
+      - id: SG-7-1
+        name: 지원 종료·폐기
+        scenarios: [SC-017]
+
+summary:
+  total_scenarios: 17
+  confirmed: 13
+  optional: 4
+  category_coverage:
+    # 요구사항 카테고리(조항군) → 매핑 시나리오
+    "Clause 5 — Organizational management": [SC-001, SC-002, SC-003, SC-004]
+    "Clause 6 — Project management": [SC-005, SC-006, SC-007]
+    "Clause 7 — Distributed activities": [SC-013]
+    "Clause 8 — Continual activities": [SC-014]
+    "Clause 9 — Concept": [SC-009]
+    "Clause 10 — Product development": [SC-010]
+    "Clause 11 — Validation": [SC-011]
+    "Clause 12 — Production": [SC-012]
+    "Clause 13 — Operations & maintenance": [SC-015, SC-016]
+    "Clause 14 — End of support / decommissioning": [SC-017]
+    "Clause 15 — TARA methods": [SC-008]
+
+scenarios:
+  # =====================================================================
+  # SG-1 거버넌스 체계 수립 (Clause 5)
+  # =====================================================================
+  - id: SC-001
+    name: 조직 사이버보안 거버넌스·정책 수립
+    type: main
+    scope_type: common
+    selection: confirmed
+    standard_clauses: ["ISO/SAE 21434 §5.4.1"]
+    work_products: [WP-05-01]
+    mapped_requirements: [AutoCyberSec-05-RQ-01, AutoCyberSec-05-RQ-02, AutoCyberSec-05-RQ-03, AutoCyberSec-05-RQ-04, AutoCyberSec-05-RQ-05, AutoCyberSec-05-RQ-08, AutoCyberSec-05-RQ-09, AutoCyberSec-05-RC-10]
+    nodes:
+      - id: define_policy
+        label: 사이버보안 정책 정의 (리스크 인지+경영 의지)
+        type: core
+        standard_clause: "ISO/SAE 21434 §5.4.1 [RQ-05-01]"
+      - id: establish_rules
+        label: 규칙·프로세스 수립·유지
+        type: core
+        standard_clause: "ISO/SAE 21434 §5.4.1 [RQ-05-02]"
+      - id: assign_responsibility
+        label: 책임·권한 할당·전파
+        type: core
+        standard_clause: "ISO/SAE 21434 §5.4.1 [RQ-05-03]"
+      - id: provide_resources
+        label: 자원 제공
+        type: support
+        standard_clause: "ISO/SAE 21434 §5.4.1 [RQ-05-04]"
+      - id: integrate_disciplines
+        label: 인접 분야 식별·소통채널 수립
+        type: support
+        standard_clause: "ISO/SAE 21434 §5.4.1 [RQ-05-05]"
+      - id: continuous_improvement
+        label: 지속적 개선 프로세스 운영
+        type: support
+        standard_clause: "ISO/SAE 21434 §5.4.1 [RQ-05-08]"
+      - id: info_sharing_rules
+        label: 정보공유 조건 정의·정렬
+        type: support
+        standard_clause: "ISO/SAE 21434 §5.4.3 [RQ-05-09]"
+    edges:
+      - from: define_policy
+        to: establish_rules
+      - from: establish_rules
+        to: assign_responsibility
+      - from: assign_responsibility
+        to: provide_resources
+      - from: provide_resources
+        to: integrate_disciplines
+      - from: integrate_disciplines
+        to: continuous_improvement
+      - from: continuous_improvement
+        to: info_sharing_rules
+    mermaid: |
+      flowchart LR
+        A[사이버보안 정책 정의] --> B[규칙·프로세스 수립]
+        B --> C[책임·권한 할당]
+        C --> D[자원 제공]
+        D --> E[인접 분야 소통채널]
+        E --> F[지속적 개선]
+        F --> G[정보공유 조건 정의]
+
+  - id: SC-002
+    name: 사이버보안 문화·역량 관리
+    type: main
+    scope_type: common
+    selection: confirmed
+    standard_clauses: ["ISO/SAE 21434 §5.4.2"]
+    work_products: [WP-05-02]
+    mapped_requirements: [AutoCyberSec-05-RQ-06, AutoCyberSec-05-RQ-07]
+    nodes:
+      - id: foster_culture
+        label: 사이버보안 문화 조성·유지
+        type: core
+        standard_clause: "ISO/SAE 21434 §5.4.2 [RQ-05-06]"
+      - id: competence_mgmt
+        label: 역량·인식 보장 (역할 담당자)
+        type: core
+        standard_clause: "ISO/SAE 21434 §5.4.2 [RQ-05-07]"
+      - id: evidence_competence
+        label: 역량·인식 관리 증거화
+        type: support
+        standard_clause: "ISO/SAE 21434 §5.5 [WP-05-02]"
+    edges:
+      - from: foster_culture
+        to: competence_mgmt
+      - from: competence_mgmt
+        to: evidence_competence
+    mermaid: |
+      flowchart LR
+        A[사이버보안 문화 조성] --> B[역량·인식 보장]
+        B --> C[역량 관리 증거화]
+
+  - id: SC-003
+    name: 도구 관리·정보보안 관리
+    type: support
+    scope_type: common
+    selection: optional
+    standard_clauses: ["ISO/SAE 21434 §5.4.4", "ISO/SAE 21434 §5.4.5", "ISO/SAE 21434 §5.4.6"]
+    work_products: [WP-05-03, WP-05-04]
+    mapped_requirements: [AutoCyberSec-05-RQ-11, AutoCyberSec-05-RQ-12, AutoCyberSec-05-RC-13, AutoCyberSec-05-RQ-14, AutoCyberSec-05-RC-15, AutoCyberSec-05-RC-16]
+    nodes:
+      - id: qms
+        label: 품질경영시스템 운영 (변경·문서·형상·요구사항)
+        type: core
+        standard_clause: "ISO/SAE 21434 §5.4.4 [RQ-05-11]"
+      - id: config_retain
+        label: 형상정보 가용성 유지 (지원종료까지)
+        type: support
+        standard_clause: "ISO/SAE 21434 §5.4.4 [RQ-05-12]"
+      - id: tool_mgmt
+        label: 사이버보안 영향 도구 관리
+        type: core
+        standard_clause: "ISO/SAE 21434 §5.4.5 [RQ-05-14]"
+      - id: isms
+        label: 작업산출물 정보보안 관리 (ISMS)
+        type: support
+        standard_clause: "ISO/SAE 21434 §5.4.6 [RC-05-16]"
+    edges:
+      - from: qms
+        to: config_retain
+      - from: qms
+        to: tool_mgmt
+      - from: tool_mgmt
+        to: isms
+    mermaid: |
+      flowchart LR
+        A[품질경영시스템 운영] --> B[형상정보 가용성 유지]
+        A --> C[도구 관리]
+        C --> D[작업산출물 정보보안 관리]
+
+  - id: SC-004
+    name: 독립 조직 사이버보안 감사
+    type: main
+    scope_type: common
+    selection: confirmed
+    standard_clauses: ["ISO/SAE 21434 §5.4.7"]
+    work_products: [WP-05-05]
+    mapped_requirements: [AutoCyberSec-05-RQ-17]
+    nodes:
+      - id: plan_audit
+        label: 감사 계획 (독립성 확보)
+        type: support
+        standard_clause: "ISO/SAE 21434 §5.4.7 [RQ-05-17]"
+      - id: perform_audit
+        label: 조직 프로세스 적합성 감사 수행
+        type: core
+        standard_clause: "ISO/SAE 21434 §5.4.7 [RQ-05-17]"
+      - id: audit_report
+        label: 조직 사이버보안 감사 보고서
+        type: core
+        standard_clause: "ISO/SAE 21434 §5.5 [WP-05-05]"
+    edges:
+      - from: plan_audit
+        to: perform_audit
+      - from: perform_audit
+        to: audit_report
+    mermaid: |
+      flowchart LR
+        A[감사 계획·독립성] --> B[프로세스 적합성 감사]
+        B --> C[감사 보고서]
+
+  # =====================================================================
+  # SG-2 프로젝트 사이버보안 관리 (Clause 6)
+  # =====================================================================
+  - id: SC-005
+    name: 프로젝트 사이버보안 계획·테일러링
+    type: main
+    scope_type: project
+    selection: confirmed
+    standard_clauses: ["ISO/SAE 21434 §6.4.1", "ISO/SAE 21434 §6.4.2", "ISO/SAE 21434 §6.4.3"]
+    work_products: [WP-06-01]
+    mapped_requirements: [AutoCyberSec-06-RQ-01, AutoCyberSec-06-RQ-02, AutoCyberSec-06-RQ-03, AutoCyberSec-06-RQ-04, AutoCyberSec-06-RQ-05, AutoCyberSec-06-RQ-06, AutoCyberSec-06-RQ-07, AutoCyberSec-06-PM-08, AutoCyberSec-06-RQ-09, AutoCyberSec-06-RQ-10, AutoCyberSec-06-RQ-11, AutoCyberSec-06-RQ-12, AutoCyberSec-06-PM-13, AutoCyberSec-06-RQ-14]
+    nodes:
+      - id: assign_proj_resp
+        label: 프로젝트 사이버보안 책임 할당
+        type: support
+        standard_clause: "ISO/SAE 21434 §6.4.1 [RQ-06-01]"
+      - id: relevance_analysis
+        label: 사이버보안 관련성·신규/재사용 분석
+        type: core
+        standard_clause: "ISO/SAE 21434 §6.4.2 [RQ-06-02]"
+      - id: build_cs_plan
+        label: 사이버보안 계획 수립 (목표·의존·자원·WP)
+        type: core
+        standard_clause: "ISO/SAE 21434 §6.4.2 [RQ-06-03]"
+      - id: tailoring
+        label: 활동 테일러링·근거 검토
+        type: support
+        standard_clause: "ISO/SAE 21434 §6.4.3 [RQ-06-14]"
+      - id: maintain_plan
+        label: 계획 갱신·형상/문서 관리
+        type: support
+        standard_clause: "ISO/SAE 21434 §6.4.2 [RQ-06-07]"
+    edges:
+      - from: assign_proj_resp
+        to: relevance_analysis
+      - from: relevance_analysis
+        to: build_cs_plan
+      - from: build_cs_plan
+        to: tailoring
+      - from: tailoring
+        to: maintain_plan
+    mermaid: |
+      flowchart LR
+        A[프로젝트 책임 할당] --> B[관련성·신규/재사용 분석]
+        B --> C[사이버보안 계획 수립]
+        C --> D[테일러링·근거 검토]
+        D --> E[계획 갱신·형상관리]
+
+  - id: SC-006
+    name: 재사용·OTS·out-of-context 컴포넌트 분석
+    type: main
+    scope_type: project
+    selection: optional
+    standard_clauses: ["ISO/SAE 21434 §6.4.4", "ISO/SAE 21434 §6.4.5", "ISO/SAE 21434 §6.4.6"]
+    work_products: [WP-06-01]
+    mapped_requirements: [AutoCyberSec-06-RQ-15, AutoCyberSec-06-RQ-16, AutoCyberSec-06-RQ-17, AutoCyberSec-06-RQ-18, AutoCyberSec-06-RQ-19, AutoCyberSec-06-RQ-20, AutoCyberSec-06-RQ-21, AutoCyberSec-06-RQ-22]
+    nodes:
+      - id: reuse_analysis
+        label: 재사용 분석 (변경·영향·누락 WP 식별)
+        type: core
+        standard_clause: "ISO/SAE 21434 §6.4.4 [RQ-06-15]"
+      - id: ooc_assumptions
+        label: out-of-context 가정 문서화·검증
+        type: core
+        standard_clause: "ISO/SAE 21434 §6.4.5 [RQ-06-18]"
+      - id: ots_integration
+        label: OTS 컴포넌트 문서 수집·충족성 분석
+        type: core
+        standard_clause: "ISO/SAE 21434 §6.4.6 [RQ-06-21]"
+      - id: identify_gap_activities
+        label: 부족 시 추가 활동 식별·수행
+        type: support
+        standard_clause: "ISO/SAE 21434 §6.4.6 [RQ-06-22]"
+    edges:
+      - from: reuse_analysis
+        to: ooc_assumptions
+      - from: ooc_assumptions
+        to: ots_integration
+      - from: ots_integration
+        to: identify_gap_activities
+    mermaid: |
+      flowchart LR
+        A[재사용 분석] --> B[out-of-context 가정 검증]
+        B --> C[OTS 문서 충족성 분석]
+        C --> D[부족 시 추가 활동]
+
+  - id: SC-007
+    name: Cybersecurity case·평가·post-development 릴리스
+    type: main
+    scope_type: project
+    selection: confirmed
+    standard_clauses: ["ISO/SAE 21434 §6.4.7", "ISO/SAE 21434 §6.4.8", "ISO/SAE 21434 §6.4.9"]
+    work_products: [WP-06-02, WP-06-03, WP-06-04]
+    mapped_requirements: [AutoCyberSec-06-RQ-23, AutoCyberSec-06-RQ-24, AutoCyberSec-06-RQ-25, AutoCyberSec-06-RQ-26, AutoCyberSec-06-RQ-27, AutoCyberSec-06-RQ-28, AutoCyberSec-06-PM-29, AutoCyberSec-06-RQ-30, AutoCyberSec-06-RQ-31, AutoCyberSec-06-RQ-32, AutoCyberSec-06-RQ-33, AutoCyberSec-06-RQ-34]
+    nodes:
+      - id: create_cs_case
+        label: Cybersecurity case 작성 (논거+WP)
+        type: core
+        standard_clause: "ISO/SAE 21434 §6.4.7 [RQ-06-23]"
+      - id: assess_decision
+        label: 평가 수행 여부 결정 (리스크기반·독립검토)
+        type: support
+        standard_clause: "ISO/SAE 21434 §6.4.8 [RQ-06-24]"
+      - id: cs_assessment
+        label: 독립 사이버보안 평가 수행
+        type: core
+        standard_clause: "ISO/SAE 21434 §6.4.8 [RQ-06-26]"
+      - id: assessment_report
+        label: 평가 보고서 (수용/조건부/거부 권고)
+        type: core
+        standard_clause: "ISO/SAE 21434 §6.4.8 [RQ-06-31]"
+      - id: release_post_dev
+        label: post-development 릴리스 (조건 충족)
+        type: core
+        standard_clause: "ISO/SAE 21434 §6.4.9 [RQ-06-34]"
+    edges:
+      - from: create_cs_case
+        to: assess_decision
+      - from: assess_decision
+        to: cs_assessment
+      - from: cs_assessment
+        to: assessment_report
+      - from: assessment_report
+        to: release_post_dev
+    mermaid: |
+      flowchart LR
+        A[Cybersecurity case 작성] --> B[평가 수행 여부 결정]
+        B --> C[독립 사이버보안 평가]
+        C --> D[평가 보고서·권고]
+        D --> E[post-development 릴리스]
+
+  # =====================================================================
+  # SG-3 TARA 수행 (Clause 15)
+  # =====================================================================
+  - id: SC-008
+    name: TARA 풀 사이클 (자산→위협→영향→공격경로→타당성→리스크값→처리)
+    type: main
+    scope_type: project
+    selection: confirmed
+    standard_clauses: ["ISO/SAE 21434 §15.3", "ISO/SAE 21434 §15.4", "ISO/SAE 21434 §15.5", "ISO/SAE 21434 §15.6", "ISO/SAE 21434 §15.7", "ISO/SAE 21434 §15.8", "ISO/SAE 21434 §15.9"]
+    work_products: [WP-15-01, WP-15-02, WP-15-03, WP-15-04, WP-15-05, WP-15-06, WP-15-07, WP-15-08]
+    mapped_requirements: [AutoCyberSec-15-RQ-01, AutoCyberSec-15-RQ-02, AutoCyberSec-15-RQ-03, AutoCyberSec-15-RQ-04, AutoCyberSec-15-RQ-05, AutoCyberSec-15-RQ-06, AutoCyberSec-15-PM-07, AutoCyberSec-15-RQ-08, AutoCyberSec-15-RQ-09, AutoCyberSec-15-RQ-10, AutoCyberSec-15-RC-11, AutoCyberSec-15-RC-12, AutoCyberSec-15-RC-13, AutoCyberSec-15-RC-14, AutoCyberSec-15-RQ-15, AutoCyberSec-15-RQ-16, AutoCyberSec-15-RQ-17]
+    nodes:
+      - id: asset_identification
+        label: 자산 식별 (피해 시나리오·CS 속성)
+        type: core
+        standard_clause: "ISO/SAE 21434 §15.3 [RQ-15-01,02]"
+      - id: threat_scenario
+        label: 위협 시나리오 식별
+        type: core
+        standard_clause: "ISO/SAE 21434 §15.4 [RQ-15-03]"
+      - id: impact_rating
+        label: 영향 평가 (S/F/O/P 4등급)
+        type: core
+        standard_clause: "ISO/SAE 21434 §15.5 [RQ-15-04,05]"
+      - id: attack_path
+        label: 공격 경로 분석
+        type: core
+        standard_clause: "ISO/SAE 21434 §15.6 [RQ-15-08,09]"
+      - id: attack_feasibility
+        label: 공격 타당성 평가 (Table 1)
+        type: core
+        standard_clause: "ISO/SAE 21434 §15.7 [RQ-15-10]"
+      - id: risk_value
+        label: 리스크값 결정 (1-5)
+        type: core
+        standard_clause: "ISO/SAE 21434 §15.8 [RQ-15-15,16]"
+      - id: risk_treatment
+        label: 리스크 처리 결정 (회피/감소/공유/보유)
+        type: core
+        standard_clause: "ISO/SAE 21434 §15.9 [RQ-15-17]"
+    edges:
+      - from: asset_identification
+        to: threat_scenario
+      - from: threat_scenario
+        to: impact_rating
+      - from: impact_rating
+        to: attack_path
+      - from: attack_path
+        to: attack_feasibility
+      - from: attack_feasibility
+        to: risk_value
+      - from: risk_value
+        to: risk_treatment
+    mermaid: |
+      flowchart LR
+        A[자산 식별] --> B[위협 시나리오 식별]
+        B --> C[영향 평가 S/F/O/P]
+        C --> D[공격 경로 분석]
+        D --> E[공격 타당성 평가]
+        E --> F[리스크값 결정 1-5]
+        F --> G[리스크 처리 결정]
+
+  # =====================================================================
+  # SG-4 컨셉·개발 보안 엔지니어링 (Clause 9-12)
+  # =====================================================================
+  - id: SC-009
+    name: 아이템 정의·사이버보안 목표·컨셉 수립
+    type: main
+    scope_type: project
+    selection: confirmed
+    standard_clauses: ["ISO/SAE 21434 §9.3", "ISO/SAE 21434 §9.4", "ISO/SAE 21434 §9.5"]
+    work_products: [WP-09-01, WP-09-02, WP-09-03, WP-09-04, WP-09-05, WP-09-06, WP-09-07]
+    mapped_requirements: [AutoCyberSec-09-RQ-01, AutoCyberSec-09-RQ-02, AutoCyberSec-09-RQ-03, AutoCyberSec-09-RQ-04, AutoCyberSec-09-RQ-05, AutoCyberSec-09-RQ-06, AutoCyberSec-09-RQ-07, AutoCyberSec-09-RQ-08, AutoCyberSec-09-RQ-09, AutoCyberSec-09-RQ-10, AutoCyberSec-09-RQ-11]
+    nodes:
+      - id: item_definition
+        label: 아이템 정의 (경계·기능·예비아키텍처)
+        type: core
+        standard_clause: "ISO/SAE 21434 §9.3 [RQ-09-01,02]"
+      - id: run_tara
+        label: TARA 수행 (→ SC-008)
+        type: core
+        standard_clause: "ISO/SAE 21434 §9.4 [RQ-09-03]"
+      - id: cs_goals
+        label: 사이버보안 목표·클레임 도출
+        type: core
+        standard_clause: "ISO/SAE 21434 §9.4 [RQ-09-05,06]"
+      - id: verify_goals
+        label: 목표·클레임 검증
+        type: support
+        standard_clause: "ISO/SAE 21434 §9.4 [RQ-09-07]"
+      - id: cs_concept
+        label: 사이버보안 컨셉·통제·요구사항 정의
+        type: core
+        standard_clause: "ISO/SAE 21434 §9.5 [RQ-09-08,09,10]"
+      - id: verify_concept
+        label: 컨셉 검증
+        type: support
+        standard_clause: "ISO/SAE 21434 §9.5 [RQ-09-11]"
+    edges:
+      - from: item_definition
+        to: run_tara
+      - from: run_tara
+        to: cs_goals
+      - from: cs_goals
+        to: verify_goals
+      - from: verify_goals
+        to: cs_concept
+      - from: cs_concept
+        to: verify_concept
+    mermaid: |
+      flowchart LR
+        A[아이템 정의] --> B[TARA 수행]
+        B --> C[사이버보안 목표·클레임]
+        C --> D[목표·클레임 검증]
+        D --> E[사이버보안 컨셉·요구사항]
+        E --> F[컨셉 검증]
+
+  - id: SC-010
+    name: 보안 설계·구현·통합·검증 (V-model)
+    type: main
+    scope_type: project
+    selection: confirmed
+    standard_clauses: ["ISO/SAE 21434 §10.4.1", "ISO/SAE 21434 §10.4.2"]
+    work_products: [WP-10-01, WP-10-02, WP-10-03, WP-10-04, WP-10-05, WP-10-06, WP-10-07]
+    mapped_requirements: [AutoCyberSec-10-RQ-01, AutoCyberSec-10-RQ-02, AutoCyberSec-10-RQ-03, AutoCyberSec-10-RQ-04, AutoCyberSec-10-RQ-05, AutoCyberSec-10-RC-06, AutoCyberSec-10-RQ-07, AutoCyberSec-10-RQ-08, AutoCyberSec-10-RQ-09, AutoCyberSec-10-RQ-10, AutoCyberSec-10-RQ-11, AutoCyberSec-10-RC-12, AutoCyberSec-10-RQ-13]
+    nodes:
+      - id: define_cs_spec
+        label: 사이버보안 사양 정의·할당
+        type: core
+        standard_clause: "ISO/SAE 21434 §10.4.1 [RQ-10-01,02]"
+      - id: design_principles
+        label: 설계·구현 원칙·언어 기준 적용
+        type: support
+        standard_clause: "ISO/SAE 21434 §10.4.1 [RQ-10-04,05]"
+      - id: weakness_analysis
+        label: 아키텍처 약점 분석
+        type: core
+        standard_clause: "ISO/SAE 21434 §10.4.1 [RQ-10-07]"
+      - id: verify_spec
+        label: 사양 검증
+        type: support
+        standard_clause: "ISO/SAE 21434 §10.4.1 [RQ-10-08]"
+      - id: integration_verification
+        label: 통합·검증 (사양 충족 확인)
+        type: core
+        standard_clause: "ISO/SAE 21434 §10.4.2 [RQ-10-09,10]"
+      - id: test_coverage
+        label: 테스트 커버리지 평가·취약점 테스트
+        type: core
+        standard_clause: "ISO/SAE 21434 §10.4.2 [RQ-10-11,RC-10-12]"
+    edges:
+      - from: define_cs_spec
+        to: design_principles
+      - from: design_principles
+        to: weakness_analysis
+      - from: weakness_analysis
+        to: verify_spec
+      - from: verify_spec
+        to: integration_verification
+      - from: integration_verification
+        to: test_coverage
+    mermaid: |
+      flowchart LR
+        A[사이버보안 사양 정의] --> B[설계·구현 원칙 적용]
+        B --> C[아키텍처 약점 분석]
+        C --> D[사양 검증]
+        D --> E[통합·검증]
+        E --> F[테스트 커버리지·취약점 테스트]
+
+  - id: SC-011
+    name: 차량 수준 사이버보안 검증 (Validation)
+    type: main
+    scope_type: project
+    selection: confirmed
+    standard_clauses: ["ISO/SAE 21434 §11.4"]
+    work_products: [WP-11-01]
+    mapped_requirements: [AutoCyberSec-11-RQ-01, AutoCyberSec-11-RQ-02]
+    nodes:
+      - id: select_validation
+        label: 검증 활동 선정·근거
+        type: support
+        standard_clause: "ISO/SAE 21434 §11.4 [RQ-11-02]"
+      - id: vehicle_validation
+        label: 차량 수준 검증 (목표·클레임·환경요구 확인)
+        type: core
+        standard_clause: "ISO/SAE 21434 §11.4 [RQ-11-01]"
+      - id: validation_report
+        label: 검증 보고서
+        type: core
+        standard_clause: "ISO/SAE 21434 §11.5 [WP-11-01]"
+    edges:
+      - from: select_validation
+        to: vehicle_validation
+      - from: vehicle_validation
+        to: validation_report
+    mermaid: |
+      flowchart LR
+        A[검증 활동 선정·근거] --> B[차량 수준 검증]
+        B --> C[검증 보고서]
+
+  - id: SC-012
+    name: 생산 통제 계획 수립·이행
+    type: main
+    scope_type: org
+    selection: confirmed
+    standard_clauses: ["ISO/SAE 21434 §12.4"]
+    work_products: [WP-12-01]
+    mapped_requirements: [AutoCyberSec-12-RQ-01, AutoCyberSec-12-RQ-02, AutoCyberSec-12-RQ-03]
+    nodes:
+      - id: create_production_plan
+        label: 생산 통제 계획 작성 (post-dev 요구 반영)
+        type: core
+        standard_clause: "ISO/SAE 21434 §12.4 [RQ-12-01,02]"
+      - id: production_controls
+        label: 무단 변경 방지 통제 정의
+        type: support
+        standard_clause: "ISO/SAE 21434 §12.4 [RQ-12-02]"
+      - id: implement_plan
+        label: 생산 통제 계획 이행
+        type: core
+        standard_clause: "ISO/SAE 21434 §12.4 [RQ-12-03]"
+    edges:
+      - from: create_production_plan
+        to: production_controls
+      - from: production_controls
+        to: implement_plan
+    mermaid: |
+      flowchart LR
+        A[생산 통제 계획 작성] --> B[무단 변경 방지 통제]
+        B --> C[생산 통제 계획 이행]
+
+  # =====================================================================
+  # SG-5 공급망 사이버보안 (Clause 7)
+  # =====================================================================
+  - id: SC-013
+    name: 공급자 역량평가·RFQ·인터페이스 합의(CIA)
+    type: main
+    scope_type: org
+    selection: confirmed
+    standard_clauses: ["ISO/SAE 21434 §7.4.1", "ISO/SAE 21434 §7.4.2", "ISO/SAE 21434 §7.4.3"]
+    work_products: [WP-07-01]
+    mapped_requirements: [AutoCyberSec-07-RQ-01, AutoCyberSec-07-RC-02, AutoCyberSec-07-RQ-03, AutoCyberSec-07-RQ-04, AutoCyberSec-07-RC-05, AutoCyberSec-07-RQ-06, AutoCyberSec-07-RQ-07, AutoCyberSec-07-RC-08]
+    nodes:
+      - id: evaluate_supplier
+        label: 공급자 역량 평가
+        type: core
+        standard_clause: "ISO/SAE 21434 §7.4.1 [RQ-07-01]"
+      - id: rfq
+        label: RFQ 발행 (적합 요청+CS 목표/요구)
+        type: core
+        standard_clause: "ISO/SAE 21434 §7.4.2 [RQ-07-03]"
+      - id: interface_agreement
+        label: 사이버보안 인터페이스 합의 (CIA) 체결
+        type: core
+        standard_clause: "ISO/SAE 21434 §7.4.3 [RQ-07-04]"
+      - id: align_responsibilities
+        label: 책임 분배·이슈 통지 (RACI)
+        type: support
+        standard_clause: "ISO/SAE 21434 §7.4.3 [RQ-07-06,07]"
+    edges:
+      - from: evaluate_supplier
+        to: rfq
+      - from: rfq
+        to: interface_agreement
+      - from: interface_agreement
+        to: align_responsibilities
+    mermaid: |
+      flowchart LR
+        A[공급자 역량 평가] --> B[RFQ 발행]
+        B --> C[인터페이스 합의 CIA]
+        C --> D[책임 분배·이슈 통지]
+
+  # =====================================================================
+  # SG-6 지속적 활동·운영 (Clause 8, 13)
+  # =====================================================================
+  - id: SC-014
+    name: 지속적 모니터링·이벤트 평가·취약점 분석·관리
+    type: main
+    scope_type: common
+    selection: confirmed
+    standard_clauses: ["ISO/SAE 21434 §8.3", "ISO/SAE 21434 §8.4", "ISO/SAE 21434 §8.5", "ISO/SAE 21434 §8.6"]
+    work_products: [WP-08-01, WP-08-02, WP-08-03, WP-08-04, WP-08-05, WP-08-06]
+    mapped_requirements: [AutoCyberSec-08-RQ-01, AutoCyberSec-08-RQ-02, AutoCyberSec-08-RQ-03, AutoCyberSec-08-RQ-04, AutoCyberSec-08-RQ-05, AutoCyberSec-08-RQ-06, AutoCyberSec-08-RQ-07, AutoCyberSec-08-RQ-08]
+    nodes:
+      - id: select_sources
+        label: 정보원 선정·트리거 정의
+        type: support
+        standard_clause: "ISO/SAE 21434 §8.3 [RQ-08-01,02]"
+      - id: monitor_triage
+        label: 정보 수집·트리아지 → 이벤트 판별
+        type: core
+        standard_clause: "ISO/SAE 21434 §8.3 [RQ-08-03]"
+      - id: event_evaluation
+        label: 이벤트 평가 → 약점 식별
+        type: core
+        standard_clause: "ISO/SAE 21434 §8.4 [RQ-08-04]"
+      - id: vuln_analysis
+        label: 약점 분석 → 취약점 식별
+        type: core
+        standard_clause: "ISO/SAE 21434 §8.5 [RQ-08-05]"
+      - id: vuln_management
+        label: 취약점 관리 (TARA 처리 or 즉시 제거)
+        type: core
+        standard_clause: "ISO/SAE 21434 §8.6 [RQ-08-07]"
+      - id: trigger_incident
+        label: 필요 시 사고대응 연계 (→ SC-015)
+        type: support
+        standard_clause: "ISO/SAE 21434 §8.6 [RQ-08-08]"
+    edges:
+      - from: select_sources
+        to: monitor_triage
+      - from: monitor_triage
+        to: event_evaluation
+      - from: event_evaluation
+        to: vuln_analysis
+      - from: vuln_analysis
+        to: vuln_management
+      - from: vuln_management
+        to: trigger_incident
+    mermaid: |
+      flowchart LR
+        A[정보원 선정·트리거] --> B[수집·트리아지→이벤트]
+        B --> C[이벤트 평가→약점]
+        C --> D[약점 분석→취약점]
+        D --> E[취약점 관리]
+        E --> F[사고대응 연계]
+
+  - id: SC-015
+    name: 사이버보안 사고 대응
+    type: exception
+    scope_type: project
+    selection: confirmed
+    standard_clauses: ["ISO/SAE 21434 §13.3"]
+    work_products: [WP-13-01]
+    mapped_requirements: [AutoCyberSec-13-RQ-01, AutoCyberSec-13-RQ-02]
+    nodes:
+      - id: create_incident_plan
+        label: 사고 대응 계획 작성 (조치·소통·책임·종료기준)
+        type: core
+        standard_clause: "ISO/SAE 21434 §13.3 [RQ-13-01]"
+      - id: implement_incident_plan
+        label: 사고 대응 계획 이행
+        type: core
+        standard_clause: "ISO/SAE 21434 §13.3 [RQ-13-02]"
+      - id: incident_closure
+        label: 진척 모니터링·종료
+        type: support
+        standard_clause: "ISO/SAE 21434 §13.3 [RQ-13-01 f,g]"
+    edges:
+      - from: create_incident_plan
+        to: implement_incident_plan
+      - from: implement_incident_plan
+        to: incident_closure
+    mermaid: |
+      flowchart LR
+        A[사고 대응 계획 작성] --> B[사고 대응 계획 이행]
+        B --> C[진척 모니터링·종료]
+
+  - id: SC-016
+    name: 업데이트 개발·배포
+    type: main
+    scope_type: project
+    selection: optional
+    standard_clauses: ["ISO/SAE 21434 §13.4"]
+    work_products: []
+    mapped_requirements: [AutoCyberSec-13-RQ-03]
+    nodes:
+      - id: develop_update
+        label: 업데이트·업데이트 역량 개발 (본 표준 준거)
+        type: core
+        standard_clause: "ISO/SAE 21434 §13.4 [RQ-13-03]"
+      - id: validate_update
+        label: 업데이트 검증 (개발 프로세스 재적용)
+        type: support
+        standard_clause: "ISO/SAE 21434 §13.4 [RQ-13-03]"
+      - id: deploy_update
+        label: 업데이트 배포
+        type: core
+        standard_clause: "ISO/SAE 21434 §13.4 [RQ-13-03]"
+    edges:
+      - from: develop_update
+        to: validate_update
+      - from: validate_update
+        to: deploy_update
+    mermaid: |
+      flowchart LR
+        A[업데이트 개발] --> B[업데이트 검증]
+        B --> C[업데이트 배포]
+
+  # =====================================================================
+  # SG-7 종료·폐기 (Clause 14)
+  # =====================================================================
+  - id: SC-017
+    name: 사이버보안 지원 종료·폐기
+    type: exception
+    scope_type: org
+    selection: optional
+    standard_clauses: ["ISO/SAE 21434 §14.3", "ISO/SAE 21434 §14.4"]
+    work_products: [WP-14-01]
+    mapped_requirements: [AutoCyberSec-14-RQ-01, AutoCyberSec-14-RQ-02]
+    nodes:
+      - id: end_support_procedure
+        label: 지원 종료 통보 절차 수립
+        type: core
+        standard_clause: "ISO/SAE 21434 §14.3 [RQ-14-01]"
+      - id: decommission_requirements
+        label: 폐기 관련 post-dev 요구사항 제공
+        type: core
+        standard_clause: "ISO/SAE 21434 §14.4 [RQ-14-02]"
+    edges:
+      - from: end_support_procedure
+        to: decommission_requirements
+    mermaid: |
+      flowchart LR
+        A[지원 종료 통보 절차] --> B[폐기 관련 요구사항 제공]

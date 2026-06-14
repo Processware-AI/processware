@@ -1,0 +1,50 @@
+standard_id: AutoCyberSec
+full_name: "ISO/SAE 21434:2021 — Road vehicles — Cybersecurity engineering"
+version: "2021"
+source_file: sources/ISO_SAE_21434_2021(en).pdf
+source_hash: "sha256:79d188172b9ba1971f7ac24f79aab2d58617ad28e4ce2f341d0e2dbc43dfe9ef"
+category: "01_표준원문"
+mode: new
+overall_status: done
+current_phase: handoff
+started_at: "2026-06-14"
+confirmed_at: "2026-06-14"
+ocr_processed: false
+extraction_tool: "pdftotext -layout (poppler) + pdfplumber"
+phases:
+  intake: done
+  extraction: done
+  parsing: done
+  mining: done
+  classification: done
+  traceability: done
+  qa: done
+  handoff: done
+counts:
+  clauses: 11          # 규범 조항 그룹 (Clause 5-15)
+  structure_nodes: 15  # root clauses (1-15)
+  requirements: 118
+  normative: 101       # RQ (shall)
+  recommendation: 13   # RC (should)
+  permission: 4        # PM (may)
+  definitions: 40
+  abbreviations: 12
+  work_products: 42
+  annexes: 8           # A-H, all informative
+  flagged_and_reviewed: 6
+qa_summary:
+  id_sequence_gaps: 0
+  informative_leakage: 0
+  compound_unsplit: 0
+  unclassified: 0
+  extraction_failed_pages: 0
+review:
+  all_checkboxes_completed: true
+  applied_edits:
+    - "AutoCyberSec-15-RQ-10: restored dropped 'Table 1' reference"
+  accepted_as_is:
+    - "Prerequisites 18건은 입력 의존성 선언으로 요건 ID 미부여 — 현행 유지"
+    - "Clause 1-4 요건 0건 정상 (도입부)"
+    - "PM 4건 type=permission / obligation=may 유지"
+    - "role/evidence 분류 휴리스틱 승인"
+next_action: "/process-plan 또는 추가 표준 ingest"

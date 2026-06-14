@@ -1,0 +1,163 @@
+matrix:
+- clause: '05'
+  clause_title: Organizational cybersecurity management
+  requirement_count: 17
+  requirement_ids:
+  - AutoCyberSec-05-RQ-01
+  - AutoCyberSec-05-RQ-02
+  - AutoCyberSec-05-RQ-03
+  - AutoCyberSec-05-RQ-04
+  - AutoCyberSec-05-RQ-05
+  - AutoCyberSec-05-RQ-06
+  - AutoCyberSec-05-RQ-07
+  - AutoCyberSec-05-RQ-08
+  - AutoCyberSec-05-RQ-09
+  - AutoCyberSec-05-RC-10
+  - AutoCyberSec-05-RQ-11
+  - AutoCyberSec-05-RQ-12
+  - AutoCyberSec-05-RC-13
+  - AutoCyberSec-05-RQ-14
+  - AutoCyberSec-05-RC-15
+  - AutoCyberSec-05-RC-16
+  - AutoCyberSec-05-RQ-17
+- clause: '06'
+  clause_title: Project dependent cybersecurity management
+  requirement_count: 34
+  requirement_ids:
+  - AutoCyberSec-06-RQ-01
+  - AutoCyberSec-06-RQ-02
+  - AutoCyberSec-06-RQ-03
+  - AutoCyberSec-06-RQ-04
+  - AutoCyberSec-06-RQ-05
+  - AutoCyberSec-06-RQ-06
+  - AutoCyberSec-06-RQ-07
+  - AutoCyberSec-06-PM-08
+  - AutoCyberSec-06-RQ-09
+  - AutoCyberSec-06-RQ-10
+  - AutoCyberSec-06-RQ-11
+  - AutoCyberSec-06-RQ-12
+  - AutoCyberSec-06-PM-13
+  - AutoCyberSec-06-RQ-14
+  - AutoCyberSec-06-RQ-15
+  - AutoCyberSec-06-RQ-16
+  - AutoCyberSec-06-RQ-17
+  - AutoCyberSec-06-RQ-18
+  - AutoCyberSec-06-RQ-19
+  - AutoCyberSec-06-RQ-20
+  - AutoCyberSec-06-RQ-21
+  - AutoCyberSec-06-RQ-22
+  - AutoCyberSec-06-RQ-23
+  - AutoCyberSec-06-RQ-24
+  - AutoCyberSec-06-RQ-25
+  - AutoCyberSec-06-RQ-26
+  - AutoCyberSec-06-RQ-27
+  - AutoCyberSec-06-RQ-28
+  - AutoCyberSec-06-PM-29
+  - AutoCyberSec-06-RQ-30
+  - AutoCyberSec-06-RQ-31
+  - AutoCyberSec-06-RQ-32
+  - AutoCyberSec-06-RQ-33
+  - AutoCyberSec-06-RQ-34
+- clause: '07'
+  clause_title: Distributed cybersecurity activities
+  requirement_count: 8
+  requirement_ids:
+  - AutoCyberSec-07-RQ-01
+  - AutoCyberSec-07-RC-02
+  - AutoCyberSec-07-RQ-03
+  - AutoCyberSec-07-RQ-04
+  - AutoCyberSec-07-RC-05
+  - AutoCyberSec-07-RQ-06
+  - AutoCyberSec-07-RQ-07
+  - AutoCyberSec-07-RC-08
+- clause: 08
+  clause_title: Continual cybersecurity activities
+  requirement_count: 8
+  requirement_ids:
+  - AutoCyberSec-08-RQ-01
+  - AutoCyberSec-08-RQ-02
+  - AutoCyberSec-08-RQ-03
+  - AutoCyberSec-08-RQ-04
+  - AutoCyberSec-08-RQ-05
+  - AutoCyberSec-08-RQ-06
+  - AutoCyberSec-08-RQ-07
+  - AutoCyberSec-08-RQ-08
+- clause: 09
+  clause_title: Concept
+  requirement_count: 11
+  requirement_ids:
+  - AutoCyberSec-09-RQ-01
+  - AutoCyberSec-09-RQ-02
+  - AutoCyberSec-09-RQ-03
+  - AutoCyberSec-09-RQ-04
+  - AutoCyberSec-09-RQ-05
+  - AutoCyberSec-09-RQ-06
+  - AutoCyberSec-09-RQ-07
+  - AutoCyberSec-09-RQ-08
+  - AutoCyberSec-09-RQ-09
+  - AutoCyberSec-09-RQ-10
+  - AutoCyberSec-09-RQ-11
+- clause: '10'
+  clause_title: Product development
+  requirement_count: 13
+  requirement_ids:
+  - AutoCyberSec-10-RQ-01
+  - AutoCyberSec-10-RQ-02
+  - AutoCyberSec-10-RQ-03
+  - AutoCyberSec-10-RQ-04
+  - AutoCyberSec-10-RQ-05
+  - AutoCyberSec-10-RC-06
+  - AutoCyberSec-10-RQ-07
+  - AutoCyberSec-10-RQ-08
+  - AutoCyberSec-10-RQ-09
+  - AutoCyberSec-10-RQ-10
+  - AutoCyberSec-10-RQ-11
+  - AutoCyberSec-10-RC-12
+  - AutoCyberSec-10-RQ-13
+- clause: '11'
+  clause_title: Cybersecurity validation
+  requirement_count: 2
+  requirement_ids:
+  - AutoCyberSec-11-RQ-01
+  - AutoCyberSec-11-RQ-02
+- clause: '12'
+  clause_title: Production
+  requirement_count: 3
+  requirement_ids:
+  - AutoCyberSec-12-RQ-01
+  - AutoCyberSec-12-RQ-02
+  - AutoCyberSec-12-RQ-03
+- clause: '13'
+  clause_title: Operations and maintenance
+  requirement_count: 3
+  requirement_ids:
+  - AutoCyberSec-13-RQ-01
+  - AutoCyberSec-13-RQ-02
+  - AutoCyberSec-13-RQ-03
+- clause: '14'
+  clause_title: End of cybersecurity support and decommissioning
+  requirement_count: 2
+  requirement_ids:
+  - AutoCyberSec-14-RQ-01
+  - AutoCyberSec-14-RQ-02
+- clause: '15'
+  clause_title: Threat analysis and risk assessment methods
+  requirement_count: 17
+  requirement_ids:
+  - AutoCyberSec-15-RQ-01
+  - AutoCyberSec-15-RQ-02
+  - AutoCyberSec-15-RQ-03
+  - AutoCyberSec-15-RQ-04
+  - AutoCyberSec-15-RQ-05
+  - AutoCyberSec-15-RQ-06
+  - AutoCyberSec-15-PM-07
+  - AutoCyberSec-15-RQ-08
+  - AutoCyberSec-15-RQ-09
+  - AutoCyberSec-15-RQ-10
+  - AutoCyberSec-15-RC-11
+  - AutoCyberSec-15-RC-12
+  - AutoCyberSec-15-RC-13
+  - AutoCyberSec-15-RC-14
+  - AutoCyberSec-15-RQ-15
+  - AutoCyberSec-15-RQ-16
+  - AutoCyberSec-15-RQ-17

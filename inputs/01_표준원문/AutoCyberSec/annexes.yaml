@@ -1,0 +1,213 @@
+standard_id: AutoCyberSec
+note: All annexes A-H are informative (guidance/examples). No normative requirements originate in annexes;
+  requirement IDs appearing in annexes are cross-references to clauses 5-15.
+annexes:
+- id: Annex A
+  type: informative
+  title: Summary of cybersecurity activities and work products
+  page: 56
+  normative: false
+- id: Annex B
+  type: informative
+  title: Examples of cybersecurity culture
+  page: 58
+  normative: false
+- id: Annex C
+  type: informative
+  title: Example of cybersecurity interface agreement template
+  page: 60
+  normative: false
+- id: Annex D
+  type: informative
+  title: Cybersecurity relevance — example methods and criteria
+  page: 62
+  normative: false
+- id: Annex E
+  type: informative
+  title: Cybersecurity assurance levels (CAL)
+  page: 64
+  normative: false
+- id: Annex F
+  type: informative
+  title: Guidelines for impact rating
+  page: 69
+  normative: false
+- id: Annex G
+  type: informative
+  title: Guidelines for attack feasibility rating
+  page: 71
+  normative: false
+- id: Annex H
+  type: informative
+  title: Examples of application of TARA methods — headlamp system
+  page: 77
+  normative: false
+work_products:
+- id: WP-05-01
+  clause: '05'
+  description: Cybersecurity policy, rules and processes
+  page: 18
+- id: WP-05-02
+  clause: '05'
+  description: Evidence of competence management, awareness management
+  page: 18
+- id: WP-05-03
+  clause: '05'
+  description: Evidence of the organization's management systems
+  page: 18
+- id: WP-05-04
+  clause: '05'
+  description: Evidence of tool management
+  page: 18
+- id: WP-05-05
+  clause: '05'
+  description: Organizational cybersecurity audit report
+  page: 18
+- id: WP-06-01
+  clause: '06'
+  description: Cybersecurity plan
+  page: 25
+- id: WP-06-02
+  clause: '06'
+  description: Cybersecurity case
+  page: 25
+- id: WP-06-03
+  clause: '06'
+  description: Cybersecurity assessment report, if applicable
+  page: 25
+- id: WP-06-04
+  clause: '06'
+  description: Release for post-development report
+  page: 25
+- id: WP-07-01
+  clause: '07'
+  description: Cybersecurity interface agreement
+  page: 28
+- id: WP-08-01
+  clause: 08
+  description: Sources for cybersecurity information
+  page: 29
+- id: WP-08-02
+  clause: 08
+  description: Triggers
+  page: 29
+- id: WP-08-03
+  clause: 08
+  description: Cybersecurity events
+  page: 29
+- id: WP-08-04
+  clause: 08
+  description: Weaknesses from cybersecurity events
+  page: 30
+- id: WP-08-05
+  clause: 08
+  description: Vulnerability analysis
+  page: 31
+- id: WP-08-06
+  clause: 08
+  description: Evidence of managed vulnerabilities
+  page: 32
+- id: WP-09-01
+  clause: 09
+  description: Item definition
+  page: 33
+- id: WP-09-02
+  clause: 09
+  description: TARA
+  page: 34
+- id: WP-09-03
+  clause: 09
+  description: Cybersecurity goals
+  page: 34
+- id: WP-09-04
+  clause: 09
+  description: Cybersecurity claims
+  page: 34
+- id: WP-09-05
+  clause: 09
+  description: Verification report for cybersecurity goals
+  page: 35
+- id: WP-09-06
+  clause: 09
+  description: Cybersecurity concept
+  page: 36
+- id: WP-09-07
+  clause: 09
+  description: Verification report for the cybersecurity concept
+  page: 36
+- id: WP-10-01
+  clause: '10'
+  description: Cybersecurity specifications
+  page: 41
+- id: WP-10-02
+  clause: '10'
+  description: Cybersecurity requirements for post-development
+  page: 41
+- id: WP-10-03
+  clause: '10'
+  description: Documentation of the modelling, design or programming languages and coding
+  page: 41
+- id: WP-10-04
+  clause: '10'
+  description: Verification report for the cybersecurity specifications
+  page: 41
+- id: WP-10-05
+  clause: '10'
+  description: Weaknesses found during product development
+  page: 41
+- id: WP-10-06
+  clause: '10'
+  description: Integration and verification specification
+  page: 41
+- id: WP-10-07
+  clause: '10'
+  description: Integration and verification report
+  page: 41
+- id: WP-11-01
+  clause: '11'
+  description: Validation report
+  page: 43
+- id: WP-12-01
+  clause: '12'
+  description: Production control plan
+  page: 44
+- id: WP-13-01
+  clause: '13'
+  description: Cybersecurity incident response plan
+  page: 45
+- id: WP-14-01
+  clause: '14'
+  description: Procedures to communicate the end of cybersecurity support
+  page: 47
+- id: WP-15-01
+  clause: '15'
+  description: Damage scenarios
+  page: 49
+- id: WP-15-02
+  clause: '15'
+  description: Assets with cybersecurity properties
+  page: 49
+- id: WP-15-03
+  clause: '15'
+  description: Threat scenarios
+  page: 50
+- id: WP-15-04
+  clause: '15'
+  description: Impact ratings with associated impact categories
+  page: 51
+- id: WP-15-05
+  clause: '15'
+  description: Attack paths
+  page: 52
+- id: WP-15-06
+  clause: '15'
+  description: Attack feasibility ratings
+  page: 53
+- id: WP-15-07
+  clause: '15'
+  description: Risk values
+  page: 54
+- id: WP-15-08
+  clause: '15'
+  description: Risk treatment decisions
+  page: 55
