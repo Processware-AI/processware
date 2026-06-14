@@ -1,0 +1,117 @@
+wi_id:           "WI-VCSMS-02-02-02"
+title:           "평가 수행 여부 결정 및 독립 검토"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-02"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-02-02-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "리스크 기반 결정"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "max_risk_value"
+        type:     "number"
+        question: "케이스 내 최고 리스크값(1-5)은?"
+        validation: "1 <= x <= 5"
+        required: true
+      - field:    "safety_linked"
+        type:     "boolean"
+        question: "안전(ISO 26262) 연계 영향이 있는가?"
+        required: true
+    derivations:
+      - id:       "assessment_needed"
+        expr:     |
+          if safety_linked: "수행(필수)"
+          elif max_risk_value >= 3: "수행"
+          else: "미수행(근거 필요)"
+        description: "리스크 기반 평가 수행 여부 권고"
+    outputs:
+      - tmp_field: "결정서.권고"
+        from:      "assessment_needed"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "결정 및 책임자 지정"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "final_decision"
+        type:     "enum"
+        question: "평가 수행 여부 최종 결정은?"
+        options:  ["수행", "미수행"]
+        required: true
+      - field:    "assessor"
+        type:     "person"
+        question: "(수행 시) 독립 평가 책임자(Assessor)는?"
+        required: false
+        required_if: "final_decision == '수행'"
+    outputs:
+      - tmp_field: "결정서.결정"
+        from:      "final_decision"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "독립 검토"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "independent_review"
+        type:     "enum"
+        question: "Assessor 의 결정 근거 독립 검토 의견은?"
+        options:  ["동의", "이의"]
+        required: true
+      - field:    "review_comment"
+        type:     "text"
+        question: "검토 의견 상세(이의 시 사유)"
+        required: false
+        required_if: "independent_review == '이의'"
+    outputs:
+      - tmp_field: "결정서.독립검토"
+        from:      "independent_review"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "확정·승인"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "approver_name"
+        type:     "person"
+        question: "결정서 승인자(CSM)는?"
+        required: true
+    outputs:
+      - tmp_field: "결정서.승인"
+        from:      "approver_name"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 — 평가 수행 여부 결정 승인"
+
+dod_checklist:
+  - "리스크 기반 결정 기준 명시"
+  - "평가 수행/미수행 결정"
+  - "(수행 시) 독립 평가 책임자 지정"
+  - "Assessor 의 결정 근거 독립 검토 완료"
+  - "결정·근거·검토 의견 기록 + CSM 승인"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "독립성 충돌"
+    rule:    "Assessor 가 개발 관여 시 이해상충 — 다른 독립 Assessor 교체, 부재 시 외부 평가기관."
+  - section: "§7.2"
+    name:    "결정 근거 이의"
+    rule:    "미수행 결정에 이의 시 보수적으로 수행으로 조정/근거 보강, 과정 기록."
+  - section: "§7.3"
+    name:    "안전 연계 미수행 시도"
+    rule:    "safety_linked==true 인데 미수행 시도 시 기능안전팀 동의 없으면 차단. 안전 연계는 수행 기본값."
+
+triggers:        ["평가 수행 여부", "리스크 기반 결정", "독립 검토", "Assessor 지정"]
+aliases:         ["assessment decision", "독립 평가 결정", "평가 트리거"]
+event_triggers:  ["케이스 승인 후"]
+domains:         ["자동차"]

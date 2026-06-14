@@ -1,0 +1,112 @@
+# =============================================================
+# WI-VCSMS-02-09-04 폐기 관련 post-development 요구사항 제공 — Agent 실행 정의
+# =============================================================
+wi_id:           "WI-VCSMS-02-09-04"
+title:           "폐기 관련 post-development 요구사항 제공"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-09"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-09-04-01"
+scope_code:      "VCSMS"
+scope_type:      "org"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "사이버보안 자산 목록화 및 위험 식별"
+    section_ref:  "§5.1"
+    inputs:
+      - field:    "security_assets"
+        type:     "table"
+        question: "대상 item 의 사이버보안 자산(키·인증서·민감 데이터·로그)을 입력하세요."
+        columns:  ["자산", "저장위치", "민감도"]
+        required: true
+      - field:    "disposal_risks"
+        type:     "text"
+        question: "폐기 시 처리해야 할 위험(키 유출·데이터 잔존·재사용 공격)을 입력하세요."
+        required: true
+    outputs:
+      - tmp_field: "자산목록표[]"
+        from:      "security_assets"
+      - tmp_field: "폐기위험"
+        from:      "disposal_risks"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "폐기 사이버보안 요구 식별·문서화"
+    section_ref:  "§5.2.1-2"
+    inputs:
+      - field:    "disposal_requirements"
+        type:     "table"
+        question: "폐기 사이버보안 요구와 폐기 주체가 따를 절차·검증 방법을 입력하세요."
+        columns:  ["요구ID", "요구내용", "수행절차", "검증방법", "수행주체"]
+        required: true
+    outputs:
+      - tmp_field: "폐기요구표[]"
+        from:      "disposal_requirements"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "검토(실행 가능성·현장 적용성)"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "feasibility_review"
+        type:     "text"
+        question: "개발팀(기술 실행성)·운영(현장 적용성) 검토 의견을 입력하세요."
+        required: true
+    outputs:
+      - tmp_field: "검토의견"
+        from:      "feasibility_review"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "가용화(제공) 및 CSM 승인"
+    section_ref:  "§5.2.4-5"
+    inputs:
+      - field:    "provision_log"
+        type:     "table"
+        question: "폐기 요구 제공 대상·일자·확인을 입력하세요."
+        columns:  ["제공대상", "제공경로(매뉴얼/가이드/안내)", "제공일", "확인"]
+        required: true
+      - field:    "approval_result"
+        type:     "enum"
+        question: "CSM 폐기 요구 충분성 승인 결과를 선택하세요."
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+    outputs:
+      - tmp_field: "제공이력표[]"
+        from:      "provision_log"
+      - tmp_field: "결재.승인"
+        from:      "approval_result"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 명시 — 폐기 요구 충분성 승인"
+
+dod_checklist:
+  - "대상 item 사이버보안 자산(키·자격증명·민감 데이터) 목록화"
+  - "폐기 시 처리 위험 식별"
+  - "폐기 사이버보안 요구 식별·문서화(파기·삭제·재사용 방지)"
+  - "각 요구에 폐기 주체가 따를 절차·검증 방법 기재"
+  - "폐기 요구가 폐기 수행 주체에게 제공·기록되고 CSM 승인"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "폐기 주체의 실행 역량 부족"
+    rule:    "요구 단순화 또는 OEM 회수·중앙 파기 옵션 제공, 단순화로 위험 잔존 시 한계 명시."
+  - section: "§7.2"
+    name:    "물리 접근 불가 부품의 키 파기"
+    rule:    "원격 폐기·서버 측 무효화(인증서 폐기 목록 등록)를 대체 통제로 정의."
+  - section: "§7.3"
+    name:    "폐기 후 데이터 유출 사고"
+    rule:    "잔존 위험 추적 갱신·영향 평가, CSM 이 PRO-01-04 연계 판정, 폐기 요구·절차 보완 개정."
+
+triggers:        ["폐기 사이버보안 요구", "decommissioning", "키 파기", "데이터 완전 삭제", "폐기 요구 제공"]
+aliases:         ["decommissioning requirements", "폐기 요구사항", "안전 폐기", "부품 폐기"]
+event_triggers:  ["지원 종료 통보 후", "item/component 폐기 단계 진입"]
+domains:         ["자동차"]

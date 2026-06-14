@@ -1,0 +1,123 @@
+wi_id:           "WI-VCSMS-02-04-04"
+title:           "목표·클레임 검증"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-04"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-04-04-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:          "step-01"
+    name:        "정확성 검증"
+    section_ref: "§5.2.1"
+    inputs:
+      - field:    "correctness_findings"
+        type:     "table"
+        question: "목표·클레임이 위협·리스크값과 정확히 대응하는지 점검 결과를 입력하세요."
+        columns:  ["id", "result", "finding"]
+        required: true
+    outputs:
+      - tmp_field: "검증보고서.정확성"
+        from:      "correctness_findings"
+    hitl: false
+
+  - id:          "step-02"
+    name:        "완전성 검증"
+    section_ref: "§5.2.2"
+    inputs:
+      - field:    "uncovered_threats"
+        type:     "number"
+        question: "목표/클레임으로 커버되지 않은 위협 시나리오 수는 몇 건입니까?"
+        validation: "x >= 0"
+        required: true
+      - field:    "missing_assumptions"
+        type:     "number"
+        question: "근거 가정이 누락된 클레임 수는 몇 건입니까?"
+        validation: "x >= 0"
+        required: true
+    outputs:
+      - tmp_field: "검증보고서.완전성.미커버"
+        from:      "uncovered_threats"
+    hitl: false
+
+  - id:          "step-03"
+    name:        "일관성 검증"
+    section_ref: "§5.2.3"
+    inputs:
+      - field:    "conflicts"
+        type:     "number"
+        question: "목표·클레임 간 상충 항목 수는 몇 건입니까?"
+        validation: "x >= 0"
+        required: true
+    outputs:
+      - tmp_field: "검증보고서.일관성.상충"
+        from:      "conflicts"
+    hitl: false
+
+  - id:          "step-04"
+    name:        "부적합 기록·판정"
+    section_ref: "§5.2.4"
+    derivations:
+      - id:       "verdict"
+        expr:     |
+          if uncovered_threats == 0 and missing_assumptions == 0 and conflicts == 0: "통과"
+          elif 경미 해소 가능: "조건부"
+          else: "미통과"
+        description: "3축 모두 0 시 통과, 경미는 조건부, 그 외 미통과"
+    inputs:
+      - field:    "rework_target"
+        type:     "text"
+        question: "미통과 시 재작업 대상 WI(-01~-03)를 지정하세요."
+        required_if: "verdict == '미통과'"
+    outputs:
+      - tmp_field: "검증보고서.판정"
+        from:      "verdict"
+    hitl: false
+
+  - id:          "step-05"
+    name:        "검토·승인"
+    section_ref: "§5.2.5"
+    inputs:
+      - field:    "approval_decision"
+        type:     "enum"
+        question: "CSM 승인 결정은 무엇입니까?"
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+    outputs:
+      - tmp_field: "검증보고서.결재.승인"
+        from:      "approval_decision"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 = CSM"
+
+dod_checklist:
+  - "entry_gate(WI-04-03 done) 충족 확인"
+  - "정확성 점검 완료(모순 항목 처리)"
+  - "완전성 점검 완료(미커버 위협 0, 가정 누락 0)"
+  - "일관성 점검 완료(상충 0)"
+  - "부적합 기록 및 판정 결과 명시"
+  - "CSM 승인 기록 확보"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "검증 미통과(재작업)"
+    rule:    "미통과 시 WI-04-05 진행 차단, 지정 선행 WI 로 반려, 재작업 후 본 검증 재수행"
+  - section: "§7.2"
+    name:    "가정 미검증 클레임"
+    rule:    "검증 불가 가정은 Clause 11 또는 Clause 7 로 이연 표식, 추적 항목 등록"
+  - section: "§7.3"
+    name:    "경미 부적합(조건부 통과)"
+    rule:    "해소 기한·책임자 명시, 컨셉 검증(WI-04-06)에서 종결 확인"
+
+triggers:        ["목표 검증", "클레임 검증", "정확 완전 일관", "concept verification"]
+aliases:         ["goal verification", "claim verification", "정합성 검증", "consistency check"]
+event_triggers:  ["목표·클레임 명세서 승인", "컨셉 정의 착수 전 게이트"]
+domains:         ["자동차"]

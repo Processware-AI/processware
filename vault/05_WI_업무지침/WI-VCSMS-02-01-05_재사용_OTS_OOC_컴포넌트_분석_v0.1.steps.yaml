@@ -1,0 +1,117 @@
+wi_id:           "WI-VCSMS-02-01-05"
+title:           "재사용·OTS·out-of-context 컴포넌트 분석"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-01"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-01-05-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "대상·문서 수집"
+    section_ref:  "§5.1"
+    inputs:
+      - field:    "target_components"
+        type:     "table"
+        question: "상세분석 대상 컴포넌트와 유형·가용문서를 입력하라"
+        columns:  ["component", "유형(재사용/OTS/OOC)", "가용 문서"]
+        required: true
+    outputs:
+      - tmp_field: "분석서.대상[]"
+        from:      "target_components"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "재사용 분석"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "reuse_analysis"
+        type:     "table"
+        question: "재사용 컴포넌트의 변경·영향·누락 WP·문서충분성을 분석하라"
+        columns:  ["component", "변경내용", "영향", "누락 WP", "문서 충분성"]
+        required: false
+        required_if: "유형에 재사용 포함"
+    outputs:
+      - tmp_field: "분석서.재사용[]"
+        from:      "reuse_analysis"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "OOC 분석"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "ooc_analysis"
+        type:     "table"
+        question: "OOC 의 가정·요구·통합검증 계획을 작성하라"
+        columns:  ["component", "의도된 사용·맥락·가정", "요구(가정기반)", "통합 검증 방법"]
+        required: false
+        required_if: "유형에 OOC 포함"
+    outputs:
+      - tmp_field: "분석서.OOC[]"
+        from:      "ooc_analysis"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "OTS 분석"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "ots_analysis"
+        type:     "table"
+        question: "OTS 문서 충분성·요구 충족·추가활동을 분석하라"
+        columns:  ["component", "문서 충분성", "요구 충족 여부", "추가 활동"]
+        required: false
+        required_if: "유형에 OTS 포함"
+    outputs:
+      - tmp_field: "분석서.OTS[]"
+        from:      "ots_analysis"
+    hitl: false
+
+  - id:           "step-05"
+    name:         "누락 활동 반영·승인"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "added_activities"
+        type:     "text"
+        question: "계획에 반영할 누락 WP·추가 활동 요약"
+        required: true
+      - field:    "approver_name"
+        type:     "person"
+        question: "분석서 승인자(CSM)는?"
+        required: true
+    outputs:
+      - tmp_field: "분석서.승인"
+        from:      "approver_name"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 — 재사용·OTS·OOC 분석 결과 승인"
+
+dod_checklist:
+  - "재사용 컴포넌트의 변경·영향·누락 WP 식별"
+  - "component 재사용의 요구 충족·문서 충분성 평가"
+  - "OOC 가정 문서화 + 통합 시 검증 계획"
+  - "OTS 문서 충분성 판단 + 불충분 시 추가 활동 식별"
+  - "누락 활동을 계획에 반영 + CSM 승인"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "OTS 문서 입수 불가"
+    rule:    "문서 미제공 시 불충분 간주, 당사 직접 분석·테스트 식별([RQ-06-22]). 사유·보완 활동 기록."
+  - section: "§7.2"
+    name:    "OOC 가정 위반"
+    rule:    "통합 검증서 가정·클레임 위반 시 통합 차단, 가정 재정의/추가통제 요구, TARA 재수행 평가."
+  - section: "§7.3"
+    name:    "재사용 환경 변화"
+    rule:    "운용환경 변화 식별 시 무수정 재사용 보류, 변경분 재사용 분석 수행([RQ-06-15])."
+
+triggers:        ["재사용 분석", "OTS 컴포넌트", "out-of-context", "OOC 가정", "공급품 분석"]
+aliases:         ["reuse analysis", "off-the-shelf", "OTS", "OOC component"]
+event_triggers:  ["관련성 판정에서 상세분석 필요 표기 시"]
+domains:         ["자동차"]

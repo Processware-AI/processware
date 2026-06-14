@@ -1,0 +1,113 @@
+wi_id:           "WI-VCSMS-02-02-05"
+title:           "post-development 릴리스"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-02"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-02-05-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "릴리스 산출물 가용화"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "artifacts_available"
+        type:     "multiselect"
+        question: "릴리스 결정자에게 가용화한 산출물은?"
+        options:  ["사이버보안 케이스", "평가 보고서", "post-dev 요구"]
+        required: true
+    outputs:
+      - tmp_field: "릴리스보고서.가용산출물"
+        from:      "artifacts_available"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "릴리스 조건 게이트 점검"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "case_open_count"
+        type:     "number"
+        question: "케이스 open 논거 수는?"
+        validation: "x >= 0"
+        required: true
+      - field:    "assessment_confirmed"
+        type:     "boolean"
+        question: "평가 확인(수용 또는 조건 종결) 완료?"
+        required: true
+      - field:    "postdev_accepted"
+        type:     "boolean"
+        question: "post-development 요구 수용 완료?"
+        required: true
+    derivations:
+      - id:       "gate_result"
+        expr:     |
+          if case_open_count == 0 and assessment_confirmed and postdev_accepted: "통과"
+          else: "차단"
+        description: "릴리스 게이트 자동 판정"
+    outputs:
+      - tmp_field: "릴리스보고서.게이트결과"
+        from:      "gate_result"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "릴리스 결정·승인"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "release_approver"
+        type:     "person"
+        question: "릴리스 승인자(경영진)는?"
+        required: true
+      - field:    "release_date"
+        type:     "date"
+        question: "릴리스 결정일"
+        required: true
+    outputs:
+      - tmp_field: "릴리스보고서.승인"
+        from:      "release_approver"
+    hitl: required
+    approver_role: "Top Management (경영진)"
+    rationale:     "WI §2 승인자 — post-development 릴리스 결정"
+
+  - id:           "step-04"
+    name:         "릴리스 보고서 기록"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "config_id"
+        type:     "text"
+        question: "릴리스 보고서 형상 등록 ID"
+        required: true
+    outputs:
+      - tmp_field: "릴리스보고서.형상등록"
+        from:      "config_id"
+    hitl: false
+
+dod_checklist:
+  - "케이스·평가보고서·post-dev 요구 가용화"
+  - "케이스 논거 충족(open 0) 확인"
+  - "평가 확인(수용/조건 종결) 확인"
+  - "post-development 요구 수용 확인"
+  - "경영진 릴리스 승인 + 릴리스 보고서 형상 등록"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "조건 미충족 릴리스 시도"
+    rule:    "gate_result==차단 면 릴리스 게이트 차단·미충족 항목 명시. KPI(조건 미충족 릴리스 0) 위반, 강행 불가."
+  - section: "§7.2"
+    name:    "조건부 조건 미종결"
+    rule:    "조건부 수용 조건 기한 내 미종결 시 릴리스 보류·종결 계획 재수립. 종결 불가 시 거부 전환."
+  - section: "§7.3"
+    name:    "릴리스 후 결함"
+    rule:    "릴리스 후 결함·취약점 발견 시 지속활동(PRO-01-03)·사고대응(PRO-01-04) 연계, 필요 시 업데이트/리콜."
+
+triggers:        ["릴리스", "post-development 릴리스", "릴리스 게이트", "출시 결정"]
+aliases:         ["release", "post-development release", "릴리스 결정"]
+event_triggers:  ["평가 보고서 완료 후", "조건부 조건 종결 후"]
+domains:         ["자동차"]

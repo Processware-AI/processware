@@ -1,0 +1,104 @@
+wi_id:           "WI-VCSMS-02-02-03"
+title:           "독립 사이버보안 평가 수행"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-02"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-02-03-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "범위 확인·접근 확보"
+    section_ref:  "§5.1"
+    inputs:
+      - field:    "assessment_scope"
+        type:     "text"
+        question: "평가 범위·대상(결정서 기준)은?"
+        required: true
+      - field:    "access_secured"
+        type:     "boolean"
+        question: "정보·도구·인력 접근이 확보되었는가?"
+        required: true
+    outputs:
+      - tmp_field: "체크리스트.범위"
+        from:      "assessment_scope"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "계획·WP 적정성 평가"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "plan_wp_result"
+        type:     "table"
+        question: "계획·WP 항목별 적정성·정확성·갱신을 평가하라"
+        columns:  ["평가 항목", "결과(적합/조건부/부적합)", "발견사항", "근거"]
+        required: true
+    outputs:
+      - tmp_field: "체크리스트.계획WP[]"
+        from:      "plan_wp_result"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "리스크 처리·통제 평가"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "risk_control_result"
+        type:     "table"
+        question: "리스크 처리·통제·잔여 리스크 정당화를 평가하라"
+        columns:  ["위협 시나리오", "처리 적정성", "통제 적정성", "잔여 리스크 정당화"]
+        required: true
+    outputs:
+      - tmp_field: "체크리스트.리스크[]"
+        from:      "risk_control_result"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "근거 평가·발견사항 정리"
+    section_ref:  "§5.2.3-4"
+    inputs:
+      - field:    "argument_result"
+        type:     "enum"
+        question: "케이스 논거↔증적 합리성 평가 결과는?"
+        options:  ["적합", "조건부", "부적합"]
+        required: true
+      - field:    "findings"
+        type:     "text"
+        question: "주요 발견사항 종합"
+        required: false
+    outputs:
+      - tmp_field: "체크리스트.근거평가"
+        from:      "argument_result"
+    hitl: required
+    approver_role: "Assessor(독립)"
+    rationale:     "WI §2 승인자 — 평가 결과의 독립적 판정"
+
+dod_checklist:
+  - "정보·도구·인력 접근 확보"
+  - "계획·WP 적정성 및 정확성·갱신 평가"
+  - "리스크 처리·통제 적정성 및 잔여 리스크 정당화 평가"
+  - "케이스 근거(논거↔증적) 평가"
+  - "항목별 결과·발견사항·근거 기록"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "접근 비협조"
+    rule:    "access_secured==false 시 CSM 에스컬레이션, 미해소 항목 '평가 불가' 기록 → 거부/조건부 사유."
+  - section: "§7.2"
+    name:    "중대 결함 발견"
+    rule:    "릴리스 차단 중대 결함 발견 시 즉시 통보·재평가 경로 전환, WI-04 거부 권고 연결."
+  - section: "§7.3"
+    name:    "독립성 훼손"
+    rule:    "압력·이해상충 정황 시 평가 중단·독립 감사(PRO-VCSMS-01-02) 보고."
+
+triggers:        ["독립 평가", "사이버보안 평가", "Assessor 평가", "케이스 평가"]
+aliases:         ["independent assessment", "cybersecurity assessment", "독립 사이버보안 평가"]
+event_triggers:  ["평가 수행 결정 후"]
+domains:         ["자동차"]

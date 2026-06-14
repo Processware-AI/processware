@@ -1,0 +1,140 @@
+wi_id:           "WI-VCSMS-01-04-01"
+title:           "사고 대응 계획 작성 (조치·소통·책임·종료기준)"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-01-04"
+parent_pol:      "POL-VCSMS-01"
+related_tmp:
+  - "TMP-VCSMS-01-04-01-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "사고 범위·영향 정의"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "incident_scope"
+        type:     "text"
+        question: "사고 영향 자산·차량 범위·잠정 원인은?"
+        required: true
+      - field:    "incident_severity"
+        type:     "enum"
+        question: "사고 등급(중대도)은?"
+        required: true
+        options:  ["중대", "높음", "중간", "낮음"]
+    outputs:
+      - tmp_field: "계획서.사고범위"
+        from:      "incident_scope"
+    hitl: false
+  - id:           "step-02"
+    name:         "대응 계획 구성"
+    section_ref:  "§5.2.2"
+    description:  "조치·소통·책임·기록·진척·종료기준·종료조치 7요소 ([RQ-13-01])"
+    inputs:
+      - field:    "response_actions"
+        type:     "text"
+        question: "조치(억제·근절·복구) 계획은?"
+        required: true
+      - field:    "responsibility"
+        type:     "table"
+        question: "책임(역할·담당자)을 입력하세요."
+        required: true
+        columns:  ["역할", "담당자"]
+      - field:    "record_plan"
+        type:     "text"
+        question: "기록(증거 보존·로그) 방안은?"
+        required: true
+      - field:    "progress_metrics"
+        type:     "text"
+        question: "진척 추적(마일스톤·지표)은?"
+        required: true
+    outputs:
+      - tmp_field: "계획서.7요소"
+        from:      "response_actions"
+    hitl: false
+  - id:           "step-03"
+    name:         "소통·통보 계획 정합"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "communication_plan"
+        type:     "table"
+        question: "소통·통보 계획(대상·시점·채널·법적 기한)을 입력하세요."
+        required: true
+        columns:  ["대상", "시점", "채널", "법적기한"]
+    outputs:
+      - tmp_field: "계획서.소통[]"
+        from:      "communication_plan"
+    hitl: false
+  - id:           "step-04"
+    name:         "종료기준 정의"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "closure_criteria"
+        type:     "text"
+        question: "객관적 종료기준(악용 차단·복구·재발 모니터)은?"
+        required: true
+      - field:    "closure_actions"
+        type:     "text"
+        question: "종료조치는?"
+        required: true
+    outputs:
+      - tmp_field: "계획서.종료기준"
+        from:      "closure_criteria"
+    hitl: false
+  - id:           "step-05"
+    name:         "CSM 검토·승인"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "approval_decision"
+        type:     "enum"
+        question: "CSM 대응 계획 승인 결정은?"
+        required: true
+        options:  ["승인", "조건부승인", "반려"]
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval_decision"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 = CSM (7요소 완전성·종료기준·통보 의무 정합 승인)"
+  - id:           "step-06"
+    name:         "착수 준비"
+    section_ref:  "§5.2.6"
+    inputs:
+      - field:    "launch_sla"
+        type:     "boolean"
+        question: "사고 인지→계획 착수 SLA 충족 여부는?"
+        required: true
+    outputs:
+      - tmp_field: "계획서.착수SLA"
+        from:      "launch_sla"
+    hitl: false
+
+dod_checklist:
+  - "사고 범위·영향·잠정 원인 정의 및 사고 등급 부여"
+  - "계획 7요소(조치·소통·책임·기록·진척·종료기준·종료조치) 모두 포함"
+  - "소통·통보 계획이 정보공유 규칙·법규와 정합"
+  - "종료기준이 객관적·검증 가능하게 정의"
+  - "CSM 검토·승인 완료"
+  - "사고 인지→계획 착수 SLA 충족"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "긴급 사고(즉시 조치 필요)"
+    rule:    "악용 진행 시 억제 조치 선행·계획 병행 작성·선행 조치 소급 기록"
+  - section: "§7.2"
+    name:    "통보 의무 기한 임박"
+    rule:    "통보 기한 임박 시 법무 협조로 통보 우선 이행·상세 계획 후보강·통보 시각 기록"
+  - section: "§7.3"
+    name:    "사고 범위 불확실"
+    rule:    "범위 불확실 시 잠정·보수적 범위로 계획·조사 진척 따라 갱신 트리거 명시"
+
+triggers:        ["사고 대응 계획", "사고 대응 착수", "incident response plan", "사이버보안 사고"]
+aliases:         ["incident plan", "사고 처리 계획", "대응 계획서"]
+event_triggers:  ["사고 식별", "취약점 처리에서 사고대응 연계", "악용 진행 인지"]
+domains:         ["자동차"]

@@ -1,0 +1,135 @@
+wi_id:           "WI-VCSMS-01-03-05"
+title:           "취약점 관리 및 처리 결정"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-01-03"
+parent_pol:      "POL-VCSMS-01"
+related_tmp:
+  - "TMP-VCSMS-01-03-05-01"
+scope_code:      "VCSMS"
+scope_type:      "common"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "처리 방식 결정"
+    section_ref:  "§5.2.1"
+    description:  "TARA 호출 또는 즉시 제거 결정 ([RQ-08-07])"
+    inputs:
+      - field:    "treatment_path"
+        type:     "table"
+        question: "취약점별 처리 경로와 근거를 입력하세요."
+        required: true
+        columns:  ["취약점ID", "처리경로", "결정근거"]
+        options:  ["TARA 호출", "즉시 제거"]
+    outputs:
+      - tmp_field: "관리대장.처리경로[]"
+        from:      "treatment_path"
+    hitl: false
+  - id:           "step-02"
+    name:         "TARA 호출"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "tara_handoff"
+        type:     "text"
+        question: "TARA(PRO-02-03) 호출 및 결과(리스크값·옵션) 환류 내용은?"
+        required: false
+        required_if: "처리경로 == TARA 호출"
+    outputs:
+      - tmp_field: "관리대장.TARA결과"
+        from:      "tara_handoff"
+    hitl: false
+  - id:           "step-03"
+    name:         "즉시 제거"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "immediate_fix"
+        type:     "text"
+        question: "즉시 시정 조치(패치·구성·통제)와 유효성 확인 결과는?"
+        required: false
+        required_if: "처리경로 == 즉시 제거"
+    outputs:
+      - tmp_field: "관리대장.즉시시정"
+        from:      "immediate_fix"
+    hitl: false
+  - id:           "step-04"
+    name:         "사고대응 연계 판단"
+    section_ref:  "§5.2.4"
+    description:  "사고 대응 필요 여부 판단 ([RQ-08-08])"
+    inputs:
+      - field:    "incident_link"
+        type:     "enum"
+        question: "사고대응(PRO-01-04) 연계 필요 여부는?"
+        required: true
+        options:  ["연계 불필요", "사고대응 가동"]
+    outputs:
+      - tmp_field: "관리대장.사고연계"
+        from:      "incident_link"
+    hitl: false
+  - id:           "step-05"
+    name:         "CSM 처리 결정 승인"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "approval_decision"
+        type:     "enum"
+        question: "CSM 처리 결정 승인은?"
+        required: true
+        options:  ["승인", "조건부승인", "재검토"]
+      - field:    "responsible_owner"
+        type:     "person"
+        question: "처리 책임자는?"
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval_decision"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 = CSM (처리 경로·시정·연계 판단 승인)"
+  - id:           "step-06"
+    name:         "추적·종결"
+    section_ref:  "§5.2.6"
+    inputs:
+      - field:    "closed_count"
+        type:     "number"
+        question: "종결된 취약점 처리 건수는?"
+        required: true
+      - field:    "total_count"
+        type:     "number"
+        question: "전체 취약점 처리 건수는?"
+        required: true
+    derivations:
+      - id:       "vuln_completion_rate"
+        expr:     "round(closed_count / total_count * 100, 1)"
+        description: "취약점 처리 완료율(%) — 목표 95 이상"
+    outputs:
+      - tmp_field: "관리대장.완료율"
+        from:      "vuln_completion_rate"
+    hitl: false
+
+dod_checklist:
+  - "취약점별 처리 경로(TARA 호출/즉시 제거) 결정 및 근거 기록"
+  - "경로 a: TARA 호출·결과(리스크값·옵션) 환류"
+  - "경로 b: 즉시 시정 조치 실행·유효성 확인"
+  - "사고대응 연계 필요성 판단 및 (해당 시) 가동"
+  - "CSM 처리 결정 승인·책임자·완료 기준 확정"
+  - "처리 추적·종결(완료율 ≥ 95%) 및 관리대장 갱신"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "처리 경로 판단 모호"
+    rule:    "안전(S) 영향·불확실 리스크면 TARA 호출 기본 선택, 판단 근거 관리대장 기록"
+  - section: "§7.2"
+    name:    "즉시 제거 불가·장기화"
+    rule:    "즉시 시정 불가 시 임시 완화책 적용·잔존 리스크 명시, 근본 시정 일정과 함께 TARA 재평가"
+  - section: "§7.3"
+    name:    "대규모·현장 영향(리콜·OTA)"
+    rule:    "광범위 현장 영향 시 사고대응(PRO-01-04)·운영 업데이트(PRO-02-09) 연계·경영진·규제 통보 가동"
+
+triggers:        ["취약점 처리", "취약점 관리", "리스크 처리 결정", "즉시 시정", "패치 결정"]
+aliases:         ["vulnerability management", "treatment decision", "취약점 조치", "리스크 처리"]
+event_triggers:  ["취약점 식별 완료", "악용 진행 인지", "대규모 영향 취약점 발생"]
+domains:         ["자동차"]

@@ -1,0 +1,132 @@
+wi_id:           "WI-VCSMS-02-06-03"
+title:           "검증 보고서 작성"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-06"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-06-03-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:          "step-01"
+    name:        "검증 개요·범위 기술"
+    section_ref: "§5.2.1"
+    inputs:
+      - field:    "overview"
+        type:     "text"
+        question: "검증 대상·활동·환경·기간을 요약하세요."
+        required: true
+    outputs:
+      - tmp_field: "보고서.개요"
+        from:      "overview"
+    hitl: false
+
+  - id:          "step-02"
+    name:        "검증 결과 종합"
+    section_ref: "§5.2.2"
+    inputs:
+      - field:    "results_summary"
+        type:     "table"
+        question: "목표 적정성·달성, 클레임·운용환경 유효성 결과를 종합 입력하세요."
+        columns:  ["item", "result", "evidence_ref"]
+        required: true
+    outputs:
+      - tmp_field: "보고서.결과종합"
+        from:      "results_summary"
+    hitl: false
+
+  - id:          "step-03"
+    name:        "부적합·잔여 리스크 기술"
+    section_ref: "§5.2.3"
+    inputs:
+      - field:    "nonconformities"
+        type:     "table"
+        question: "부적합·처리 방향·종결 상태를 입력하세요."
+        columns:  ["item", "treatment", "status"]
+        required: false
+    outputs:
+      - tmp_field: "보고서.부적합"
+        from:      "nonconformities"
+    hitl: false
+
+  - id:          "step-04"
+    name:        "종합 판정·권고"
+    section_ref: "§5.2.4"
+    inputs:
+      - field:    "verdict"
+        type:     "enum"
+        question: "차량 수준 사이버보안 유효성 종합 판정은 무엇입니까?"
+        options:  ["유효", "조건부유효", "미유효"]
+        required: true
+      - field:    "case_recommendation"
+        type:     "enum"
+        question: "케이스 입력 권고는 무엇입니까?"
+        options:  ["수용", "조건부수용", "거부"]
+        required: true
+    outputs:
+      - tmp_field: "보고서.종합판정"
+        from:      "verdict"
+      - tmp_field: "보고서.케이스권고"
+        from:      "case_recommendation"
+    hitl: false
+
+  - id:          "step-05"
+    name:        "케이스 전달"
+    section_ref: "§5.2.5"
+    inputs:
+      - field:    "handover_record"
+        type:     "text"
+        question: "케이스(PRO-VCSMS-02-02) 전달 기록(수신자·일자·추적키)을 입력하세요."
+        required: true
+    outputs:
+      - tmp_field: "보고서.케이스전달"
+        from:      "handover_record"
+    hitl: false
+
+  - id:          "step-06"
+    name:        "검토·승인"
+    section_ref: "§5.2.6"
+    inputs:
+      - field:    "approval_decision"
+        type:     "enum"
+        question: "CSM 승인 결정은 무엇입니까?"
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+    outputs:
+      - tmp_field: "보고서.결재.승인"
+        from:      "approval_decision"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 = CSM"
+
+dod_checklist:
+  - "entry_gate(WI-06-02 done) 충족 확인"
+  - "검증 개요·범위 기술 완료"
+  - "결과 종합(적정성·달성·클레임·환경) 및 증적 참조"
+  - "부적합·잔여 리스크·종결 상태 기술"
+  - "종합 판정·케이스 입력 권고 명시"
+  - "케이스 전달 기록 확보"
+  - "CSM 승인 기록 확보"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "미종결 부적합 잔존"
+    rule:    "종결 계획·책임·기한 명시, 케이스 릴리스 조건 연결, 미종결 은폐 금지"
+  - section: "§7.2"
+    name:    "증적 불충분"
+    rule:    "결과 단정 금지, 추가 검증(WI-06-02 재수행) 또는 한계 명시 후 권고 수위 하향"
+  - section: "§7.3"
+    name:    "보고서-케이스 추적 단절"
+    rule:    "목표·클레임 ID 기준 케이스 추적 키 명시로 단절 방지"
+
+triggers:        ["검증 보고서", "validation report", "케이스 전달", "검증 결과 종합"]
+aliases:         ["validation report", "검증 보고", "case input", "릴리스 검증 근거"]
+event_triggers:  ["검증 수행 승인", "케이스 평가 전 보고"]
+domains:         ["자동차"]

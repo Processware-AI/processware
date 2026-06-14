@@ -1,0 +1,114 @@
+# =============================================================
+# WI-VCSMS-02-09-01 업데이트·업데이트 역량 개발 — Agent 실행 정의
+# =============================================================
+wi_id:           "WI-VCSMS-02-09-01"
+title:           "업데이트·업데이트 역량 개발"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-09"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-09-01-01"
+scope_code:      "VCSMS"
+scope_type:      "org"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "트리거 분류 및 영향 범위 식별"
+    section_ref:  "§5.1"
+    inputs:
+      - field:    "update_trigger"
+        type:     "enum"
+        question: "업데이트 트리거를 선택하세요."
+        options:  ["보안패치", "사고대응", "기능변경", "규제변경"]
+        required: true
+      - field:    "impact_scope"
+        type:     "table"
+        question: "영향 범위(대상 item/component·차종·VIN 범위)를 입력하세요."
+        columns:  ["대상item", "차종", "VIN범위"]
+        required: true
+    outputs:
+      - tmp_field: "트리거.유형"
+        from:      "update_trigger"
+      - tmp_field: "영향범위표[]"
+        from:      "impact_scope"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "업데이트 요구 정의 및 델타 영향 평가"
+    section_ref:  "§5.2.1-2"
+    inputs:
+      - field:    "update_requirements"
+        type:     "table"
+        question: "업데이트가 충족할 사이버보안 요구를 입력하세요."
+        columns:  ["요구ID", "내용", "대상취약점/위험"]
+        required: true
+      - field:    "delta_tara"
+        type:     "text"
+        question: "업데이트의 기존 위협·자산 영향 평가(델타 TARA) 결과를 입력하세요."
+        required: true
+    outputs:
+      - tmp_field: "업데이트요구표[]"
+        from:      "update_requirements"
+      - tmp_field: "델타영향평가"
+        from:      "delta_tara"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "개발 V-model 재적용 및 역량 요건 반영"
+    section_ref:  "§5.2.3-4"
+    inputs:
+      - field:    "capability_reqs"
+        type:     "table"
+        question: "업데이트 역량 요건(무결성·인증배포·롤백·safe-state)을 입력하세요."
+        columns:  ["역량요건", "충족방식", "R156정합"]
+        required: true
+    outputs:
+      - tmp_field: "역량요건표[]"
+        from:      "capability_reqs"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "CSM 검토·승인"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "approval_result"
+        type:     "enum"
+        question: "CSM 업데이트 개발 승인 결과를 선택하세요."
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval_result"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 명시 — 업데이트 개발 승인"
+
+dod_checklist:
+  - "업데이트 트리거·긴급도 분류"
+  - "영향 범위(item/차종/VIN) 식별"
+  - "업데이트 사이버보안 요구 정의"
+  - "델타 영향 평가(필요 시 TARA) 수행"
+  - "개발 V-model 재적용 및 역량 요건(무결성·롤백) 반영"
+  - "CSM 검토·승인 완료"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "긴급 보안 패치(사고 대응 연계)"
+    rule:    "위험 비례 축약 절차 적용(핵심 요구·영향·검증 우선), 사후 정식 산출물 보완, CSM 축약 범위 승인."
+  - section: "§7.2"
+    name:    "업데이트가 새 위험 도입"
+    rule:    "허용 불가 새 위험 시 배포 보류·설계 재검토, 불가피 시 보상 통제+CSM·CS Lead 수용 결정 기록."
+  - section: "§7.3"
+    name:    "롤백 불가 업데이트"
+    rule:    "롤백 불가 시 실패 대비 safe-state·재시도 대체 안전장치 정의 후에만 진행."
+
+triggers:        ["업데이트 개발", "OTA 업데이트", "보안 패치 개발", "업데이트 역량"]
+aliases:         ["software update", "OTA", "펌웨어 업데이트", "차량 내 업데이트"]
+event_triggers:  ["취약점 조치 필요", "사고 대응 패치 요구", "운영 중 기능 변경"]
+domains:         ["자동차"]

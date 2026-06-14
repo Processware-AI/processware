@@ -1,0 +1,107 @@
+# =============================================================
+# WI-VCSMS-02-08-03 사이버보안 인터페이스 합의(CIA) 체결 — Agent 실행 정의
+# =============================================================
+wi_id:           "WI-VCSMS-02-08-03"
+title:           "사이버보안 인터페이스 합의(CIA) 체결"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-08"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-08-03-01"
+scope_code:      "VCSMS"
+scope_type:      "org"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "분산 활동 목록화"
+    section_ref:  "§5.1"
+    inputs:
+      - field:    "distributed_activities"
+        type:     "table"
+        question: "분산 대상 사이버보안 활동을 입력하세요(개발·검증·취약점관리·인시던트·인계)."
+        columns:  ["활동", "산출물", "인계시점"]
+        required: true
+    outputs:
+      - tmp_field: "활동목록표[]"
+        from:      "distributed_activities"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "활동별 책임 명시"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "responsibility_matrix"
+        type:     "table"
+        question: "각 활동의 고객/공급자 책임(R/A/C/I)을 입력하세요."
+        columns:  ["활동", "고객책임", "공급자책임", "증빙책임"]
+        required: true
+    outputs:
+      - tmp_field: "책임분배표[]"
+        from:      "responsibility_matrix"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "취약점·인시던트·통지 규칙 정의"
+    section_ref:  "§5.2.2-3"
+    inputs:
+      - field:    "vuln_incident_rules"
+        type:     "table"
+        question: "취약점 조치 책임·인시던트 통지·요구 충돌 통지 규칙(채널·기한)을 입력하세요."
+        columns:  ["상황", "통지채널", "기한", "책임주체"]
+        required: true
+    outputs:
+      - tmp_field: "통지규칙표[]"
+        from:      "vuln_incident_rules"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "상호 검토·서명 및 CSM 승인"
+    section_ref:  "§5.2.4-5"
+    inputs:
+      - field:    "mutual_signature"
+        type:     "boolean"
+        question: "활동 개시 전 고객·공급자 상호 서명이 완료되었습니까?"
+        required: true
+      - field:    "approval_result"
+        type:     "enum"
+        question: "CSM 책임 경계 완전성 승인 결과를 선택하세요."
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+    outputs:
+      - tmp_field: "서명.상호서명완료"
+        from:      "mutual_signature"
+      - tmp_field: "결재.승인"
+        from:      "approval_result"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 명시 — CIA 발효 승인"
+
+dod_checklist:
+  - "분산 대상 사이버보안 활동 빠짐없이 CIA 목록화"
+  - "각 활동의 고객/공급자 책임 명시"
+  - "취약점·인시던트 시 조치·통지 책임 규칙 포함"
+  - "요구 불명확·충돌 시 상호 통지 규칙 정의"
+  - "활동 개시 전 고객·공급자 상호 서명 완료"
+  - "CSM 검토·승인 후 CIA 발효"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "활동 개시 후 CIA 체결(역순)"
+    rule:    "잠정 CIA 서명 후 기한 내 정식 CIA 체결, 잠정 기간 책임 공백 CSM 수용 기록."
+  - section: "§7.2"
+    name:    "책임 분배 미합의 항목 잔존"
+    rule:    "해당 활동 미개시, 미합의 항목 목록화·에스컬레이션 후 합의 시 개시."
+  - section: "§7.3"
+    name:    "다단계 공급망(N-tier)"
+    rule:    "재하청 시 공급자-서브공급자 CIA 일관성 보증, 본 CIA 에 flow-down 조항 삽입."
+
+triggers:        ["CIA 체결", "사이버보안 인터페이스 합의", "공급자 책임 분배", "분산 활동 합의"]
+aliases:         ["cybersecurity interface agreement", "CIA", "책임 합의서", "인터페이스 협약"]
+event_triggers:  ["RFQ 후 공급자 확정", "분산 활동 개시 전"]
+domains:         ["자동차"]

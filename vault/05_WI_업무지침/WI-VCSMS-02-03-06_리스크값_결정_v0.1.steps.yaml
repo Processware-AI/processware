@@ -1,0 +1,100 @@
+wi_id:           "WI-VCSMS-02-03-06"
+title:           "리스크값 결정 (1-5)"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-03"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-03-06-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "영향·타당성 결합"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "combine_table"
+        type:     "table"
+        question: "위협별 영향등급과 최고 타당성 등급을 결합하라"
+        columns:  ["위협 ID", "영향등급", "최고 타당성 경로", "타당성 등급"]
+        required: true
+    outputs:
+      - tmp_field: "산정표.결합[]"
+        from:      "combine_table"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "리스크값 산정"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "risk_matrix_ref"
+        type:     "text"
+        question: "조직 리스크 매트릭스(영향×타당성) 버전은?"
+        required: true
+    derivations:
+      - id:       "risk_value"
+        expr:     |
+          # 조직 리스크 매트릭스 룩업: (영향등급, 타당성등급) → 1~5
+          return matrix_lookup(영향등급, 타당성등급)  # 1=최소 ~ 5=최대
+        description: "영향×타당성 매트릭스로 리스크값(1-5) 산정"
+    outputs:
+      - tmp_field: "산정표.리스크값[]"
+        from:      "risk_value"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "분포·이상치 점검"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "distribution_checked"
+        type:     "boolean"
+        question: "리스크값 분포·이상치(고영향인데 값1 등) 점검 완료?"
+        required: true
+    outputs:
+      - tmp_field: "산정표.점검"
+        from:      "distribution_checked"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "검토·승인"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "approver_name"
+        type:     "person"
+        question: "리스크값 산정표 승인자(CSM)는?"
+        required: true
+    outputs:
+      - tmp_field: "산정표.승인"
+        from:      "approver_name"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 / PRO §3 RACI — 리스크값 결정 A 는 CSM"
+
+dod_checklist:
+  - "위협 시나리오별 영향·타당성 결합"
+  - "리스크 매트릭스로 1~5 리스크값 산정"
+  - "복수 경로 시 최고 타당성 기준 적용"
+  - "분포·이상치 점검"
+  - "CSM 승인"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "매트릭스 외 임의 산정"
+    rule:    "조직 리스크 매트릭스 미준수 임의 산정 금지. 보완 필요 시 매트릭스 개정 후 적용."
+  - section: "§7.2"
+    name:    "영향·타당성 갱신"
+    rule:    "WI-03 영향/WI-05 타당성 갱신 시 해당 위협 리스크값 재산정·처리(WI-07) 재검토."
+  - section: "§7.3"
+    name:    "리스크값 1 과다"
+    rule:    "리스크값 1 비정상 과다 시 영향·타당성 입력 보수성 재점검·근거 보강."
+
+triggers:        ["리스크값", "risk value", "리스크 산정", "영향 타당성 결합"]
+aliases:         ["risk value", "risk determination", "리스크값 결정"]
+event_triggers:  ["공격 타당성 평가 후"]
+domains:         ["자동차"]

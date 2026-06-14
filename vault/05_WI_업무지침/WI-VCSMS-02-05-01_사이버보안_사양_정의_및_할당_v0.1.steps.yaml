@@ -1,0 +1,116 @@
+wi_id:           "WI-VCSMS-02-05-01"
+title:           "사이버보안 사양 정의 및 컴포넌트 할당"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-05"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-05-01-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:          "step-01"
+    name:        "사이버보안 사양 정의"
+    section_ref: "§5.2.1"
+    inputs:
+      - field:    "specifications"
+        type:     "table"
+        question: "상위 요구·통제·기존 설계 기반 구체 사양(SP-##)을 입력하세요."
+        columns:  ["spec_id", "source_req", "spec_statement"]
+        required: true
+    outputs:
+      - tmp_field: "사양서.사양목록"
+        from:      "specifications"
+    hitl: false
+
+  - id:          "step-02"
+    name:        "컴포넌트 할당"
+    section_ref: "§5.2.2"
+    inputs:
+      - field:    "allocations"
+        type:     "table"
+        question: "각 사양을 아키텍처 컴포넌트에 할당하세요."
+        columns:  ["spec_id", "component", "interface_responsibility"]
+        required: true
+    derivations:
+      - id:       "all_allocated"
+        expr:     |
+          if every spec_id has component: "OK"
+          else: "미할당"
+        description: "모든 사양 할당 완료 시 OK"
+    outputs:
+      - tmp_field: "사양서.할당"
+        from:      "allocations"
+    hitl: false
+
+  - id:          "step-03"
+    name:        "개발 후 보장 절차 명시"
+    section_ref: "§5.2.3"
+    inputs:
+      - field:    "post_dev_procedures"
+        type:     "table"
+        question: "개발 후 사이버보안 보장이 필요한 사양과 절차를 입력하세요(해당 시)."
+        columns:  ["spec_id", "post_dev_requirement"]
+        required: false
+    outputs:
+      - tmp_field: "사양서.개발후요구"
+        from:      "post_dev_procedures"
+    hitl: false
+
+  - id:          "step-04"
+    name:        "추적성 연결"
+    section_ref: "§5.2.4"
+    inputs:
+      - field:    "trace_ok"
+        type:     "boolean"
+        question: "컨셉요구(CR)→사양(SP)→컴포넌트 추적이 연결되었습니까?"
+        required: true
+    outputs:
+      - tmp_field: "사양서.추적성"
+        from:      "trace_ok"
+    hitl: false
+
+  - id:          "step-05"
+    name:        "검토·승인"
+    section_ref: "§5.2.5"
+    inputs:
+      - field:    "approval_decision"
+        type:     "enum"
+        question: "CSM 승인 결정은 무엇입니까?"
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+    outputs:
+      - tmp_field: "사양서.결재.승인"
+        from:      "approval_decision"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 = CSM"
+
+dod_checklist:
+  - "컨셉 요구(CR-##) 전건이 사양(SP-##)으로 구체화(누락 0)"
+  - "모든 사양이 컴포넌트에 할당(미할당 0)"
+  - "(해당 시)개발 후 보장 절차 명시"
+  - "CR↔SP↔컴포넌트 추적 연결 확인"
+  - "CSM 승인 기록 확보"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "컨셉 요구 모호"
+    rule:    "임의 해석 금지, 컨셉 단계로 명확화 요청 후 사양 정의"
+  - section: "§7.2"
+    name:    "재사용 컴포넌트 사양 격차"
+    rule:    "격차 식별 후 보완 사양·추가 통제 정의, 재사용 분석 연계"
+  - section: "§7.3"
+    name:    "컴포넌트 미확정"
+    rule:    "할당을 잠정(TBD) 표기, 확정 시 사양서 개정"
+
+triggers:        ["사이버보안 사양", "사양 정의", "컴포넌트 할당", "security specification"]
+aliases:         ["security spec", "spec allocation", "사양서", "사양 할당"]
+event_triggers:  ["컨셉 산출물 전달", "제품개발 착수"]
+domains:         ["자동차"]

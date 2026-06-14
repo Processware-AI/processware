@@ -1,0 +1,116 @@
+wi_id:           "WI-VCSMS-02-05-02"
+title:           "설계·구현 원칙 및 언어·코딩 기준 적용"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-05"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-05-02-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:          "step-01"
+    name:        "표기·언어 선정 기준 평가"
+    section_ref: "§5.2.1"
+    inputs:
+      - field:    "language_assessment"
+        type:     "table"
+        question: "선정 언어·표기의 명확성·모듈성·보안기법·복원력 기준 충족 여부를 입력하세요."
+        columns:  ["criterion", "language", "met"]
+        required: true
+    outputs:
+      - tmp_field: "적용확인서.언어평가"
+        from:      "language_assessment"
+    hitl: false
+
+  - id:          "step-02"
+    name:        "보완 가이드라인·환경 결정"
+    section_ref: "§5.2.2"
+    inputs:
+      - field:    "compensations"
+        type:     "table"
+        question: "미충족 기준에 대한 보완(가이드라인·정적분석·환경) 방안을 입력하세요."
+        columns:  ["criterion", "compensation"]
+        required: false
+    outputs:
+      - tmp_field: "적용확인서.보완방안"
+        from:      "compensations"
+    hitl: false
+
+  - id:          "step-03"
+    name:        "검증된 설계·구현 원칙 적용"
+    section_ref: "§5.2.3"
+    inputs:
+      - field:    "principles_applied"
+        type:     "multiselect"
+        question: "적용한 검증된 설계·구현 원칙을 선택하세요([RC-10-06])."
+        options:  ["입력검증", "최소권한", "안전한기본값", "심층방어", "공격표면최소화", "기타"]
+        required: false
+      - field:    "non_apply_rationale"
+        type:     "text"
+        question: "권고 원칙 미적용 시 근거를 입력하세요."
+        required_if: "principles_applied 미선택 항목 존재"
+    outputs:
+      - tmp_field: "적용확인서.원칙적용"
+        from:      "principles_applied"
+    hitl: false
+
+  - id:          "step-04"
+    name:        "적용 점검"
+    section_ref: "§5.2.4"
+    inputs:
+      - field:    "violations"
+        type:     "number"
+        question: "정적분석·코드리뷰 위반 항목 중 미시정 잔존 수는 몇 건입니까?"
+        validation: "x >= 0"
+        required: true
+    outputs:
+      - tmp_field: "적용확인서.위반시정"
+        from:      "violations"
+    hitl: false
+
+  - id:          "step-05"
+    name:        "검토·승인"
+    section_ref: "§5.2.5"
+    inputs:
+      - field:    "approval_decision"
+        type:     "enum"
+        question: "보안 설계자 승인 결정은 무엇입니까?"
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+    outputs:
+      - tmp_field: "적용확인서.결재.승인"
+        from:      "approval_decision"
+    hitl: required
+    approver_role: "보안 설계자"
+    rationale:     "WI §2 승인자 = 보안 설계자"
+
+dod_checklist:
+  - "entry_gate(WI-05-01 done) 충족 확인"
+  - "언어·표기 선정 기준 평가 완료"
+  - "미충족 기준에 보완 가이드라인·환경 결정"
+  - "검증된 설계·구현 원칙 적용 항목 기록([RC-10-06])"
+  - "정적분석·코드리뷰 위반 항목 시정 완료"
+  - "보안 설계자 승인 기록 확보"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "레거시 언어 제약"
+    rule:    "가이드라인·정적분석·런타임 보호로 보완, 잔존 제약을 약점 분석(WI-05-03) 입력 등록"
+  - section: "§7.2"
+    name:    "권고 원칙 미적용"
+    rule:    "[RC-10-06] 미적용 시 근거 적용 확인서 명시"
+  - section: "§7.3"
+    name:    "가이드라인 위반 미시정"
+    rule:    "잔존 위반을 약점 등록, 약점 분석·검증(WI-05-03,06)에서 처리"
+
+triggers:        ["코딩 기준", "언어 선정", "설계 원칙", "정적분석", "coding guideline"]
+aliases:         ["secure coding", "코딩 가이드라인", "설계 구현 원칙", "언어 기준"]
+event_triggers:  ["사양 할당 완료", "구현 착수"]
+domains:         ["자동차"]

@@ -1,0 +1,145 @@
+wi_id:           "WI-VCSMS-01-01-01"
+title:           "사이버보안 정책·규칙·프로세스 수립"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-01-01"
+parent_pol:      "POL-VCSMS-01"
+related_tmp:
+  - "TMP-VCSMS-01-01-01-01"
+scope_code:      "VCSMS"
+scope_type:      "common"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "정책 초안 작성"
+    section_ref:  "§5.2.1"
+    description:  "리스크 인지·경영 의지·범위·검토 주기를 담은 정책 초안 작성"
+    inputs:
+      - field:    "risk_awareness_statement"
+        type:     "text"
+        question: "차량 사이버보안 리스크 인지를 어떻게 선언하는가?"
+        required: true
+      - field:    "management_commitment"
+        type:     "text"
+        question: "경영진의 관리 의지·우선순위를 어떻게 천명하는가?"
+        required: true
+      - field:    "policy_scope"
+        type:     "text"
+        question: "정책 적용 범위(item/component·수명주기 단계)는?"
+        required: true
+      - field:    "review_cycle"
+        type:     "enum"
+        question: "정책 검토 주기는?"
+        required: true
+        options:  ["연 1회", "반기 1회", "분기 1회"]
+    outputs:
+      - tmp_field: "등록부.정책_요지"
+        from:      "risk_awareness_statement"
+    hitl: false
+  - id:           "step-02"
+    name:         "규칙·프로세스 정의"
+    section_ref:  "§5.2.2"
+    description:  "정책을 실행 가능케 하는 규칙·프로세스를 등록부에 등록"
+    inputs:
+      - field:    "rule_registry"
+        type:     "table"
+        question: "수립할 규칙·프로세스를 행으로 입력하세요."
+        required: true
+        columns:  ["rule_id", "근거조항", "소유_프로세스", "검토주기"]
+    outputs:
+      - tmp_field: "등록부.규칙[]"
+        from:      "rule_registry"
+    hitl: false
+  - id:           "step-03"
+    name:         "지속적 개선 메커니즘 정의"
+    section_ref:  "§5.2.3"
+    description:  "개선 트리거와 정책·규칙 갱신 경로 정의 ([RQ-05-08])"
+    inputs:
+      - field:    "improvement_triggers"
+        type:     "multiselect"
+        question: "지속적 개선 트리거를 선택하세요(5종 이상 권장)."
+        required: true
+        options:  ["감사 부적합", "사고 발생", "취약점 처리 결과", "표준 개정", "KPI 미달", "고객 요구"]
+      - field:    "update_path"
+        type:     "text"
+        question: "트리거 발생 시 정책·규칙 갱신 경로(에스컬레이션)는?"
+        required: true
+    outputs:
+      - tmp_field: "등록부.개선_트리거"
+        from:      "improvement_triggers"
+    hitl: false
+  - id:           "step-04"
+    name:         "PCB 검토"
+    section_ref:  "§5.2.4"
+    description:  "PCB 가 완전성·정합성·측정가능성 검토"
+    inputs:
+      - field:    "pcb_review_comment"
+        type:     "text"
+        question: "PCB 검토 코멘트와 반영 결과는?"
+        required: true
+    outputs:
+      - tmp_field: "등록부.검토_코멘트"
+        from:      "pcb_review_comment"
+    hitl: false
+  - id:           "step-05"
+    name:         "경영진 승인"
+    section_ref:  "§5.2.5"
+    description:  "경영진이 정책·규칙 등록부 최종 승인"
+    inputs:
+      - field:    "approval_decision"
+        type:     "enum"
+        question: "경영진 승인 결정은?"
+        required: true
+        options:  ["승인", "조건부승인", "반려"]
+      - field:    "approval_record"
+        type:     "text"
+        question: "승인 기록(전자결재 번호 또는 회의록 ID)은?"
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval_decision"
+    hitl: required
+    approver_role: "Top Management (경영진)"
+    rationale:     "WI §2 승인자 = 경영진 (정책 최종 승인 권한)"
+  - id:           "step-06"
+    name:         "배포·등록"
+    section_ref:  "§5.2.6"
+    description:  "정책·규칙 게시 및 MAT-001 등록"
+    inputs:
+      - field:    "distribution_channel"
+        type:     "text"
+        question: "배포 채널과 게시 일자는?"
+        required: true
+    outputs:
+      - tmp_field: "등록부.배포_기록"
+        from:      "distribution_channel"
+    hitl: false
+
+dod_checklist:
+  - "정책에 리스크 인지·경영 의지·범위·검토 주기 4요소 포함"
+  - "규칙·프로세스가 거버넌스/감사/지속활동/사고대응/프로젝트 전 영역 커버"
+  - "지속적 개선 트리거 5종 이상 정의 및 갱신 경로 등록"
+  - "PCB 검토 코멘트 반영 완료"
+  - "경영진 승인 기록 확보"
+  - "정책·규칙 등록부 작성·배포·MAT-001 등록 완료"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "표준·규제 개정 긴급 갱신"
+    rule:    "R155/R156·21434 개정 시 경영진 구두 승인 선반영 후 30일 내 PCB 정식 검토 보완"
+  - section: "§7.2"
+    name:    "규칙 충돌"
+    rule:    "상위 QMS 와 중복·상충 시 QMS 정본 우선, 본 영역은 참조 링크 처리, 상충은 PCB 회부"
+  - section: "§7.3"
+    name:    "검토 주기 미준수"
+    rule:    "검토 주기 누락 시 임시 검토 트리거, 반복 미준수 시 경영검토 안건 상정"
+
+triggers:        ["사이버보안 정책 수립", "규칙 수립", "거버넌스 정책", "정책 검토"]
+aliases:         ["cybersecurity policy", "거버넌스 룰", "보안 정책 개정"]
+event_triggers:  ["조직 출범", "표준 편입", "연간 정책 검토 주기 도래"]
+domains:         ["자동차"]

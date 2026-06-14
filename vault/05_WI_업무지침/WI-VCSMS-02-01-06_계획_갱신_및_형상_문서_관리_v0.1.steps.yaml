@@ -1,0 +1,112 @@
+wi_id:           "WI-VCSMS-02-01-06"
+title:           "계획 갱신 및 형상·문서 관리"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-01"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-01-06-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "변경 식별·영향 평가"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "change_trigger"
+        type:     "enum"
+        question: "변경 트리거 유형은?"
+        options:  ["테일러링 결과", "재사용 분석", "TARA 갱신", "일정 변경", "기타"]
+        required: true
+      - field:    "change_impact"
+        type:     "text"
+        question: "계획·WP 영향 평가 내용"
+        required: true
+    outputs:
+      - tmp_field: "변경관리대장.영향"
+        from:      "change_impact"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "계획 갱신"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "new_version"
+        type:     "text"
+        question: "갱신 후 계획 버전은?"
+        required: true
+      - field:    "change_detail"
+        type:     "text"
+        question: "변경 반영 내용"
+        required: true
+    derivations:
+      - id:       "change_class"
+        expr:     |
+          if 구조·범위·책임 변경: "중대(별도 협의)"
+          else: "경미(v0.x 증분)"
+        description: "변경 등급 자동 분류"
+    outputs:
+      - tmp_field: "변경관리대장.버전"
+        from:      "new_version"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "형상·문서 관리 반영"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "cm_registered"
+        type:     "boolean"
+        question: "갱신 계획·WP 를 형상관리에 등록·버전 통제했는가?"
+        required: true
+    outputs:
+      - tmp_field: "변경관리대장.형상등록"
+        from:      "cm_registered"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "승인·전파"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "approver_name"
+        type:     "person"
+        question: "갱신 승인자(CSM)는?"
+        required: true
+      - field:    "notified"
+        type:     "boolean"
+        question: "이해관계자에게 갱신 전파 완료?"
+        required: true
+    outputs:
+      - tmp_field: "변경관리대장.승인"
+        from:      "approver_name"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 — 계획 갱신 승인"
+
+dod_checklist:
+  - "변경 트리거 식별·영향 평가 완료"
+  - "계획 버전 증분 + 변경 내용 반영"
+  - "계획·WP 형상관리 등록·버전 통제"
+  - "변경관리대장에 이력 기록"
+  - "CSM 승인 + 이해관계자 전파"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "미갱신 계획"
+    rule:    "변경 후 미갱신 시 월간 점검 적발, 5영업일 내 갱신 강제, 미준수 CSM 에스컬레이션."
+  - section: "§7.2"
+    name:    "형상 외부 변경"
+    rule:    "형상관리 우회 변경 발견 시 무효 처리·정식 절차 재진입, WP 무결성 재확인."
+  - section: "§7.3"
+    name:    "릴리스 임박 변경"
+    rule:    "릴리스 직전 중대 변경 시 릴리스 게이트(PRO-02-02) 보류, 영향 없음 미논증 시 연기."
+
+triggers:        ["계획 갱신", "형상 관리", "변경 관리", "WP 유지", "계획 버전 증분"]
+aliases:         ["plan update", "configuration management", "change control"]
+event_triggers:  ["활동 변경·정련 식별 시", "TARA 갱신 시", "월간 점검"]
+domains:         ["자동차"]

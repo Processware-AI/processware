@@ -1,0 +1,119 @@
+# =============================================================
+# WI-VCSMS-02-07-02 무단 변경 방지 통제 정의 — Agent 실행 정의
+# =============================================================
+wi_id:           "WI-VCSMS-02-07-02"
+title:           "무단 변경 방지 통제 정의"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-07"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-07-02-01"
+scope_code:      "VCSMS"
+scope_type:      "org"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "통제 지점별 무단 변경 위협 식별"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "control_points"
+        type:     "table"
+        question: "생산 통제 계획서의 통제 지점과 각 지점의 무단 변경 위협을 입력하세요."
+        columns:  ["통제지점", "무단변경위협"]
+        required: true
+    outputs:
+      - tmp_field: "위협식별표[]"
+        from:      "control_points"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "통제 수단 4개 축 정의"
+    section_ref:  "§5.2.2"
+    description:  "사람·도구·환경·기록 축으로 통제 정의, 통제 ID 부여"
+    inputs:
+      - field:    "controls"
+        type:     "table"
+        question: "각 위협에 대응하는 통제(사람/도구/환경/기록)와 통제 ID를 입력하세요."
+        columns:  ["통제ID", "축(사람/도구/환경/기록)", "통제내용", "매핑통제지점"]
+        required: true
+    outputs:
+      - tmp_field: "통제정의표[]"
+        from:      "controls"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "통제 유효성 확인 방법 정의"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "verification_methods"
+        type:     "table"
+        question: "각 통제의 유효성 확인 방법(주기 점검·로그 감사·우회 시도)을 입력하세요."
+        columns:  ["통제ID", "확인방법", "주기"]
+        required: true
+    outputs:
+      - tmp_field: "유효성확인표[]"
+        from:      "verification_methods"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "이상 대응 규칙 정의"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "incident_rule"
+        type:     "text"
+        question: "무단 변경 탐지 시 이상 대응(라인 정지·격리·NCR) 흐름을 기재하세요."
+        required: true
+    outputs:
+      - tmp_field: "이상대응규칙"
+        from:      "incident_rule"
+    hitl: false
+
+  - id:           "step-05"
+    name:         "CSM 검토 및 승인"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "residual_threats"
+        type:     "text"
+        question: "CSM 이 식별한 잔존 위협·보상 통제를 입력하세요."
+        required: false
+      - field:    "approval_result"
+        type:     "enum"
+        question: "Project CS Lead 승인 결과를 선택하세요."
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval_result"
+    hitl: required
+    approver_role: "Project CS Lead"
+    rationale:     "WI §2 승인자 명시 — 무단 변경 방지 통제 승인"
+
+dod_checklist:
+  - "계획서 모든 통제 지점에 무단 변경 위협 식별"
+  - "각 위협에 4개 축(사람·도구·환경·기록) 통제 정의"
+  - "모든 통제에 통제 ID 부여 및 계획서 지점 매핑"
+  - "통제 유효성 확인 방법 정의"
+  - "무단 변경 탐지 시 이상 대응 규칙 정의"
+  - "CSM 검토·Project CS Lead 승인 완료"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "통제 불가능 위협(잔존 위협)"
+    rule:    "잔존 위협 명시 + 보상 통제(탐지·사후 추적) 정의, CSM·Project CS Lead 위험 수용 결정 기록."
+  - section: "§7.2"
+    name:    "통제 도구 무결성 의심"
+    rule:    "도구 격리·교정·무결성 검증 후 재투입, 의심 기간 산출물 보류·재검사."
+  - section: "§7.3"
+    name:    "양산 중 통제 우회 탐지"
+    rule:    "라인 즉시 정지·산출물 격리·NCR 발행, PRO-VCSMS-01-04 사고대응 연계 여부 CSM 판정."
+
+triggers:        ["무단 변경 방지", "양산 통제 수단", "변조 방지 통제", "통제 정의"]
+aliases:         ["anti-tampering control", "무결성 통제", "변경 방지"]
+event_triggers:  ["생산 통제 계획 승인 후", "통제 지점 식별 완료"]
+domains:         ["자동차"]

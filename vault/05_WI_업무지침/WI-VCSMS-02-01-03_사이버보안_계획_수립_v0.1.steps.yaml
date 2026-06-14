@@ -1,0 +1,134 @@
+wi_id:           "WI-VCSMS-02-01-03"
+title:           "사이버보안 계획 수립"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-01"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-01-03-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "목표·범위 정의"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "cs_objective"
+        type:     "text"
+        question: "프로젝트 사이버보안 목표는?"
+        required: true
+      - field:    "plan_scope"
+        type:     "text"
+        question: "계획 적용 범위(item/component)는?"
+        required: true
+    outputs:
+      - tmp_field: "계획서.목표"
+        from:      "cs_objective"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "활동 계획 수립"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "activity_plan"
+        type:     "table"
+        question: "Clause 9·10·11·15 활동을 담당·기간·산출물·의존성과 함께 기재하라"
+        columns:  ["활동", "근거조항", "담당", "기간", "산출물(WP)", "의존성"]
+        required: true
+    outputs:
+      - tmp_field: "계획서.활동[]"
+        from:      "activity_plan"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "자원·진척책임 반영"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "progress_owner"
+        type:     "person"
+        question: "진척 추적 책임자는?(책임배정표와 일치)"
+        required: true
+    outputs:
+      - tmp_field: "계획서.진척책임"
+        from:      "progress_owner"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "분산활동 계획"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "has_distributed"
+        type:     "boolean"
+        question: "공급자 분산 활동이 있는가?"
+        required: true
+      - field:    "cia_ref"
+        type:     "text"
+        question: "관련 CIA(인터페이스 합의) 식별자"
+        required: false
+        required_if: "has_distributed == true"
+    outputs:
+      - tmp_field: "계획서.분산활동"
+        from:      "cia_ref"
+    hitl: false
+
+  - id:           "step-05"
+    name:         "프로젝트 계획 연결"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "project_plan_ref"
+        type:     "text"
+        question: "프로젝트 계획 내 참조 위치(문서·섹션)는?"
+        required: true
+    outputs:
+      - tmp_field: "계획서.프로젝트계획참조"
+        from:      "project_plan_ref"
+    hitl: false
+
+  - id:           "step-06"
+    name:         "형상 등록·승인"
+    section_ref:  "§5.2.6"
+    inputs:
+      - field:    "config_id"
+        type:     "text"
+        question: "형상관리 등록 ID"
+        required: true
+      - field:    "approver_name"
+        type:     "person"
+        question: "계획 승인자(CSM)는?"
+        required: true
+    outputs:
+      - tmp_field: "계획서.승인"
+        from:      "approver_name"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 — 사이버보안 계획 승인"
+
+dod_checklist:
+  - "사이버보안 목표·범위 정의"
+  - "Clause 9·10·11·15 활동이 담당·기간·산출물·의존성과 함께 명시"
+  - "진척 추적 책임 배정 일치"
+  - "분산 활동(해당 시) CIA 정렬"
+  - "프로젝트 계획 내 식별 가능 연결"
+  - "형상 등록 + CSM 승인"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "TARA 미완 활동 미확정"
+    rule:    "활동 특정 불가 시 placeholder + 갱신 마일스톤 표기, WI-06 에서 보완."
+  - section: "§7.2"
+    name:    "일정 충돌"
+    rule:    "게이트 충돌 시 리스크 기반 조정안 PM·CSM 합의. 생략은 테일러링(WI-04)으로 회부."
+  - section: "§7.3"
+    name:    "분산 책임 공백"
+    rule:    "CIA 미합의 활동은 '책임 미정' 표기 후 게이트 통과 차단."
+
+triggers:        ["사이버보안 계획", "활동 계획", "WP-06-01", "프로젝트 계획 수립"]
+aliases:         ["cybersecurity plan", "CS plan", "계획서 작성"]
+event_triggers:  ["관련성 판정 승인 후"]
+domains:         ["자동차"]

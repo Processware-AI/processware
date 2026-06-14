@@ -1,0 +1,120 @@
+wi_id:           "WI-VCSMS-01-03-02"
+title:           "정보 수집·트리아지 및 이벤트 판별"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-01-03"
+parent_pol:      "POL-VCSMS-01"
+related_tmp:
+  - "TMP-VCSMS-01-03-02-01"
+scope_code:      "VCSMS"
+scope_type:      "common"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "정보 수집·정규화"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "collected_info"
+        type:     "table"
+        question: "수집 정보를 정규화하여 입력하세요(영향 자산·버전·심각도)."
+        required: true
+        columns:  ["정보ID", "출처", "영향자산", "버전", "심각도"]
+    outputs:
+      - tmp_field: "기록부.수집정보[]"
+        from:      "collected_info"
+    hitl: false
+  - id:           "step-02"
+    name:         "트리아지 적용"
+    section_ref:  "§5.2.2"
+    description:  "트리거 적용·우선순위 분류 ([RQ-08-03])"
+    inputs:
+      - field:    "triage_result"
+        type:     "table"
+        question: "트리아지 결과를 입력하세요(우선순위·SLA·기각사유)."
+        required: true
+        columns:  ["정보ID", "우선순위", "SLA내처리", "기각사유"]
+    outputs:
+      - tmp_field: "기록부.트리아지[]"
+        from:      "triage_result"
+    hitl: false
+  - id:           "step-03"
+    name:         "이벤트 판별"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "event_candidates"
+        type:     "table"
+        question: "이벤트 후보를 등록하세요(영향 자산·근거·우선순위)."
+        required: true
+        columns:  ["이벤트ID", "영향자산", "판별근거", "우선순위"]
+    outputs:
+      - tmp_field: "기록부.이벤트후보[]"
+        from:      "event_candidates"
+    hitl: false
+  - id:           "step-04"
+    name:         "분석가 교차 검토"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "analyst_review"
+        type:     "text"
+        question: "P1/P2 이벤트 판별 교차 검토 결과는?"
+        required: true
+    outputs:
+      - tmp_field: "기록부.교차검토"
+        from:      "analyst_review"
+    hitl: false
+  - id:           "step-05"
+    name:         "CSM 이벤트 확정·연계"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "event_decision"
+        type:     "enum"
+        question: "CSM 이벤트 확정 결정은?"
+        required: true
+        options:  ["이벤트 확정", "기각", "사고대응 즉시 연계"]
+    outputs:
+      - tmp_field: "결재.이벤트확정"
+        from:      "event_decision"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 = CSM (이벤트 확정·사고대응 연계 판단)"
+  - id:           "step-06"
+    name:         "적시성 점검·기록"
+    section_ref:  "§5.2.6"
+    inputs:
+      - field:    "sla_compliance"
+        type:     "boolean"
+        question: "트리아지 적시성(SLA) 충족 여부는?"
+        required: true
+    outputs:
+      - tmp_field: "기록부.적시성"
+        from:      "sla_compliance"
+    hitl: false
+
+dod_checklist:
+  - "활성 정보원 신규 정보 수집·정규화(자산 매칭 가능 형태)"
+  - "트리거 적용·우선순위 분류 및 SLA 내 처리"
+  - "자산 무관·노이즈 기각 사유 기록"
+  - "이벤트 후보 영향 자산·근거·우선순위 등록"
+  - "보안 분석가 P1/P2 교차 검토 및 CSM 이벤트 확정"
+  - "트리아지 적시성(SLA) 점검·기록부 갱신"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "SLA 초과(대량 유입)"
+    rule:    "대량 유입 시 P1 우선 처리·자원 증원 요청, SLA 초과 항목·사유 KPI(MAT-008) 반영"
+  - section: "§7.2"
+    name:    "모호한 이벤트 판별"
+    rule:    "모호 시 보수적으로 이벤트 후보 등록, 기각 시 근거 필수 기록(과소평가 방지)"
+  - section: "§7.3"
+    name:    "긴급 이벤트(악용 진행)"
+    rule:    "악용 진행 중이면 평가 병행 즉시 사고대응(PRO-01-04) 가동·CSM·경영진 긴급 통지"
+
+triggers:        ["정보 트리아지", "이벤트 판별", "취약점 정보 분류", "모니터링 처리"]
+aliases:         ["triage", "event detection", "이벤트 분류", "정보 처리"]
+event_triggers:  ["신규 취약점 권고 수신", "이상 텔레메트리 감지", "정보원 피드 유입"]
+domains:         ["자동차"]

@@ -1,0 +1,106 @@
+wi_id:           "WI-VCSMS-02-03-07"
+title:           "리스크 처리 결정 (회피/감소/공유/보유)"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-03"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-03-07-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "처리 옵션 결정"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "treatment_table"
+        type:     "table"
+        question: "위협별 리스크 처리 옵션을 결정하라"
+        columns:  ["위협 ID", "리스크값", "처리 옵션(회피/감소/공유/보유)", "근거"]
+        required: true
+    derivations:
+      - id:       "retain_violation"
+        expr:     |
+          if 처리옵션=="보유" and 리스크값 > 수용기준: "위반(보유 불가)"
+          else: "정상"
+        description: "수용 기준 초과 보유 차단 점검"
+    outputs:
+      - tmp_field: "등록부.처리[]"
+        from:      "treatment_table"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "반환 산출물 매핑"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "return_mapping"
+        type:     "table"
+        question: "처리 결정을 반환 산출물(목표/클레임/취약점)에 매핑하라"
+        columns:  ["위협 ID", "처리 옵션", "반환 산출물(목표/클레임/취약점)", "반환 대상 절차"]
+        required: true
+    outputs:
+      - tmp_field: "등록부.반환[]"
+        from:      "return_mapping"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "잔여 리스크 명시"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "residual_table"
+        type:     "table"
+        question: "처리 후 잔여 리스크와 정당화를 명시하라"
+        columns:  ["위협 ID", "잔여 리스크값", "정당화"]
+        required: true
+    outputs:
+      - tmp_field: "등록부.잔여[]"
+        from:      "residual_table"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "검토·승인·반환"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "all_treated"
+        type:     "boolean"
+        question: "리스크값 산정 전 위협이 처리 결정되었는가?(미처리 0)"
+        required: true
+      - field:    "approver_name"
+        type:     "person"
+        question: "리스크 처리 등록부 승인자(CSM)는?"
+        required: true
+    outputs:
+      - tmp_field: "등록부.승인"
+        from:      "approver_name"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 / PRO §3 RACI — 리스크 처리 결정 A 는 CSM"
+
+dod_checklist:
+  - "각 위협의 처리 옵션(회피/감소/공유/보유) 결정"
+  - "수용 기준 초과 리스크의 보유 금지 확인"
+  - "처리 결정의 반환 산출물(목표/클레임/취약점) 매핑"
+  - "잔여 리스크·정당화 명시"
+  - "CSM 승인 + 호출 절차로 반환"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "수용 기준 초과 보유 시도"
+    rule:    "retain_violation==위반 시 보유 금지 — 감소/회피/공유 전환. 예외 보유는 경영진 명시 승인·근거 필수."
+  - section: "§7.2"
+    name:    "처리 미정 잔존"
+    rule:    "all_treated==false 시 KPI(미처리 0) 위반 — 전수 처리 결정 강제."
+  - section: "§7.3"
+    name:    "처리 후 리스크 재상승"
+    rule:    "감소 통제 무력화/신규 위협으로 재상승 시 TARA 재호출(WI-01~06 갱신)·처리 재수립."
+
+triggers:        ["리스크 처리", "risk treatment", "회피 감소 공유 보유", "리스크 등록부"]
+aliases:         ["risk treatment", "리스크 대응", "처리 결정"]
+event_triggers:  ["리스크값 결정 후", "취약점 관리 §8.6 호출"]
+domains:         ["자동차"]

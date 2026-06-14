@@ -1,0 +1,105 @@
+# =============================================================
+# WI-VCSMS-02-07-01 생산 통제 계획 작성 — Agent 실행 정의
+# =============================================================
+wi_id:           "WI-VCSMS-02-07-01"
+title:           "생산 통제 계획 작성"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-07"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-07-01-01"
+scope_code:      "VCSMS"
+scope_type:      "org"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "post-dev 요구 확보 및 생산 적용 분류"
+    section_ref:  "§5.1"
+    description:  "릴리스 인계 요구의 생산 공정 영향 1차 분류"
+    inputs:
+      - field:    "release_requirements"
+        type:     "table"
+        question: "릴리스에서 인계된 post-development 사이버보안 요구를 입력하세요."
+        columns:  ["req_id", "내용", "생산적용여부", "비적용사유"]
+        required: true
+    outputs:
+      - tmp_field: "요구매핑표[]"
+        from:      "release_requirements"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "통제 항목 4대 요소 정의"
+    section_ref:  "§5.2.2"
+    description:  "단계·도구·무단변경방지통제연계·확인법 기재"
+    inputs:
+      - field:    "control_items"
+        type:     "table"
+        question: "각 사이버보안 통제 항목의 생산단계/사용도구/무단변경방지통제연계/확인법을 입력하세요."
+        columns:  ["생산단계", "사용도구설비", "무단변경방지통제연계", "요구충족확인법", "합격기준"]
+        required: true
+    outputs:
+      - tmp_field: "통제계획표[]"
+        from:      "control_items"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "확인 방법·합격기준 명시"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "acceptance_basis"
+        type:     "text"
+        question: "샘플링 검사 시 검사 빈도·표본 크기 근거를 기재하세요."
+        required: false
+    outputs:
+      - tmp_field: "검사기준.근거"
+        from:      "acceptance_basis"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "CSM 검토 및 승인"
+    section_ref:  "§5.2.4-5"
+    inputs:
+      - field:    "csm_review_comment"
+        type:     "text"
+        question: "CSM 검토 의견(요구 누락·통제 적정성)을 입력하세요."
+        required: true
+      - field:    "approval_result"
+        type:     "enum"
+        question: "Project CS Lead 승인 결과를 선택하세요."
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval_result"
+    hitl: required
+    approver_role: "Project CS Lead"
+    rationale:     "WI §2 승인자 명시 — 생산 통제 계획 승인"
+
+dod_checklist:
+  - "post-development 요구 전 항목이 생산 공정에 매핑됨 (비적용 항목 사유 기재)"
+  - "계획서에 4대 필수 요소(단계·도구·무단변경방지통제·확인법) 모두 포함"
+  - "각 통제 항목에 측정 가능한 합격기준 지정"
+  - "CSM 검토 의견 반영"
+  - "Project CS Lead 승인 완료"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "post-dev 요구 누락·불명확"
+    rule:    "요구 해석 모호 시 릴리스(PRO-02-02) 담당에 질의, 확인 전 '보류' 표기하고 승인 제외."
+  - section: "§7.2"
+    name:    "양산 공정 변경 발생"
+    rule:    "변경 단계에 한해 매핑·통제 재검토, 4대 요소 구조 영향 시 CSM 재검토."
+  - section: "§7.3"
+    name:    "도구·설비 미가용"
+    rule:    "대체 통제 정의 후 한계 명시, CSM·Project CS Lead 위험 수용 결정 획득."
+
+triggers:        ["생산 통제 계획", "양산 사이버보안", "post-dev 요구 반영", "생산 통제 항목"]
+aliases:         ["production control plan", "양산 통제계획", "생산 CS 계획"]
+event_triggers:  ["릴리스 완료 후 양산 준비", "신규 품목 양산 착수"]
+domains:         ["자동차"]

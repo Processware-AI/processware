@@ -1,0 +1,126 @@
+wi_id:           "WI-VCSMS-01-03-04"
+title:           "약점 분석 및 취약점 식별"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-01-03"
+parent_pol:      "POL-VCSMS-01"
+related_tmp:
+  - "TMP-VCSMS-01-03-04-01"
+scope_code:      "VCSMS"
+scope_type:      "common"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "약점 악용 가능성 분석"
+    section_ref:  "§5.2.1"
+    description:  "접근·전제·통제 우회 분석 ([RQ-08-05])"
+    inputs:
+      - field:    "exploitability"
+        type:     "table"
+        question: "약점별 악용 가능성 분석 결과를 입력하세요."
+        required: true
+        columns:  ["약점ID", "접근경로", "전제조건", "통제우회", "악용가능성"]
+    outputs:
+      - tmp_field: "식별서.악용분석[]"
+        from:      "exploitability"
+    hitl: false
+  - id:           "step-02"
+    name:         "취약점 판정"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "vuln_decision"
+        type:     "table"
+        question: "취약점/비취약점 판정과 식별자를 입력하세요."
+        required: true
+        columns:  ["약점ID", "판정", "취약점ID", "관련CVE"]
+    outputs:
+      - tmp_field: "식별서.판정[]"
+        from:      "vuln_decision"
+    hitl: false
+  - id:           "step-03"
+    name:         "비취약점 근거 제시"
+    section_ref:  "§5.2.3"
+    description:  "비취약점 약점 근거 ([RQ-08-06]) — 근거 누락 0건"
+    inputs:
+      - field:    "non_vuln_rationale"
+        type:     "table"
+        question: "비취약점 판정 약점의 근거를 입력하세요(전건 필수)."
+        required: true
+        columns:  ["약점ID", "비취약점근거"]
+    derivations:
+      - id:       "rationale_completeness"
+        expr:     |
+          all(row.비취약점근거 != "" for row in non_vuln_rationale)
+        description: "비취약점 근거 누락 0건 검증"
+    outputs:
+      - tmp_field: "식별서.비취약점근거[]"
+        from:      "non_vuln_rationale"
+    hitl: false
+  - id:           "step-04"
+    name:         "재평가 조건 명시"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "reassess_trigger"
+        type:     "text"
+        question: "판정 전제 변경 시 재평가 트리거는?"
+        required: true
+    outputs:
+      - tmp_field: "식별서.재평가트리거"
+        from:      "reassess_trigger"
+    hitl: false
+  - id:           "step-05"
+    name:         "CSM 검토·승인"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "approval_decision"
+        type:     "enum"
+        question: "CSM 판정·근거 타당성 승인 결정은?"
+        required: true
+        options:  ["승인", "보완 후 승인", "재분석"]
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval_decision"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 = CSM (취약점 판정·비취약점 근거 타당성 검토)"
+  - id:           "step-06"
+    name:         "연계"
+    section_ref:  "§5.2.6"
+    inputs:
+      - field:    "handoff"
+        type:     "text"
+        question: "취약점 관리(WI-01-03-05) 연계 결과는?"
+        required: true
+    outputs:
+      - tmp_field: "식별서.연계"
+        from:      "handoff"
+    hitl: false
+
+dod_checklist:
+  - "약점별 악용 가능성(접근·전제·통제 우회) 분석 완료"
+  - "체인 약점의 연쇄 악용 경로 평가"
+  - "취약점 판정 및 식별자(내부 ID·관련 CVE) 부여"
+  - "비취약점 약점 전건에 근거 제시(근거 누락 0건)"
+  - "판정 전제 변경 시 재평가 트리거 명시"
+  - "CSM 판정·근거 타당성 검토·승인 및 취약점 관리 연계"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "악용 가능성 불확실"
+    rule:    "단정 곤란 시 보수적으로 취약점 판정·관리 대상화, 추가 분석(PoC·정밀평가) 필요성 명시"
+  - section: "§7.2"
+    name:    "비취약점 전제 붕괴"
+    rule:    "기존 통제 무력화 시 재평가 트리거에 따라 즉시 재분석·판정 갱신·이력 기록"
+  - section: "§7.3"
+    name:    "공급사 컴포넌트 취약점"
+    rule:    "공급사 취약점 시 조치·책임을 공급사와 합의([RQ-07-06], CIA 연계)·책임 경계 기록"
+
+triggers:        ["약점 분석", "취약점 식별", "악용 가능성 분석", "비취약점 근거"]
+aliases:         ["vulnerability identification", "exploitability analysis", "취약점 판정"]
+event_triggers:  ["약점 식별 완료", "신규 악용 코드 공개"]
+domains:         ["자동차"]

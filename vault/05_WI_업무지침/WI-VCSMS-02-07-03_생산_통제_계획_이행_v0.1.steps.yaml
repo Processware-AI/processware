@@ -1,0 +1,117 @@
+# =============================================================
+# WI-VCSMS-02-07-03 생산 통제 계획 이행 — Agent 실행 정의
+# =============================================================
+wi_id:           "WI-VCSMS-02-07-03"
+title:           "생산 통제 계획 이행"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-07"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-07-03-01"
+scope_code:      "VCSMS"
+scope_type:      "org"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "양산 개시 전 통제 반영 확인"
+    section_ref:  "§5.1"
+    inputs:
+      - field:    "readiness_check"
+        type:     "boolean"
+        question: "계획·통제 정의가 라인 작업 지시에 반영되고 도구가 가용/교정 상태입니까?"
+        required: true
+    outputs:
+      - tmp_field: "사전점검.확인"
+        from:      "readiness_check"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "요구 충족 확인 기록"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "conformance_records"
+        type:     "table"
+        question: "각 산출물(또는 표본)의 요구 충족 확인 결과를 입력하세요."
+        columns:  ["통제항목", "확인법", "측정값", "결과(Pass/Fail)", "시각"]
+        required: true
+    outputs:
+      - tmp_field: "이행확인표[]"
+        from:      "conformance_records"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "무단 변경 통제 점검 기록"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "control_audit"
+        type:     "table"
+        question: "통제 유효성 점검(주기 점검·로그 감사) 결과를 입력하세요."
+        columns:  ["통제ID", "점검방법", "결과", "일자"]
+        required: true
+    outputs:
+      - tmp_field: "통제점검표[]"
+        from:      "control_audit"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "미충족 처리"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "nonconformance"
+        type:     "table"
+        question: "Fail 발생 건의 격리·시정·재확인 결과를 입력하세요(없으면 비움)."
+        columns:  ["대상", "원인", "시정조치", "재확인결과"]
+        required: false
+    outputs:
+      - tmp_field: "미충족처리표[]"
+        from:      "nonconformance"
+    hitl: false
+
+  - id:           "step-05"
+    name:         "정기 이행 점검·승인"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "kpi_summary"
+        type:     "text"
+        question: "요구 충족율·무단변경 발생 건수 등 KPI 요약을 입력하세요."
+        required: true
+      - field:    "approval_result"
+        type:     "enum"
+        question: "CSM 정기 이행 점검 승인 결과를 선택하세요."
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval_result"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 명시 — 정기 이행 점검 승인"
+
+dod_checklist:
+  - "계획·통제 정의가 라인 작업 지시에 반영됨을 확인"
+  - "모든 산출물(또는 정의된 표본)의 요구 충족 확인 결과 기록"
+  - "통제 유효성 점검이 정의 주기대로 수행·기록"
+  - "미충족(Fail) 건 격리·시정·재확인 완료"
+  - "생산기술 검토 및 CSM 정기 이행 점검 승인 완료"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "반복 미충족(체계적 결함)"
+    rule:    "동일 항목 반복 Fail 시 양산 일시 보류, 계획·통제 재정의(WI-07-01/02)로 에스컬레이션."
+  - section: "§7.2"
+    name:    "통제 도구 고장"
+    rule:    "라인 정지, 대체 통제 임시 운영 시 한계 기록·CSM 승인, 고장 기간 산출물 전수 재검사."
+  - section: "§7.3"
+    name:    "무단 변경 탐지"
+    rule:    "라인 즉시 정지·산출물 격리·NCR 발행, CSM 이 PRO-VCSMS-01-04 사고대응 연계 판정."
+
+triggers:        ["생산 통제 이행", "양산 사이버보안 확인", "요구 충족 확인", "이행 기록"]
+aliases:         ["production control execution", "양산 이행", "통제 적용"]
+event_triggers:  ["양산 개시", "정기 이행 점검 주기 도래"]
+domains:         ["자동차"]

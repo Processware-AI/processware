@@ -1,0 +1,115 @@
+# =============================================================
+# WI-VCSMS-02-08-04 책임 분배 및 이슈 통지 운영 — Agent 실행 정의
+# =============================================================
+wi_id:           "WI-VCSMS-02-08-04"
+title:           "책임 분배 및 이슈 통지 운영"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-08"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-08-04-01"
+scope_code:      "VCSMS"
+scope_type:      "org"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "RACI 전개 및 통지 기준 확정"
+    section_ref:  "§5.1"
+    inputs:
+      - field:    "raci_matrix"
+        type:     "table"
+        question: "CIA 책임 분배를 RACI 매트릭스로 입력하세요(활동 × 역할)."
+        columns:  ["활동", "고객R/A/C/I", "공급자R/A/C/I"]
+        required: true
+      - field:    "notify_rules"
+        type:     "table"
+        question: "이슈 통지 채널·기한·에스컬레이션 경로를 입력하세요."
+        columns:  ["채널", "기한", "에스컬레이션경로"]
+        required: true
+    outputs:
+      - tmp_field: "RACI표[]"
+        from:      "raci_matrix"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "이슈 접수·통지"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "issues"
+        type:     "table"
+        question: "발생 이슈(요구 불명확·비현실·충돌)를 입력하세요."
+        columns:  ["이슈ID", "발생일", "내용", "통지일", "통지채널"]
+        required: false
+    outputs:
+      - tmp_field: "이슈통지대장[]"
+        from:      "issues"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "상호 검토·결정·종결"
+    section_ref:  "§5.2.3-4"
+    inputs:
+      - field:    "issue_resolution"
+        type:     "table"
+        question: "이슈별 결정·조치·종결 결과를 입력하세요."
+        columns:  ["이슈ID", "결정내용", "조치", "상태(접수/검토/결정/종결)", "종결근거"]
+        required: false
+    derivations:
+      - id:       "open_issue_count"
+        expr:     "count(상태 != '종결')"
+        description: "미종결 이슈 수"
+    outputs:
+      - tmp_field: "이슈처리표[]"
+        from:      "issue_resolution"
+      - tmp_field: "미종결이슈수"
+        from:      "open_issue_count"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "정기 검토·CSM 승인"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "review_summary"
+        type:     "text"
+        question: "미종결·반복 이슈 정기 검토 요약을 입력하세요."
+        required: true
+      - field:    "approval_result"
+        type:     "enum"
+        question: "CSM 정기 검토·중대 이슈 결정 승인 결과를 선택하세요."
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval_result"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 명시 — 중대 이슈 결정·정기 검토 승인"
+
+dod_checklist:
+  - "CIA 책임 분배가 RACI 매트릭스로 전개·공유됨"
+  - "이슈 통지 채널·기한·에스컬레이션 경로 확정"
+  - "발생 이슈가 정의된 기한 내 통지·접수 등록"
+  - "이슈별 결정·조치·종결 기록"
+  - "미종결·반복 이슈 정기 검토 및 CSM 승인 완료"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "통지 기한 미준수"
+    rule:    "반복 미준수 시 CIA 위반 기록·양사 CSM 회의 시정 요구, 위험 증가 시 활동 일시 보류."
+  - section: "§7.2"
+    name:    "책임 공백·중복 발견"
+    rule:    "임의 운영 금지, CIA(WI-08-03) 개정으로 책임 재명시 후 RACI 갱신."
+  - section: "§7.3"
+    name:    "미종결 이슈의 양산 영향"
+    rule:    "릴리스(PRO-VCSMS-02-02) 게이트에 이슈 상태 입력해 릴리스 결정에 위험 반영."
+
+triggers:        ["책임 분배", "RACI 운영", "이슈 통지", "요구 충돌 통지", "공급자 이슈 관리"]
+aliases:         ["responsibility assignment", "RACI matrix", "이슈 에스컬레이션", "책임배정 매트릭스"]
+event_triggers:  ["CIA 발효 후 활동 진행", "요구 충돌·불명확 발생", "정기 검토 주기 도래"]
+domains:         ["자동차"]

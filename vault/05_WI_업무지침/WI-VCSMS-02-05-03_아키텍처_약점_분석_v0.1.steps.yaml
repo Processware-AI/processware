@@ -1,0 +1,118 @@
+wi_id:           "WI-VCSMS-02-05-03"
+title:           "아키텍처 약점 분석"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-05"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-05-03-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:          "step-01"
+    name:        "분석 방법 선정"
+    section_ref: "§5.2.1"
+    inputs:
+      - field:    "analysis_method"
+        type:     "multiselect"
+        question: "약점 분석 방법을 선택하세요."
+        options:  ["아키텍처 검토", "CWE 매핑", "STRIDE", "체크리스트", "기타"]
+        required: true
+    outputs:
+      - tmp_field: "약점분석서.분석방법"
+        from:      "analysis_method"
+    hitl: false
+
+  - id:          "step-02"
+    name:        "약점 식별"
+    section_ref: "§5.2.2"
+    inputs:
+      - field:    "weaknesses"
+        type:     "table"
+        question: "컴포넌트·인터페이스·신뢰경계별 약점(WK-##)을 입력하세요."
+        columns:  ["weakness_id", "location", "description"]
+        required: true
+    outputs:
+      - tmp_field: "약점분석서.약점목록"
+        from:      "weaknesses"
+    hitl: false
+
+  - id:          "step-03"
+    name:        "약점 영향·관련 사양 연결"
+    section_ref: "§5.2.3"
+    inputs:
+      - field:    "weakness_impacts"
+        type:     "table"
+        question: "각 약점의 영향 사양·자산·신뢰경계를 연결하세요."
+        columns:  ["weakness_id", "affected_spec", "asset"]
+        required: true
+    outputs:
+      - tmp_field: "약점분석서.영향연결"
+        from:      "weakness_impacts"
+    hitl: false
+
+  - id:          "step-04"
+    name:        "처리 방향 결정"
+    section_ref: "§5.2.4"
+    inputs:
+      - field:    "treatments"
+        type:     "table"
+        question: "각 약점의 처리 방향을 결정하세요."
+        columns:  ["weakness_id", "treatment", "rationale"]
+        required: true
+    derivations:
+      - id:       "all_treated"
+        expr:     |
+          if every weakness_id has treatment: "OK"
+          else: "미결"
+        description: "모든 약점 처리 방향 결정 시 OK"
+    outputs:
+      - tmp_field: "약점분석서.처리방향"
+        from:      "treatments"
+    hitl: false
+
+  - id:          "step-05"
+    name:        "검토·승인"
+    section_ref: "§5.2.5"
+    inputs:
+      - field:    "approval_decision"
+        type:     "enum"
+        question: "CSM 승인 결정은 무엇입니까?"
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+    outputs:
+      - tmp_field: "약점분석서.결재.승인"
+        from:      "approval_decision"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 = CSM"
+
+dod_checklist:
+  - "entry_gate(WI-05-01 done) 충족 확인"
+  - "분석 방법 선정·기록"
+  - "컴포넌트·인터페이스·신뢰경계 약점 식별 완료"
+  - "WI-05-02 잔존 위반·제약 약점 후보 반영"
+  - "각 약점에 처리 방향 결정(미결 0)"
+  - "CSM 승인 기록 확보"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "약점→사양 보완 루프"
+    rule:    "사양 결함 기인 약점은 WI-05-01 사양 보완 요청, 보완 사양으로 재분석"
+  - section: "§7.2"
+    name:    "약점 수용(처리 불가)"
+    rule:    "잔여 리스크 근거·보상통제 명시, CSM 수용 결정"
+  - section: "§7.3"
+    name:    "운영 약점 혼입"
+    rule:    "운영 절차(PRO-VCSMS-01-03)로 이관, 본 분석서는 참조만 남김"
+
+triggers:        ["약점 분석", "아키텍처 약점", "weakness analysis", "설계 결함"]
+aliases:         ["weakness analysis", "CWE", "STRIDE", "설계 약점"]
+event_triggers:  ["사양 확정", "코딩 기준 적용 완료"]
+domains:         ["자동차"]

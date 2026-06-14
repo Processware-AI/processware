@@ -1,0 +1,123 @@
+wi_id:           "WI-VCSMS-01-01-05"
+title:           "도구 관리 및 형상정보 가용성 유지"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-01-01"
+parent_pol:      "POL-VCSMS-01"
+related_tmp:
+  - "TMP-VCSMS-01-01-05-01"
+scope_code:      "VCSMS"
+scope_type:      "common"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "사이버보안 영향 도구 식별"
+    section_ref:  "§5.2.1"
+    description:  "사이버보안 영향 도구 식별·영향유형·신뢰근거 ([RQ-05-14])"
+    inputs:
+      - field:    "tool_inventory"
+        type:     "table"
+        question: "사이버보안 영향 도구와 영향유형·신뢰근거를 입력하세요."
+        required: true
+        columns:  ["도구명", "영향유형", "신뢰근거"]
+    outputs:
+      - tmp_field: "관리대장.도구[]"
+        from:      "tool_inventory"
+    hitl: false
+  - id:           "step-02"
+    name:         "도구 관리 조치"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "tool_controls"
+        type:     "table"
+        question: "도구별 관리 조치(버전고정·무결성·변경재평가)를 입력하세요."
+        required: true
+        columns:  ["도구명", "관리조치", "재평가트리거"]
+    outputs:
+      - tmp_field: "관리대장.도구조치[]"
+        from:      "tool_controls"
+    hitl: false
+  - id:           "step-03"
+    name:         "형상정보 식별·보존 계획"
+    section_ref:  "§5.2.3"
+    description:  "지원종료까지 형상정보 가용성 유지 ([RQ-05-12])"
+    inputs:
+      - field:    "config_items"
+        type:     "table"
+        question: "형상정보 항목·보존매체·접근통제·책임을 입력하세요."
+        required: true
+        columns:  ["형상항목", "보존매체", "접근통제", "갱신책임", "보존기한"]
+    outputs:
+      - tmp_field: "관리대장.형상정보[]"
+        from:      "config_items"
+    hitl: false
+  - id:           "step-04"
+    name:         "시정조치 환경 재현 보존"
+    section_ref:  "§5.2.4"
+    description:  "시정조치 환경 재현 보존(권고, [RC-05-15])"
+    inputs:
+      - field:    "env_snapshot_plan"
+        type:     "text"
+        question: "시정조치 환경(도구체인·소스·구성) 재현 보존 방안은?"
+        required: false
+    outputs:
+      - tmp_field: "관리대장.환경보존"
+        from:      "env_snapshot_plan"
+    hitl: false
+  - id:           "step-05"
+    name:         "검토·승인"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "approval_decision"
+        type:     "enum"
+        question: "CSM 검토·승인 결정은?"
+        required: true
+        options:  ["승인", "조건부승인", "반려"]
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval_decision"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 = CSM (도구 관리·형상 보존 충분성 승인)"
+  - id:           "step-06"
+    name:         "운영·점검"
+    section_ref:  "§5.2.6"
+    inputs:
+      - field:    "unmanaged_tool_count"
+        type:     "number"
+        question: "미관리 사이버보안 영향 도구 수는?(목표 0)"
+        required: true
+        validation: "x == 0"
+    outputs:
+      - tmp_field: "관리대장.점검결과"
+        from:      "unmanaged_tool_count"
+    hitl: false
+
+dod_checklist:
+  - "본 WI 적용 여부 판단(자체 수행 vs 상위 QMS 커버) 기록"
+  - "사이버보안 영향 도구 식별 및 영향유형·신뢰근거 기록"
+  - "도구별 관리 조치(버전고정·무결성·변경재평가) 정의"
+  - "지원종료까지 형상정보 보존 매체·접근통제·책임 정의"
+  - "시정조치 환경 재현 보존 방안(권고) 검토"
+  - "CSM 검토·승인 및 분기 점검 체계 운영(미관리 도구 0건)"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "상위 QMS 충분 커버(mandatory:false 분기)"
+    rule:    "QMS 형상관리가 충분 시 QMS 대장 참조, 사이버보안 특화 항목(키·인증서)만 보강, 판단 근거 기록"
+  - section: "§7.2"
+    name:    "도구 변경 재평가 누락"
+    rule:    "영향 도구 버전·설정 변경 시 영향 재평가 트리거, 변경 통제 게이트에 도구 재평가 연동"
+  - section: "§7.3"
+    name:    "형상정보 가용성 위험"
+    rule:    "보존 매체 노후·접근 상실 시 매체 이전·재백업·접근권 재정비, 리스크 CSM 보고"
+
+triggers:        ["도구 관리", "형상정보 보존", "도구 영향 평가", "지원종료 형상관리"]
+aliases:         ["tool management", "configuration availability", "툴체인 통제", "키·인증서 보존"]
+event_triggers:  ["정책 승인 완료", "도구 버전 변경", "지원종료 결정", "분기 점검 주기"]
+domains:         ["자동차"]

@@ -1,0 +1,138 @@
+wi_id:           "WI-VCSMS-02-04-06"
+title:           "컨셉 검증"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-04"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-04-06-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:          "step-01"
+    name:        "완전성 검증"
+    section_ref: "§5.2.1"
+    inputs:
+      - field:    "uncovered_goals"
+        type:     "number"
+        question: "통제·요구로 다뤄지지 않은 목표/클레임 수는 몇 건입니까?"
+        validation: "x >= 0"
+        required: true
+      - field:    "unallocated_reqs"
+        type:     "number"
+        question: "할당되지 않은 요구 수는 몇 건입니까?"
+        validation: "x >= 0"
+        required: true
+    outputs:
+      - tmp_field: "검증보고서.완전성"
+        from:      "uncovered_goals"
+    hitl: false
+
+  - id:          "step-02"
+    name:        "정확성 검증"
+    section_ref: "§5.2.2"
+    inputs:
+      - field:    "correctness_findings"
+        type:     "table"
+        question: "통제·요구가 목표를 충분히 달성하는지(논리적 충분성) 점검 결과를 입력하세요."
+        columns:  ["goal_id", "sufficient", "finding"]
+        required: true
+    outputs:
+      - tmp_field: "검증보고서.정확성"
+        from:      "correctness_findings"
+    hitl: false
+
+  - id:          "step-03"
+    name:        "일관성 검증"
+    section_ref: "§5.2.3"
+    inputs:
+      - field:    "conflicts"
+        type:     "number"
+        question: "통제·요구·할당 간 상충 수는 몇 건입니까?"
+        validation: "x >= 0"
+        required: true
+    outputs:
+      - tmp_field: "검증보고서.일관성"
+        from:      "conflicts"
+    hitl: false
+
+  - id:          "step-04"
+    name:        "부적합 기록·판정"
+    section_ref: "§5.2.4"
+    derivations:
+      - id:       "verdict"
+        expr:     |
+          if uncovered_goals == 0 and unallocated_reqs == 0 and conflicts == 0 and 충분성_충족: "통과"
+          elif 경미 해소 가능: "조건부"
+          else: "미통과"
+        description: "완전·정확·일관 충족 시 통과"
+    inputs:
+      - field:    "rework_target"
+        type:     "text"
+        question: "미통과 시 재작업 대상 WI 를 지정하세요."
+        required_if: "verdict == '미통과'"
+    outputs:
+      - tmp_field: "검증보고서.판정"
+        from:      "verdict"
+    hitl: false
+
+  - id:          "step-05"
+    name:        "개발 전달 결정"
+    section_ref: "§5.2.5"
+    inputs:
+      - field:    "handover_decision"
+        type:     "enum"
+        question: "제품개발 전달 결정은 무엇입니까?"
+        options:  ["전달", "부분전달", "보류"]
+        required: true
+    outputs:
+      - tmp_field: "검증보고서.개발전달"
+        from:      "handover_decision"
+    hitl: false
+
+  - id:          "step-06"
+    name:        "검토·승인"
+    section_ref: "§5.2.6"
+    inputs:
+      - field:    "approval_decision"
+        type:     "enum"
+        question: "CSM 승인 결정은 무엇입니까?"
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+    outputs:
+      - tmp_field: "검증보고서.결재.승인"
+        from:      "approval_decision"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 = CSM"
+
+dod_checklist:
+  - "entry_gate(WI-04-05 done) 충족 확인"
+  - "완전성 점검 완료(미다룸 목표/클레임 0, 미할당 요구 0)"
+  - "정확성 점검 완료(논리적 충분성 확인)"
+  - "일관성 점검 완료(상충 0)"
+  - "부적합 기록 및 판정 명시"
+  - "(통과 시)개발 전달 결정 기록"
+  - "CSM 승인 기록 확보"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "컨셉 검증 미통과"
+    rule:    "미통과 시 개발 전달 차단, 지정 선행 WI 반려, 재작업 후 본 검증 재수행"
+  - section: "§7.2"
+    name:    "선행 조건부 부적합 미해소"
+    rule:    "WI-04-04 이연 부적합 미해소 시 통과 불가, 해소 또는 정식 리스크 수용(CSM) 후 진행"
+  - section: "§7.3"
+    name:    "부분 전달(테일러링)"
+    rule:    "전달 가능 부분만 분리 전달, 미준비분 전달 시점·조건 명시"
+
+triggers:        ["컨셉 검증", "concept verification", "개발 전달 결정", "완전 정확 일관"]
+aliases:         ["concept verification report", "컨셉 검증보고", "사양 입력 확정"]
+event_triggers:  ["컨셉·요구 명세서 승인", "제품개발 전달 게이트"]
+domains:         ["자동차"]

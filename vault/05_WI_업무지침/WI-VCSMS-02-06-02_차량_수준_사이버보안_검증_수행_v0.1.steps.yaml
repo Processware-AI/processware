@@ -1,0 +1,127 @@
+wi_id:           "WI-VCSMS-02-06-02"
+title:           "차량 수준 사이버보안 검증 수행"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-06"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-06-02-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:          "step-01"
+    name:        "목표 적정성 확인"
+    section_ref: "§5.2.1"
+    inputs:
+      - field:    "goal_adequacy"
+        type:     "table"
+        question: "각 목표가 차량 통합 맥락에서 적정한지 확인 결과를 입력하세요."
+        columns:  ["goal_id", "adequate", "finding"]
+        required: true
+    outputs:
+      - tmp_field: "수행기록.목표적정성"
+        from:      "goal_adequacy"
+    hitl: false
+
+  - id:          "step-02"
+    name:        "목표 달성 확인"
+    section_ref: "§5.2.2"
+    inputs:
+      - field:    "goal_achievement"
+        type:     "table"
+        question: "각 목표(CG)의 차량 수준 달성 여부와 증적을 입력하세요."
+        columns:  ["goal_id", "achieved", "evidence"]
+        required: true
+    outputs:
+      - tmp_field: "수행기록.목표달성"
+        from:      "goal_achievement"
+    hitl: false
+
+  - id:          "step-03"
+    name:        "클레임 유효성 확인"
+    section_ref: "§5.2.3"
+    inputs:
+      - field:    "claim_validity"
+        type:     "table"
+        question: "각 클레임(CC)의 유효성 확인 결과를 입력하세요."
+        columns:  ["claim_id", "valid", "finding"]
+        required: false
+    outputs:
+      - tmp_field: "수행기록.클레임유효성"
+        from:      "claim_validity"
+    hitl: false
+
+  - id:          "step-04"
+    name:        "운용환경 요구 유효성 확인"
+    section_ref: "§5.2.4"
+    inputs:
+      - field:    "env_validity"
+        type:     "table"
+        question: "운용환경 요구·가정의 실차 유효성 확인 결과를 입력하세요."
+        columns:  ["env_req", "valid", "finding"]
+        required: true
+    outputs:
+      - tmp_field: "수행기록.운용환경유효성"
+        from:      "env_validity"
+    hitl: false
+
+  - id:          "step-05"
+    name:        "부적합 식별·기록"
+    section_ref: "§5.2.5"
+    inputs:
+      - field:    "nonconformities"
+        type:     "table"
+        question: "유효하지 않은 항목을 부적합으로 기록하고 처리 방향을 표식하세요."
+        columns:  ["item", "treatment_direction"]
+        required: false
+    outputs:
+      - tmp_field: "수행기록.부적합"
+        from:      "nonconformities"
+    hitl: false
+
+  - id:          "step-06"
+    name:        "검토·승인"
+    section_ref: "§5.2.6"
+    inputs:
+      - field:    "approval_decision"
+        type:     "enum"
+        question: "CSM 승인 결정은 무엇입니까?"
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+    outputs:
+      - tmp_field: "수행기록.결재.승인"
+        from:      "approval_decision"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 = CSM (검증 수행 R/A 는 검증 엔지니어)"
+
+dod_checklist:
+  - "entry_gate(WI-06-01 done) 충족 확인"
+  - "목표 적정성 확인 완료"
+  - "목표 달성 확인 및 증적 기록(전 목표)"
+  - "클레임 유효성 확인 완료"
+  - "운용환경 요구 유효성 확인 완료"
+  - "부적합 식별·처리 방향 표식"
+  - "CSM 승인 기록 확보"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "목표 부적정(컨셉 회귀)"
+    rule:    "목표 부적정 시 개발이 아닌 컨셉 단계(PRO-VCSMS-02-04) 회귀, TARA·목표 갱신"
+  - section: "§7.2"
+    name:    "클레임 무효"
+    rule:    "가정 무효 시 감소(목표 도출) 재처리 또는 공급자 합의(Clause 7) 책임 재확정"
+  - section: "§7.3"
+    name:    "환경 제약으로 검증 미완"
+    rule:    "미완 항목·잔여 리스크·후속 시점 명시, 케이스(PRO-VCSMS-02-02) 릴리스 조건화"
+
+triggers:        ["차량 수준 검증", "검증 수행", "목표 달성 확인", "vehicle level validation"]
+aliases:         ["vehicle validation", "validation execution", "클레임 유효성", "검증 시연"]
+event_triggers:  ["검증 활동 선정 승인", "검증 환경 준비 완료"]
+domains:         ["자동차"]

@@ -1,0 +1,101 @@
+wi_id:           "WI-VCSMS-02-01-04"
+title:           "사이버보안 활동 테일러링 및 근거 검토"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-01"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-01-04-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "테일러링 대상·유형 식별"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "tailoring_items"
+        type:     "table"
+        question: "테일러링 대상 활동과 유형(생략/축소/병합/대체)을 입력하라"
+        columns:  ["활동", "유형", "사유요지"]
+        required: true
+    outputs:
+      - tmp_field: "근거서.대상[]"
+        from:      "tailoring_items"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "근거 작성"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "rationale"
+        type:     "table"
+        question: "활동별 적정성·충분성 근거와 잔여 리스크를 작성하라"
+        columns:  ["활동", "적정성 근거", "충분성(잔여리스크)", "TARA 근거(WP-15-07)"]
+        required: true
+    outputs:
+      - tmp_field: "근거서.근거[]"
+        from:      "rationale"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "PCB 독립 검토"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "pcb_decision"
+        type:     "enum"
+        question: "PCB 검토 결과는?"
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+      - field:    "pcb_condition"
+        type:     "text"
+        question: "조건부/반려 시 조건·사유"
+        required: false
+        required_if: "pcb_decision != '승인'"
+    outputs:
+      - tmp_field: "근거서.검토결과"
+        from:      "pcb_decision"
+    hitl: required
+    approver_role: "Process Control Board (PCB)"
+    rationale:     "WI §2 승인자 — 테일러링 근거 독립 검토·승인"
+
+  - id:           "step-04"
+    name:         "계획 반영"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "plan_updated"
+        type:     "boolean"
+        question: "승인 결과를 사이버보안 계획에 반영했는가?"
+        required: true
+    outputs:
+      - tmp_field: "근거서.계획반영"
+        from:      "plan_updated"
+    hitl: false
+
+dod_checklist:
+  - "테일러링 대상·유형 명시"
+  - "적정성·충분성 근거 작성(잔여 리스크 포함)"
+  - "리스크값 1 생략 시 TARA 근거 인용"
+  - "PCB 독립 검토·승인"
+  - "승인 결과를 계획에 반영"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "근거 불충분(반려)"
+    rule:    "pcb_decision==반려 면 테일러링 미적용·활동 표준 수행으로 계획 환원, 보완 후 재신청."
+  - section: "§7.2"
+    name:    "사후 리스크 변화"
+    rule:    "TARA 재수행으로 리스크값 상승 시 테일러링 즉시 무효화·활동 복원, WI-06 갱신·PCB 재보고."
+  - section: "§7.3"
+    name:    "안전 연계 제한"
+    rule:    "ISO 26262 안전 영향 활동 테일러링은 기능안전팀 동의 필수, 미동의 시 차단."
+
+triggers:        ["테일러링", "활동 생략 근거", "리스크값 1 생략", "PCB 검토"]
+aliases:         ["tailoring", "activity tailoring", "근거 검토"]
+event_triggers:  ["계획 수립 후 활동 축소 필요 시", "리스크값 1 식별"]
+domains:         ["자동차"]

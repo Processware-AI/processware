@@ -1,0 +1,102 @@
+wi_id:           "WI-VCSMS-02-03-05"
+title:           "공격 타당성 평가 (등급표 적용)"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-03"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-03-05-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "채택 방법 확인"
+    section_ref:  "§5.1"
+    inputs:
+      - field:    "feasibility_method"
+        type:     "enum"
+        question: "공격 타당성 평가 채택 방법은?"
+        options:  ["공격잠재력", "CVSS", "공격벡터"]
+        required: true
+    outputs:
+      - tmp_field: "평가표.방법"
+        from:      "feasibility_method"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "방법별 지표 산정"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "metric_table"
+        type:     "table"
+        question: "경로별 지표를 산정하라(채택 방법 기준)"
+        columns:  ["경로 ID", "지표1", "지표2", "지표3", "지표4", "지표5"]
+        required: true
+    outputs:
+      - tmp_field: "평가표.지표[]"
+        from:      "metric_table"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "타당성 등급 결정"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "feasibility_rating"
+        type:     "table"
+        question: "조직 등급표로 경로별 공격 타당성 등급을 결정하라"
+        columns:  ["경로 ID", "공격 타당성 등급"]
+        required: true
+    derivations:
+      - id:       "consistency_check"
+        expr:     |
+          if 모든 경로가 동일 method 사용 and 등급이 등급표 정의 범위 내: "일관"
+          else: "위반(재평가)"
+        description: "방법 일관성·등급표 준수 점검"
+    outputs:
+      - tmp_field: "평가표.등급[]"
+        from:      "feasibility_rating"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "검토·확정"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "analyst_name"
+        type:     "person"
+        question: "평가표 확정자(TARA 분석가)는?"
+        required: true
+    outputs:
+      - tmp_field: "평가표.확정"
+        from:      "analyst_name"
+    hitl: required
+    approver_role: "TARA 분석가"
+    rationale:     "PRO §3 RACI — 공격 타당성 R/A 는 TARA 분석가"
+
+dod_checklist:
+  - "채택 방법(공격잠재력/CVSS/공격벡터) 일관 적용"
+  - "경로별 지표 산정"
+  - "조직 등급표로 타당성 등급 결정"
+  - "등급표 외 임의 판정 0건 점검"
+  - "평가표 확정(TARA 분석가 R/A)"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "등급표 외 임의 판정"
+    rule:    "자체 등급표 외 임의 기준 금지(KPI 0건). 보완 필요 시 등급표 개정 후 적용."
+  - section: "§7.2"
+    name:    "방법 혼용"
+    rule:    "경로별 방법 혼용 시 일관성 위반 — 단일 방법으로 통일 재평가."
+  - section: "§7.3"
+    name:    "신규 취약점 타당성 변화"
+    rule:    "신규 취약점·도구로 타당성 상승 시 해당 경로 재평가·리스크값(WI-06) 갱신."
+
+triggers:        ["공격 타당성", "attack feasibility", "공격잠재력", "CVSS", "타당성 등급"]
+aliases:         ["attack feasibility", "feasibility rating", "공격 가능성"]
+event_triggers:  ["공격 경로 분석 후"]
+domains:         ["자동차"]

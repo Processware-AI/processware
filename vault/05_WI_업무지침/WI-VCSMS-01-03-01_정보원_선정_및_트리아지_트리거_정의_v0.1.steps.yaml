@@ -1,0 +1,122 @@
+wi_id:           "WI-VCSMS-01-03-01"
+title:           "정보원 선정 및 트리아지 트리거 정의"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-01-03"
+parent_pol:      "POL-VCSMS-01"
+related_tmp:
+  - "TMP-VCSMS-01-03-01-01"
+scope_code:      "VCSMS"
+scope_type:      "common"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "정보원 선정"
+    section_ref:  "§5.2.1"
+    description:  "자산 커버리지 기준 정보원 선정 ([RQ-08-01])"
+    inputs:
+      - field:    "source_list"
+        type:     "table"
+        question: "정보원과 출처·신뢰도·갱신주기·수집방식을 입력하세요."
+        required: true
+        columns:  ["정보원", "출처", "신뢰도", "갱신주기", "수집방식"]
+    outputs:
+      - tmp_field: "정의서.정보원[]"
+        from:      "source_list"
+    hitl: false
+  - id:           "step-02"
+    name:         "수집 방식·자동화 정의"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "collection_paths"
+        type:     "table"
+        question: "자동/수동 수집 경로와 책임자를 입력하세요."
+        required: true
+        columns:  ["경로", "유형", "책임자"]
+    outputs:
+      - tmp_field: "정의서.수집경로[]"
+        from:      "collection_paths"
+    hitl: false
+  - id:           "step-03"
+    name:         "트리아지 트리거 정의"
+    section_ref:  "§5.2.3"
+    description:  "이벤트 후보 분류 트리거·우선순위·SLA ([RQ-08-02])"
+    inputs:
+      - field:    "triage_triggers"
+        type:     "table"
+        question: "트리아지 트리거·우선순위·SLA 를 입력하세요."
+        required: true
+        columns:  ["트리거조건", "우선순위", "SLA"]
+    outputs:
+      - tmp_field: "정의서.트리거[]"
+        from:      "triage_triggers"
+    hitl: false
+  - id:           "step-04"
+    name:         "CSM 검토·승인"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "approval_decision"
+        type:     "enum"
+        question: "CSM 커버리지·트리거 적정성 승인 결정은?"
+        required: true
+        options:  ["승인", "조건부승인", "반려"]
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval_decision"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 = CSM (정보원 커버리지·트리거 적정성 승인)"
+  - id:           "step-05"
+    name:         "유지·갱신 주기 설정"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "update_policy"
+        type:     "text"
+        question: "정보원·트리거 정기 갱신 주기와 갱신 트리거는?"
+        required: true
+    outputs:
+      - tmp_field: "정의서.갱신정책"
+        from:      "update_policy"
+    hitl: false
+  - id:           "step-06"
+    name:         "활성화·점검"
+    section_ref:  "§5.2.6"
+    inputs:
+      - field:    "activation_rate"
+        type:     "number"
+        question: "선정 정보원 활성률(%)은?(목표 100)"
+        required: true
+        validation: "x == 100"
+    outputs:
+      - tmp_field: "정의서.활성률"
+        from:      "activation_rate"
+    hitl: false
+
+dod_checklist:
+  - "운영 자산 커버리지 기준 정보원 선정 및 출처·신뢰도·주기 정의"
+  - "자동/수동 수집 경로·책임자 지정"
+  - "트리아지 트리거·우선순위·SLA 정의"
+  - "CSM 커버리지·트리거 적정성 검토·승인"
+  - "정보원·트리거 정기 갱신 주기·트리거 설정"
+  - "정보원 활성화 및 활성률 100% 점검 체계 운영"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "정보원 커버리지 공백"
+    rule:    "자산 대응 정보원 부재 시 대체 소스 추가·공급사 권고 채널 요청, 공백·잔존 리스크 CSM 보고"
+  - section: "§7.2"
+    name:    "트리거 과민/둔감"
+    rule:    "오탐/누락 시 임계값·매칭 규칙 조정·이력 기록, 둔감 누락 위험은 보수적 설정 우선"
+  - section: "§7.3"
+    name:    "정보원 중단·신뢰도 저하"
+    rule:    "중단·저하 시 대체 정보원 전환·활성률 반영, 공백 기간 사후 보완 수집"
+
+triggers:        ["정보원 선정", "트리아지 트리거", "위협 모니터링 설정", "정보원 등록"]
+aliases:         ["threat intel source", "triage trigger", "모니터링 소스", "취약점 피드"]
+event_triggers:  ["지속활동 개시", "신규 자산 추가", "신규 위협원 등장", "분기 갱신 주기"]
+domains:         ["자동차"]

@@ -1,0 +1,126 @@
+wi_id:           "WI-VCSMS-01-04-02"
+title:           "사고 대응 계획 이행 및 진척 모니터링"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-01-04"
+parent_pol:      "POL-VCSMS-01"
+related_tmp:
+  - "TMP-VCSMS-01-04-02-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "조치 실행"
+    section_ref:  "§5.2.1"
+    description:  "억제→근절→복구 조치 실행 ([RQ-13-02])"
+    inputs:
+      - field:    "action_log"
+        type:     "table"
+        question: "조치 실행 내역을 입력하세요(시각·결과·담당자)."
+        required: true
+        columns:  ["조치유형", "내용", "실행시각", "결과", "담당자"]
+    outputs:
+      - tmp_field: "기록부.조치[]"
+        from:      "action_log"
+    hitl: false
+  - id:           "step-02"
+    name:         "증거 보존"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "evidence_preservation"
+        type:     "text"
+        question: "조치 증거(로그·트래픽·스냅샷) 무결성 보존 방안은?"
+        required: true
+    outputs:
+      - tmp_field: "기록부.증거보존"
+        from:      "evidence_preservation"
+    hitl: false
+  - id:           "step-03"
+    name:         "진척 추적"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "progress_tracking"
+        type:     "table"
+        question: "마일스톤·지표 대비 진척과 지연 여부를 입력하세요."
+        required: true
+        columns:  ["마일스톤", "목표", "현황", "지연여부"]
+    outputs:
+      - tmp_field: "기록부.진척[]"
+        from:      "progress_tracking"
+    hitl: false
+  - id:           "step-04"
+    name:         "이해관계자 소통·통보"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "notification_log"
+        type:     "table"
+        question: "통보 이행 내역을 입력하세요(대상·시각·내용)."
+        required: true
+        columns:  ["대상", "통보시각", "내용", "이행여부"]
+    derivations:
+      - id:       "notification_rate"
+        expr:     |
+          round(count(row.이행여부 == "이행") / count(notification_log) * 100, 1)
+        description: "통보 의무 이행율(%) — 목표 100"
+    outputs:
+      - tmp_field: "기록부.통보[]"
+        from:      "notification_log"
+    hitl: false
+  - id:           "step-05"
+    name:         "팀장 진척 점검·조정"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "lead_review"
+        type:     "enum"
+        question: "사고대응 팀장 진척 점검 결과는?"
+        required: true
+        options:  ["정상 진행", "자원 조정 필요", "계획 갱신 필요"]
+    outputs:
+      - tmp_field: "기록부.팀장점검"
+        from:      "lead_review"
+    hitl: required
+    approver_role: "사고대응 팀장 (Incident Response Lead)"
+    rationale:     "PRO §3 RACI: 계획 이행 A = 사고대응 팀장 (진척 점검·조정 책임)"
+  - id:           "step-06"
+    name:         "종료기준 충족 여부 평가"
+    section_ref:  "§5.2.6"
+    inputs:
+      - field:    "closure_readiness"
+        type:     "enum"
+        question: "종료기준 근접 평가 결과는?"
+        required: true
+        options:  ["종료 연계", "계속 이행"]
+    outputs:
+      - tmp_field: "기록부.종료근접"
+        from:      "closure_readiness"
+    hitl: false
+
+dod_checklist:
+  - "억제·근절·복구 조치 실행 및 시각·결과·담당자 기록"
+  - "조치 증거 무결성 보존"
+  - "마일스톤·지표 대비 진척 모니터링 및 지연 식별"
+  - "통보 의무 이행(이행율 100%) 및 통보 기록"
+  - "팀장 진척 점검·필요 시 자원 조정·계획 갱신"
+  - "종료기준 근접 평가 및 종료(WI-01-04-03) 연계 판단"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "조치 실패·악화"
+    rule:    "조치 실패·악화 시 팀장 에스컬레이션·대안 조치 적용·계획 갱신(WI-01-04-01 재호출)·경영진 보고"
+  - section: "§7.2"
+    name:    "진척 지연"
+    rule:    "마일스톤 지연 시 원인 식별·자원 재배분·우선순위 조정, 지연·잔존 영향 투명 통보"
+  - section: "§7.3"
+    name:    "통보 누락·오류"
+    rule:    "통보 누락·오류 시 즉시 정정 통보·법무 협조 영향 평가·실패 원인 후속 개선 반영"
+
+triggers:        ["사고 대응 이행", "사고 진척 모니터링", "조치 실행", "사고 통보"]
+aliases:         ["incident execution", "response tracking", "사고 조치", "진척 보고"]
+event_triggers:  ["대응 계획 승인 완료", "마일스톤 도래", "통보 기한 도래"]
+domains:         ["자동차"]

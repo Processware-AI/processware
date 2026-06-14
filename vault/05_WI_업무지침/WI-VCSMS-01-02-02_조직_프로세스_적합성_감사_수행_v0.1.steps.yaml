@@ -1,0 +1,124 @@
+wi_id:           "WI-VCSMS-01-02-02"
+title:           "조직 프로세스 적합성 감사 수행"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-01-02"
+parent_pol:      "POL-VCSMS-01"
+related_tmp:
+  - "TMP-VCSMS-01-02-02-01"
+scope_code:      "VCSMS"
+scope_type:      "common"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "체크리스트 확정"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "checklist"
+        type:     "table"
+        question: "피감 프로세스별 점검 항목을 입력하세요."
+        required: true
+        columns:  ["프로세스", "점검항목", "근거조항"]
+    outputs:
+      - tmp_field: "체크리스트.항목[]"
+        from:      "checklist"
+    hitl: false
+  - id:           "step-02"
+    name:         "증거 수집·점검"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "evidence_collection"
+        type:     "table"
+        question: "점검 항목별 증거와 점검 결과를 입력하세요."
+        required: true
+        columns:  ["점검항목", "증거ID", "점검결과"]
+    outputs:
+      - tmp_field: "체크리스트.증거[]"
+        from:      "evidence_collection"
+    hitl: false
+  - id:           "step-03"
+    name:         "발견사항 식별·분류"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "findings"
+        type:     "table"
+        question: "발견사항을 입력하세요(분류·중대도·근거조항)."
+        required: true
+        columns:  ["발견사항", "분류", "중대도", "근거조항"]
+    derivations:
+      - id:       "evidence_completeness"
+        expr:     |
+          all(row.증거ID != "" for row in evidence_collection)
+        description: "증거 없는 판정 0건 검증"
+    outputs:
+      - tmp_field: "발견사항[]"
+        from:      "findings"
+    hitl: false
+  - id:           "step-04"
+    name:         "현장 확인·반론 청취"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "rebuttal_record"
+        type:     "text"
+        question: "피감 조직 반론 청취 및 사실관계 확인 결과는?"
+        required: true
+    outputs:
+      - tmp_field: "발견사항.반론"
+        from:      "rebuttal_record"
+    hitl: false
+  - id:           "step-05"
+    name:         "주심사원 확정"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "lead_auditor_decision"
+        type:     "enum"
+        question: "주심사원 발견사항 확정 결정은?"
+        required: true
+        options:  ["확정", "보완 후 확정", "재점검"]
+    outputs:
+      - tmp_field: "발견사항.확정"
+        from:      "lead_auditor_decision"
+    hitl: required
+    approver_role: "Auditor (주심사원/Lead Auditor)"
+    rationale:     "WI §2 승인자 = 주심사원 (발견사항 일관성·증거 충분성 확정)"
+  - id:           "step-06"
+    name:         "증거 인덱싱"
+    section_ref:  "§5.2.6"
+    inputs:
+      - field:    "evidence_index"
+        type:     "text"
+        question: "증거 인덱스 작성·MAT-005 연계 결과는?"
+        required: true
+    outputs:
+      - tmp_field: "증거.인덱스"
+        from:      "evidence_index"
+    hitl: false
+
+dod_checklist:
+  - "피감 프로세스별 점검 항목 체크리스트 확정"
+  - "각 항목에 객관적 증거 연결(증거 없는 판정 0건)"
+  - "발견사항 적합/부적합/관찰/우수 분류 및 부적합 중대도·근거 조항 명시"
+  - "피감 조직 반론 청취·사실관계 확인 완료"
+  - "주심사원 발견사항 확정"
+  - "증거 인덱스 작성·MAT-005 연계 완료"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "증거 접근 거부·부재"
+    rule:    "접근 거부는 한계로 기록·경영진 재요청, 증거 부재 자체는 부적합 근거로 발견사항화"
+  - section: "§7.2"
+    name:    "중대 리스크 발견"
+    rule:    "감사 중 중대 리스크 발견 시 보고서 완성 전 CSM·경영진 긴급 통지, 필요 시 PRO-01-03/04 연계"
+  - section: "§7.3"
+    name:    "사실관계 불일치"
+    rule:    "피감 조직과 사실 불일치 시 양측 입장 기록·증거 우위 판정, 최종 판단은 주심사원"
+
+triggers:        ["적합성 감사 수행", "감사 증거 수집", "부적합 식별", "감사 체크리스트"]
+aliases:         ["conformity audit", "audit findings", "심사 수행", "감사 점검"]
+event_triggers:  ["감사 계획 승인 완료", "현장 감사 착수"]
+domains:         ["자동차"]

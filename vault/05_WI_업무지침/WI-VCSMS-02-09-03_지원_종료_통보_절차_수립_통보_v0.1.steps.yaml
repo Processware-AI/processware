@@ -1,0 +1,112 @@
+# =============================================================
+# WI-VCSMS-02-09-03 지원 종료 통보 절차 수립·통보 — Agent 실행 정의
+# =============================================================
+wi_id:           "WI-VCSMS-02-09-03"
+title:           "지원 종료 통보 절차 수립·통보"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-09"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-09-03-01"
+scope_code:      "VCSMS"
+scope_type:      "org"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "종료 대상·영향·잔존 위험 확정"
+    section_ref:  "§5.1"
+    inputs:
+      - field:    "eos_target"
+        type:     "table"
+        question: "지원 종료 대상과 예정일, 영향 차종·VIN 범위를 입력하세요."
+        columns:  ["대상item/component", "종료예정일", "차종", "VIN범위"]
+        required: true
+      - field:    "residual_risk_advice"
+        type:     "text"
+        question: "종료 후 잔존 위험과 고객 권고 조치(교체·격리·기능 제한)를 입력하세요."
+        required: true
+    outputs:
+      - tmp_field: "종료대상표[]"
+        from:      "eos_target"
+      - tmp_field: "잔존위험권고"
+        from:      "residual_risk_advice"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "통보 절차 수립"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "notify_procedure"
+        type:     "table"
+        question: "통보 대상·시점·채널·수신확인 방법을 입력하세요."
+        columns:  ["대상", "통보시점", "채널", "수신확인방법", "반복통보"]
+        required: true
+    outputs:
+      - tmp_field: "통보절차표[]"
+        from:      "notify_procedure"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "통보서 작성 및 검토·승인"
+    section_ref:  "§5.2.2-3"
+    inputs:
+      - field:    "notice_content"
+        type:     "text"
+        question: "통보서 내용(종료 대상·종료일·잔존 위험·권고 조치·문의 창구)을 입력하세요."
+        required: true
+      - field:    "approval_result"
+        type:     "enum"
+        question: "법무·CSM 검토 후 CSM 승인 결과를 선택하세요."
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+    outputs:
+      - tmp_field: "통보서.내용"
+        from:      "notice_content"
+      - tmp_field: "결재.승인"
+        from:      "approval_result"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 명시 — 통보서 발송 승인"
+
+  - id:           "step-04"
+    name:         "통보 실행·이력 기록"
+    section_ref:  "§5.2.4-5"
+    inputs:
+      - field:    "notify_log"
+        type:     "table"
+        question: "통보 실행 이력(대상·일자·채널·수신확인·재통보)을 입력하세요."
+        columns:  ["대상", "통보일", "채널", "수신확인", "미수신재통보"]
+        required: true
+    outputs:
+      - tmp_field: "통보이력표[]"
+        from:      "notify_log"
+    hitl: false
+
+dod_checklist:
+  - "지원 종료 대상·예정일·영향 범위 확정"
+  - "종료 후 잔존 위험·권고 조치 정리"
+  - "통보 절차(대상·시점·채널·수신 확인) 수립"
+  - "통보서가 법무·CSM 검토·승인 거쳐 발송"
+  - "통보 이력·수신 확인 기록 및 미수신 재통보 처리"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "법규상 최소 통보 기간 미준수 위험"
+    rule:    "종료일 조정 또는 임시 연장 지원 검토, 임의 단축 금지, 불가피 시 법무 결정 기록."
+  - section: "§7.2"
+    name:    "통보 미수신(연락처 불일치)"
+    rule:    "대체 채널(딜러·공개 공지) 활용, 미도달 대상 잔존 위험 추적, 도달 노력 기록."
+  - section: "§7.3"
+    name:    "종료 후 신규 취약점 발견"
+    rule:    "잔존 위험 한계·권고 조치 재안내, 사고 가능성 시 CSM 이 PRO-01-04 연계 판정."
+
+triggers:        ["지원 종료 통보", "end of support", "EOS 통보", "지원 종료 고객 안내"]
+aliases:         ["end-of-support notification", "지원종료", "서비스 종료 통보", "EOS"]
+event_triggers:  ["item/component 지원 종료 결정", "수명주기 종료 임박"]
+domains:         ["자동차"]

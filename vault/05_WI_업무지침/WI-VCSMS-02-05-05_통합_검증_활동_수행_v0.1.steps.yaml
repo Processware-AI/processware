@@ -1,0 +1,117 @@
+wi_id:           "WI-VCSMS-02-05-05"
+title:           "통합·검증 활동 수행"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-05"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-05-05-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:          "step-01"
+    name:        "통합·검증 활동 명세"
+    section_ref: "§5.2.1"
+    inputs:
+      - field:    "verification_activities"
+        type:     "table"
+        question: "각 사양 충족 확인을 위한 통합·검증 활동(VA-##)을 명세하세요."
+        columns:  ["va_id", "spec_id", "method", "environment"]
+        required: true
+    derivations:
+      - id:       "all_specs_covered"
+        expr:     |
+          if every spec_id has at least one va_id: "OK"
+          else: "누락"
+        description: "모든 사양에 검증 활동 명세 시 OK"
+    outputs:
+      - tmp_field: "명세보고서.활동명세"
+        from:      "verification_activities"
+    hitl: false
+
+  - id:          "step-02"
+    name:        "통합·검증 수행"
+    section_ref: "§5.2.2"
+    inputs:
+      - field:    "results"
+        type:     "table"
+        question: "각 검증 활동의 합격/불합격과 증적을 입력하세요."
+        columns:  ["va_id", "pass_fail", "evidence"]
+        required: true
+    outputs:
+      - tmp_field: "명세보고서.수행결과"
+        from:      "results"
+    hitl: false
+
+  - id:          "step-03"
+    name:        "결과 기록·판정"
+    section_ref: "§5.2.3"
+    inputs:
+      - field:    "fail_treatments"
+        type:     "table"
+        question: "불합격 사양의 처리 방향(재작업·약점 등록)을 입력하세요."
+        columns:  ["spec_id", "treatment"]
+        required: false
+    outputs:
+      - tmp_field: "명세보고서.불합격처리"
+        from:      "fail_treatments"
+    hitl: false
+
+  - id:          "step-04"
+    name:        "추적성 연결"
+    section_ref: "§5.2.4"
+    inputs:
+      - field:    "trace_ok"
+        type:     "boolean"
+        question: "사양(SP)↔검증활동(VA)↔결과 추적이 연결되었습니까?"
+        required: true
+    outputs:
+      - tmp_field: "명세보고서.추적성"
+        from:      "trace_ok"
+    hitl: false
+
+  - id:          "step-05"
+    name:        "검토·승인"
+    section_ref: "§5.2.5"
+    inputs:
+      - field:    "approval_decision"
+        type:     "enum"
+        question: "CSM 승인 결정은 무엇입니까?"
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+    outputs:
+      - tmp_field: "명세보고서.결재.승인"
+        from:      "approval_decision"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 = CSM (검증 활동 R/A 는 검증 엔지니어)"
+
+dod_checklist:
+  - "entry_gate(WI-05-04 done) 충족 확인"
+  - "모든 사양(SP-##)에 통합·검증 활동(VA-##) 명세(누락 0)"
+  - "통합·검증 수행 및 합격/불합격 판정 기록"
+  - "불합격 사양 처리 방향 연결"
+  - "SP↔VA↔결과 추적 연결 확인"
+  - "CSM 승인 기록 확보"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "검증 불합격(재작업)"
+    rule:    "구현(WI-05-02) 재작업 또는 사양 결함 시 사양(WI-05-01) 반려, 재작업 후 재수행"
+  - section: "§7.2"
+    name:    "환경·형상 불일치"
+    rule:    "차이 기록, 차량 수준 검증(Clause 11) 보완 항목 이연 표식"
+  - section: "§7.3"
+    name:    "통합 불가(의존 컴포넌트 미준비)"
+    rule:    "스텁·시뮬레이터 부분 검증, 미통합 항목·재검증 시점 명시"
+
+triggers:        ["통합 검증", "integration verification", "검증 활동", "사양 충족 확인"]
+aliases:         ["integration test", "verification activity", "통합 테스트", "검증 수행"]
+event_triggers:  ["사양 검증 통과", "구현·통합 완료"]
+domains:         ["자동차"]

@@ -1,0 +1,131 @@
+wi_id:           "WI-VCSMS-01-01-02"
+title:           "책임·권한 배정 및 자원 제공"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-01-01"
+parent_pol:      "POL-VCSMS-01"
+related_tmp:
+  - "TMP-VCSMS-01-01-02-01"
+scope_code:      "VCSMS"
+scope_type:      "common"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "사이버보안 역할 식별"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "role_list"
+        type:     "multiselect"
+        question: "식별할 사이버보안 역할을 선택하세요."
+        required: true
+        options:  ["CSM", "PCB", "Process Owner", "Project CS Lead", "모니터링 담당", "보안 분석가", "사고대응 팀장"]
+    outputs:
+      - tmp_field: "RACI.역할[]"
+        from:      "role_list"
+    hitl: false
+  - id:           "step-02"
+    name:         "책임·권한 배정(RACI)"
+    section_ref:  "§5.2.2"
+    description:  "활동별 R/A/C/I 배정 ([RQ-05-03])"
+    inputs:
+      - field:    "raci_table"
+        type:     "table"
+        question: "활동별 RACI 와 조직 권한을 입력하세요."
+        required: true
+        columns:  ["활동", "R", "A", "C", "I", "조직권한"]
+    derivations:
+      - id:       "accountable_check"
+        expr:     |
+          for row in raci_table: assert count(row.A) == 1
+        description: "활동당 Accountable 1명 검증"
+    outputs:
+      - tmp_field: "RACI.배정[]"
+        from:      "raci_table"
+    hitl: false
+  - id:           "step-03"
+    name:         "자원 수요 산정·할당"
+    section_ref:  "§5.2.3"
+    description:  "인력·예산·도구·교육 자원 산정 ([RQ-05-04])"
+    inputs:
+      - field:    "resource_plan"
+        type:     "table"
+        question: "자원 항목별 수요·할당·부족분을 입력하세요."
+        required: true
+        columns:  ["자원유형", "수요", "할당", "부족분"]
+    outputs:
+      - tmp_field: "자원계획.항목[]"
+        from:      "resource_plan"
+    hitl: false
+  - id:           "step-04"
+    name:         "배정 전파"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "notification_record"
+        type:     "text"
+        question: "책임·권한 통지 및 담당자 수락 기록은?"
+        required: true
+    outputs:
+      - tmp_field: "전파.기록"
+        from:      "notification_record"
+    hitl: false
+  - id:           "step-05"
+    name:         "경영진 승인"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "approval_decision"
+        type:     "enum"
+        question: "경영진 승인 결정은?"
+        required: true
+        options:  ["승인", "조건부승인", "반려"]
+      - field:    "resource_decision"
+        type:     "text"
+        question: "자원 부족분에 대한 확보 결정은?"
+        required: false
+        required_if: "resource_plan 에 부족분 존재"
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval_decision"
+    hitl: required
+    approver_role: "Top Management (경영진)"
+    rationale:     "WI §2 승인자 = 경영진 (책임·자원 배정 최종 권한)"
+  - id:           "step-06"
+    name:         "등록·반영"
+    section_ref:  "§5.2.6"
+    inputs:
+      - field:    "mat_sync"
+        type:     "text"
+        question: "MAT-004 RACI 통합표 정합 및 MAT-001 등록 결과는?"
+        required: true
+    outputs:
+      - tmp_field: "등록.MAT"
+        from:      "mat_sync"
+    hitl: false
+
+dod_checklist:
+  - "사이버보안 전 역할 식별 완료(거버넌스·프로젝트·지속·사고대응)"
+  - "RACI 배정에서 모든 활동에 Accountable 1명 보장"
+  - "조직 권한(의사결정·예산·에스컬레이션) 명시"
+  - "자원(인력·예산·도구·교육) 수요 산정 및 부족분 식별"
+  - "담당자 배정 전파·수락 기록 확보"
+  - "경영진 승인 기록 확보 및 MAT-004 정합·MAT-001 등록 완료"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "Accountable 중복·공백"
+    rule:    "활동당 A 가 2명 이상 또는 공백이면 단일 A 로 재배정(공백 시 차상위 임시 수임) 후 PCB 보고"
+  - section: "§7.2"
+    name:    "자원 부족"
+    rule:    "자원 미확보 시 리스크 우선순위로 단계 배정, 미확보 자원·잔존 리스크를 경영진 보고"
+  - section: "§7.3"
+    name:    "분산 활동 책임 경계"
+    rule:    "공급자 분산 시 책임 경계를 CIA(§7.4.3)로 이관, 본 지침은 내부 책임만 배정"
+
+triggers:        ["책임 배정", "RACI 배정", "사이버보안 자원 할당", "권한 배정"]
+aliases:         ["responsibility assignment", "resource allocation", "조직 권한 배정"]
+event_triggers:  ["정책 승인 완료", "조직 개편", "신규 프로젝트 착수"]
+domains:         ["자동차"]

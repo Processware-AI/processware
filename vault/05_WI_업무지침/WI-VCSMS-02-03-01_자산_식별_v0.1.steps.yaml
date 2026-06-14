@@ -1,0 +1,95 @@
+wi_id:           "WI-VCSMS-02-03-01"
+title:           "자산 식별 (피해 시나리오·사이버보안 속성)"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-03"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-03-01-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "입력 수집"
+    section_ref:  "§5.1"
+    inputs:
+      - field:    "item_definition_ref"
+        type:     "text"
+        question: "아이템 정의(WP-09-01) 식별자는?"
+        required: true
+    outputs:
+      - tmp_field: "목록.아이템정의참조"
+        from:      "item_definition_ref"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "자산 식별"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "assets"
+        type:     "table"
+        question: "사이버보안 속성을 갖는 자산을 식별하라"
+        columns:  ["자산 ID", "자산명", "사이버보안 속성(기밀성/무결성/가용성/진위성)"]
+        required: true
+    outputs:
+      - tmp_field: "목록.자산[]"
+        from:      "assets"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "피해 시나리오 식별"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "damage_scenarios"
+        type:     "table"
+        question: "자산-속성 손상에 대응하는 피해 시나리오를 식별하라"
+        columns:  ["피해 시나리오 ID", "관련 자산", "손상 속성", "피해 내용"]
+        required: true
+    outputs:
+      - tmp_field: "목록.피해시나리오[]"
+        from:      "damage_scenarios"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "검토·승인"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "approver_name"
+        type:     "person"
+        question: "자산·피해시나리오 목록 승인자(CSM)는?"
+        required: true
+    outputs:
+      - tmp_field: "목록.승인"
+        from:      "approver_name"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 — 자산·피해 시나리오 식별 승인"
+
+dod_checklist:
+  - "아이템의 사이버보안 속성 자산 전수 식별"
+  - "각 자산의 사이버보안 속성 명시"
+  - "자산-속성 손상에 대응하는 피해 시나리오 식별"
+  - "누락 점검(보안·안전 관점)"
+  - "CSM 승인"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "아이템 정의 미확정"
+    rule:    "예비 아키텍처 기반 잠정 자산 식별·'잠정' 표기, 정의 확정 후 재식별(TARA 갱신)."
+  - section: "§7.2"
+    name:    "자산 누락 발견"
+    rule:    "후속 단계에서 누락 자산 발견 시 본 단계로 회귀·보완·후속 재수행."
+  - section: "§7.3"
+    name:    "안전-보안 경계 자산"
+    rule:    "안전 중첩 자산은 안전 담당과 공동 식별, 영향 평가에서 ISO 26262-3 §6.4.3 도출 표기."
+
+triggers:        ["자산 식별", "피해 시나리오", "damage scenario", "TARA 자산"]
+aliases:         ["asset identification", "damage scenario", "자산 목록"]
+event_triggers:  ["TARA 착수", "아이템 정의 확정 후", "§9.4 컨셉 호출"]
+domains:         ["자동차"]

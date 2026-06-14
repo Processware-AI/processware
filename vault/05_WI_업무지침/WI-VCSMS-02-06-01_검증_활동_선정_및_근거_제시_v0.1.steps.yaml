@@ -1,0 +1,123 @@
+wi_id:           "WI-VCSMS-02-06-01"
+title:           "검증 활동 선정 및 근거 제시"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-06"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-06-01-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:          "step-01"
+    name:        "검증 대상 정리"
+    section_ref: "§5.2.1"
+    inputs:
+      - field:    "validation_targets"
+        type:     "table"
+        question: "검증 대상(목표 적정성·달성·클레임·운용환경 요구)을 목록화하세요."
+        columns:  ["target_id", "type", "description"]
+        required: true
+    outputs:
+      - tmp_field: "선정서.검증대상"
+        from:      "validation_targets"
+    hitl: false
+
+  - id:          "step-02"
+    name:        "검증 활동 선정"
+    section_ref: "§5.2.2"
+    inputs:
+      - field:    "selected_activities"
+        type:     "table"
+        question: "각 검증 대상에 차량 수준 검증 활동을 선정하세요."
+        columns:  ["target_id", "activity", "method"]
+        required: true
+    derivations:
+      - id:       "all_targets_covered"
+        expr:     |
+          if every target_id has at least one activity: "OK"
+          else: "미선정"
+        description: "모든 검증 대상에 활동 선정 시 OK"
+    outputs:
+      - tmp_field: "선정서.선정활동"
+        from:      "selected_activities"
+    hitl: false
+
+  - id:          "step-03"
+    name:        "선정 근거 제시"
+    section_ref: "§5.2.3"
+    inputs:
+      - field:    "rationales"
+        type:     "table"
+        question: "각 선정 활동의 근거(적합성·신뢰도·실현가능성·비중복)를 제시하세요."
+        columns:  ["activity", "rationale"]
+        required: true
+    derivations:
+      - id:       "all_justified"
+        expr:     |
+          if every activity has non-empty rationale: "OK"
+          else: "근거누락"
+        description: "근거 없는 활동 0 시 OK"
+    outputs:
+      - tmp_field: "선정서.선정근거"
+        from:      "rationales"
+    hitl: false
+
+  - id:          "step-04"
+    name:        "검증 계획 구성"
+    section_ref: "§5.2.4"
+    inputs:
+      - field:    "validation_plan"
+        type:     "table"
+        question: "선정 활동의 범위·환경·일정·책임을 입력하세요."
+        columns:  ["activity", "scope", "environment", "schedule", "owner"]
+        required: true
+    outputs:
+      - tmp_field: "선정서.검증계획"
+        from:      "validation_plan"
+    hitl: false
+
+  - id:          "step-05"
+    name:        "검토·승인"
+    section_ref: "§5.2.5"
+    inputs:
+      - field:    "approval_decision"
+        type:     "enum"
+        question: "CSM 승인 결정은 무엇입니까?"
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+    outputs:
+      - tmp_field: "선정서.결재.승인"
+        from:      "approval_decision"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 = CSM"
+
+dod_checklist:
+  - "검증 대상(목표·클레임·운용환경 요구) 목록화 완료"
+  - "모든 검증 대상에 검증 활동 선정(미선정 0)"
+  - "각 선정 활동에 근거 제시([RQ-11-02], 근거 없는 활동 0)"
+  - "검증 계획(범위·환경·일정·책임) 구성"
+  - "CSM 승인 기록 확보"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "근거 없는 활동 배제"
+    rule:    "선정 근거 없는 활동은 계획에서 배제([RQ-11-02] 위반 방지), KPI 0건"
+  - section: "§7.2"
+    name:    "하위 검증과 중복"
+    rule:    "Clause 10 하위 검증으로 확인된 항목은 비중복 근거 명시 후 활동 최소화"
+  - section: "§7.3"
+    name:    "검증 불가 대상"
+    rule:    "대체 검증(분석·공급자 합의) 또는 잔여 리스크 수용 표식, CSM 결정"
+
+triggers:        ["검증 활동 선정", "검증 근거", "validation activity selection", "검증 계획"]
+aliases:         ["validation planning", "검증 활동 근거", "validation rationale"]
+event_triggers:  ["제품개발 산출물 전달", "차량 수준 검증 착수"]
+domains:         ["자동차"]

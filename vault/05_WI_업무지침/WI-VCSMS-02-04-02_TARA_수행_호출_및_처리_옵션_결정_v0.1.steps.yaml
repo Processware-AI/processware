@@ -1,0 +1,122 @@
+wi_id:           "WI-VCSMS-02-04-02"
+title:           "TARA 수행 호출 및 처리 옵션 결정"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-04"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-04-02-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:          "step-01"
+    name:        "TARA 결과 수령"
+    section_ref: "§5.2.1"
+    inputs:
+      - field:    "tara_scenarios"
+        type:     "table"
+        question: "TARA 로부터 수령한 위협 시나리오·공격경로·공격타당성·리스크값을 입력하세요."
+        columns:  ["threat_scenario", "attack_path", "feasibility", "risk_value"]
+        required: true
+      - field:    "coverage_confirmed"
+        type:     "boolean"
+        question: "아이템 정의의 모든 자산·피해 시나리오가 분석에 반영되었습니까?"
+        required: true
+    outputs:
+      - tmp_field: "리스크처리결정서.TARA결과"
+        from:      "tara_scenarios"
+    hitl: false
+
+  - id:          "step-02"
+    name:        "리스크값 트리아지"
+    section_ref: "§5.2.2"
+    inputs:
+      - field:    "rv1_omission"
+        type:     "table"
+        question: "리스크값 1 위협 시나리오와 [PM-06-08] 생략 적용 여부·근거를 입력하세요."
+        columns:  ["threat_scenario", "omit_applied", "rationale"]
+        required: false
+    outputs:
+      - tmp_field: "리스크처리결정서.RV1생략근거"
+        from:      "rv1_omission"
+    hitl: false
+
+  - id:          "step-03"
+    name:        "처리 옵션 결정"
+    section_ref: "§5.2.3"
+    inputs:
+      - field:    "treatment_decisions"
+        type:     "table"
+        question: "각 위협 시나리오의 리스크 처리 옵션과 근거를 입력하세요."
+        columns:  ["threat_scenario", "treatment_option", "rationale"]
+        required: true
+    derivations:
+      - id:       "all_treated"
+        expr:     |
+          if every threat_scenario has at least one treatment_option: "OK"
+          else: "누락"
+        description: "모든 위협 시나리오에 처리 옵션 결정 시 OK"
+    outputs:
+      - tmp_field: "리스크처리결정서.처리옵션"
+        from:      "treatment_decisions"
+    hitl: false
+
+  - id:          "step-04"
+    name:        "목표/클레임 분기 표식"
+    section_ref: "§5.2.4"
+    inputs:
+      - field:    "branch_tags"
+        type:     "table"
+        question: "각 처리 결정의 후속 분기를 표식하세요(감소→목표, 공유/보유→클레임)."
+        columns:  ["threat_scenario", "treatment_option", "branch"]
+        required: true
+    outputs:
+      - tmp_field: "리스크처리결정서.분기표식"
+        from:      "branch_tags"
+    hitl: false
+
+  - id:          "step-05"
+    name:        "검토·승인"
+    section_ref: "§5.2.5"
+    inputs:
+      - field:    "approval_decision"
+        type:     "enum"
+        question: "CSM 승인 결정은 무엇입니까?"
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+    outputs:
+      - tmp_field: "리스크처리결정서.결재.승인"
+        from:      "approval_decision"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 = CSM"
+
+dod_checklist:
+  - "entry_gate(WI-04-01 done) 충족 확인"
+  - "TARA 결과 수령 및 자산·피해 시나리오 커버리지 확인"
+  - "모든 위협 시나리오에 처리 옵션 1건 이상 결정(누락 0)"
+  - "리스크값 1 생략 적용 시 근거 기록"
+  - "감소→목표 / 공유·보유→클레임 분기 표식 완료"
+  - "CSM 승인 기록 확보"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "TARA 커버리지 미달"
+    rule:    "자산·피해 시나리오 누락 시 처리 옵션 결정 보류, TARA 절차로 반려·재분석 의뢰"
+  - section: "§7.2"
+    name:    "리스크값 1 생략 남용 방지"
+    rule:    "§15.8 분석 완료 전제로만 생략 적용, 근거 결정서 명시, 추정 생략 금지"
+  - section: "§7.3"
+    name:    "처리 옵션 충돌(감소+보유 혼재)"
+    rule:    "잔여 리스크만 보유 분리, 감소 대상에 목표 부여, 분리 기준 CSM 확정"
+
+triggers:        ["TARA 호출", "리스크 처리 옵션", "위협 시나리오 처리", "회피 감소 공유 보유"]
+aliases:         ["risk treatment", "처리 결정", "리스크 트리아지", "treatment decision"]
+event_triggers:  ["아이템 정의 승인 완료", "TARA 결과 수령"]
+domains:         ["자동차"]

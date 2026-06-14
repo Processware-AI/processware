@@ -1,0 +1,101 @@
+wi_id:           "WI-VCSMS-02-03-03"
+title:           "영향 평가 (S/F/O/P 4등급)"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-03"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-03-03-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "범주별 영향 판정"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "impact_rating"
+        type:     "table"
+        question: "피해 시나리오별 S/F/O/P 영향등급을 판정하라"
+        columns:  ["피해 시나리오 ID", "Safety", "Financial", "Operational", "Privacy"]
+        validation: "각 값 ∈ {severe, major, moderate, negligible, 생략}"
+        required: true
+    outputs:
+      - tmp_field: "영향평가표.등급[]"
+        from:      "impact_rating"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "안전 등급 정합·최고등급 결정"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "safety_iso26262_consistent"
+        type:     "boolean"
+        question: "안전(S) 등급이 ISO 26262-3 §6.4.3 도출과 정합하는가?"
+        required: true
+    derivations:
+      - id:       "max_impact"
+        expr:     |
+          severity_order = {severe:4, major:3, moderate:2, negligible:1}
+          return max(S,F,O,P by severity_order)
+        description: "피해 시나리오별 최고 영향등급 결정"
+    outputs:
+      - tmp_field: "영향평가표.최고등급"
+        from:      "max_impact"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "생략 논증"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "omission_rationale"
+        type:     "text"
+        question: "(생략 시) 타 범주 대비 덜 치명적 논증 근거"
+        required: false
+    outputs:
+      - tmp_field: "영향평가표.생략논증"
+        from:      "omission_rationale"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "검토·승인"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "approver_name"
+        type:     "person"
+        question: "영향평가표 승인자(CSM)는?"
+        required: true
+    outputs:
+      - tmp_field: "영향평가표.승인"
+        from:      "approver_name"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 — 영향 평가 승인"
+
+dod_checklist:
+  - "각 피해 시나리오의 S/F/O/P 4범주 등급 판정"
+  - "안전(S) 등급 ISO 26262-3 §6.4.3 정합 확인"
+  - "범주별 최고 영향등급 기록"
+  - "(생략 시) 생략 논증 근거 기록"
+  - "CSM 승인"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "안전 영향등급 불일치"
+    rule:    "safety_iso26262_consistent==false 시 안전 담당과 정합화, 정합 전 보수적 상위 등급 잠정 적용. 정합율 100% KPI."
+  - section: "§7.2"
+    name:    "등급표 외 임의 판정"
+    rule:    "자체 등급표 정의 외 임의 기준 금지. 정의 보완 필요 시 등급표 개정 후 적용."
+  - section: "§7.3"
+    name:    "생략 논증 부실"
+    rule:    "[PM-15-07] 생략 논증 부실 시 생략 철회·정식 평가."
+
+triggers:        ["영향 평가", "SFOP", "영향등급", "impact rating", "안전 영향"]
+aliases:         ["impact assessment", "S/F/O/P", "영향 등급 판정"]
+event_triggers:  ["자산·피해 시나리오 식별 후"]
+domains:         ["자동차"]

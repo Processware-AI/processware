@@ -1,0 +1,115 @@
+# =============================================================
+# WI-VCSMS-02-09-02 업데이트 검증 및 배포 — Agent 실행 정의
+# =============================================================
+wi_id:           "WI-VCSMS-02-09-02"
+title:           "업데이트 검증 및 배포"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-09"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-09-02-01"
+scope_code:      "VCSMS"
+scope_type:      "org"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "검증 항목 전개 및 환경 준비"
+    section_ref:  "§5.1"
+    inputs:
+      - field:    "verification_items"
+        type:     "table"
+        question: "업데이트 요구·역량 요건을 검증 항목으로 전개하세요."
+        columns:  ["검증항목", "요구ID", "검증방법"]
+        required: true
+      - field:    "rollback_threshold"
+        type:     "text"
+        question: "배포 중단·롤백 기준(실패율 임계값)을 입력하세요."
+        required: true
+    outputs:
+      - tmp_field: "검증항목표[]"
+        from:      "verification_items"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "검증 수행 및 판정"
+    section_ref:  "§5.2.1-2"
+    inputs:
+      - field:    "verification_results"
+        type:     "table"
+        question: "검증 결과(회귀 포함)를 입력하세요."
+        columns:  ["검증항목", "결과(Pass/Fail)", "미충족내용"]
+        required: true
+    derivations:
+      - id:       "verification_verdict"
+        expr:     "all(결과 == 'Pass') ? '통과' : '반려'"
+        description: "전체 검증 판정 — Fail 시 배포 불가"
+    outputs:
+      - tmp_field: "검증판정"
+        from:      "verification_verdict"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "배포 게이트(CSM 승인)"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "approval_result"
+        type:     "enum"
+        question: "CSM 배포 승인 결과를 선택하세요(검증 통과 시에만 승인)."
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+        required_if: "검증판정 == '통과'"
+    outputs:
+      - tmp_field: "결재.배포승인"
+        from:      "approval_result"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 명시 — 미검증 배포 0건 원칙 게이트"
+
+  - id:           "step-04"
+    name:         "배포 실행·결과 기록"
+    section_ref:  "§5.2.4-5"
+    inputs:
+      - field:    "deployment_result"
+        type:     "table"
+        question: "배포 결과(커버리지·실패율·롤백 건수)를 입력하세요."
+        columns:  ["대상VIN수", "성공", "실패", "롤백", "커버리지%"]
+        required: true
+      - field:    "residual_risk"
+        type:     "text"
+        question: "미적용 차량의 잔존 위험을 기재하세요."
+        required: false
+    outputs:
+      - tmp_field: "배포결과표[]"
+        from:      "deployment_result"
+      - tmp_field: "잔존위험"
+        from:      "residual_risk"
+    hitl: false
+
+dod_checklist:
+  - "업데이트 요구·역량 요건 검증(회귀 포함)"
+  - "검증 결과(Pass/Fail)와 미충족 항목 기록"
+  - "검증 통과 후 CSM 배포 승인(미검증 배포 0건)"
+  - "배포 실패율·롤백 모니터링 및 임계값 관리"
+  - "배포 결과(커버리지·실패율)와 잔존 위험 기록"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "긴급 패치 배포(시간 압박)"
+    rule:    "검증 생략 금지, 위험 비례 핵심 항목 우선 검증(축약), CSM 축약·잔여 검증 일정 승인, 배포 후 잔여 검증 완료."
+  - section: "§7.2"
+    name:    "배포 중 대규모 실패"
+    rule:    "임계값 초과 시 즉시 중단·영향 차량 롤백, 원인 분석 전 재배포 금지, CSM 이 사고대응(PRO-01-04) 연계 판정."
+  - section: "§7.3"
+    name:    "배포 커버리지 미달"
+    rule:    "장기 미적용 VIN 잔존 위험 추적 등록, 재배포·고객 통보 후속 조치 계획."
+
+triggers:        ["업데이트 검증", "업데이트 배포", "OTA 배포", "배포 게이트"]
+aliases:         ["update deployment", "OTA rollout", "패치 배포", "업데이트 롤아웃"]
+event_triggers:  ["업데이트 개발 완료", "배포 윈도우 도래"]
+domains:         ["자동차"]

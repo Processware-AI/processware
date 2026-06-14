@@ -1,0 +1,105 @@
+wi_id:           "WI-VCSMS-02-02-01"
+title:           "사이버보안 케이스 작성"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-02"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-02-01-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "논거 구조 정의"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "top_claim"
+        type:     "text"
+        question: "최상위 주장(item 의 사이버보안 달성)을 기술하라"
+        required: true
+      - field:    "argument_tree"
+        type:     "table"
+        question: "목표/클레임별 하위 논거를 구조화하라"
+        columns:  ["목표/클레임", "하위 논거", "근거 유형"]
+        required: true
+    outputs:
+      - tmp_field: "케이스.논거[]"
+        from:      "argument_tree"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "증적 인용"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "evidence_index"
+        type:     "table"
+        question: "각 논거에 증적 WP 를 식별자·버전과 함께 인용하라"
+        columns:  ["논거", "증적 WP", "WP 버전", "닫힘 여부(Y/open)"]
+        required: true
+    outputs:
+      - tmp_field: "케이스.증적[]"
+        from:      "evidence_index"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "잔여 리스크·예외 명시"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "residual_risk"
+        type:     "text"
+        question: "보유·공유 리스크와 open issue 를 기술하라"
+        required: false
+    outputs:
+      - tmp_field: "케이스.잔여리스크"
+        from:      "residual_risk"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "완전성 점검·승인"
+    section_ref:  "§5.2.4"
+    derivations:
+      - id:       "case_complete"
+        expr:     |
+          if all(논거.닫힘여부 == "Y"): "완전"
+          else: "미완(open 논거 존재)"
+        description: "케이스 완전성 자동 판정"
+    inputs:
+      - field:    "approver_name"
+        type:     "person"
+        question: "케이스 승인자(CSM)는?"
+        required: true
+    outputs:
+      - tmp_field: "케이스.승인"
+        from:      "approver_name"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 — 사이버보안 케이스 승인"
+
+dod_checklist:
+  - "최상위 주장이 목표/클레임으로 분해됨"
+  - "각 논거에 증적 WP 가 식별자·버전과 함께 인용됨"
+  - "보유·공유 리스크 및 open issue 명시"
+  - "목표/클레임 증적 닫힘(완전성) 점검"
+  - "CSM 승인"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "증적 미완(논거 미닫힘)"
+    rule:    "open 논거는 닫힘 계획·기한 명시. open 존재 시 릴리스 게이트(WI-05) 통과 불가."
+  - section: "§7.2"
+    name:    "증적 버전 불일치"
+    rule:    "인용 WP 버전이 최신 형상과 다르면 최신으로 갱신·논거 영향 재평가."
+  - section: "§7.3"
+    name:    "보유 리스크 과다"
+    rule:    "보유 리스크 과다/정당화 약함 시 PRO-02-03 WI-07 재검토 요청, 보강 전 승인 보류."
+
+triggers:        ["사이버보안 케이스", "논거 작성", "증적 인덱스", "cybersecurity case"]
+aliases:         ["cybersecurity case", "assurance case", "케이스"]
+event_triggers:  ["개발·검증 WP 산출 후", "릴리스 준비 단계"]
+domains:         ["자동차"]

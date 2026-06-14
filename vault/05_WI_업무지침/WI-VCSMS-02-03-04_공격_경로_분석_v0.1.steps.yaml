@@ -1,0 +1,96 @@
+wi_id:           "WI-VCSMS-02-03-04"
+title:           "공격 경로 분석"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-03"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-03-04-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "공격 경로 식별"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "attack_paths"
+        type:     "table"
+        question: "위협 시나리오별 공격 경로(진입점→단계→자산)를 식별하라"
+        columns:  ["경로 ID", "위협 ID", "진입점", "중간 단계", "대상 자산"]
+        required: true
+    outputs:
+      - tmp_field: "분석서.경로[]"
+        from:      "attack_paths"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "위협 시나리오 연계·실현성"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "feasibility"
+        type:     "table"
+        question: "경로별 실현 가능성과 연계 위협을 정리하라"
+        columns:  ["경로 ID", "실현 가능(Y/N)", "불가 사유(N 시)"]
+        required: true
+    outputs:
+      - tmp_field: "분석서.실현성[]"
+        from:      "feasibility"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "경로 단계 정리"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "path_steps"
+        type:     "table"
+        question: "각 경로의 전제·필요 접근·필요 권한을 정리하라(타당성 입력)"
+        columns:  ["경로 ID", "전제 조건", "필요 접근", "필요 권한"]
+        required: true
+    outputs:
+      - tmp_field: "분석서.단계[]"
+        from:      "path_steps"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "검토·승인"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "approver_name"
+        type:     "person"
+        question: "공격경로 분석서 승인자(CSM)는?"
+        required: true
+    outputs:
+      - tmp_field: "분석서.승인"
+        from:      "approver_name"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 — 공격 경로 분석 승인"
+
+dod_checklist:
+  - "각 위협 시나리오의 공격 경로 식별"
+  - "공격 경로를 실현 가능한 위협 시나리오에 연계"
+  - "실현 불가능 경로 사유 기록"
+  - "경로 단계(전제·접근·권한) 정리"
+  - "CSM 승인"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "아키텍처 변경"
+    rule:    "아키텍처·인터페이스 변경 시 영향 경로 재분석·타당성 재수행."
+  - section: "§7.2"
+    name:    "경로 누락 발견"
+    rule:    "타당성/검증 중 누락 경로 발견 시 본 단계 회귀·보완·후속 재수행."
+  - section: "§7.3"
+    name:    "실현 불가 과신"
+    rule:    "'실현 불가' 판단 시 전제·자원 근거 기록·보안 설계자 동의 필수. 단순 추정 금지."
+
+triggers:        ["공격 경로", "attack path", "공격 트리", "경로 분석"]
+aliases:         ["attack path", "attack tree", "공격 경로 분석"]
+event_triggers:  ["위협 시나리오 식별 후"]
+domains:         ["자동차"]

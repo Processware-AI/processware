@@ -1,0 +1,128 @@
+wi_id:           "WI-VCSMS-01-02-01"
+title:           "사이버보안 감사 계획 및 독립성 확보"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-01-02"
+parent_pol:      "POL-VCSMS-01"
+related_tmp:
+  - "TMP-VCSMS-01-02-01-01"
+scope_code:      "VCSMS"
+scope_type:      "common"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "감사 범위·기준 정의"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "audit_scope"
+        type:     "text"
+        question: "감사 범위(대상 프로세스·기간)는?"
+        required: true
+      - field:    "audit_criteria"
+        type:     "text"
+        question: "적합성 판정 기준(조항·조직 규칙)은?"
+        required: true
+    outputs:
+      - tmp_field: "계획서.범위_기준"
+        from:      "audit_scope"
+    hitl: false
+  - id:           "step-02"
+    name:         "일정·자원 계획"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "audit_schedule"
+        type:     "table"
+        question: "감사 일정·인터뷰 대상·증거 접근 권한을 입력하세요."
+        required: true
+        columns:  ["단계", "일자", "대상", "증거접근"]
+    outputs:
+      - tmp_field: "계획서.일정[]"
+        from:      "audit_schedule"
+    hitl: false
+  - id:           "step-03"
+    name:         "심사원 선정·독립성 확보"
+    section_ref:  "§5.2.3"
+    description:  "auditor ≠ executor 독립성 확보 ([RQ-05-17])"
+    inputs:
+      - field:    "auditor_table"
+        type:     "table"
+        question: "심사원과 독립성 근거(피감 실행 책임 여부)를 입력하세요."
+        required: true
+        columns:  ["심사원", "역할", "피감_실행책임", "독립성판정"]
+    derivations:
+      - id:       "independence_ok"
+        expr:     |
+          all(row.피감_실행책임 == "없음" for row in auditor_table)
+        description: "전 심사원 독립성 충족 여부"
+    outputs:
+      - tmp_field: "계획서.독립성[]"
+        from:      "auditor_table"
+    hitl: false
+  - id:           "step-04"
+    name:         "CSM 독립성 검토"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "csm_independence_review"
+        type:     "text"
+        question: "CSM 독립성 검토 결과(보고선·이해관계 점검)는?"
+        required: true
+    outputs:
+      - tmp_field: "계획서.독립성검토"
+        from:      "csm_independence_review"
+    hitl: false
+  - id:           "step-05"
+    name:         "경영진 승인"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "approval_decision"
+        type:     "enum"
+        question: "경영진 감사 계획 승인 결정은?"
+        required: true
+        options:  ["승인", "조건부승인", "반려", "보류(독립성 미확보)"]
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval_decision"
+    hitl: required
+    approver_role: "Top Management (경영진)"
+    rationale:     "WI §2 승인자 = 경영진 (감사 계획 승인, 독립성 미확보 시 보류)"
+  - id:           "step-06"
+    name:         "통지·준비"
+    section_ref:  "§5.2.6"
+    inputs:
+      - field:    "notification"
+        type:     "text"
+        question: "피감 조직 통지·증거 준비 요청 결과는?"
+        required: true
+    outputs:
+      - tmp_field: "계획서.통지"
+        from:      "notification"
+    hitl: false
+
+dod_checklist:
+  - "감사 범위·적합성 판정 기준 정의 완료"
+  - "감사 일정·인터뷰 대상·증거 접근 권한 계획 완료"
+  - "심사원별 독립성(auditor ≠ executor) 확인 및 근거 기록"
+  - "이해상충 발생 시 교체·외부 위촉 처리 완료"
+  - "CSM 독립성 검토 통과"
+  - "경영진 감사 계획 승인 및 피감 조직 통지 완료"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "독립성 미확보(인력 부족)"
+    rule:    "내부 독립 감사인 부재 시 외부 위촉·교차 부서 심사원 활용, 확보 불가 시 감사 보류·경영진 보고"
+  - section: "§7.2"
+    name:    "감사 범위 축소 요청"
+    rule:    "피감 조직 범위 제한 요청은 거부, 경영진 권한으로 접근 보장, 불가피한 제한은 한계로 보고 예고"
+  - section: "§7.3"
+    name:    "감사 주기 미준수"
+    rule:    "주기 내 미계획 시 임시 감사 계획, 미준수 사유 거버넌스 개선 기록 등록"
+
+triggers:        ["사이버보안 감사 계획", "감사 독립성", "심사원 선정", "조직 감사"]
+aliases:         ["audit plan", "auditor independence", "내부 감사 계획"]
+event_triggers:  ["연간 감사 주기 도래", "거버넌스 산출물 갱신", "중대 사고 후 특별 감사"]
+domains:         ["자동차"]

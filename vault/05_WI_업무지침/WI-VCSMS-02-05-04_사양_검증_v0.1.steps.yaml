@@ -1,0 +1,123 @@
+wi_id:           "WI-VCSMS-02-05-04"
+title:           "사양 검증"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-05"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-05-04-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:          "step-01"
+    name:        "완전성 검증"
+    section_ref: "§5.2.1"
+    inputs:
+      - field:    "unspecified_reqs"
+        type:     "number"
+        question: "사양(SP)으로 구체화되지 않은 상위 요구(CR) 수는 몇 건입니까?"
+        validation: "x >= 0"
+        required: true
+      - field:    "unreflected_fixes"
+        type:     "number"
+        question: "약점 분석 사양보완 처리 중 미반영 항목 수는 몇 건입니까?"
+        validation: "x >= 0"
+        required: true
+    outputs:
+      - tmp_field: "검증보고서.완전성"
+        from:      "unspecified_reqs"
+    hitl: false
+
+  - id:          "step-02"
+    name:        "정확성 검증"
+    section_ref: "§5.2.2"
+    inputs:
+      - field:    "correctness_findings"
+        type:     "table"
+        question: "각 사양이 상위 요구를 정확히 구체화했는지(과대·과소·왜곡) 점검 결과를 입력하세요."
+        columns:  ["spec_id", "result", "finding"]
+        required: true
+    outputs:
+      - tmp_field: "검증보고서.정확성"
+        from:      "correctness_findings"
+    hitl: false
+
+  - id:          "step-03"
+    name:        "일관성 검증"
+    section_ref: "§5.2.3"
+    inputs:
+      - field:    "conflicts"
+        type:     "number"
+        question: "사양 간 상충·사양-할당 불일치 수는 몇 건입니까?"
+        validation: "x >= 0"
+        required: true
+    outputs:
+      - tmp_field: "검증보고서.일관성"
+        from:      "conflicts"
+    hitl: false
+
+  - id:          "step-04"
+    name:        "부적합 기록·판정"
+    section_ref: "§5.2.4"
+    derivations:
+      - id:       "verdict"
+        expr:     |
+          if unspecified_reqs == 0 and unreflected_fixes == 0 and conflicts == 0 and 정확성_충족: "통과"
+          elif 경미 해소 가능: "조건부"
+          else: "미통과"
+        description: "완전·정확·일관 충족 시 통과"
+    inputs:
+      - field:    "rework_target"
+        type:     "text"
+        question: "미통과 시 재작업 대상 WI(05-01/03)를 지정하세요."
+        required_if: "verdict == '미통과'"
+    outputs:
+      - tmp_field: "검증보고서.판정"
+        from:      "verdict"
+    hitl: false
+
+  - id:          "step-05"
+    name:        "검토·승인"
+    section_ref: "§5.2.5"
+    inputs:
+      - field:    "approval_decision"
+        type:     "enum"
+        question: "CSM 승인 결정은 무엇입니까?"
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+    outputs:
+      - tmp_field: "검증보고서.결재.승인"
+        from:      "approval_decision"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 = CSM"
+
+dod_checklist:
+  - "entry_gate(WI-05-03 done) 충족 확인"
+  - "완전성 점검 완료(미구체화 요구 0, 사양보완 미반영 0)"
+  - "정확성 점검 완료(과대·과소·왜곡 처리)"
+  - "일관성 점검 완료(상충·불일치 0)"
+  - "부적합 기록 및 판정 명시"
+  - "CSM 승인 기록 확보"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "사양 검증 미통과"
+    rule:    "통합·검증 차단, 지정 선행 WI(05-01/03) 반려, 재작업 후 재검증"
+  - section: "§7.2"
+    name:    "약점 처리 미반영"
+    rule:    "미반영 항목 완전성 부적합 기록, WI-05-01/03 반려"
+  - section: "§7.3"
+    name:    "상위 요구 변경"
+    rule:    "변경 영향 사양 식별, 컨셉 변경 관리(PRO-VCSMS-02-01) 연계 후 재검증"
+
+triggers:        ["사양 검증", "specification verification", "사양 정합성", "완전 정확 일관"]
+aliases:         ["spec verification", "사양 검증보고", "specification review"]
+event_triggers:  ["약점 분석 승인", "통합·검증 착수 전 게이트"]
+domains:         ["자동차"]

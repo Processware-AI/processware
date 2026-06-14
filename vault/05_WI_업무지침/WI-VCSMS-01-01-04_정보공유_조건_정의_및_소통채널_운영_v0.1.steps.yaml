@@ -1,0 +1,122 @@
+wi_id:           "WI-VCSMS-01-01-04"
+title:           "정보공유 조건 정의 및 소통채널 운영"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-01-01"
+parent_pol:      "POL-VCSMS-01"
+related_tmp:
+  - "TMP-VCSMS-01-01-04-01"
+scope_code:      "VCSMS"
+scope_type:      "common"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "인접 분야 식별·통합 방안"
+    section_ref:  "§5.2.1"
+    description:  "인접 분야 식별 및 통합·정보교환 조율 ([RQ-05-05])"
+    inputs:
+      - field:    "adjacent_fields"
+        type:     "table"
+        question: "인접 분야와 통합·조율 방안을 입력하세요."
+        required: true
+        columns:  ["분야", "당사자", "통합방안"]
+    outputs:
+      - tmp_field: "정의서.인접분야[]"
+        from:      "adjacent_fields"
+    hitl: false
+  - id:           "step-02"
+    name:         "정보공유 조건 정의"
+    section_ref:  "§5.2.2"
+    description:  "정보 유형별 요구/허용/금지 매트릭스 ([RQ-05-09])"
+    inputs:
+      - field:    "sharing_matrix"
+        type:     "table"
+        question: "정보 유형별 공유 조건을 입력하세요."
+        required: true
+        columns:  ["정보유형", "당사자", "공유조건", "근거"]
+    outputs:
+      - tmp_field: "정의서.공유매트릭스[]"
+        from:      "sharing_matrix"
+    hitl: false
+  - id:           "step-03"
+    name:         "소통채널 수립"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "channels"
+        type:     "table"
+        question: "소통채널·트리거·책임자·정보보안 등급을 입력하세요."
+        required: true
+        columns:  ["채널", "당사자", "트리거", "책임자", "정보보안등급"]
+    outputs:
+      - tmp_field: "정의서.소통채널[]"
+        from:      "channels"
+    hitl: false
+  - id:           "step-04"
+    name:         "정보보안 정렬"
+    section_ref:  "§5.2.4"
+    description:  "공유 데이터 보호 수준 합의 ([RC-05-10], should)"
+    inputs:
+      - field:    "infosec_alignment"
+        type:     "text"
+        question: "공유 데이터 보호 수준 합의(분류·암호화·접근통제)와 ISMS 정합 결과는?"
+        required: true
+    outputs:
+      - tmp_field: "정의서.정보보안정렬"
+        from:      "infosec_alignment"
+    hitl: false
+  - id:           "step-05"
+    name:         "검토·승인"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "approval_decision"
+        type:     "enum"
+        question: "CSM 검토·승인 결정은?"
+        required: true
+        options:  ["승인", "조건부승인", "반려"]
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval_decision"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 = CSM (규칙·채널 완전성·법규 정합 승인)"
+  - id:           "step-06"
+    name:         "운영·배포"
+    section_ref:  "§5.2.6"
+    inputs:
+      - field:    "operation_record"
+        type:     "text"
+        question: "정의서 배포·채널 가동·위반 모니터링 운영 결과는?"
+        required: true
+    outputs:
+      - tmp_field: "정의서.운영기록"
+        from:      "operation_record"
+    hitl: false
+
+dod_checklist:
+  - "인접 분야·정보교환 당사자 목록 작성 및 통합 방안 정의"
+  - "정보 유형별 요구/허용/금지 매트릭스 완성"
+  - "소통채널별 트리거·책임자·정보보안 등급 명시"
+  - "공유 데이터 정보보안 정렬 합의 및 상위 ISMS 정합"
+  - "법규 통보 의무(규제기관·고객) 반영 확인"
+  - "CSM 검토·승인 및 채널 가동·배포 완료"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "법규 통보 의무 충돌"
+    rule:    "영업비밀 금지와 규제 통보 의무 충돌 시 법무 검토 후 법규 의무 우선·공개 최소화, 사례 등록"
+  - section: "§7.2"
+    name:    "긴급 정보공유"
+    rule:    "사고·중대 취약점 시 사전 정의된 긴급 채널 가동(PRO-01-03/04 연계), 사후 이력 기록"
+  - section: "§7.3"
+    name:    "외부 당사자 정보보안 미정렬"
+    rule:    "외부 보호 수준 미충족 시 공유 범위 축소·추가 보호조치 조건화, 미정렬 리스크 CSM 보고"
+
+triggers:        ["정보공유 규칙", "소통채널 운영", "취약점 공개", "사고 정보 통보"]
+aliases:         ["information sharing", "disclosure policy", "통보 의무", "ISAC 공유"]
+event_triggers:  ["정책 승인 완료", "신규 외부 당사자 추가", "중대 취약점 공개 요청"]
+domains:         ["자동차"]

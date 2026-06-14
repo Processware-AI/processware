@@ -1,0 +1,109 @@
+wi_id:           "WI-VCSMS-02-01-02"
+title:           "사이버보안 관련성·신규/재사용 분석"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-01"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-01-02-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "입력 수집"
+    section_ref:  "§5.1"
+    inputs:
+      - field:    "item_list"
+        type:     "table"
+        question: "분석 대상 item/component 목록을 입력하라"
+        columns:  ["component", "정의", "외부인터페이스", "재사용후보(Y/N)"]
+        required: true
+    outputs:
+      - tmp_field: "판정서.대상목록[]"
+        from:      "item_list"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "관련성 판정"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "relevance"
+        type:     "table"
+        question: "component 별 사이버보안 관련성과 근거를 판정하라"
+        columns:  ["component", "관련성(관련/무관)", "근거"]
+        required: true
+    outputs:
+      - tmp_field: "판정서.관련성[]"
+        from:      "relevance"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "신규/재사용 구분"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "reuse_class"
+        type:     "table"
+        question: "관련 component 를 신규/재사용/수정재사용/OTS/OOC 로 분류하라"
+        columns:  ["component", "분류", "상세분석필요(Y/N)"]
+        required: true
+    outputs:
+      - tmp_field: "판정서.분류[]"
+        from:      "reuse_class"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "테일러링 후보 표기"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "tailoring_candidate"
+        type:     "text"
+        question: "테일러링 후보 항목과 예상 근거(있으면)"
+        required: false
+    outputs:
+      - tmp_field: "판정서.테일러링후보"
+        from:      "tailoring_candidate"
+    hitl: false
+
+  - id:           "step-05"
+    name:         "검토·승인"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "approver_name"
+        type:     "person"
+        question: "판정서 승인자(CSM)는?"
+        required: true
+    outputs:
+      - tmp_field: "판정서.승인"
+        from:      "approver_name"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 — 관련성 판정 승인"
+
+dod_checklist:
+  - "모든 item/component 의 관련성 판정 완료"
+  - "무관 판정 항목은 근거 기록 + 승인"
+  - "관련 항목의 신규/재사용/OTS/OOC 분류 완료"
+  - "테일러링 후보 표기"
+  - "CSM 승인 획득"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "무관 판정"
+    rule:    "관련성=무관이면 근거 기록·CSM 승인 후 후속 계획 단계 생략. 판정서는 형상관리 보존, 변경 시 재판정."
+  - section: "§7.2"
+    name:    "관련성 모호"
+    rule:    "판단 모호 시 보수적으로 '관련' 처리하고 §9.4 컨셉 TARA 에서 재확인 표기."
+  - section: "§7.3"
+    name:    "재사용 이력 불충분"
+    rule:    "재사용 후보 문서 불충분 시 WI-05(OTS/OOC) 로 회부, 추가활동 식별 표기."
+
+triggers:        ["사이버보안 관련성", "재사용 분석", "신규 개발 구분", "OTS OOC 식별"]
+aliases:         ["relevance analysis", "reuse analysis", "관련성 판정"]
+event_triggers:  ["책임 배정 완료 후", "item 정의 확정"]
+domains:         ["자동차"]

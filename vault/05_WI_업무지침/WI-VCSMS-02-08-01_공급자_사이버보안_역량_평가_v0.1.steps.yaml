@@ -1,0 +1,119 @@
+# =============================================================
+# WI-VCSMS-02-08-01 공급자 사이버보안 역량 평가 — Agent 실행 정의
+# =============================================================
+wi_id:           "WI-VCSMS-02-08-01"
+title:           "공급자 사이버보안 역량 평가"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-08"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-08-01-01"
+scope_code:      "VCSMS"
+scope_type:      "org"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "위험 수준 분류 및 역량 기록 수령"
+    section_ref:  "§5.1-5.2.1"
+    inputs:
+      - field:    "risk_level"
+        type:     "enum"
+        question: "공급 대상 활동의 사이버보안 위험 수준을 선택하세요."
+        options:  ["높음", "중간", "낮음"]
+        required: true
+      - field:    "capability_records"
+        type:     "table"
+        question: "공급자가 제출한 사이버보안 역량 기록(인증·프로세스·실적)을 입력하세요."
+        columns:  ["기록종류", "내용", "최신성", "검증결과"]
+        required: false
+    outputs:
+      - tmp_field: "역량기록표[]"
+        from:      "capability_records"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "영역별 평가"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "domain_scores"
+        type:     "table"
+        question: "평가 영역(프로세스/인력/도구/실적/취약점관리)별 점수와 근거를 입력하세요."
+        columns:  ["평가영역", "가중치", "점수", "근거"]
+        required: true
+    derivations:
+      - id:       "weighted_total"
+        expr:     "sum(점수 * 가중치) for 각 영역"
+        description: "가중 합산 종합 점수"
+    outputs:
+      - tmp_field: "평가표[]"
+        from:      "domain_scores"
+      - tmp_field: "종합점수"
+        from:      "weighted_total"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "종합 판정"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "remediation"
+        type:     "text"
+        question: "조건부 판정 시 보완 요구 항목·기한을 입력하세요(없으면 비움)."
+        required: false
+    derivations:
+      - id:       "verdict"
+        expr:     |
+          if 종합점수 >= 합격선: "적합"
+          elif 종합점수 >= 조건부선: "조건부"
+          else: "부적합"
+        description: "가중 점수 기반 적합 판정"
+    outputs:
+      - tmp_field: "판정"
+        from:      "verdict"
+      - tmp_field: "보완요구"
+        from:      "remediation"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "CSM 검토 및 승인"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "approval_result"
+        type:     "enum"
+        question: "CSM 평가 승인 결과를 선택하세요."
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval_result"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 명시 — 역량 평가 승인"
+
+dod_checklist:
+  - "공급 대상 활동의 사이버보안 위험 수준 분류"
+  - "공급자 역량 기록 수령·확인(미제출 시 §7.1 처리 기록)"
+  - "모든 평가 영역에 점수·근거 기재"
+  - "종합 판정(적합/조건부/부적합)과 보완 요구 명시"
+  - "CSM 검토·승인 완료"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "역량 기록 미제출(권고 미이행)"
+    rule:    "미제출만으로 즉시 부적합 처리 금지, 대체 증빙 요청, 검증 불가 시 조건부 또는 부적합."
+  - section: "§7.2"
+    name:    "평가 결과와 조달 결정 충돌"
+    rule:    "임의 진행 금지, CSM·CS Lead·조달 공동 위험 수용 결정, 보완 통제 CIA(WI-08-03) 반영."
+  - section: "§7.3"
+    name:    "기존 거래 공급자"
+    rule:    "신규 활동 분산 시 평가 생략 금지, 유효 최근 평가 있으면 델타 평가로 갈음·근거 기록."
+
+triggers:        ["공급자 역량 평가", "supplier capability", "사이버보안 역량", "공급망 평가"]
+aliases:         ["supplier assessment", "공급자 사이버보안 평가", "벤더 역량"]
+event_triggers:  ["신규 공급자 선정 착수", "사이버보안 활동 외주 결정"]
+domains:         ["자동차"]

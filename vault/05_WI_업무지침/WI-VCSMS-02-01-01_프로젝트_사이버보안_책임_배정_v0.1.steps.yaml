@@ -1,0 +1,121 @@
+wi_id:           "WI-VCSMS-02-01-01"
+title:           "프로젝트 사이버보안 책임 배정"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-01"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-01-01-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "조직 역할·범위 확인"
+    section_ref:  "§5.1"
+    description:  "거버넌스 역할 정의와 프로젝트 사이버보안 범위 확인"
+    inputs:
+      - field:    "project_id"
+        type:     "text"
+        question: "대상 프로젝트 식별자(헌장 번호)는?"
+        required: true
+      - field:    "cs_scope_items"
+        type:     "text"
+        question: "사이버보안 관련 item/component 범위는?"
+        required: true
+    outputs:
+      - tmp_field: "책임배정표.프로젝트"
+        from:      "project_id"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "핵심 역할 배정"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "role_assignment"
+        type:     "table"
+        question: "역할별 책임자(R)·책임승인자(A)를 배정하라"
+        columns:  ["역할", "담당자", "R/A", "권한", "비고"]
+        required: true
+    outputs:
+      - tmp_field: "책임배정표.RACI[]"
+        from:      "role_assignment"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "권한·추적책임 명시"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "progress_owner"
+        type:     "person"
+        question: "진척 추적·계획 유지 책임자는 누구인가?"
+        required: true
+    outputs:
+      - tmp_field: "책임배정표.진척추적책임"
+        from:      "progress_owner"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "자원 확인"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "resource_secured"
+        type:     "boolean"
+        question: "배정 역할 수행에 필요한 자원(인시·도구·예산)이 확보되었는가?"
+        required: true
+      - field:    "resource_gap"
+        type:     "text"
+        question: "미확보 자원 항목(있으면)"
+        required: false
+        required_if: "resource_secured == false"
+    outputs:
+      - tmp_field: "책임배정표.자원확인"
+        from:      "resource_secured"
+    hitl: false
+
+  - id:           "step-05"
+    name:         "승인 및 전파"
+    section_ref:  "§5.2.4-5"
+    inputs:
+      - field:    "approver_name"
+        type:     "person"
+        question: "권한 위임 승인자(경영진)는?"
+        required: true
+      - field:    "distribution_confirmed"
+        type:     "boolean"
+        question: "전 구성원·인접 부서 전파 및 수신 확인 완료?"
+        required: true
+    outputs:
+      - tmp_field: "책임배정표.승인"
+        from:      "approver_name"
+    hitl: required
+    approver_role: "Top Management (경영진)"
+    rationale:     "WI §2 승인자 — 프로젝트 사이버보안 권한 위임 승인"
+
+dod_checklist:
+  - "사이버보안 핵심 역할 전부에 R·A 배정 (공백 0)"
+  - "독립 평가 역할의 보고선 분리 확인"
+  - "진척 추적·계획 유지 책임 명시 배정"
+  - "경영진 승인 획득"
+  - "전 구성원·인접 부서 전파 및 수신 확인"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "1인 다역(소규모)"
+    rule:    "독립 평가 역할 겸임 시 차단 — 외부/타부서 Assessor 지정 요구. 그 외 겸임은 사유·보완통제 기록 요구."
+  - section: "§7.2"
+    name:    "책임자 교체"
+    rule:    "핵심 역할 이탈 시 24h 임시대행·5영업일 정식 재배정·재승인 트리거."
+  - section: "§7.3"
+    name:    "자원 미확보"
+    rule:    "resource_secured==false 면 경영진 에스컬레이션, 해당 활동 보류 표기 후 테일러링(WI-04)으로 회부."
+
+triggers:        ["프로젝트 사이버보안 책임", "역할 배정", "RACI", "책임자 지정"]
+aliases:         ["responsibility assignment", "프로젝트 거버넌스", "권한 위임"]
+event_triggers:  ["프로젝트 착수", "사이버보안 관련성 확정 직후"]
+domains:         ["자동차"]

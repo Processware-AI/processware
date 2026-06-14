@@ -1,0 +1,120 @@
+# =============================================================
+# WI-VCSMS-02-08-02 RFQ 발행 (사이버보안 요건 포함) — Agent 실행 정의
+# =============================================================
+wi_id:           "WI-VCSMS-02-08-02"
+title:           "RFQ 발행 (사이버보안 요건 포함)"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-08"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-08-02-01"
+scope_code:      "VCSMS"
+scope_type:      "org"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "사이버보안 목표/요구 추출 및 보완 요구 준비"
+    section_ref:  "§5.1"
+    inputs:
+      - field:    "security_objectives"
+        type:     "table"
+        question: "공급 대상 활동에 적용할 사이버보안 목표·요구를 입력하세요."
+        columns:  ["요구ID", "내용", "출처산출물"]
+        required: true
+      - field:    "carryover_remediation"
+        type:     "text"
+        question: "역량 평가의 조건부 보완 요구(있으면)를 입력하세요."
+        required: false
+    outputs:
+      - tmp_field: "목표요구표[]"
+        from:      "security_objectives"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "RFQ 3요소 작성"
+    section_ref:  "§5.2.1-3"
+    description:  "공식요청·책임인수기대·목표요구 작성"
+    inputs:
+      - field:    "official_request"
+        type:     "text"
+        question: "본 표준 준거 공식 요청 문구를 입력하세요."
+        required: true
+      - field:    "responsibility_expectation"
+        type:     "text"
+        question: "공급자가 인수할 사이버보안 책임 범위(기대)를 입력하세요."
+        required: true
+    outputs:
+      - tmp_field: "RFQ요건.공식요청"
+        from:      "official_request"
+      - tmp_field: "RFQ요건.책임기대"
+        from:      "responsibility_expectation"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "체크리스트 3요소 누락 점검"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "checklist"
+        type:     "table"
+        question: "3요소(공식요청·책임기대·목표요구) 포함 여부를 점검하세요."
+        columns:  ["요소", "포함여부(Y/N)", "위치(본문/별첨)"]
+        required: true
+    derivations:
+      - id:       "completeness"
+        expr:     "all(포함여부 == 'Y') ? '완전' : '누락있음'"
+        description: "3요소 누락 판정"
+    outputs:
+      - tmp_field: "점검결과"
+        from:      "completeness"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "CSM 검토·승인 후 발행"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "issue_date"
+        type:     "date"
+        question: "RFQ 발행 일자를 입력하세요."
+        required: true
+      - field:    "approval_result"
+        type:     "enum"
+        question: "CSM 사이버보안 요건 승인 결과를 선택하세요."
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval_result"
+      - tmp_field: "발행일자"
+        from:      "issue_date"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 명시 — RFQ 사이버보안 요건 승인"
+
+dod_checklist:
+  - "RFQ 에 본 표준 준거 공식 요청 문구 포함"
+  - "공급자 사이버보안 책임 인수 기대 명시"
+  - "관련 사이버보안 목표·요구 RFQ 첨부"
+  - "역량 평가 조건부 보완 요구(있으면) RFQ 요건 반영"
+  - "체크리스트 3요소 누락 점검 완료 및 CSM 승인"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "표준 RFQ 양식 미수정 가능"
+    rule:    "사이버보안 요건 별첨 첨부 + RFQ 본문에 '별첨 요건 계약 구속력' 명시 문구 삽입."
+  - section: "§7.2"
+    name:    "목표/요구 미확정 상태 RFQ"
+    rule:    "잠정 요구 명시 + '확정 시 CIA 로 갱신·구속' 조건부 문구, 확정 후 CIA 누락 없이 반영."
+  - section: "§7.3"
+    name:    "다수 공급자 동시 RFQ"
+    rule:    "사이버보안 요건 부록 공통 표준화로 요건 불일치 방지·비교 공정성 확보."
+
+triggers:        ["RFQ 발행", "견적 요청 사이버보안", "공급자 요건", "RFQ 체크리스트"]
+aliases:         ["request for quotation", "견적요청서", "RFQ 사이버보안 요건"]
+event_triggers:  ["역량 평가 적합 판정 후", "공급자 견적 요청 시점"]
+domains:         ["자동차"]

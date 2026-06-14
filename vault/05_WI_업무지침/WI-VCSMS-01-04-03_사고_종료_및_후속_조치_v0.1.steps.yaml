@@ -1,0 +1,130 @@
+wi_id:           "WI-VCSMS-01-04-03"
+title:           "사고 종료 및 후속 조치"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-01-04"
+parent_pol:      "POL-VCSMS-01"
+related_tmp:
+  - "TMP-VCSMS-01-04-03-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "종료기준 충족 확인"
+    section_ref:  "§5.2.1"
+    description:  "종료기준 각 항목 증거 확인 ([RQ-13-02])"
+    inputs:
+      - field:    "closure_check"
+        type:     "table"
+        question: "종료기준 각 항목의 충족 여부·증거를 입력하세요."
+        required: true
+        columns:  ["종료기준항목", "충족여부", "증거ID"]
+    derivations:
+      - id:       "all_criteria_met"
+        expr:     |
+          all(row.충족여부 == "충족" for row in closure_check)
+        description: "전 종료기준 충족 여부(미충족 시 종료 보류)"
+    outputs:
+      - tmp_field: "보고서.종료확인[]"
+        from:      "closure_check"
+    hitl: false
+  - id:           "step-02"
+    name:         "종료조치 수행"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "closure_actions"
+        type:     "text"
+        question: "임시 통제 정상화·공식 종료 전환 조치는?"
+        required: true
+    outputs:
+      - tmp_field: "보고서.종료조치"
+        from:      "closure_actions"
+    hitl: false
+  - id:           "step-03"
+    name:         "사후 분석(교훈)"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "post_analysis"
+        type:     "text"
+        question: "근본원인·대응 적정성·소요시간·통보 적시성 분석 결과는?"
+        required: true
+    outputs:
+      - tmp_field: "보고서.사후분석"
+        from:      "post_analysis"
+    hitl: false
+  - id:           "step-04"
+    name:         "재발방지·후속 연계"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "preventive_actions"
+        type:     "table"
+        question: "재발방지 조치와 환류 대상을 입력하세요."
+        required: true
+        columns:  ["재발방지조치", "환류대상", "책임자", "일정"]
+      - field:    "update_link"
+        type:     "enum"
+        question: "업데이트(PRO-02-09) 연계 필요 여부는?"
+        required: true
+        options:  ["연계 불필요", "PRO-02-09 연계"]
+    outputs:
+      - tmp_field: "보고서.재발방지[]"
+        from:      "preventive_actions"
+    hitl: false
+  - id:           "step-05"
+    name:         "CSM 종료 승인"
+    section_ref:  "§5.2.5"
+    description:  "종료기준 미충족 종결 0건"
+    inputs:
+      - field:    "closure_decision"
+        type:     "enum"
+        question: "CSM 종료 승인 결정은?"
+        required: true
+        options:  ["종료 승인", "종료 보류(미충족)", "재오픈"]
+    outputs:
+      - tmp_field: "결재.종료승인"
+        from:      "closure_decision"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 = CSM (종료기준 충족·종료조치·후속 연계 승인)"
+  - id:           "step-06"
+    name:         "보고·등록"
+    section_ref:  "§5.2.6"
+    inputs:
+      - field:    "report_register"
+        type:     "text"
+        question: "경영진 보고 및 MAT-001·005·009 등록 결과는?"
+        required: true
+    outputs:
+      - tmp_field: "보고서.등록"
+        from:      "report_register"
+    hitl: false
+
+dod_checklist:
+  - "종료기준 각 항목을 증거로 충족 확인(미충족 시 종료 보류)"
+  - "임시 통제 정상화·사고 상태 공식 종료 전환"
+  - "사후 분석(근본원인·교훈) 수행"
+  - "재발방지 조치 정의 및 거버넌스·지속활동 환류"
+  - "업데이트 연계 필요성 판단 및 (해당 시) PRO-02-09 연계"
+  - "CSM 종료 승인(미충족 종결 0건) 및 경영진 보고·MAT 등록 완료"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "종료기준 미충족 종결 압박"
+    rule:    "미충족 종결 거부(KPI 0건), 잔존 리스크 명시·경영진 판단 요청, 부분 종료 시 잔존 항목 PRO-01-03 이관"
+  - section: "§7.2"
+    name:    "재발 발생"
+    rule:    "재발 시 종료 재오픈·근본원인 심화(systemic 격상), 재발 건수 KPI(MAT-008) 반영·거버넌스 안건 상정"
+  - section: "§7.3"
+    name:    "업데이트 연계 지연"
+    rule:    "OTA·리콜 연계 지연 시 임시 완화책 유지·잔존 리스크 통제·업데이트 일정 추적·지연 통보"
+
+triggers:        ["사고 종료", "사고 후속 조치", "재발방지", "사후 분석"]
+aliases:         ["incident closure", "post-incident", "사고 종결", "lessons learned"]
+event_triggers:  ["종료기준 충족", "진척 모니터링 완료", "재발 발생"]
+domains:         ["자동차"]

@@ -1,0 +1,95 @@
+wi_id:           "WI-VCSMS-02-03-02"
+title:           "위협 시나리오 식별"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-03"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-03-02-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "위협 도출"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "threat_scenarios"
+        type:     "table"
+        question: "자산-손상속성별 위협 시나리오를 도출하라"
+        columns:  ["위협 ID", "대상 자산", "손상 속성", "손상 원인(위협)"]
+        required: true
+    outputs:
+      - tmp_field: "목록.위협[]"
+        from:      "threat_scenarios"
+    hitl: false
+
+  - id:           "step-02"
+    name:         "피해 시나리오 연결"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "damage_link"
+        type:     "table"
+        question: "위협 시나리오를 대응 피해 시나리오와 연결하라"
+        columns:  ["위협 ID", "피해 시나리오 ID"]
+        required: true
+    outputs:
+      - tmp_field: "목록.연결[]"
+        from:      "damage_link"
+    hitl: false
+
+  - id:           "step-03"
+    name:         "중복·누락 점검"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "dedup_done"
+        type:     "boolean"
+        question: "중복 통합·자산별 누락 점검 완료?"
+        required: true
+    outputs:
+      - tmp_field: "목록.점검"
+        from:      "dedup_done"
+    hitl: false
+
+  - id:           "step-04"
+    name:         "검토·승인"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "approver_name"
+        type:     "person"
+        question: "위협 시나리오 목록 승인자(CSM)는?"
+        required: true
+    outputs:
+      - tmp_field: "목록.승인"
+        from:      "approver_name"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 — 위협 시나리오 식별 승인"
+
+dod_checklist:
+  - "각 자산-손상속성에 대한 위협 도출"
+  - "위협 시나리오를 자산+속성+원인 구조로 기술"
+  - "피해 시나리오 연결"
+  - "중복 통합·누락 점검"
+  - "CSM 승인"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "자산 변경 재도출"
+    rule:    "WI-01 자산 목록 갱신 시 변경 자산 위협 재도출·후속 재수행."
+  - section: "§7.2"
+    name:    "위협 과다·낮은 실현성"
+    rule:    "우선순위 부여하되 임의 삭제 금지 — 타당성은 공격 경로 분석(WI-04,05)에서 판단."
+  - section: "§7.3"
+    name:    "신규 위협 인텔리전스"
+    rule:    "운영 중 신규 위협 보고 시 지속활동(PRO-01-03)에서 목록 갱신 트리거."
+
+triggers:        ["위협 시나리오", "위협 식별", "threat scenario", "STRIDE"]
+aliases:         ["threat scenario", "위협 모델링", "위협 도출"]
+event_triggers:  ["자산 식별 완료 후", "TARA 갱신"]
+domains:         ["자동차"]

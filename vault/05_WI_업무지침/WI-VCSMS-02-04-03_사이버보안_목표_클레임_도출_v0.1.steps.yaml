@@ -1,0 +1,117 @@
+wi_id:           "WI-VCSMS-02-04-03"
+title:           "사이버보안 목표·클레임 도출"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-02-04"
+parent_pol:      "POL-VCSMS-02"
+related_tmp:
+  - "TMP-VCSMS-02-04-03-01"
+scope_code:      "VCSMS"
+scope_type:      "project"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-7"
+manual_override: false
+
+steps:
+  - id:          "step-01"
+    name:        "사이버보안 목표 명시"
+    section_ref: "§5.2.1"
+    inputs:
+      - field:    "goals"
+        type:     "table"
+        question: "감소 결정 위협마다 사이버보안 목표를 입력하세요."
+        columns:  ["goal_id", "threat_scenario", "goal_statement"]
+        required: true
+    outputs:
+      - tmp_field: "명세서.목표목록"
+        from:      "goals"
+    hitl: false
+
+  - id:          "step-02"
+    name:        "사이버보안 클레임 명시"
+    section_ref: "§5.2.2"
+    inputs:
+      - field:    "claims"
+        type:     "table"
+        question: "공유·보유 결정 위협마다 사이버보안 클레임과 근거 가정을 입력하세요."
+        columns:  ["claim_id", "threat_scenario", "claim_statement", "assumption_ref"]
+        required: false
+    outputs:
+      - tmp_field: "명세서.클레임목록"
+        from:      "claims"
+    hitl: false
+
+  - id:          "step-03"
+    name:        "목표·클레임 속성 기술"
+    section_ref: "§5.2.3"
+    inputs:
+      - field:    "attributes"
+        type:     "table"
+        question: "각 목표·클레임의 대상 자산·보안속성·수용 잔여리스크를 입력하세요."
+        columns:  ["id", "asset", "security_property", "residual_risk"]
+        required: true
+    outputs:
+      - tmp_field: "명세서.속성"
+        from:      "attributes"
+    hitl: false
+
+  - id:          "step-04"
+    name:        "추적성 확인"
+    section_ref: "§5.2.4"
+    inputs:
+      - field:    "trace_confirmed"
+        type:     "boolean"
+        question: "모든 감소→목표, 공유·보유→클레임 전환이 누락 없이 완료되었습니까?"
+        required: true
+    derivations:
+      - id:       "trace_ok"
+        expr:     |
+          if trace_confirmed: "OK"
+          else: "누락"
+        description: "전환 누락 0 시 OK"
+    outputs:
+      - tmp_field: "명세서.추적성확인"
+        from:      "trace_ok"
+    hitl: false
+
+  - id:          "step-05"
+    name:        "검토·승인"
+    section_ref: "§5.2.5"
+    inputs:
+      - field:    "approval_decision"
+        type:     "enum"
+        question: "CSM 승인 결정은 무엇입니까?"
+        options:  ["승인", "조건부승인", "반려"]
+        required: true
+    outputs:
+      - tmp_field: "명세서.결재.승인"
+        from:      "approval_decision"
+    hitl: required
+    approver_role: "Cybersecurity Manager (CSM)"
+    rationale:     "WI §2 승인자 = CSM"
+
+dod_checklist:
+  - "entry_gate(WI-04-02 done) 충족 확인"
+  - "모든 감소 위협 → 목표(CG-##) 전환(누락 0)"
+  - "모든 공유·보유 위협 → 클레임(CC-##) 전환(누락 0)"
+  - "각 목표·클레임에 대상 자산·보안속성 기술"
+  - "위협↔목표/클레임 추적성 대조 완료"
+  - "CSM 승인 기록 확보"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "분기 누락 위협 발견"
+    rule:    "분기 표식 없는 위협은 WI-04-02 로 반려하여 처리 옵션·분기 보완"
+  - section: "§7.2"
+    name:    "클레임 가정 미존재"
+    rule:    "임의 가정 생성 금지, 아이템 정의서(WI-04-01)에 가정 추가 등록 후 클레임 도출"
+  - section: "§7.3"
+    name:    "목표 측정 불가"
+    rule:    "검증 가능한 형태(보안속성·임계조건)로 재기술, 검증 기준 명시"
+
+triggers:        ["사이버보안 목표", "사이버보안 클레임", "목표 도출", "cybersecurity goal claim"]
+aliases:         ["security goal", "security claim", "목표 클레임", "보안 목표"]
+event_triggers:  ["리스크 처리 결정 승인", "분기 표식 확정"]
+domains:         ["자동차"]

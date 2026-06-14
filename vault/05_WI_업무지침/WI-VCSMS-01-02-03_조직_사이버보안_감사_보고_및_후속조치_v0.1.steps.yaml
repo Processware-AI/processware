@@ -1,0 +1,131 @@
+wi_id:           "WI-VCSMS-01-02-03"
+title:           "조직 사이버보안 감사 보고 및 후속조치"
+version:         "0.1"
+parent_pro:      "PRO-VCSMS-01-02"
+parent_pol:      "POL-VCSMS-01"
+related_tmp:
+  - "TMP-VCSMS-01-02-03-01"
+scope_code:      "VCSMS"
+scope_type:      "common"
+standards:       ["ISO/SAE 21434"]
+
+extracted_at:    "2026-06-14T00:00:00Z"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "적합성 판정"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "conformity_verdict"
+        type:     "enum"
+        question: "조직 프로세스 적합성 판정은?"
+        required: true
+        options:  ["적합", "조건부 적합", "부적합"]
+    outputs:
+      - tmp_field: "보고서.판정"
+        from:      "conformity_verdict"
+    hitl: false
+  - id:           "step-02"
+    name:         "보고서 작성"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "report_findings"
+        type:     "table"
+        question: "보고서 발견사항을 입력하세요(부적합·근거조항·증거·중대도)."
+        required: true
+        columns:  ["발견사항", "분류", "근거조항", "증거ID", "중대도", "권고"]
+    outputs:
+      - tmp_field: "보고서.발견사항[]"
+        from:      "report_findings"
+    hitl: false
+  - id:           "step-03"
+    name:         "CSM 검토·경영진 보고"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "report_date"
+        type:     "date"
+        question: "경영진 보고일은?(종료→보고 ≤ 10 영업일)"
+        required: true
+      - field:    "management_decision"
+        type:     "enum"
+        question: "경영진 보고 수령·조치 지시는?"
+        required: true
+        options:  ["수령·조치 지시", "추가 감사 지시", "재보고 요청"]
+    outputs:
+      - tmp_field: "보고서.경영진보고"
+        from:      "management_decision"
+    hitl: required
+    approver_role: "Top Management (경영진)"
+    rationale:     "WI §2 승인자 = 경영진 (감사 보고 수령·조치 지시)"
+  - id:           "step-04"
+    name:         "시정조치 계획 수립"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "capa_plan"
+        type:     "table"
+        question: "부적합별 시정조치 계획을 입력하세요."
+        required: true
+        columns:  ["부적합", "근본원인", "시정조치", "일정", "책임자", "NCR번호"]
+    outputs:
+      - tmp_field: "시정조치.계획[]"
+        from:      "capa_plan"
+    hitl: false
+  - id:           "step-05"
+    name:         "시정조치 추적·종결"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "capa_closed"
+        type:     "number"
+        question: "종결된 시정조치 건수는?"
+        required: true
+      - field:    "capa_total"
+        type:     "number"
+        question: "전체 시정조치 건수는?"
+        required: true
+    derivations:
+      - id:       "capa_completion_rate"
+        expr:     "round(capa_closed / capa_total * 100, 1)"
+        description: "시정조치 완료율(%) — 목표 95 이상"
+    outputs:
+      - tmp_field: "시정조치.완료율"
+        from:      "capa_completion_rate"
+    hitl: false
+  - id:           "step-06"
+    name:         "거버넌스 환류"
+    section_ref:  "§5.2.6"
+    inputs:
+      - field:    "governance_feedback"
+        type:     "text"
+        question: "거버넌스 개선 환류 및 MAT-001·005 갱신 결과는?"
+        required: true
+    outputs:
+      - tmp_field: "보고서.환류"
+        from:      "governance_feedback"
+    hitl: false
+
+dod_checklist:
+  - "조직 프로세스 적합성 판정(적합/조건부/부적합) 명시"
+  - "보고서에 범위·기준·방법·발견사항·판정·권고 포함"
+  - "각 부적합에 근거 조항·증거 ID·중대도 연결"
+  - "보고 적시성(종료→보고 ≤ 10 영업일) 충족"
+  - "부적합별 시정조치 계획 수립 및 NCR 등록"
+  - "시정조치 추적·종결(완료율 ≥ 95%) 및 거버넌스 환류·MAT 갱신 완료"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "시정조치 지연·미이행"
+    rule:    "일정 내 미이행 시 에스컬레이션(PO→CSM→경영진), 지연·잔존 리스크 NCR·KPI 반영"
+  - section: "§7.2"
+    name:    "부적합 이의"
+    rule:    "이의 시 증거 재검토, 판정 유지 시 사유 명시·경영진 보고"
+  - section: "§7.3"
+    name:    "반복 부적합(systemic)"
+    rule:    "반복 시 근본원인 차원 개선 요구, 거버넌스 개선 안건으로 격상(경영검토 상정)"
+
+triggers:        ["감사 보고서", "시정조치", "적합성 판정", "감사 후속조치"]
+aliases:         ["audit report", "corrective action", "CAPA", "부적합 종결"]
+event_triggers:  ["발견사항 확정 완료", "감사 종료", "시정조치 기한 도래"]
+domains:         ["자동차"]
