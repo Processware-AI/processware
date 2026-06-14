@@ -21,7 +21,7 @@ tags: [folder-readme, PRO]
 ```
 PRO-{영역}-{###}_{이름}_v{버전}.md
 ```
-예: `PRO-QMS-102_문서_개정_관리_절차_v1.0.md`
+예: `PRO-QMS-102_문서_개정_관리_절차.md`
 
 ## Frontmatter 필수
 `type`, `doc_id`, `title`, `version`, `owner`, `parent_policy`, `child_wi`, `standards`, `tier`(M|C|S), `status`

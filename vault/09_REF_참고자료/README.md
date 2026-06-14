@@ -21,7 +21,7 @@ tags: [folder-readme, REF]
 ```
 REF-{###}_{이름}_v{버전}.md
 ```
-예: `REF-001_개인정보보호법_요약_v1.0.md`
+예: `REF-001_개인정보보호법_요약.md`
 
 ## Frontmatter 필수
 `type`, `doc_id`, `title`, `source`, `source_date`, `version`, `status`

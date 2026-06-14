@@ -22,7 +22,7 @@ tags: [folder-readme, WI]
 ```
 WI-{상위PRO번호}-{##}_{이름}_v{버전}.md
 ```
-예: `WI-102-04_개정_및_버전관리_v1.0.md`
+예: `WI-102-04_개정_및_버전관리.md`
 
 ## Frontmatter 필수
 `type`, `doc_id`, `title`, `version`, `owner`, `parent_pro`, `related_tmp`, `related_rec`, `standards`, `status`

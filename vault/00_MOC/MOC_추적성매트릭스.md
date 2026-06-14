@@ -28,7 +28,7 @@ tags: [moc, traceability, mat]
 번호는 **MAT-011 부터 순차 부여** (편입 순서). 상세: [[02_문서번호체계]] §MAT 번호 할당 원칙.
 
 ### 편입된 표준
-- [[MAT-011_VCSMS_추적성_v1.0|MAT-011]] — ISO/SAE 21434:2021 (VCSMS / 자동차 사이버보안, 모듈 ACSMS). 요건 118 ↔ POL 2·PRO 13·WI 60·TMP/EX 60 전 계층 100% 커버. integration_mode=interface_only. 편입일 2026-06-14.
+- [[MAT-011_VCSMS_추적성|MAT-011]] — ISO/SAE 21434:2021 (VCSMS / 자동차 사이버보안, 모듈 ACSMS). 요건 118 ↔ POL 2·PRO 13·WI 60·TMP/EX 60 전 계층 100% 커버. integration_mode=interface_only. 편입일 2026-06-14.
 
 ### 후속 표준 (예상)
 - (예약) `[[MAT-012_*]]` — 다음 표준 편입 시 부여

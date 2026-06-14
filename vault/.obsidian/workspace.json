@@ -1,0 +1,218 @@
+{
+  "main": {
+    "id": "7bb76a85735858a2",
+    "type": "split",
+    "children": [
+      {
+        "id": "a269470ed0693163",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "6e3f0c792a69dc0c",
+            "type": "leaf",
+            "state": {
+              "type": "empty",
+              "state": {},
+              "icon": "lucide-file",
+              "title": "새 탭"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "8049ec3dda0930bd",
+    "type": "split",
+    "children": [
+      {
+        "id": "ee9a829336d8f252",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "2731febae5d78b19",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false
+              },
+              "icon": "lucide-folder-closed",
+              "title": "파일 탐색기"
+            }
+          },
+          {
+            "id": "f78719e42c7f768d",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "검색"
+            }
+          },
+          {
+            "id": "242e06d0e8645ddb",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {},
+              "icon": "lucide-bookmark",
+              "title": "북마크"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 513.5
+  },
+  "right": {
+    "id": "ee0a4664dbd34c15",
+    "type": "split",
+    "children": [
+      {
+        "id": "2779ec9b4adccc58",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "c5e0434e2252bba1",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "백링크"
+            }
+          },
+          {
+            "id": "79c8c5572bd42472",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "나가는 링크"
+            }
+          },
+          {
+            "id": "c708316a50e7a5f5",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "태그"
+            }
+          },
+          {
+            "id": "e1f13265d894ebe4",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "모든 속성"
+            }
+          },
+          {
+            "id": "7e5c4ecfdd11dc36",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "개요"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:빠른 전환기 열기": false,
+      "graph:그래프 뷰 열기": false,
+      "canvas:새 캔버스 만들기": false,
+      "daily-notes:오늘의 일일 노트 열기": false,
+      "templates:템플릿 삽입": false,
+      "command-palette:명령어 팔레트 열기": false,
+      "bases:새 베이스 생성하기": false
+    }
+  },
+  "active": "2731febae5d78b19",
+  "lastOpenFiles": [
+    "00_공통관리/02_문서번호체계.md.tmp.1944.4afb48ee5d6a",
+    "00_공통관리/02_문서번호체계.md.tmp.1944.4f695e88c7e0",
+    "00_공통관리/02_문서번호체계.md.tmp.1944.98a180af06e3",
+    "07_EX_작성예시/EX-VCSMS-01-01-02-01_사이버보안_책임배정_및_자원계획서_작성예시_v0.1.md",
+    "07_EX_작성예시/EX-VCSMS-01-01-01-01_사이버보안_정책_규칙_등록부_작성예시_v0.1.md",
+    "90_MAT_통합매핑/MAT-008_KPI_대시보드.md",
+    "90_MAT_통합매핑/MAT-007_프로세스_카탈로그.md",
+    "90_MAT_통합매핑/MAT-006_문서계층_추적매트릭스.md",
+    "90_MAT_통합매핑/MAT-005_심사증적_인덱스.md",
+    "90_MAT_통합매핑/MAT-004_RACI_통합표.md",
+    "90_MAT_통합매핑/MAT-003_산출물_목록표.md",
+    "90_MAT_통합매핑/MAT-002_규제요구사항_대조표.md",
+    "90_MAT_통합매핑/MAT-001_문서관리대장.md",
+    "99_템플릿/_골든샘플/GS-WI-102-04_개정_및_버전관리.md",
+    "99_템플릿/_골든샘플/GS-PRO-QMS-102_문서_개정_관리_절차.md",
+    "99_템플릿/_골든샘플/GS-POL-QMS-002_문서화된정보_관리_정책.md",
+    "WI-VCSMS-01-01-01_사이버보안_정책_규칙_프로세스_수립.md",
+    "90_MAT_통합매핑/MAT-011_VCSMS_추적성.md",
+    "05_WI_업무지침/WI-VCSMS-02-09-01_업데이트_역량_개발.md",
+    "05_WI_업무지침/WI-VCSMS-02-03-03_영향_평가_SFOP.md",
+    "07_EX_작성예시/EX-VCSMS-02-04-03-01_사이버보안_목표_클레임_명세서_작성예시.md",
+    "07_EX_작성예시/EX-VCSMS-02-04-02-01_리스크_처리_결정서_작성예시.md",
+    "07_EX_작성예시/EX-VCSMS-02-04-01-01_아이템_정의서_작성예시.md",
+    "07_EX_작성예시/EX-VCSMS-02-03-07-01_리스크_처리_등록부_작성예시.md",
+    "07_EX_작성예시/EX-VCSMS-02-03-06-01_리스크값_산정표_작성예시.md",
+    "07_EX_작성예시/EX-VCSMS-02-03-05-01_공격타당성_평가표_작성예시.md",
+    "07_EX_작성예시/EX-VCSMS-02-03-04-01_공격경로_분석서_작성예시.md",
+    "07_EX_작성예시/EX-VCSMS-02-03-03-01_영향평가표_작성예시.md",
+    "05_WI_업무지침/WI-VCSMS-02-09-04_폐기_관련_post_development_요구사항_제공.steps.yaml",
+    "05_WI_업무지침/WI-VCSMS-02-09-03_지원_종료_통보_절차_수립_통보.steps.yaml",
+    "05_WI_업무지침/WI-VCSMS-02-09-02_업데이트_검증_및_배포.steps.yaml",
+    "05_WI_업무지침/WI-VCSMS-02-09-01_업데이트_역량_개발.steps.yaml",
+    "05_WI_업무지침/WI-VCSMS-02-05-03_아키텍처_약점_분석.steps.yaml",
+    "05_WI_업무지침/WI-VCSMS-02-05-02_설계_구현_원칙_및_언어_코딩_기준_적용.steps.yaml",
+    "05_WI_업무지침/WI-VCSMS-02-05-01_사이버보안_사양_정의_및_할당.steps.yaml",
+    "05_WI_업무지침/WI-VCSMS-02-04-06_컨셉_검증.steps.yaml"
+  ]
+}

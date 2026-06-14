@@ -146,7 +146,7 @@ flowchart TD
   license: "ISO/SAE copyright"
   paraphrase_only: true
 - type: standard_original
-  file: "vault/09_REF_참고자료/REF-003_ISO26262_기능안전_경계면_v0.1.md"
+  file: "vault/09_REF_참고자료/REF-003_ISO26262_기능안전_경계면.md"
   locator: "ISO 26262-3:2018 §6.4.3 안전 영향등급 도출"
   retrieved_at: "2026-06-14"
   license: "ISO copyright"

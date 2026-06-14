@@ -53,7 +53,7 @@ tags: [PRO, VCSMS, ISO21434, operations, update, end-of-support, decommissioning
 ## 2. 적용 범위
 ISO/SAE 21434 §13.4(업데이트, SC-016)와 Clause 14(§14.3 지원종료·§14.4 폐기, SC-017)에 적용한다. 사고대응([[PRO-VCSMS-01-04_사이버보안_사고_대응_절차]])에서 업데이트가 필요한 경우 호출되며, 업데이트 개발은 본 표준 V-model([[PRO-VCSMS-02-05_제품개발_사이버보안_엔지니어링_절차]])을 재적용한다.
 
-> **경계면 참조** — 차량 내 업데이트·업데이트 역량은 UNECE R156(SUMS, [[REF-002_UNECE_R156_SUMS_요약_v0.1]])과 정합한다 (MAT-07 Interface 대상).
+> **경계면 참조** — 차량 내 업데이트·업데이트 역량은 UNECE R156(SUMS, [[REF-002_UNECE_R156_SUMS_요약]])과 정합한다 (MAT-07 Interface 대상).
 
 ## 3. 역할과 책임 (RACI)
 | 단계 | CSM | 개발팀 | 운영/필드 | 고객 소통 |

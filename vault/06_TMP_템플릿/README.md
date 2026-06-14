@@ -21,7 +21,7 @@ tags: [folder-readme, TMP]
 ```
 TMP-{기능}-{###}_{이름}_v{버전}.md
 ```
-예: `TMP-IR-001_침해사고_내부신고서_v1.0.md`
+예: `TMP-IR-001_침해사고_내부신고서.md`
 
 ## Frontmatter 필수
 `type`, `doc_id`, `title`, `version`, `parent_wi`, `related_ex`

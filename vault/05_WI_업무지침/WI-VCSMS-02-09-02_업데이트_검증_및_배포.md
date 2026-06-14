@@ -38,7 +38,7 @@ tags: [WI, VCSMS, ISO21434, operations, update, deployment, interface_only]
 - **승인자**: Cybersecurity Manager (CSM) — 배포 게이트 승인
 
 ## 3. 범위
-PRO-VCSMS-02-09 §5 단계 2(검증·배포)에 적용한다. 선행 WI-VCSMS-02-09-01(업데이트 개발)이 완료(done)된 후 착수한다(entry gate). 배포 인프라(SUMS) 운영·통신 일반은 UNECE R156([[REF-002_UNECE_R156_SUMS_요약_v0.1]], 인터페이스 대상)을 따르고, 본 지침은 사이버보안 검증 통과·배포 게이트만 다룬다.
+PRO-VCSMS-02-09 §5 단계 2(검증·배포)에 적용한다. 선행 WI-VCSMS-02-09-01(업데이트 개발)이 완료(done)된 후 착수한다(entry gate). 배포 인프라(SUMS) 운영·통신 일반은 UNECE R156([[REF-002_UNECE_R156_SUMS_요약]], 인터페이스 대상)을 따르고, 본 지침은 사이버보안 검증 통과·배포 게이트만 다룬다.
 
 ## 4. 입력 자료 / 산출물
 - **Input**

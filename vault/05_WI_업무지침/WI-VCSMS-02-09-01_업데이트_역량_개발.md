@@ -38,7 +38,7 @@ tags: [WI, VCSMS, ISO21434, operations, update, interface_only]
 - **승인자**: Cybersecurity Manager (CSM)
 
 ## 3. 범위
-PRO-VCSMS-02-09 §5 단계 1(업데이트 개발)에 적용한다. 업데이트 개발의 상세 엔지니어링 활동은 [[PRO-VCSMS-02-05_제품개발_사이버보안_엔지니어링_절차]] V-model 을 재적용한다. 차량 내 업데이트 인프라(SUMS) 일반은 UNECE R156([[REF-002_UNECE_R156_SUMS_요약_v0.1]], 인터페이스 대상)과 정합한다.
+PRO-VCSMS-02-09 §5 단계 1(업데이트 개발)에 적용한다. 업데이트 개발의 상세 엔지니어링 활동은 [[PRO-VCSMS-02-05_제품개발_사이버보안_엔지니어링_절차]] V-model 을 재적용한다. 차량 내 업데이트 인프라(SUMS) 일반은 UNECE R156([[REF-002_UNECE_R156_SUMS_요약]], 인터페이스 대상)과 정합한다.
 
 ## 4. 입력 자료 / 산출물
 - **Input**

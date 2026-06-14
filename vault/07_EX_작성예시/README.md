@@ -21,7 +21,7 @@ tags: [folder-readme, EX]
 ```
 EX-{기능}-{###}_{이름}_작성예시_v{버전}.md
 ```
-예: `EX-IR-001_침해사고_내부신고서_작성예시_v1.0.md`
+예: `EX-IR-001_침해사고_내부신고서_작성예시.md`
 
 ## Frontmatter 필수
 `type`, `doc_id`, `title`, `parent_tmp`

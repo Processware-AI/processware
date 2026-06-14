@@ -21,7 +21,7 @@ tags: [folder-readme, POL]
 ```
 POL-{영역}-{###}_{이름}_v{버전}.md
 ```
-예: `POL-QMS-001_품질방침_v1.0.md`
+예: `POL-QMS-001_품질방침.md`
 
 영역 코드 (QMS/ISMS/PIMS 등): [[02_문서번호체계]] §영역 코드 표
 
