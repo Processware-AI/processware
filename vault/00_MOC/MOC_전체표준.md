@@ -23,9 +23,10 @@ tags: [moc, index]
 | RM | ISO 31000 |  |  |  |  |  |  |  | ⛔ |
 | BCMS | ISO 22301 |  |  |  |  |  |  |  | ⛔ |
 | AIMS | ISO/IEC 42001 |  |  |  |  |  |  |  | ⛔ |
+| VCSMS | ISO/SAE 21434 | [[적용요건\|ACSMS 적용요건]] | 2 | 13 | 60 | 60 | 60 | [[MAT-011_VCSMS_추적성_v1.0\|MAT-011]] | ✅ |
 
 범례: ✅ 완료 · 🟡 작업중 · ⛔ 미착수
-> 현재 빌드된 표준 없음 — 첫 표준 편입 시 ⛔ → 🟡 → ✅ 로 갱신.
+> VCSMS(ISO/SAE 21434, 모듈명 ACSMS) 차원 1(Plan) 완료 — 요건 118건, POL 2·PRO 13·WI 60·TMP 60·EX 60·REF 5, MAT-011 추적성 100%(118/118). QA ALL PASS(attempt 2). interface_only(L2). branch: feat/vcsms-output.
 
 ## 관련 MOC / 통합 대장
 - [[MOC_프로세스맵]]
