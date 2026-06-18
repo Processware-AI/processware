@@ -1,0 +1,318 @@
+standard_id: IEC81001-5-1
+version: "2021"
+definitions:
+  - id: "3.1"
+    term: ACCOMPANYING DOCUMENTATION
+    definition: "documentation intended to be used for a HEALTH SOFTWARE or a HEALTH IT SYSTEM or an accessory, containing information for the responsible organization or operator"
+    source: ""
+    notes: []
+
+  - id: "3.2"
+    term: ACTIVITY
+    definition: "set of one or more interrelated or interacting TASKS"
+    source: "[SOURCE: IEC 62304:2006, 3.1]"
+    notes: []
+
+  - id: "3.3"
+    term: ARCHITECTURE
+    definition: "fundamental concepts or properties of a system in its environment, embodied in its elements, relationships, and in the principles of its design and evolution"
+    source: "[SOURCE: ISO/IEC/IEEE 24765:2017, 3.216, definition1]"
+    notes: []
+
+  - id: "3.4"
+    term: ASSET
+    definition: "physical or digital entity that has value to an individual, an organization or a government"
+    source: "[SOURCE: ISO 81001-1:2021, 3.3.2, modified - Addition of a new Note 1 to entry.]"
+    notes:
+      - "As per the definition for ASSET this can include the following: a) data and information; b) HEALTH SOFTWARE and software needed for its operation; c) hardware components such as computers, mobile devices, servers, databases, and networks; d) services, including SECURITY, software development, IT operations and externally provided services such as data centres, internet and software-as-a-service and cloud solutions; e) people, and their qualifications, skills and experience; f) technical procedures and documentation to manage and support the HEALTH IT INFRASTRUCTURE; g) HEALTH IT SYSTEMS that are configured and implemented to address organizational objectives by leveraging the ASSETS; and h) intangibles, such as reputation and image."
+
+  - id: "3.5"
+    term: ATTACK
+    definition: "attempt to destroy, expose, alter, disable, steal or gain unauthorized access to or make unauthorized use of an ASSET"
+    source: "[SOURCE: ISO/IEC 27000:2018, 3.2]"
+    notes: []
+
+  - id: "3.6"
+    term: ATTACK SURFACE
+    definition: "physical and functional interfaces of a system that can be accessed and, therefore, potentially exploited by an attacker"
+    source: "[SOURCE: IEC 62443-4-1:2018, 3.1.7]"
+    notes: []
+
+  - id: "3.7"
+    term: AVAILABILITY
+    definition: "property of being accessible and usable on demand by an authorized entity"
+    source: "[SOURCE: ISO/IEC 27000:2018, 3.7]"
+    notes: []
+
+  - id: "3.8"
+    term: CONFIDENTIALITY
+    definition: "property that information is not made available or disclosed to unauthorized individuals, entities, or PROCESSES"
+    source: "[SOURCE: ISO/IEC 27000:2018, 3.10]"
+    notes: []
+
+  - id: "3.9"
+    term: CONFIGURATION ITEM
+    definition: "entity that can be uniquely identified at a given reference point"
+    source: "[SOURCE: IEC 62304:2006, 3.5]"
+    notes: []
+
+  - id: "3.10"
+    term: CONFIGURATION MANAGEMENT
+    definition: "PROCESS ensuring consistency of CONFIGURATION ITEMS by using mechanisms for identifying, controlling and tracking versions of CONFIGURATION ITEMS"
+    source: ""
+    notes: []
+
+  - id: "3.11"
+    term: DEFENSE-IN-DEPTH
+    definition: "approach to defend the system against any particular ATTACK using several independent methods"
+    source: "[SOURCE: IEC 62443-4-1:2018, 3.1.15]"
+    notes:
+      - "DEFENSE-IN-DEPTH implies layers of SECURITY and detection, even on single systems, and provides the following features: is based on the idea that any one layer of protection, can and probably will be defeated; attackers are faced with breaking through or bypassing each layer without being detected; a flaw in one layer can be mitigated by capabilities in other layers; system SECURITY becomes a set of layers within the overall network SECURITY; and each layer is autonomous and not rely on the same functionality nor have the same failure modes as the other layers."
+
+  - id: "3.12"
+    term: EXPLOIT
+    definition: "defined way to breach the SECURITY of information systems through some VULNERABILITY"
+    source: "[SOURCE: ISO/IEC 27039:2015, 2.9]"
+    notes: []
+
+  - id: "3.13"
+    term: HEALTH IT INFRASTRUCTURE
+    definition: "combined set of IT ASSETS available to the individual or organization for developing, configuring, integrating, maintaining, and using IT services and supporting health, patient care and other organizational objectives"
+    source: "[SOURCE: ISO 81001-1:2021, 3.3.7, modified - Deletion of the Note 1 to entry.]"
+    notes: []
+
+  - id: "3.14"
+    term: HEALTH IT SYSTEM
+    definition: "a combination of interacting health information elements (including HEALTH SOFTWARE, medical devices, IT hardware, interfaces, data, procedures and documentation) that is configured and implemented to support and enable an individual or organization's specific health objectives"
+    source: "[SOURCE: ISO 81001-1:2021, 3.3.8, modified - Addition of '(including HEALTH SOFTWARE, medical devices, IT hardware, interfaces, data, procedures and documentation)'.]"
+    notes: []
+
+  - id: "3.15"
+    term: HEALTH SOFTWARE
+    definition: "software intended to be used specifically for managing, maintaining, or improving health of individual persons, or the delivery of care, or which has been developed for the purpose of being incorporated into a medical device"
+    source: "[SOURCE: ISO 81001-1:2021, 3.3.9]"
+    notes:
+      - "HEALTH SOFTWARE fully includes what is considered software as a medical device."
+
+  - id: "3.16"
+    term: HEALTHCARE DELIVERY ORGANIZATION
+    definition: "facility or enterprise such as a clinic or hospital that provides healthcare services"
+    source: "[SOURCE: ISO 81001-1:2021, 3.1.4]"
+    notes: []
+
+  - id: "3.17"
+    term: INTEGRITY
+    definition: "property of accuracy and completeness"
+    source: "[SOURCE: ISO/IEC 27000:2018, 3.36]"
+    notes: []
+
+  - id: "3.18"
+    term: INTENDED ENVIRONMENT OF USE
+    definition: "conditions and setting in which users interact with the HEALTH SOFTWARE - as specified by the MANUFACTURER"
+    source: ""
+    notes: []
+
+  - id: "3.19"
+    term: INTENDED USE
+    definition: "use for which a PRODUCT, PROCESS or service is intended according to the specifications, instructions and information provided by the MANUFACTURER"
+    source: "[SOURCE: ISO 81001-1:2021, 3.2.7, modified - In Note 1 to entry, replacement of 'USE ENVIRONMENT' with 'INTENDED ENVIRONMENT OF USE'.]"
+    notes:
+      - "The intended medical indication, patient population, part of the body or type of tissue interacted with, user profile, INTENDED ENVIRONMENT OF USE, and operating principle are typical elements of the INTENDED USE."
+
+  - id: "3.20"
+    term: LIFE CYCLE
+    definition: "series of all phases in the life of a PRODUCT or system, from the initial conception to final decommissioning and disposal"
+    source: "[SOURCE: ISO 81001-1:2021, 3.3.12]"
+    notes: []
+
+  - id: "3.21"
+    term: MAINTAINED SOFTWARE
+    definition: "SOFTWARE ITEM for which the MANUFACTURER will assume the risk related to SECURITY"
+    source: ""
+    notes:
+      - "See also A.3."
+
+  - id: "3.22"
+    term: MANUFACTURER
+    definition: "organization with responsibility for design or manufacture of a PRODUCT"
+    source: "[SOURCE: ISO 81001-1:2021, 3.1.7 - Addition of the notes to entry.]"
+    notes:
+      - "Responsibility extends to supporting ACTIVITIES during operations."
+      - "There is only one MANUFACTURER, but technical responsibility can be with multiple entities along the supply chain, with service providers, or with entities at different stages in the LIFE CYCLE."
+      - "Independent of the MANUFACTURER's responsibility, any specific legal accountability is defined by contracts and legislation."
+
+  - id: "3.23"
+    term: PROCESS
+    definition: "set of interrelated or interacting ACTIVITIES that use inputs to deliver an intended result (outcome)"
+    source: "[SOURCE: ISO 81001-1:2021, 3.2.10, modified - Added '(outcome)' after 'result'.]"
+    notes: []
+
+  - id: "3.24"
+    term: PRODUCT
+    definition: "output of an organization that can be produced without any transaction taking place between the organization and the customer"
+    source: "[SOURCE: ISO 81001-1:2021, 3.3.15]"
+    notes:
+      - "Production of a PRODUCT is achieved without any transaction necessarily taking place between provider and customer, but can often involve this service element upon its delivery to the customer."
+      - "The dominant element of a PRODUCT is that it is generally tangible."
+
+  - id: "3.25"
+    term: REQUIRED SOFTWARE
+    definition: "SOFTWARE ITEM for which the MANUFACTURER will consider SECURITY-related risks known before release of the HEALTH SOFTWARE"
+    source: ""
+    notes:
+      - "This includes SUPPORTED SOFTWARE. See A.3."
+
+  - id: "3.26"
+    term: RESIDUAL RISK
+    definition: "risk remaining after RISK CONTROL measures have been implemented"
+    source: "[SOURCE: ISO 81001-1:2021, 3.4.9]"
+    notes: []
+
+  - id: "3.27"
+    term: RISK CONTROL
+    definition: "PROCESS in which decisions are made and measures implemented by which risks are reduced to, or maintained within, specified levels"
+    source: "[SOURCE: ISO 81001-1:2021, 3.4.13, modified - Replacement of 'limits' with 'levels'.]"
+    notes: []
+
+  - id: "3.28"
+    term: RISK MANAGEMENT
+    definition: "systematic application of management policies, procedures and practices to the TASKS of analysing, evaluating, controlling and monitoring risk"
+    source: "[SOURCE: ISO 81001-1:2021, 3.4.16]"
+    notes: []
+
+  - id: "3.29"
+    term: SAFETY
+    definition: "freedom from unacceptable risk"
+    source: "[SOURCE: ISO 81001-1:2021, 3.2.12, modified - Addition of the notes to entry.]"
+    notes:
+      - "In the context of SAFETY, risk is the combination of probability of occurrence of harm and severity of harm (see ISO/IEC Guide 51:2014)."
+      - "SECURITY incidents can lead to harm and can therefore have an impact on SAFETY."
+
+  - id: "3.30"
+    term: SECURITY
+    definition: "state where information and systems are protected from unauthorized ACTIVITIES, such as access, use, disclosure, disruption, modification, or destruction to a degree that the related risks to violation of CONFIDENTIALITY, INTEGRITY, and AVAILABILITY are maintained at an acceptable level throughout the LIFE CYCLE"
+    source: "[SOURCE: ISO 81001-1:2021, 3.2.13]"
+    notes: []
+
+  - id: "3.31"
+    term: SECURITY CAPABILITY
+    definition: "broad category of technical, administrative or organizational controls to manage risks to CONFIDENTIALITY, INTEGRITY, AVAILABILITY and accountability of data and systems"
+    source: "[SOURCE: ISO 81001-1:2021, 3.2.14]"
+    notes: []
+
+  - id: "3.32"
+    term: SECURITY CONTEXT
+    definition: "minimum requirements and assumptions about the environment of HEALTH SOFTWARE - derived from the INTENDED ENVIRONMENT OF USE at PRODUCT-level, considering also the configuration and integration of HEALTH SOFTWARE and taking into account foreseeable unauthorized or unintended access"
+    source: ""
+    notes: []
+
+  - id: "3.33"
+    term: SOFTWARE COMPOSITION ANALYSIS
+    definition: "(electronic) analysis of binaries"
+    source: ""
+    notes:
+      - "SOFTWARE COMPOSITION ANALYSIS can be supported by tools or online services."
+
+  - id: "3.34"
+    term: SOFTWARE ITEM
+    definition: "identifiable part of a computer program, i.e. source code, object code, control code, control data, or a collection of these items"
+    source: "[SOURCE: IEC 62304:2006 and IEC 62304:2006/AMD1:2015, 3.25, modified - Deletion of the note.]"
+    notes: []
+
+  - id: "3.35"
+    term: SOFTWARE MAINTENANCE
+    definition: "modification of HEALTH SOFTWARE after release"
+    source: "[SOURCE: IEC 82304-1:2016, 3.21, modified - In the definition, the words 'HEALTH SOFTWARE PRODUCT' have been replaced by 'HEALTH SOFTWARE'; purposes of maintenance have been placed into a note that also highlights keeping the INTENDED USE, reference 3.10 has been added to the second note to entry; and 'hard-' has been replaced by 'hardware'.]"
+    notes:
+      - "Maintenance keeps the INTENDED USE and is done for one or more of the following reasons: a) corrective, as fixing faults; b) adaptive, as adapting to new hardware or software platform; c) perfective, as implementing new requirements; d) preventive, as making the PRODUCT more maintainable."
+      - "See also ISO/IEC 14764:2006, 3.10."
+
+  - id: "3.36"
+    term: SUPPORTED SOFTWARE
+    definition: "SOFTWARE ITEM for which the MANUFACTURER will notify the customer regarding known risks related to SECURITY"
+    source: ""
+    notes:
+      - "This includes MAINTAINED SOFTWARE. See A.3."
+
+  - id: "3.37"
+    term: TASK
+    definition: "single piece of work that needs to be done to achieve a specific goal"
+    source: "[SOURCE: IEC 62304:2006, 3.31, modified - Addition of 'to achieve a specific goal'.]"
+    notes: []
+
+  - id: "3.38"
+    term: THREAT
+    definition: "potential for violation of SECURITY, which exists when there is a circumstance, capability, action, or event that could breach SECURITY and cause damage to CONFIDENTIALITY, INTEGRITY, AVAILABILITY of information ASSETS"
+    source: "[SOURCE: ISO 81001-1:2021, 3.4.1.21, modified - 'Harm' replaced with 'damage to CONFIDENTIALITY, INTEGRITY, AVAILABILITY of information ASSETS'.]"
+    notes: []
+
+  - id: "3.39"
+    term: THREAT MODEL
+    definition: "documented result of the THREAT MODELLING ACTIVITY"
+    source: ""
+    notes: []
+
+  - id: "3.40"
+    term: THREAT MODELLING
+    definition: "systematic exploration technique to expose any circumstance or event having the potential to cause damage to a system in the form of destruction, disclosure, modification of data, or denial of service"
+    source: "[SOURCE: ISO/IEC/IEEE 24765:2017, 3.4290, modified - Replacement of 'harm' with 'damage'.]"
+    notes: []
+
+  - id: "3.41"
+    term: TRACEABILITY
+    definition: "link between the origin of requirements throughout the project LIFE CYCLE to design elements, and test cases"
+    source: ""
+    notes: []
+
+  - id: "3.42"
+    term: TRANSITIONAL HEALTH SOFTWARE
+    definition: "HEALTH SOFTWARE, which was released prior to publication of this document and which does not meet all requirements specified in Clause 4 through Clause 9 of this document"
+    source: ""
+    notes:
+      - "For TRANSITIONAL HEALTH SOFTWARE its MANUFACTURER can claim conformance to the Annex F."
+
+  - id: "3.43"
+    term: TRUST BOUNDARY
+    definition: "element of a THREAT MODEL that depicts a boundary where authentication is required or a change in trust level occurs (higher to lower or vice versa)"
+    source: ""
+    notes:
+      - "TRUST BOUNDARY enforcement mechanisms for PRODUCT users typically include authentication (for example, challenge/response, passwords, biometrics or digital signatures) and associated authorization (for example, access control rules)."
+      - "TRUST BOUNDARY enforcement mechanisms for data typically include source authentication (for example, message authentication codes and digital signatures) and/or content VALIDATION."
+
+  - id: "3.44"
+    term: USE ENVIRONMENT
+    definition: "actual conditions and setting in which users interact with the HEALTH SOFTWARE"
+    source: "[SOURCE: IEC 62366-1:2015 and IEC 62366-1:2015/AMD1:2020; 3.20, modified - 'Medical device' replaced with 'HEALTH SOFTWARE' in the definition, and replacement of Note 1 to entry.]"
+    notes:
+      - "For the purpose of this document, that includes data interfaces."
+
+  - id: "3.45"
+    term: VALIDATION
+    definition: "confirmation, through the provision of objective evidence, that the requirements for a specific INTENDED USE or application have been fulfilled"
+    source: "[SOURCE: ISO 9000:2015, 3.8.13]"
+    notes:
+      - "The objective evidence needed for a VALIDATION is the result of a test or other form of determination such as performing alternative calculations or reviewing documents."
+      - "The word 'validated' is used to designate the corresponding status."
+      - "The use conditions for VALIDATION can be real or simulated."
+
+  - id: "3.46"
+    term: VERIFICATION
+    definition: "confirmation, through provision of objective evidence, that specified requirements have been fulfilled"
+    source: "[SOURCE: ISO 81001-1:2021, 3.2.16]"
+    notes:
+      - "The objective evidence needed for a VERIFICATION can be the result of an inspection or of other forms of determination such as performing alternative calculations or reviewing documents."
+      - "The ACTIVITIES carried out for VERIFICATION are sometimes called a qualification PROCESS."
+      - "The word 'verified' is used to designate the corresponding status."
+
+  - id: "3.47"
+    term: VULNERABILITY
+    definition: "flaw or WEAKNESS in a system's design, implementation, or operation and management that could be exploited to violate the system's SECURITY policy"
+    source: "[SOURCE: ISO 81001-1:2021, 3.4.22]"
+    notes: []
+
+  - id: "3.48"
+    term: WEAKNESS
+    definition: "kind of deficiency"
+    source: "[SOURCE: ISO 81001-1:2021, 3.4.23, modified - Deletion of 'and/or privacy risks' in Note 1 to entry.]"
+    notes:
+      - "A WEAKNESS can result in a SECURITY risk."

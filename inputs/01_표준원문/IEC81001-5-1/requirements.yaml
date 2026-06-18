@@ -1,0 +1,2572 @@
+# =============================================================================
+# IEC 81001-5-1:2021  —  Normative Requirements Extraction
+# Generated: 2026-06-18
+# Source: inputs/01_표준원문/IEC81001-5-1/clauses.md  (Clauses 4–9, Annex F)
+# Note: This standard has NO safety classes. All requirements apply uniformly.
+# =============================================================================
+requirements:
+
+  # ===========================================================================
+  # CLAUSE 4 — General requirements
+  # ===========================================================================
+
+  # --- 4.1.1 Quality management system ---
+
+  - id: IEC81001-5-1-4.1.1-REQ-001
+    clause: "4.1.1"
+    clause_title: "Quality management system"
+    text: >
+      The MANUFACTURER shall perform SECURITY ACTIVITIES in the PRODUCT LIFE CYCLE
+      on the basis of an established and documented quality management system.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - POL
+      - PRO
+    evidence_candidates:
+      - "Quality management system documentation"
+      - "Security activity records within QMS"
+    tags:
+      - qms
+      - security_lifecycle
+    status: active
+    notes: ""
+
+  # --- 4.1.2 Identification of responsibilities ---
+
+  - id: IEC81001-5-1-4.1.2-REQ-001
+    clause: "4.1.2"
+    clause_title: "Identification of responsibilities"
+    text: >
+      The MANUFACTURER shall designate and document the organizational roles and
+      personnel responsible for each of the ACTIVITIES and PROCESSES required by
+      this document.
+    obligation: shall
+    type: normative
+    classification: role_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+      - POL
+    evidence_candidates:
+      - "Organizational role assignments"
+      - "Responsibility matrix (RACI)"
+    tags:
+      - roles
+      - responsibilities
+    status: active
+    notes: "Personnel can be identified through functional roles instead of names."
+
+  # --- 4.1.3 Identification of applicability ---
+
+  - id: IEC81001-5-1-4.1.3-REQ-001
+    clause: "4.1.3"
+    clause_title: "Identification of applicability"
+    text: >
+      The MANUFACTURER shall identify the PRODUCTS or parts of PRODUCTS to which
+      the secure LIFE CYCLE applies.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+      - PRO
+    evidence_candidates:
+      - "Product applicability record"
+      - "Secure lifecycle scope documentation"
+    tags:
+      - applicability
+      - scoping
+    status: active
+    notes: ""
+
+  # --- 4.1.4 SECURITY expertise ---
+
+  - id: IEC81001-5-1-4.1.4-REQ-001
+    clause: "4.1.4"
+    clause_title: "SECURITY expertise"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) for identifying
+      and providing SECURITY training and assessment programs to ensure that personnel
+      assigned to the organizational roles and duties specified in 4.1.2 have
+      demonstrated SECURITY expertise appropriate for those PROCESSES. Results of
+      this ACTIVITY (or ACTIVITIES) include role descriptions, training profiles and
+      training records.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Security training program"
+      - "Role descriptions with security competency requirements"
+      - "Training profiles"
+      - "Training records"
+    tags:
+      - training
+      - competence
+      - security_expertise
+    status: active
+    notes: ""
+
+  # --- 4.1.5 SOFTWARE ITEMS from third-party suppliers ---
+
+  - id: IEC81001-5-1-4.1.5-REQ-001
+    clause: "4.1.5"
+    clause_title: "SOFTWARE ITEMS from third-party suppliers"
+    text: >
+      The MANUFACTURER shall ensure that third-party suppliers perform applicable
+      SECURITY LIFE CYCLE ACTIVITIES for each SOFTWARE ITEM if it meets both of
+      the following criteria:
+      a) the SOFTWARE ITEM is mainly developed specifically for the MANUFACTURER
+      and for a specific purpose; and
+      b) the SOFTWARE ITEM can have an impact on SECURITY.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Third-party supplier security activity records"
+      - "Supplier qualification records"
+      - "Supply chain security agreements"
+    tags:
+      - third_party
+      - supply_chain
+      - supplier_management
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-4.1.5-REQ-002
+    clause: "4.1.5"
+    clause_title: "SOFTWARE ITEMS from third-party suppliers"
+    text: >
+      The MANUFACTURER shall communicate requirements related to SECURITY for each
+      SOFTWARE ITEM specifically developed by a third-party for the MANUFACTURER
+      and for a specific purpose.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+      - REF
+    evidence_candidates:
+      - "Security requirements communicated to suppliers"
+      - "Supplier agreements with security clauses"
+    tags:
+      - third_party
+      - supply_chain
+      - security_requirements
+    status: active
+    notes: ""
+
+  # --- 4.1.6 Continuous improvement ---
+
+  - id: IEC81001-5-1-4.1.6-REQ-001
+    clause: "4.1.6"
+    clause_title: "Continuous improvement"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) for continuously
+      improving the SECURITY development LIFE CYCLE.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - POL
+    evidence_candidates:
+      - "Continuous improvement procedure"
+      - "Security lifecycle improvement records"
+    tags:
+      - continuous_improvement
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-4.1.6-REQ-002
+    clause: "4.1.6"
+    clause_title: "Continuous improvement"
+    text: >
+      This ACTIVITY (or ACTIVITIES) shall include the analysis of SECURITY defects
+      in SOFTWARE ITEMS / HEALTH SOFTWARE / PRODUCTS that have been deployed to the
+      field due to insufficient or lacking ACTIVITIES.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Security defect analysis records"
+      - "Post-market security defect reports"
+    tags:
+      - continuous_improvement
+      - defect_analysis
+    status: active
+    notes: ""
+
+  # --- 4.1.7 Disclosing SECURITY-related issues ---
+
+  - id: IEC81001-5-1-4.1.7-REQ-001
+    clause: "4.1.7"
+    clause_title: "Disclosing SECURITY-related issues"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) for informing
+      regulatory authorities and PRODUCT users about VULNERABILITIES (that have been
+      identified through ACTIVITIES as specified in 9.5) in supported PRODUCTS in a
+      timely manner with content that includes but is not limited to the following
+      information:
+      a) VULNERABILITY description, VULNERABILITY score as per CVSS or a similar
+      system for ranking VULNERABILITIES, and affected PRODUCT version(s); and
+      b) description of the resolution.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - TMP
+      - REC
+    evidence_candidates:
+      - "Vulnerability disclosure procedure"
+      - "Vulnerability disclosure records"
+      - "Security advisory templates"
+    tags:
+      - vulnerability_disclosure
+      - regulatory_notification
+      - CVSS
+    status: active
+    notes: ""
+
+  # --- 4.1.8 Periodic review of SECURITY defect management ---
+
+  - id: IEC81001-5-1-4.1.8-REQ-001
+    clause: "4.1.8"
+    clause_title: "Periodic review of SECURITY defect management"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) for conducting
+      periodic reviews of the software problem resolution PROCESS.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Periodic review procedure"
+      - "Periodic review records"
+    tags:
+      - periodic_review
+      - defect_management
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-4.1.8-REQ-002
+    clause: "4.1.8"
+    clause_title: "Periodic review of SECURITY defect management"
+    text: >
+      Periodic reviews of the ACTIVITIES shall, at a minimum, examine
+      SECURITY-related issues managed through the PROCESS since the last periodic
+      review to determine if the management PROCESS was complete, efficient, and
+      led to the resolution of SECURITY-related issues.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+    evidence_candidates:
+      - "Periodic review reports"
+      - "Security defect management effectiveness analysis"
+    tags:
+      - periodic_review
+      - defect_management
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-4.1.8-REQ-003
+    clause: "4.1.8"
+    clause_title: "Periodic review of SECURITY defect management"
+    text: >
+      Periodic reviews of the SECURITY-related issue management PROCESS shall be
+      conducted at least annually or as part of monitoring, measurement and analysis
+      of PROCESSES of 4.1.3 of ISO 13485:2016.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+      - PRO
+    evidence_candidates:
+      - "Annual review schedule"
+      - "Periodic review records with dates"
+    tags:
+      - periodic_review
+      - annual_review
+    status: active
+    notes: ""
+
+  # --- 4.1.9 ACCOMPANYING DOCUMENTATION review ---
+
+  - id: IEC81001-5-1-4.1.9-REQ-001
+    clause: "4.1.9"
+    clause_title: "ACCOMPANYING DOCUMENTATION review"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) for identifying,
+      characterizing and tracking to closure SECURITY-related errors and omissions
+      in ACCOMPANYING DOCUMENTATION including the SECURITY guidelines.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Accompanying documentation review procedure"
+      - "Documentation review records"
+      - "Issue tracking records for documentation errors"
+    tags:
+      - documentation_review
+      - accompanying_documentation
+    status: active
+    notes: ""
+
+  # --- 4.2 SECURITY RISK MANAGEMENT ---
+
+  - id: IEC81001-5-1-4.2-REQ-001
+    clause: "4.2"
+    clause_title: "SECURITY RISK MANAGEMENT"
+    text: >
+      The MANUFACTURER shall establish a PROCESS for managing RISKS associated with
+      SECURITY. This PROCESS shall use THREAT MODELLING for identifying
+      VULNERABILITIES, estimating and evaluating the associated THREATS, controlling
+      these THREATS, and monitoring the effectiveness of the RISK CONTROL (SECURITY)
+      measures, taking into account the INTENDED USE and the USE ENVIRONMENT of the
+      HEALTH SOFTWARE.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - POL
+    evidence_candidates:
+      - "Security risk management process documentation"
+      - "Threat modelling procedure"
+    tags:
+      - risk_management
+      - threat_modelling
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-4.2-REQ-002
+    clause: "4.2"
+    clause_title: "SECURITY RISK MANAGEMENT"
+    text: >
+      The MANUFACTURER shall establish the criteria for risk acceptability that
+      shall be applied when determining the appropriate way to address each
+      VULNERABILITY.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - POL
+      - PRO
+    evidence_candidates:
+      - "Security risk acceptability criteria document"
+      - "Risk acceptance policy"
+    tags:
+      - risk_management
+      - risk_acceptability
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-4.2-REQ-003
+    clause: "4.2"
+    clause_title: "SECURITY RISK MANAGEMENT"
+    text: >
+      The SECURITY RISK MANAGEMENT should incorporate outcomes of the THREAT
+      MODELLING ACTIVITY (or ACTIVITIES) and follow guidelines and industry best
+      practice.
+    obligation: should
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+    evidence_candidates:
+      - "Security risk management process referencing threat model outputs"
+    tags:
+      - risk_management
+      - threat_modelling
+      - best_practice
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-4.2-REQ-004
+    clause: "4.2"
+    clause_title: "SECURITY RISK MANAGEMENT"
+    text: >
+      The MANUFACTURER shall document any RESIDUAL RISK associated with a
+      VULNERABILITY that remains in the system and shall also document respective
+      compensating controls applied.
+    obligation: shall
+    type: normative
+    classification: record_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+    evidence_candidates:
+      - "Residual risk documentation"
+      - "Compensating controls documentation"
+      - "Risk management file"
+    tags:
+      - risk_management
+      - residual_risk
+      - compensating_controls
+    status: active
+    notes: ""
+
+  # --- 4.3 SOFTWARE ITEM classification relating to risk transfer ---
+
+  - id: IEC81001-5-1-4.3-REQ-001
+    clause: "4.3"
+    clause_title: "SOFTWARE ITEM classification relating to risk transfer"
+    text: >
+      The MANUFACTURER shall document which SOFTWARE ITEM is either
+      a) MAINTAINED SOFTWARE;
+      b) SUPPORTED SOFTWARE; or
+      c) REQUIRED SOFTWARE.
+    obligation: shall
+    type: normative
+    classification: record_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+    evidence_candidates:
+      - "Software item classification record (maintained/supported/required)"
+      - "Software bill of materials with classification"
+    tags:
+      - risk_transfer
+      - software_classification
+      - SBOM
+    status: active
+    notes: ""
+
+  # ===========================================================================
+  # CLAUSE 5 — Software development PROCESS
+  # ===========================================================================
+
+  # --- 5.1.1 ACTIVITIES in the LIFE CYCLE PROCESS ---
+
+  - id: IEC81001-5-1-5.1.1-REQ-001
+    clause: "5.1.1"
+    clause_title: "ACTIVITIES in the LIFE CYCLE PROCESS"
+    text: >
+      The MANUFACTURER shall establish general LIFE CYCLE ACTIVITIES – from
+      conception to decommissioning – that are consistent and integrated with a
+      commonly accepted PRODUCT development PROCESS including but not limited to:
+      a) CONFIGURATION MANAGEMENT with change controls and change history;
+      b) PRODUCT description and requirements definition with requirements TRACEABILITY;
+      c) software or hardware design and implementation practices, such as modular design;
+      d) repeatable testing VERIFICATION and VALIDATION PROCESS;
+      e) review and approval of all development PROCESS records;
+      f) PRODUCT support; and
+      g) SECURITY updates and patching for HEALTH SOFTWARE.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - POL
+    evidence_candidates:
+      - "Software development lifecycle plan"
+      - "Configuration management plan"
+      - "Traceability matrix"
+    tags:
+      - development_planning
+      - lifecycle
+      - configuration_management
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-5.1.1-REQ-002
+    clause: "5.1.1"
+    clause_title: "ACTIVITIES in the LIFE CYCLE PROCESS"
+    text: >
+      The MANUFACTURER shall document the justification for not implementing
+      requirements of this document within a given HEALTH SOFTWARE project based on
+      review and approval by personnel with the appropriate SECURITY expertise.
+    obligation: shall
+    type: normative
+    classification: record_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+    evidence_candidates:
+      - "Tailoring justification document"
+      - "Approved exemption records"
+    tags:
+      - tailoring
+      - justification
+    status: active
+    notes: ""
+
+  # --- 5.1.2 Development environment SECURITY ---
+
+  - id: IEC81001-5-1-5.1.2-REQ-001
+    clause: "5.1.2"
+    clause_title: "Development environment SECURITY"
+    text: >
+      The MANUFACTURER shall establish risk-based procedural and technical controls
+      for protecting the IT infrastructure used for development, production delivery
+      and maintenance from unauthorized access, corruption and deletion. This
+      includes protecting the HEALTH SOFTWARE during design, implementation, updates,
+      testing and release.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - POL
+      - PRO
+      - WI
+    evidence_candidates:
+      - "Development environment security policy"
+      - "IT infrastructure security controls documentation"
+      - "Access control records"
+    tags:
+      - dev_environment
+      - infrastructure_security
+      - access_control
+    status: active
+    notes: ""
+
+  # --- 5.1.3 Secure coding standards ---
+
+  - id: IEC81001-5-1-5.1.3-REQ-001
+    clause: "5.1.3"
+    clause_title: "Secure coding standards"
+    text: >
+      The MANUFACTURER shall establish and maintain secure coding standards
+      consistent with current best practices related to the design and
+      implementation of secure software systems.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REF
+      - WI
+    evidence_candidates:
+      - "Secure coding standards document"
+      - "Coding guidelines"
+    tags:
+      - secure_coding
+      - coding_standards
+    status: active
+    notes: "See Annex A."
+
+  # --- 5.2.1 HEALTH SOFTWARE SECURITY requirements ---
+
+  - id: IEC81001-5-1-5.2.1-REQ-001
+    clause: "5.2.1"
+    clause_title: "HEALTH SOFTWARE SECURITY requirements"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) for ensuring that
+      SECURITY requirements are documented for the HEALTH SOFTWARE including
+      requirements for SECURITY CAPABILITIES related to installation, operation,
+      maintenance and decommissioning.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Security requirements specification"
+      - "Security capability requirements"
+    tags:
+      - security_requirements
+      - security_capabilities
+    status: active
+    notes: ""
+
+  # --- 5.2.2 SECURITY requirements review ---
+
+  - id: IEC81001-5-1-5.2.2-REQ-001
+    clause: "5.2.2"
+    clause_title: "SECURITY requirements review"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) for ensuring that
+      SECURITY requirements
+      a) implement PRODUCT requirements including those relating to RISK CONTROL;
+      b) do not contradict one another;
+      c) are expressed in terms that avoid ambiguity; and
+      d) are stated in terms that permit establishment of test criteria and
+      performance of tests.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Security requirements review records"
+      - "Requirements review checklist"
+    tags:
+      - security_requirements
+      - requirements_review
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-5.2.2-REQ-002
+    clause: "5.2.2"
+    clause_title: "SECURITY requirements review"
+    text: >
+      The MANUFACTURER shall document the level of independence of the reviewers.
+      Each of the following representative disciplines shall participate in this
+      ACTIVITY (or ACTIVITIES):
+      a) architects/developers (those who will implement the requirements);
+      b) testers (those who will validate that the requirements have been met);
+      c) cross-functional experts (can include those with clinical expertise); and
+      d) SECURITY advisor(s).
+    obligation: shall
+    type: normative
+    classification: record_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+    evidence_candidates:
+      - "Reviewer independence documentation"
+      - "Review participant records by discipline"
+    tags:
+      - security_requirements
+      - reviewer_independence
+    status: active
+    notes: ""
+
+  # --- 5.2.3 SECURITY risks for REQUIRED SOFTWARE ---
+
+  - id: IEC81001-5-1-5.2.3-REQ-001
+    clause: "5.2.3"
+    clause_title: "SECURITY risks for REQUIRED SOFTWARE"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) that identifies
+      and manages the SECURITY risks of all REQUIRED SOFTWARE.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Required software security risk assessment"
+      - "Third-party component risk analysis"
+    tags:
+      - required_software
+      - supply_chain
+      - risk_management
+    status: active
+    notes: ""
+
+  # --- 5.3.1 DEFENSE-IN-DEPTH ARCHITECTURE/design ---
+
+  - id: IEC81001-5-1-5.3.1-REQ-001
+    clause: "5.3.1"
+    clause_title: "DEFENSE-IN-DEPTH ARCHITECTURE/design"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) to specify a
+      secure ARCHITECTURE.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Security architecture specification"
+      - "Defense-in-depth design documentation"
+    tags:
+      - architecture
+      - defense_in_depth
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-5.3.1-REQ-002
+    clause: "5.3.1"
+    clause_title: "DEFENSE-IN-DEPTH ARCHITECTURE/design"
+    text: >
+      At each stage of development, the MANUFACTURER should consider DEFENSE-IN-DEPTH
+      and assign technical requirements to each layer of defense.
+    obligation: should
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+    evidence_candidates:
+      - "Defense-in-depth layer assignments"
+    tags:
+      - architecture
+      - defense_in_depth
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-5.3.1-REQ-003
+    clause: "5.3.1"
+    clause_title: "DEFENSE-IN-DEPTH ARCHITECTURE/design"
+    text: >
+      When identifying technical SECURITY RISK CONTROLS, the MANUFACTURER shall
+      take into account requirements regarding SAFETY or performance of HEALTH
+      SOFTWARE.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+      - PRO
+    evidence_candidates:
+      - "Security risk control documentation referencing safety/performance"
+    tags:
+      - architecture
+      - safety_performance_balance
+    status: active
+    notes: ""
+
+  # --- 5.3.2 Secure design best practices ---
+
+  - id: IEC81001-5-1-5.3.2-REQ-001
+    clause: "5.3.2"
+    clause_title: "Secure design best practices"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) to identify,
+      enforce and maintain secure design practices.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - WI
+    evidence_candidates:
+      - "Secure design practices procedure"
+    tags:
+      - secure_design
+      - best_practices
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-5.3.2-REQ-002
+    clause: "5.3.2"
+    clause_title: "Secure design best practices"
+    text: >
+      The MANUFACTURER shall document secure design best practices, which should
+      include but are not limited to:
+      a) documenting all TRUST BOUNDARIES as part of the design;
+      b) least privilege;
+      c) using proven secure SOFTWARE ITEMS/designs where possible;
+      d) economy of mechanism (striving for simple designs);
+      e) using secure design patterns;
+      f) ATTACK SURFACE reduction;
+      g) removing backdoors, debug access and debug information used during
+      development or documenting their presence and the need to protect them
+      from unauthorized access; and
+      h) protecting any remaining debug information from unauthorized access.
+    obligation: shall
+    type: normative
+    classification: record_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REF
+      - WI
+    evidence_candidates:
+      - "Secure design best practices document"
+      - "Design guidelines"
+    tags:
+      - secure_design
+      - trust_boundaries
+      - least_privilege
+      - attack_surface
+    status: active
+    notes: "The 'should' refers to the list items; the 'shall document' is the mandatory part."
+
+  - id: IEC81001-5-1-5.3.2-REQ-003
+    clause: "5.3.2"
+    clause_title: "Secure design best practices"
+    text: >
+      The MANUFACTURER shall define a SECURITY ARCHITECTURE as part of
+      DEFENSE-IN-DEPTH, including the practices listed above as appropriate.
+    obligation: shall
+    type: normative
+    classification: evidence_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+    evidence_candidates:
+      - "Security architecture document"
+      - "Defense-in-depth architecture specification"
+    tags:
+      - security_architecture
+      - defense_in_depth
+    status: active
+    notes: ""
+
+  # --- 5.3.3 SECURITY architectural design review ---
+
+  - id: IEC81001-5-1-5.3.3-REQ-001
+    clause: "5.3.3"
+    clause_title: "SECURITY architectural design review"
+    text: >
+      The MANUFACTURER shall implement an architectural review of the HEALTH
+      SOFTWARE with respect to behavior under adverse conditions:
+      a) effective segregation of SOFTWARE ITEMS;
+      b) the secure design best practices (see 5.3.2); and
+      c) potential SECURITY flaws introduced by the ARCHITECTURE.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Security architectural review records"
+      - "Architecture review checklist"
+    tags:
+      - architecture_review
+      - adverse_conditions
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-5.3.3-REQ-002
+    clause: "5.3.3"
+    clause_title: "SECURITY architectural design review"
+    text: >
+      The MANUFACTURER shall document and implement the architectural design review.
+    obligation: shall
+    type: normative
+    classification: record_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+    evidence_candidates:
+      - "Architectural design review report"
+      - "Review implementation evidence"
+    tags:
+      - architecture_review
+    status: active
+    notes: ""
+
+  # --- 5.4.1 Software design best practices ---
+
+  - id: IEC81001-5-1-5.4.1-REQ-001
+    clause: "5.4.1"
+    clause_title: "Software design best practices"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) to develop and
+      document a secure HEALTH SOFTWARE design and maintain the use of best practices
+      for the secure design, taking into account:
+      a) software technology at application level (for examples algorithms, methods);
+      b) the programming technology used (for example programming language);
+      c) the secure design best practices in 5.3.2.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Secure software design documentation"
+      - "Design best practices application records"
+    tags:
+      - software_design
+      - secure_design
+      - best_practices
+    status: active
+    notes: ""
+
+  # --- 5.4.2 Secure design ---
+
+  - id: IEC81001-5-1-5.4.2-REQ-001
+    clause: "5.4.2"
+    clause_title: "Secure design"
+    text: >
+      The HEALTH SOFTWARE design shall include measures to address the THREATS
+      identified in the THREAT MODEL.
+    obligation: shall
+    type: normative
+    classification: evidence_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+    evidence_candidates:
+      - "Design documentation referencing threat model"
+      - "Threat mitigation measures in design"
+    tags:
+      - secure_design
+      - threat_model
+      - threat_mitigation
+    status: active
+    notes: ""
+
+  # --- 5.4.3 Secure HEALTH SOFTWARE interfaces ---
+
+  - id: IEC81001-5-1-5.4.3-REQ-001
+    clause: "5.4.3"
+    clause_title: "Secure HEALTH SOFTWARE interfaces"
+    text: >
+      The HEALTH SOFTWARE design shall identify and characterize each interface of
+      the HEALTH SOFTWARE including physical and logical interfaces. As appropriate,
+      the MANUFACTURER identifies as part of the design:
+      a) whether the interface is externally accessible or internally accessible or both;
+      b) SECURITY implications of the HEALTH SOFTWARE SECURITY CONTEXT on the
+      external interface;
+      c) potential users of the interface and the ASSETS that can be accessed through
+      the interfaces;
+      d) whether the static design includes access to interfaces across TRUST BOUNDARIES;
+      e) SECURITY considerations, assumptions and/or constraints associated with
+      the use of the interface within the HEALTH SOFTWARE SECURITY CONTEXT;
+      f) the SECURITY roles, privileges/rights and access control permissions needed
+      to use the interface and to access the ASSETS defined in c);
+      g) the SECURITY CAPABILITIES and/or compensating mechanisms used to safeguard
+      the interface and the ASSETS identified in c) including run-time VALIDATION
+      of inputs as well as handling outputs and errors;
+      h) the use of third-party SOFTWARE ITEMS to implement the interface and their
+      SECURITY CAPABILITIES;
+      i) documentation that describes how to use the interface if it is externally
+      accessible; and
+      j) description of how the design mitigates the THREATS identified in the
+      THREAT MODEL.
+    obligation: shall
+    type: normative
+    classification: evidence_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+    evidence_candidates:
+      - "Interface security characterization document"
+      - "Interface security analysis"
+      - "Trust boundary analysis for interfaces"
+    tags:
+      - interface_security
+      - trust_boundaries
+      - access_control
+      - threat_mitigation
+    status: active
+    notes: ""
+
+  # --- 5.4.4 Detailed design VERIFICATION for SECURITY ---
+
+  - id: IEC81001-5-1-5.4.4-REQ-001
+    clause: "5.4.4"
+    clause_title: "Detailed design VERIFICATION for SECURITY"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) for conducting
+      design reviews to identify, characterize and track to closure WEAKNESSES
+      associated with each significant revision of the secure design including but
+      not limited to:
+      a) SECURITY requirements that were not adequately addressed by the design;
+      b) THREATS and their ability to exploit VULNERABILITIES in PRODUCT interfaces,
+      TRUST BOUNDARIES and ASSETS;
+      c) identification, documentation and characterization of detailed design
+      best-practices that were not followed (5.3.2 and 5.4.1).
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Security design review records"
+      - "Design weakness tracking records"
+    tags:
+      - design_verification
+      - design_review
+      - weakness_tracking
+    status: active
+    notes: ""
+
+  # --- 5.5.1 Secure coding standards ---
+
+  - id: IEC81001-5-1-5.5.1-REQ-001
+    clause: "5.5.1"
+    clause_title: "Secure coding standards"
+    text: >
+      The MANUFACTURER shall establish an implementation ACTIVITY (or ACTIVITIES)
+      following secure coding standards.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - WI
+    evidence_candidates:
+      - "Secure coding implementation records"
+      - "Coding standard compliance evidence"
+    tags:
+      - secure_coding
+      - implementation
+    status: active
+    notes: "See clause A.4."
+
+  # --- 5.5.2 SECURITY implementation review ---
+
+  - id: IEC81001-5-1-5.5.2-REQ-001
+    clause: "5.5.2"
+    clause_title: "SECURITY implementation review"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) to ensure that
+      implementation reviews are performed for identifying, characterizing and
+      feeding into the problem resolution PROCESS all SECURITY-related issues
+      associated with the implementation of the secure design including:
+      a) identification of SECURITY requirements (see 5.2) that were not adequately
+      addressed by the implementation;
+      b) identify secure coding standards used and document any parts of the secure
+      coding standards that were not followed;
+      c) Static Code Analysis (SCA) for source code to determine secure coding
+      errors using the secure coding standard for the supported programming
+      language, as established in 5.1.3;
+      d) review of the implementation and its TRACEABILITY to the SECURITY
+      CAPABILITIES defined to support the SECURITY design (see 5.3 and 5.4); and
+      e) examination of THREATS and their ability to exploit implementation
+      interfaces, TRUST BOUNDARIES and ASSETS (see 5.3 and 5.4).
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Security implementation review records"
+      - "Static code analysis reports"
+      - "Coding standard deviation records"
+      - "Traceability to security capabilities"
+    tags:
+      - implementation_review
+      - static_analysis
+      - secure_coding
+      - traceability
+    status: active
+    notes: ""
+
+  # --- 5.6 Software integration testing ---
+
+  - id: IEC81001-5-1-5.6-REQ-001
+    clause: "5.6"
+    clause_title: "Software integration testing"
+    text: >
+      As a part of HEALTH SOFTWARE integration testing, the MANUFACTURER should
+      consider SECURITY policy differences across TRUST BOUNDARIES.
+    obligation: should
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+    evidence_candidates:
+      - "Integration test records addressing trust boundaries"
+    tags:
+      - integration_testing
+      - trust_boundaries
+    status: active
+    notes: ""
+
+  # --- 5.7.1 SECURITY requirements testing ---
+
+  - id: IEC81001-5-1-5.7.1-REQ-001
+    clause: "5.7.1"
+    clause_title: "SECURITY requirements testing"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) for verifying
+      that the HEALTH SOFTWARE SECURITY functions meet the SECURITY requirements and
+      that the HEALTH SOFTWARE handles error scenarios and invalid input. Based on
+      the INTENDED ENVIRONMENT OF USE, types of testing shall include:
+      a) functional testing of SECURITY requirements;
+      b) performance and scalability testing;
+      c) boundary/edge condition, stress and malformed or unexpected input tests
+      with potential SECURITY consequences; and
+      d) testing each software service that is used by HEALTH SOFTWARE to achieve
+      its intended functionality, in the context of responsibility agreements
+      among service providers, MANUFACTURERS and operators.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Security requirements test plan"
+      - "Security test reports"
+      - "Functional security test results"
+    tags:
+      - security_testing
+      - requirements_testing
+      - system_testing
+    status: active
+    notes: ""
+
+  # --- 5.7.2 THREAT mitigation testing ---
+
+  - id: IEC81001-5-1-5.7.2-REQ-001
+    clause: "5.7.2"
+    clause_title: "THREAT mitigation testing"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) for testing the
+      effectiveness of the mitigation for the THREATS identified and assessed in the
+      THREAT MODEL. ACTIVITIES shall include:
+      a) creating and executing adequate testing for each mitigation implemented to
+      address a specific THREAT, in order to ensure that the mitigation works as
+      designed;
+      b) creating and executing plans for attempting to thwart each mitigation; and
+      c) ensuring that the mitigation does not introduce other VULNERABILITIES to
+      the design.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Threat mitigation test plan"
+      - "Threat mitigation test results"
+      - "Mitigation effectiveness evidence"
+    tags:
+      - threat_mitigation
+      - security_testing
+    status: active
+    notes: ""
+
+  # --- 5.7.3 VULNERABILITY testing ---
+
+  - id: IEC81001-5-1-5.7.3-REQ-001
+    clause: "5.7.3"
+    clause_title: "VULNERABILITY testing"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) for performing
+      tests that focus on identifying and characterizing potential SECURITY
+      VULNERABILITIES in the HEALTH SOFTWARE. Known VULNERABILITY testing shall be
+      based upon, at a minimum, recent contents of an established,
+      industry-recognized, public source for known VULNERABILITIES. As appropriate,
+      testing shall include:
+      a) abuse case for malformed or unexpected input testing focused on uncovering
+      SECURITY issues, including manual or automated abuse case testing and
+      specialized types of abuse case testing on all external interfaces and
+      protocols;
+      b) ATTACK SURFACE testing to determine all avenues of ingress and egress to
+      and from the system;
+      c) closed box known VULNERABILITY scanning focused on detecting known
+      VULNERABILITIES;
+      d) SOFTWARE COMPOSITION ANALYSIS on all binary executable files including
+      embedded firmware, to be used with HEALTH SOFTWARE and delivered by a
+      third-party supplier; and
+      e) dynamic SECURITY testing that detects flaws not visible under static code
+      analysis. This testing shall be applied if such tools are available.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Vulnerability test plan"
+      - "Vulnerability scan reports"
+      - "Software composition analysis reports"
+      - "Dynamic security testing reports"
+      - "Abuse case test results"
+      - "Attack surface analysis report"
+    tags:
+      - vulnerability_testing
+      - SCA
+      - fuzz_testing
+      - attack_surface
+      - penetration_testing
+    status: active
+    notes: ""
+
+  # --- 5.7.4 Penetration testing ---
+
+  - id: IEC81001-5-1-5.7.4-REQ-001
+    clause: "5.7.4"
+    clause_title: "Penetration testing"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) to identify and
+      characterize WEAKNESSES via tests that focus on discovering and exploiting
+      SECURITY VULNERABILITIES in the HEALTH SOFTWARE.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Penetration test plan"
+      - "Penetration test report"
+    tags:
+      - penetration_testing
+      - security_testing
+    status: active
+    notes: "See B.5.7.4."
+
+  # --- 5.7.5 Managing conflicts of interest between testers and developers ---
+
+  - id: IEC81001-5-1-5.7.5-REQ-001
+    clause: "5.7.5"
+    clause_title: "Managing conflicts of interest between testers and developers"
+    text: >
+      The MANUFACTURER shall document means of ensuring objectivity of the test
+      effort for these tests:
+      a) ATTACK SURFACE analysis,
+      b) SECURITY requirements testing,
+      c) THREAT mitigation testing,
+      d) VULNERABILITY testing,
+      e) known VULNERABILITY scanning and
+      f) penetration testing.
+    obligation: shall
+    type: normative
+    classification: record_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+      - POL
+    evidence_candidates:
+      - "Tester objectivity/independence documentation"
+      - "Conflict of interest management policy"
+    tags:
+      - tester_independence
+      - objectivity
+      - conflict_of_interest
+    status: active
+    notes: "See A.1 and B.5.7.5."
+
+  # --- 5.8.1 Resolve findings prior to release ---
+
+  - id: IEC81001-5-1-5.8.1-REQ-001
+    clause: "5.8.1"
+    clause_title: "Resolve findings prior to release"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) to ensure that
+      all findings from system testing have been handled by the problem resolution
+      PROCESS (Clause 9).
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Pre-release findings resolution records"
+      - "Problem resolution tracking"
+    tags:
+      - release
+      - findings_resolution
+    status: active
+    notes: ""
+
+  # --- 5.8.2 Release documentation ---
+
+  - id: IEC81001-5-1-5.8.2-REQ-001
+    clause: "5.8.2"
+    clause_title: "Release documentation"
+    text: >
+      As a part of the software release ACTIVITY (or ACTIVITIES), the MANUFACTURER
+      shall establish requirements for ACCOMPANYING DOCUMENTATION:
+      a) secure operation guidelines;
+      b) PROCESS rigor and conformance documentation including the scoping
+      (Clause 4), tailoring (Clause 5) and information on coverage of
+      documentation (Annex E);
+      c) account management guidelines (if applicable); and
+      d) appropriate information about relevant RESIDUAL RISKS to SECURITY
+      remaining in the HEALTH SOFTWARE.
+    obligation: shall
+    type: normative
+    classification: evidence_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+      - TMP
+    evidence_candidates:
+      - "Secure operation guidelines"
+      - "Conformance documentation"
+      - "Account management guidelines"
+      - "Residual risk communication"
+    tags:
+      - release
+      - release_documentation
+      - accompanying_documentation
+    status: active
+    notes: "See Annex E for informative specification of documentation contents."
+
+  # --- 5.8.3 File INTEGRITY ---
+
+  - id: IEC81001-5-1-5.8.3-REQ-001
+    clause: "5.8.3"
+    clause_title: "File INTEGRITY"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) to provide an
+      INTEGRITY VERIFICATION mechanism for all scripts, executables and other
+      SECURITY-relevant files used with a HEALTH SOFTWARE.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - WI
+    evidence_candidates:
+      - "File integrity verification mechanism documentation"
+      - "Cryptographic hash or digital signature records"
+    tags:
+      - file_integrity
+      - code_signing
+      - release
+    status: active
+    notes: ""
+
+  # --- 5.8.4 Controls for private keys ---
+
+  - id: IEC81001-5-1-5.8.4-REQ-001
+    clause: "5.8.4"
+    clause_title: "Controls for private keys"
+    text: >
+      The MANUFACTURER shall have procedural and technical controls in place to
+      protect private keys used for code signing from unauthorized access or
+      modification.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - POL
+      - WI
+    evidence_candidates:
+      - "Private key management policy"
+      - "Key protection controls documentation"
+      - "Access control records for signing keys"
+    tags:
+      - key_management
+      - code_signing
+      - access_control
+    status: active
+    notes: ""
+
+  # --- 5.8.5 Assessing and addressing SECURITY-related issues ---
+
+  - id: IEC81001-5-1-5.8.5-REQ-001
+    clause: "5.8.5"
+    clause_title: "Assessing and addressing SECURITY-related issues"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) for verifying
+      that a HEALTH SOFTWARE or an update is not released until its SECURITY-related
+      issues have been addressed and tracked to closure (see 9.5). This includes
+      issues associated with:
+      a) requirements (see 5.2);
+      b) SECURITY by design (see 5.3 and 5.4);
+      c) implementation (see 5.5);
+      d) VERIFICATION / VALIDATION (see 5.5, 5.6 and 5.7); and
+      e) SECURITY defect management (see 9.4).
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Pre-release security issue closure records"
+      - "Security issue tracking to closure evidence"
+    tags:
+      - release
+      - security_issues
+      - release_gate
+    status: active
+    notes: ""
+
+  # --- 5.8.6 ACTIVITY completion ---
+
+  - id: IEC81001-5-1-5.8.6-REQ-001
+    clause: "5.8.6"
+    clause_title: "ACTIVITY completion"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) for verifying
+      that, prior to HEALTH SOFTWARE release, all applicable SECURITY-related
+      PROCESSES required by this document have been completed with records
+      documenting the completion of each ACTIVITY (or ACTIVITIES) or PROCESS.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Activity completion verification records"
+      - "Release readiness checklist"
+    tags:
+      - release
+      - activity_completion
+      - release_gate
+    status: active
+    notes: ""
+
+  # --- 5.8.7 SECURE decommissioning guidelines for HEALTH SOFTWARE ---
+
+  - id: IEC81001-5-1-5.8.7-REQ-001
+    clause: "5.8.7"
+    clause_title: "SECURE decommissioning guidelines for HEALTH SOFTWARE"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) to create PRODUCT
+      user documentation that includes guidelines for removing the HEALTH SOFTWARE
+      from use.
+    obligation: shall
+    type: normative
+    classification: evidence_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+      - TMP
+    evidence_candidates:
+      - "Decommissioning guidelines document"
+      - "Health software removal instructions"
+    tags:
+      - decommissioning
+      - user_documentation
+    status: active
+    notes: ""
+
+  # ===========================================================================
+  # CLAUSE 6 — SOFTWARE MAINTENANCE PROCESS
+  # ===========================================================================
+
+  # --- 6.1.1 Timely delivery of SECURITY updates ---
+
+  - id: IEC81001-5-1-6.1.1-REQ-001
+    clause: "6.1.1"
+    clause_title: "Timely delivery of SECURITY updates"
+    text: >
+      The MANUFACTURER shall establish – as a part of the update ACTIVITIES – a
+      policy that specifies the timeframes for delivering and qualifying SECURITY
+      updates to PRODUCT users.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - POL
+      - PRO
+    evidence_candidates:
+      - "Security update delivery policy"
+      - "Update timeframe specification"
+    tags:
+      - maintenance
+      - security_updates
+      - timeliness
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-6.1.1-REQ-002
+    clause: "6.1.1"
+    clause_title: "Timely delivery of SECURITY updates"
+    text: >
+      At a minimum, this policy shall consider the following factors:
+      a) the potential impact (technical, for SAFETY, effectiveness, SECURITY) of
+      the VULNERABILITY;
+      b) public knowledge of the VULNERABILITY;
+      c) whether published EXPLOITS exist for the VULNERABILITY;
+      d) the volume of deployed PRODUCTS that are affected; and
+      e) the AVAILABILITY of an effective external control when no HEALTH SOFTWARE
+      update is being provided.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - POL
+    evidence_candidates:
+      - "Security update policy with impact assessment criteria"
+    tags:
+      - maintenance
+      - security_updates
+      - impact_assessment
+    status: active
+    notes: ""
+
+  # --- 6.2.1 Monitoring public incident reports ---
+
+  - id: IEC81001-5-1-6.2.1-REQ-001
+    clause: "6.2.1"
+    clause_title: "Monitoring public incident reports"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) to actively
+      collect and review relevant sources of information about VULNERABILITIES
+      regarding SUPPORTED SOFTWARE.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - WI
+    evidence_candidates:
+      - "Vulnerability monitoring procedure"
+      - "Vulnerability intelligence source list"
+      - "Monitoring activity records"
+    tags:
+      - maintenance
+      - vulnerability_monitoring
+      - post_market
+    status: active
+    notes: ""
+
+  # --- 6.2.2 SECURITY update VERIFICATION ---
+
+  - id: IEC81001-5-1-6.2.2-REQ-001
+    clause: "6.2.2"
+    clause_title: "SECURITY update VERIFICATION"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) for verifying
+      that SECURITY updates created by the MANUFACTURER address the intended
+      SECURITY VULNERABILITIES.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Security update verification records"
+      - "Update test reports"
+    tags:
+      - maintenance
+      - security_updates
+      - verification
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-6.2.2-REQ-002
+    clause: "6.2.2"
+    clause_title: "SECURITY update VERIFICATION"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) for verifying
+      that SECURITY updates do not introduce unintended effects to functional or
+      quality attributes of HEALTH SOFTWARE. Such SECURITY updates include but are
+      not limited to updates created by:
+      a) the HEALTH SOFTWARE MANUFACTURER,
+      b) suppliers of SOFTWARE ITEMS used in the HEALTH SOFTWARE, and
+      c) suppliers of SOFTWARE ITEMS or platforms on which the HEALTH SOFTWARE depends.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Regression test records for security updates"
+      - "Unintended effects analysis records"
+    tags:
+      - maintenance
+      - security_updates
+      - regression_testing
+    status: active
+    notes: ""
+
+  # --- 6.3.1 SUPPORTED SOFTWARE SECURITY update documentation ---
+
+  - id: IEC81001-5-1-6.3.1-REQ-001
+    clause: "6.3.1"
+    clause_title: "SUPPORTED SOFTWARE SECURITY update documentation"
+    text: >
+      The MANUFACTURER shall establish a policy to inform PRODUCT users about
+      updates for SUPPORTED SOFTWARE. This information shall include:
+      a) stating whether the HEALTH SOFTWARE is compatible with the SUPPORTED
+      SOFTWARE SECURITY update; and
+      b) for SECURITY updates that are unapproved by the HEALTH SOFTWARE
+      MANUFACTURER, the mitigations that can be used instead of applying the
+      update.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - POL
+      - REC
+    evidence_candidates:
+      - "Supported software update notification policy"
+      - "Compatibility statements for supported software updates"
+    tags:
+      - maintenance
+      - supported_software
+      - user_notification
+    status: active
+    notes: ""
+
+  # --- 6.3.2 MAINTAINED SOFTWARE SECURITY update delivery ---
+
+  - id: IEC81001-5-1-6.3.2-REQ-001
+    clause: "6.3.2"
+    clause_title: "MAINTAINED SOFTWARE SECURITY update delivery"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) to ensure that
+      SECURITY updates are made available for MAINTAINED SOFTWARE to PRODUCT users.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+    evidence_candidates:
+      - "Maintained software update delivery records"
+      - "Update distribution evidence"
+    tags:
+      - maintenance
+      - maintained_software
+      - security_updates
+    status: active
+    notes: "See E.2.5."
+
+  # --- 6.3.3 MAINTAINED SOFTWARE SECURITY update INTEGRITY ---
+
+  - id: IEC81001-5-1-6.3.3-REQ-001
+    clause: "6.3.3"
+    clause_title: "MAINTAINED SOFTWARE SECURITY update INTEGRITY"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) to ensure that
+      each applicable update for MAINTAINED SOFTWARE is made available to PRODUCT
+      users in a manner that facilitates INTEGRITY VERIFICATION of the SECURITY
+      update.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - WI
+    evidence_candidates:
+      - "Update integrity verification mechanism"
+      - "Patch signing and distribution procedure"
+    tags:
+      - maintenance
+      - maintained_software
+      - integrity
+      - update_delivery
+    status: active
+    notes: ""
+
+  # ===========================================================================
+  # CLAUSE 7 — SECURITY RISK MANAGEMENT PROCESS
+  # ===========================================================================
+
+  # --- 7.1.1 General ---
+
+  - id: IEC81001-5-1-7.1.1-REQ-001
+    clause: "7.1.1"
+    clause_title: "RISK MANAGEMENT context - General"
+    text: >
+      The MANUFACTURER shall establish and maintain a PROCESS for managing SECURITY
+      risks related to HEALTH SOFTWARE as a part of its PRODUCT RISK MANAGEMENT
+      approach.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - POL
+    evidence_candidates:
+      - "Security risk management process documentation"
+      - "Risk management plan (security section)"
+    tags:
+      - risk_management
+      - security_risk
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-7.1.1-REQ-002
+    clause: "7.1.1"
+    clause_title: "RISK MANAGEMENT context - General"
+    text: >
+      This PROCESS should consist of the following PROCESS steps described in 7.1.2,
+      7.2, 7.3, 7.4 and 7.5.
+    obligation: should
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+    evidence_candidates:
+      - "Security risk management process with defined steps"
+    tags:
+      - risk_management
+    status: active
+    notes: ""
+
+  # --- 7.1.2 PRODUCT SECURITY CONTEXT ---
+
+  - id: IEC81001-5-1-7.1.2-REQ-001
+    clause: "7.1.2"
+    clause_title: "PRODUCT SECURITY CONTEXT"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) to ensure that
+      the intended PRODUCT SECURITY CONTEXT is documented. This ACTIVITY (or
+      ACTIVITIES) is required to ensure that the minimum requirements of the
+      environment and the assumptions about that environment are documented in order
+      to achieve the SECURITY level for which the PRODUCT was designed.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Product security context document"
+      - "Environment assumptions documentation"
+    tags:
+      - security_context
+      - risk_management
+      - intended_environment
+    status: active
+    notes: ""
+
+  # --- 7.2 Identification of VULNERABILITIES, THREATS and associated adverse impacts ---
+
+  - id: IEC81001-5-1-7.2-REQ-001
+    clause: "7.2"
+    clause_title: "Identification of VULNERABILITIES, THREATS and associated adverse impacts"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) which identifies
+      and documents any vulnerabilities, THREATS and associated adverse impacts
+      affecting CONFIDENTIALITY, INTEGRITY, AVAILABILITY of ASSETS in HEALTH
+      SOFTWARE. This ACTIVITY (or ACTIVITIES) shall consider the INTENDED USE and the
+      INTENDED ENVIRONMENT OF USE with respect to the SECURITY CONTEXT.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Vulnerability and threat identification records"
+      - "Threat modelling outputs"
+    tags:
+      - threat_identification
+      - vulnerability_identification
+      - threat_modelling
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-7.2-REQ-002
+    clause: "7.2"
+    clause_title: "Identification of VULNERABILITIES, THREATS and associated adverse impacts"
+    text: >
+      This ACTIVITY (or ACTIVITIES) shall be employed to ensure that all PRODUCTS
+      shall have a THREAT MODEL specific to the current development scope of the
+      PRODUCT with the following characteristics (where applicable):
+      a) correct flow of categorized information throughout the system;
+      b) TRUST BOUNDARIES;
+      c) PROCESSES;
+      d) data stores;
+      e) interacting external entities;
+      f) internal and external communication protocols implemented in the PRODUCT;
+      g) externally accessible physical ports including debug ports;
+      h) circuit board connections such as JTAG connections or debug headers which
+      might be used to ATTACK the hardware;
+      i) potential ATTACK vectors including ATTACK on the (intended) hardware;
+      j) potential THREATS;
+      k) SECURITY-related issues identified; and
+      l) external dependencies in the form of drivers or third-party applications
+      that are linked into the application.
+    obligation: shall
+    type: normative
+    classification: evidence_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+    evidence_candidates:
+      - "Threat model document"
+      - "Data flow diagrams with trust boundaries"
+      - "Attack vector analysis"
+    tags:
+      - threat_model
+      - threat_modelling
+      - attack_vectors
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-7.2-REQ-003
+    clause: "7.2"
+    clause_title: "Identification of VULNERABILITIES, THREATS and associated adverse impacts"
+    text: >
+      The THREAT MODEL shall be reviewed and verified by the development team to
+      ensure that it is correct and understood.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+    evidence_candidates:
+      - "Threat model review records"
+      - "Development team sign-off on threat model"
+    tags:
+      - threat_model
+      - review
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-7.2-REQ-004
+    clause: "7.2"
+    clause_title: "Identification of VULNERABILITIES, THREATS and associated adverse impacts"
+    text: >
+      The THREAT MODEL shall be reviewed periodically (at least once a year) for
+      released PRODUCTS and updated if required in response to the emergence of new
+      THREATS to the PRODUCT even if the design does not change.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+      - PRO
+    evidence_candidates:
+      - "Annual threat model review records"
+      - "Threat model update log"
+    tags:
+      - threat_model
+      - periodic_review
+      - post_market
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-7.2-REQ-005
+    clause: "7.2"
+    clause_title: "Identification of VULNERABILITIES, THREATS and associated adverse impacts"
+    text: >
+      Any issues identified in the THREAT MODEL shall be addressed as defined in
+      9.4 and 9.5.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+    evidence_candidates:
+      - "Threat model issue resolution records"
+    tags:
+      - threat_model
+      - problem_resolution
+    status: active
+    notes: ""
+
+  # --- 7.3 Estimation and evaluation of SECURITY risk ---
+
+  - id: IEC81001-5-1-7.3-REQ-001
+    clause: "7.3"
+    clause_title: "Estimation and evaluation of SECURITY risk"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) to:
+      a) estimate the risk of the VULNERABILITIES identified above, considering the
+      adverse impact of that VULNERABILITY to CYBERSECURITY. This estimation can
+      be supported by using VULNERABILITY scoring, such as CVSS or MITRE scoring
+      rubric for medical devices;
+      b) evaluate the estimated risks and – based on scoring – determine if the
+      risk is acceptable or not; and
+      c) inform the PRODUCT RISK MANAGEMENT PROCESS about any updates to the THREAT
+      MODEL.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Security risk estimation records"
+      - "Vulnerability scoring records (e.g. CVSS)"
+      - "Risk evaluation and acceptability determination"
+    tags:
+      - risk_estimation
+      - risk_evaluation
+      - CVSS
+    status: active
+    notes: ""
+
+  # --- 7.4 Controlling SECURITY risks ---
+
+  - id: IEC81001-5-1-7.4-REQ-001
+    clause: "7.4"
+    clause_title: "Controlling SECURITY risks"
+    text: >
+      The MANUFACTURER shall determine whether SECURITY RISK CONTROL measures are
+      appropriate for reducing the SECURITY risks to an acceptable level based on
+      SECURITY risk acceptance policies. If RISK CONTROLS are deemed appropriate,
+      the MANUFACTURER shall:
+      - select appropriate mitigations;
+      - determine whether these mitigations result in new risks or increase other risks;
+      - implement selected mitigations; and
+      - verify the effectiveness of the implemented measures.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Security risk control records"
+      - "Mitigation selection and implementation records"
+      - "Risk control effectiveness verification"
+    tags:
+      - risk_control
+      - mitigation
+      - risk_management
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-7.4-REQ-002
+    clause: "7.4"
+    clause_title: "Controlling SECURITY risks"
+    text: >
+      The MANUFACTURER shall document the results of these ACTIVITIES.
+    obligation: shall
+    type: normative
+    classification: record_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+    evidence_candidates:
+      - "Risk control activity documentation"
+    tags:
+      - risk_control
+      - documentation
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-7.4-REQ-003
+    clause: "7.4"
+    clause_title: "Controlling SECURITY risks"
+    text: >
+      Handling of RESIDUAL RISKS to SECURITY shall be done in cooperation with the
+      PRODUCT RISK MANAGEMENT.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Residual risk handling records coordinated with product risk management"
+    tags:
+      - residual_risk
+      - risk_management
+    status: active
+    notes: ""
+
+  # --- 7.5 Monitoring the effectiveness of RISK CONTROLS ---
+
+  - id: IEC81001-5-1-7.5-REQ-001
+    clause: "7.5"
+    clause_title: "Monitoring the effectiveness of RISK CONTROLS"
+    text: >
+      The MANUFACTURER shall monitor the effectiveness of RISK CONTROLS by
+      information collection and review during the post-release phase.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Post-release risk control monitoring records"
+      - "Risk control effectiveness review reports"
+    tags:
+      - risk_monitoring
+      - post_market
+      - risk_control
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-7.5-REQ-002
+    clause: "7.5"
+    clause_title: "Monitoring the effectiveness of RISK CONTROLS"
+    text: >
+      This ACTIVITY (or ACTIVITIES) shall also inform other ACTIVITIES and PROCESSES
+      of the issue or related issue(s), including PROCESSES for other PRODUCTS /
+      revisions; and inform third parties (e.g. suppliers) if problems have been
+      found in third-party source code to be used with the HEALTH SOFTWARE.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Cross-product issue notification records"
+      - "Third-party notification records"
+    tags:
+      - risk_monitoring
+      - third_party_notification
+      - cross_product
+    status: active
+    notes: ""
+
+  # ===========================================================================
+  # CLAUSE 8 — Software CONFIGURATION MANAGEMENT PROCESS
+  # ===========================================================================
+
+  - id: IEC81001-5-1-8-REQ-001
+    clause: "8"
+    clause_title: "Software CONFIGURATION MANAGEMENT PROCESS"
+    text: >
+      The MANUFACTURER shall establish a general PRODUCT development/maintenance/support
+      PROCESS that includes CONFIGURATION MANAGEMENT with change controls and change
+      history.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - POL
+    evidence_candidates:
+      - "Configuration management plan"
+      - "Change control procedure"
+    tags:
+      - configuration_management
+      - change_control
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-8-REQ-002
+    clause: "8"
+    clause_title: "Software CONFIGURATION MANAGEMENT PROCESS"
+    text: >
+      For SECURITY obligations with HEALTH SOFTWARE already released or in the
+      market, CONFIGURATION MANAGEMENT shall provide the capability to reproduce a
+      list of included external components that are or could become susceptible to
+      VULNERABILITIES.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "External component inventory (SBOM)"
+      - "Configuration management records for released software"
+    tags:
+      - configuration_management
+      - SBOM
+      - external_components
+      - vulnerability_tracking
+    status: active
+    notes: ""
+
+  # ===========================================================================
+  # CLAUSE 9 — Software problem resolution PROCESS
+  # ===========================================================================
+
+  # --- 9.2 Receiving notifications about VULNERABILITIES ---
+
+  - id: IEC81001-5-1-9.2-REQ-001
+    clause: "9.2"
+    clause_title: "Receiving notifications about VULNERABILITIES"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) that enables the
+      reporting of information regarding VULNERABILITIES to the MANUFACTURER –
+      independent of whether they come from an internal entity, an external entity
+      or via a complaint-handling system.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - WI
+    evidence_candidates:
+      - "Vulnerability reporting intake procedure"
+      - "Vulnerability reporting channels documentation"
+    tags:
+      - problem_resolution
+      - vulnerability_reporting
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-9.2-REQ-002
+    clause: "9.2"
+    clause_title: "Receiving notifications about VULNERABILITIES"
+    text: >
+      This reception ACTIVITY (or ACTIVITIES) shall receive and track to closure
+      reports on SECURITY-related issues in the HEALTH SOFTWARE from the following
+      sources including at a minimum:
+      a) SECURITY VERIFICATION and VALIDATION testers;
+      b) suppliers of third-party components used in the PRODUCT;
+      c) PRODUCT developers and testers;
+      d) PRODUCT users including integrators, operators, administrators, and
+      maintenance personnel;
+      e) data obtained from audit event log information;
+      f) SECURITY researchers (SECURITY VULNERABILITY reporters), also see
+      ISO/IEC 29147; and
+      g) data or notifications about widespread VULNERABILITIES that can affect the
+      HEALTH SOFTWARE.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Vulnerability tracking system"
+      - "Intake records from all specified sources"
+      - "Coordinated vulnerability disclosure process"
+    tags:
+      - problem_resolution
+      - vulnerability_tracking
+      - coordinated_disclosure
+    status: active
+    notes: ""
+
+  # --- 9.3 Reviewing VULNERABILITIES ---
+
+  - id: IEC81001-5-1-9.3-REQ-001
+    clause: "9.3"
+    clause_title: "Reviewing VULNERABILITIES"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) that enables the
+      investigation of VULNERABILITIES in a timely manner to determine their:
+      a) applicability to the PRODUCT;
+      b) verifiability; and
+      c) related THREATS.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Vulnerability review records"
+      - "Applicability assessment records"
+    tags:
+      - problem_resolution
+      - vulnerability_review
+      - timeliness
+    status: active
+    notes: ""
+
+  # --- 9.4 Analysing VULNERABILITIES ---
+
+  - id: IEC81001-5-1-9.4-REQ-001
+    clause: "9.4"
+    clause_title: "Analysing VULNERABILITIES"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) for analysing
+      VULNERABILITIES in the PRODUCT to include:
+      a) assessing their impact with respect to:
+      1) the technical SECURITY CONTEXT in which they were discovered;
+      2) the PRODUCT'S INTENDED ENVIRONMENT OF USE, and
+      3) the PRODUCT'S DEFENSE-IN-DEPTH strategy;
+      b) impact as defined by a VULNERABILITY scoring system (for example CVSS);
+      c) identifying all other PRODUCTS / PRODUCT versions containing the
+      SECURITY-related issue (if any);
+      d) identifying the root cause of the issue;
+      e) identifying related SECURITY issues (that is, in the same PRODUCT); and
+      f) impact on PRODUCT SAFETY and effectiveness.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Vulnerability analysis records"
+      - "Root cause analysis reports"
+      - "Impact assessment records (CVSS)"
+      - "Cross-product impact analysis"
+    tags:
+      - problem_resolution
+      - vulnerability_analysis
+      - root_cause_analysis
+      - CVSS
+    status: active
+    notes: ""
+
+  # --- 9.5 Addressing SECURITY-related issues ---
+
+  - id: IEC81001-5-1-9.5-REQ-001
+    clause: "9.5"
+    clause_title: "Addressing SECURITY-related issues"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) to address
+      SECURITY-related issues and determine whether to disclose them (under 4.1.7)
+      based on the results of the impact assessment and the acceptable level of
+      RESIDUAL RISK.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Security issue resolution records"
+      - "Disclosure decision records"
+    tags:
+      - problem_resolution
+      - security_issue_handling
+      - disclosure
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-9.5-REQ-002
+    clause: "9.5"
+    clause_title: "Addressing SECURITY-related issues"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) to determine
+      whether and how identified SECURITY risks will be handled – via the problem
+      resolution PROCESS or through updated specifications regarding the INTENDED
+      ENVIRONMENT OF USE.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Security risk handling decision records"
+    tags:
+      - problem_resolution
+      - risk_handling
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-9.5-REQ-003
+    clause: "9.5"
+    clause_title: "Addressing SECURITY-related issues"
+    text: >
+      The MANUFACTURER shall establish an ACTIVITY (or ACTIVITIES) to review any
+      changes to the design or implementation for impact on SAFETY, SECURITY and
+      effectiveness.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Change impact review records (safety, security, effectiveness)"
+    tags:
+      - problem_resolution
+      - change_impact
+      - safety_security_balance
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-9.5-REQ-004
+    clause: "9.5"
+    clause_title: "Addressing SECURITY-related issues"
+    text: >
+      The MANUFACTURER shall inform other PROCESSES of the issue or related
+      issue(s), including PROCESSES for other PRODUCTS / PRODUCT revisions. This can
+      be done by submitting problem reports or similar into other PROCESSES.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Cross-process notification records"
+      - "Problem reports submitted to other processes"
+    tags:
+      - problem_resolution
+      - cross_product
+      - notification
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-9.5-REQ-005
+    clause: "9.5"
+    clause_title: "Addressing SECURITY-related issues"
+    text: >
+      The MANUFACTURER shall inform third parties if problems have been found in
+      third-party source code to be used with SUPPORTED HEALTH SOFTWARE.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Third-party vulnerability notification records"
+    tags:
+      - problem_resolution
+      - third_party_notification
+    status: active
+    notes: "In case of open-source software, the publishing platform can be used."
+
+  - id: IEC81001-5-1-9.5-REQ-006
+    clause: "9.5"
+    clause_title: "Addressing SECURITY-related issues"
+    text: >
+      This ACTIVITY shall include a periodic review of open SECURITY-related issues
+      to ensure that issues are being addressed appropriately. This periodic review
+      shall at a minimum occur during each PRODUCT release; see 4.1.6 and 4.1.8.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - REC
+    evidence_candidates:
+      - "Periodic security issue review records"
+      - "Open issue status reports at each release"
+    tags:
+      - problem_resolution
+      - periodic_review
+      - release_gate
+    status: active
+    notes: ""
+
+  # ===========================================================================
+  # ANNEX F (normative) — TRANSITIONAL HEALTH SOFTWARE
+  # ===========================================================================
+
+  # --- F.2 Development assessment and gap closure activities ---
+
+  - id: IEC81001-5-1-F.2-REQ-001
+    clause: "F.2"
+    clause_title: "Development assessment and gap closure activities"
+    text: >
+      The MANUFACTURER of TRANSITIONAL HEALTH SOFTWARE shall implement ACTIVITIES
+      specified in Clause 4.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+      - POL
+    evidence_candidates:
+      - "Clause 4 activity implementation records for transitional software"
+    tags:
+      - transitional_software
+      - gap_closure
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-F.2-REQ-002
+    clause: "F.2"
+    clause_title: "Development assessment and gap closure activities"
+    text: >
+      The MANUFACTURER shall perform a gap analysis of available deliverables
+      against those required according to 5.2, 5.7, 7.1.1, 7.2 and 7.3.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+    evidence_candidates:
+      - "Gap analysis report"
+      - "Deliverable assessment against 5.2, 5.7, 7.1.1, 7.2, 7.3"
+    tags:
+      - transitional_software
+      - gap_analysis
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-F.2-REQ-003
+    clause: "F.2"
+    clause_title: "Development assessment and gap closure activities"
+    text: >
+      The MANUFACTURER shall perform the following gap closure activities:
+      a) documenting system-level SECURITY requirements, as described in 5.2.1;
+      b) performing and documenting system-level tests (to the full extent) as
+      described in 5.7 software system testing;
+      c) assessing and evaluating the SECURITY risk by documenting the SECURITY
+      CONTEXT and THREAT MODEL as described in 7.1.1, 7.2 and 7.3;
+      d) controlling SECURITY risk as described in 7.4;
+      e) creating, or updating existing, secure operation guidelines and account
+      management guidelines as described in 5.8.2; and
+      f) evaluating the overall residual SECURITY risk and based on this evaluation,
+      decide if the TRANSITIONAL HEALTH SOFTWARE is fit for continued use.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+      - PRO
+    evidence_candidates:
+      - "Gap closure activity records"
+      - "System-level security requirements (per 5.2.1)"
+      - "System-level security test results (per 5.7)"
+      - "Security context and threat model (per 7.1.1, 7.2, 7.3)"
+      - "Security risk control records (per 7.4)"
+      - "Secure operation guidelines"
+      - "Residual risk fitness evaluation"
+    tags:
+      - transitional_software
+      - gap_closure
+      - security_testing
+      - threat_modelling
+      - risk_management
+    status: active
+    notes: ""
+
+  # --- F.3 Rationale for use of TRANSITIONAL HEALTH SOFTWARE ---
+
+  - id: IEC81001-5-1-F.3-REQ-001
+    clause: "F.3"
+    clause_title: "Rationale for use of TRANSITIONAL HEALTH SOFTWARE"
+    text: >
+      The MANUFACTURER shall document the version of the TRANSITIONAL HEALTH
+      SOFTWARE together with a rationale for the continued use of the TRANSITIONAL
+      HEALTH SOFTWARE based on the outputs of the gap closure activities.
+    obligation: shall
+    type: normative
+    classification: record_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+    evidence_candidates:
+      - "Transitional software version record"
+      - "Continued use rationale document"
+    tags:
+      - transitional_software
+      - rationale
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-F.3-REQ-002
+    clause: "F.3"
+    clause_title: "Rationale for use of TRANSITIONAL HEALTH SOFTWARE"
+    text: >
+      The MANUFACTURER shall establish and make available a plan to migrate
+      TRANSITIONAL HEALTH SOFTWARE to be conformant to Clause 6 to Clause 9.
+    obligation: shall
+    type: normative
+    classification: evidence_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+    evidence_candidates:
+      - "Migration plan to full conformance"
+    tags:
+      - transitional_software
+      - migration_plan
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-F.3-REQ-003
+    clause: "F.3"
+    clause_title: "Rationale for use of TRANSITIONAL HEALTH SOFTWARE"
+    text: >
+      In some cases where it is not appropriate to upgrade certain components, the
+      plan shall document the respective version and the rationale for the continued
+      use of those components.
+    obligation: shall
+    type: normative
+    classification: record_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+    evidence_candidates:
+      - "Component-level rationale for non-upgrade"
+    tags:
+      - transitional_software
+      - rationale
+    status: active
+    notes: ""
+
+  - id: IEC81001-5-1-F.3-REQ-004
+    clause: "F.3"
+    clause_title: "Rationale for use of TRANSITIONAL HEALTH SOFTWARE"
+    text: >
+      Per F.2, those components not being updated are considered in RISK MANAGEMENT
+      and the resulting RESIDUAL RISK and appropriate compensating controls shall
+      clearly be communicated as part of the release documentation as described in
+      5.8.2 or Annex E.
+    obligation: shall
+    type: normative
+    classification: record_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - REC
+    evidence_candidates:
+      - "Residual risk communication in release documentation"
+      - "Compensating controls documentation"
+    tags:
+      - transitional_software
+      - residual_risk
+      - compensating_controls
+      - release_documentation
+    status: active
+    notes: ""
+
+  # --- F.4 Post-release ACTIVITIES ---
+
+  - id: IEC81001-5-1-F.4-REQ-001
+    clause: "F.4"
+    clause_title: "Post-release ACTIVITIES"
+    text: >
+      The post-release ACTIVITIES described in Clause 6 to Clause 9 shall be
+      fulfilled for TRANSITIONAL HEALTH SOFTWARE to claim conformance with Annex F.
+    obligation: shall
+    type: normative
+    classification: process_requirement
+    safety_class: "N/A"
+    target_asset_candidates:
+      - PRO
+    evidence_candidates:
+      - "Post-release activity records (Clause 6-9) for transitional software"
+    tags:
+      - transitional_software
+      - post_release
+      - maintenance
+      - problem_resolution
+    status: active
+    notes: ""

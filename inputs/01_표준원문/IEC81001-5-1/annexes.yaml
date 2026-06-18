@@ -1,0 +1,156 @@
+standard_id: IEC81001-5-1
+version: "2021"
+annexes:
+  - id: A
+    title: "Rationale"
+    type: informative
+    sections:
+      - id: A.1
+        title: "Relationship to IEC 62443"
+      - id: A.2
+        title: "Relationship to IEC 62304"
+      - id: A.3
+        title: "Risk transfer"
+        sections:
+          - id: A.3.1
+            title: "Overview"
+          - id: A.3.2
+            title: "MAINTAINED SOFTWARE"
+          - id: A.3.3
+            title: "SUPPORTED SOFTWARE"
+          - id: A.3.4
+            title: "REQUIRED SOFTWARE"
+      - id: A.4
+        title: "Secure coding best practices"
+
+  - id: B
+    title: "Guidance on implementation of SECURITY LIFE CYCLE ACTIVITIES"
+    type: informative
+    sections:
+      - id: B.1
+        title: "Overview"
+      - id: B.2
+        title: "Related work"
+      - id: B.3
+        title: "THREAT / RISK ANALYSIS"
+      - id: B.4
+        title: "THREAT and RISK MANAGEMENT"
+      - id: B.5
+        title: "Software development planning"
+        sections:
+          - id: B.5.1
+            title: "Development"
+            sections:
+              - id: B.5.1.1
+                title: "Software development PROCESS"
+              - id: B.5.1.2
+                title: "Development environment SECURITY"
+          - id: B.5.2
+            title: "HEALTH SOFTWARE requirements analysis"
+            sections:
+              - id: B.5.2.1
+                title: "HEALTH SOFTWARE SECURITY requirements"
+              - id: B.5.2.2
+                title: "SECURITY requirements review"
+          - id: B.5.3
+            title: "Software architectural design"
+            sections:
+              - id: B.5.3.1
+                title: "DEFENSE-IN-DEPTH ARCHITECTURE /design"
+              - id: B.5.3.2
+                title: "Secure design principles"
+              - id: B.5.3.3
+                title: "SECURITY architectural design review"
+          - id: B.5.4
+            title: "Software unit implementation and VERIFICATION"
+          - id: B.5.5
+            title: "Secure implementation"
+          - id: B.5.6
+            title: "Not used"
+          - id: B.5.7
+            title: "Software system testing"
+            sections:
+              - id: B.5.7.1
+                title: "SECURITY requirements testing"
+              - id: B.5.7.2
+                title: "THREAT mitigation testing"
+              - id: B.5.7.3
+                title: "VULNERABILITY scanning"
+              - id: B.5.7.4
+                title: "Penetration testing"
+              - id: B.5.7.5
+                title: "Managing conflicts of interest between testers and developers"
+
+  - id: C
+    title: "THREAT MODELLING"
+    type: informative
+    sections:
+      - id: C.1
+        title: "General"
+      - id: C.2
+        title: "ATTACK-defense trees"
+      - id: C.3
+        title: "CAPEC / OWASP / SANS"
+      - id: C.4
+        title: "CWSS"
+      - id: C.5
+        title: "DREAD"
+      - id: C.6
+        title: "List known potential VULNERABILITIES"
+      - id: C.7
+        title: "OCTAVE"
+      - id: C.8
+        title: "STRIDE"
+      - id: C.9
+        title: "Trike"
+      - id: C.10
+        title: "VAST"
+
+  - id: D
+    title: "Relation to practices in IEC 62443-4-1:2018"
+    type: informative
+    sections:
+      - id: D.1
+        title: "IEC 81001-5-1 to IEC 62443-4-1:2018"
+      - id: D.2
+        title: "IEC 62443-4-1:2018 to IEC 81001-5-1"
+
+  - id: E
+    title: "Documents specified in IEC 62443-4-1"
+    type: informative
+    sections:
+      - id: E.1
+        title: "Overview"
+      - id: E.2
+        title: "Release documentation"
+        sections:
+          - id: E.2.1
+            title: "PRODUCT documentation"
+          - id: E.2.2
+            title: "HEALTH SOFTWARE DEFENSE-IN-DEPTH documentation"
+          - id: E.2.3
+            title: "DEFENSE-IN-DEPTH measures expected in the environment"
+          - id: E.2.4
+            title: "SECURITY hardening guidelines"
+          - id: E.2.5
+            title: "SECURITY update information"
+      - id: E.3
+        title: "Documents for decommissioning HEALTH SOFTWARE"
+
+  - id: F
+    title: "TRANSITIONAL HEALTH SOFTWARE"
+    type: normative
+    sections:
+      - id: F.1
+        title: "Overview"
+      - id: F.2
+        title: "Development assessment and gap closure activities"
+      - id: F.3
+        title: "Rationale for use of TRANSITIONAL HEALTH SOFTWARE"
+      - id: F.4
+        title: "Post-release ACTIVITIES"
+
+  - id: G
+    title: "Object identifiers"
+    type: normative
+    sections: []

@@ -1,0 +1,35 @@
+standard_id: IEC81001-5-1
+version: "2021"
+source_file: sources/IEC_81001-5-1.pdf
+source_hash: "sha256:03dcfc8a15600d3001942b021a7584e933f783c689fbcbd1fadde4c182949ba4"
+category: "01_표준원문"
+mode: new
+overall_status: done
+current_phase: handoff
+started_at: "2026-06-18T02:00:00+09:00"
+confirmed_at: "2026-06-18T02:30:00+09:00"
+phases:
+  intake: done
+  extraction: done
+  parsing: done
+  mining: done
+  classification: done
+  traceability: done
+  qa: done
+  handoff: done
+counts:
+  clauses: 61
+  requirements: 95
+  normative: 91
+  recommendation: 4
+  definitions: 48
+  annexes: 7
+  flagged_and_reviewed: 11
+obligation_distribution:
+  shall: 91
+  should: 4
+classification_distribution:
+  process_requirement: 76
+  record_requirement: 11
+  evidence_requirement: 7
+  role_requirement: 1
