@@ -1,0 +1,100 @@
+wi_id:           "WI-MDCS-01-05-02"
+title:           "취약점 조사(적용성·검증가능성·위협)"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-05"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-05-02-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+entry_gate:      "WI-MDCS-01-05-01.status == done"
+
+extracted_at:    "2026-06-18T16:40:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "적용성·검증가능성 판정"
+    section_ref:  "§5.2.1-5.2.2"
+    inputs:
+      - field:    "report_id"
+        type:     "text"
+        question: "조사 대상 접수 ID 는?"
+        required: true
+      - field:    "applicability"
+        type:     "enum"
+        question: "제품 적용성 판정은?"
+        options:  ["적용(존재)", "비적용(미존재)"]
+        required: true
+      - field:    "verifiability"
+        type:     "enum"
+        question: "검증 가능성은?"
+        options:  ["재현 가능", "재현 불가", "재현 미시도"]
+        required: true
+    outputs:
+      - tmp_field: "조사.적용성"
+        from:      "applicability"
+      - tmp_field: "조사.검증가능성"
+        from:      "verifiability"
+    hitl: false
+  - id:           "step-02"
+    name:         "관련 위협 식별·연계 결정"
+    section_ref:  "§5.2.3-5.2.4"
+    inputs:
+      - field:    "threats"
+        type:     "text"
+        question: "관련 위협(공격 시나리오·자산)은?"
+        required: false
+      - field:    "next_action"
+        type:     "enum"
+        question: "후속 조치는?"
+        options:  ["분석 연계", "종결(비적용)"]
+        required: true
+    outputs:
+      - tmp_field: "조사.위협"
+        from:      "threats"
+      - tmp_field: "조사.연계"
+        from:      "next_action"
+    hitl: false
+  - id:           "step-03"
+    name:         "검토·기록"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "approval"
+        type:     "enum"
+        question: "PSO 검토 결과는?"
+        options:  ["승인", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "결재.검토"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안책임자(PSO)"
+    rationale:    "WI §2 승인자 = PSO. 조사 충분성·SLA 준수 검토"
+
+dod_checklist:
+  - "제품 적용성 판정(존재/비존재)"
+  - "검증 가능성 평가(재현 가능/불가) 수행"
+  - "관련 위협 식별"
+  - "적용·검증 가능 건이 분석으로 연계"
+  - "비적용 건은 사유와 함께 종결"
+  - "PSO 검토·조사 기록 보존"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "재현 불가하나 적용 가능"
+    rule:    "비적용 단정 금지, 보수적으로 분석 연계하여 추가 검토"
+  - section: "§7.3"
+    name:    "정보 부족"
+    rule:    "보고자에게 추가 정보 요청(연구자 협력 공개 고려), 응답 지연 시 가용 정보로 보수적 조사"
+  - section: "§7.4"
+    name:    "다수 제품 적용 가능성"
+    rule:    "교차 제품 영향은 분석(WI-MDCS-01-05-03)에서 다루도록 표시"
+
+triggers:        ["취약점 조사", "적용성 판정", "재현 검증", "위협 식별", "vulnerability investigation"]
+aliases:         ["취약점 분석 전 조사", "triage 조사", "applicability"]
+event_triggers:  ["접수 완료 후", "유효 보고 연계"]
+domains:         ["의료기기", "SW"]

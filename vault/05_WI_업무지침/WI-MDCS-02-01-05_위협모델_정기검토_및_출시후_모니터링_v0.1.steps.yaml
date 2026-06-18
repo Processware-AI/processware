@@ -1,0 +1,100 @@
+wi_id:           "WI-MDCS-02-01-05"
+title:           "위협모델 정기 검토(연1회) 및 출시후 리스크 모니터링"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-02-01"
+parent_pol:      "POL-MDCS-02"
+related_tmp:
+  - "TMP-MDCS-02-01-05-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+
+extracted_at:    "2026-06-18T17:40:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "출시후 정보 검토·위협 모델 갱신"
+    section_ref:  "§5.2.1-5.2.2"
+    inputs:
+      - field:    "review_type"
+        type:     "enum"
+        question: "검토 유형은?"
+        options:  ["연 1회 정기", "신규 위협 임시"]
+        required: true
+      - field:    "new_threats"
+        type:     "table"
+        question: "출시후 정보로 식별된 신규 위협·변화를 기재하세요."
+        columns:  ["출처(모니터링/사고/인텔)", "신규 위협/변화", "위협 모델 반영"]
+        required: true
+    outputs:
+      - tmp_field: "갱신[]"
+        from:      "new_threats"
+    hitl: false
+  - id:           "step-02"
+    name:         "통제 효과 검토·재평가 연계"
+    section_ref:  "§5.2.3-5.2.4"
+    inputs:
+      - field:    "control_review"
+        type:     "table"
+        question: "기존 통제 효과 검토와 재평가 연계를 기재하세요."
+        columns:  ["통제", "효과(유지/약화)", "보강 조치", "재평가 연계 ID"]
+        required: true
+    outputs:
+      - tmp_field: "통제효과[]"
+        from:      "control_review"
+    hitl: false
+  - id:           "step-03"
+    name:         "교차·제3자 통지·검토"
+    section_ref:  "§5.2.5-5.2.6"
+    inputs:
+      - field:    "notification"
+        type:     "table"
+        question: "교차 제품·제3자 통지 내역을 기재하세요."
+        columns:  ["통지 대상", "통지 내용", "통지 상태"]
+        required: false
+      - field:    "next_review"
+        type:     "date"
+        question: "다음 정기 검토 시점은?"
+        required: true
+      - field:    "approval"
+        type:     "enum"
+        question: "PSO 검토 결과는?"
+        options:  ["승인", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "통지[]"
+        from:      "notification"
+      - tmp_field: "결재.다음검토"
+        from:      "next_review"
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안책임자(PSO)"
+    rationale:    "WI §2 승인자 = PSO, PRO §3 RACI 출시후 모니터링 R=PSO(검토 승인)"
+
+dod_checklist:
+  - "출시후 보안 정보 수집·검토"
+  - "위협 모델 갱신(연 1회 + 신규 위협 반영)"
+  - "기존 통제 효과 검토·보강"
+  - "변동 리스크 재평가 연계"
+  - "교차 제품·제3자 통지"
+  - "PSO 검토·승인 및 다음 검토 시점 확정"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "검토 주기 누락"
+    rule:    "연 1회 검토 누락 우려 시 정기 주기 일정 등록, 중대 신규 위협 시 즉시 임시 검토"
+  - section: "§7.2"
+    name:    "통제 약화 발견"
+    rule:    "통제 우회·무력화 발견 시 즉시 보강, 영향 크면 PRO-MDCS-01-05 처리"
+  - section: "§7.4"
+    name:    "교차/제3자 통지 누락"
+    rule:    "통지 대상·완료를 체크리스트로 관리하여 동일 위협 타 제품 잔존 방지"
+
+triggers:        ["위협모델 정기 검토", "출시후 모니터링", "통제 효과 검토", "신규 위협 반영", "post-market monitoring"]
+aliases:         ["사후 모니터링", "위협모델 갱신", "포스트마켓"]
+event_triggers:  ["연 1회 정기 시점", "신규 위협 발생", "보안 사고 발생"]
+domains:         ["의료기기", "SW"]

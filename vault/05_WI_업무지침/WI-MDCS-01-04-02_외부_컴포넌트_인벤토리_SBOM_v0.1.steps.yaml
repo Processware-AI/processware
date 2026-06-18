@@ -1,0 +1,89 @@
+wi_id:           "WI-MDCS-01-04-02"
+title:           "외부 컴포넌트 인벤토리(SBOM) 구성·재현"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-04"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-04-02-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+
+extracted_at:    "2026-06-18T16:30:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "컴포넌트 수집·SBOM 작성"
+    section_ref:  "§5.2.1-5.2.3"
+    inputs:
+      - field:    "release_ver"
+        type:     "text"
+        question: "SBOM 대상 릴리스 버전은?"
+        required: true
+      - field:    "components"
+        type:     "table"
+        question: "외부 컴포넌트(직·간접 의존성)를 기재하세요."
+        columns:  ["컴포넌트", "버전", "출처", "라이선스", "해시", "SW 분류"]
+        required: true
+    outputs:
+      - tmp_field: "SBOM[]"
+        from:      "components"
+    hitl: false
+  - id:           "step-02"
+    name:         "재현성 확인"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "reproducibility"
+        type:     "enum"
+        question: "릴리스 구성 재현 가능 여부는?"
+        options:  ["재현 가능", "부분 재현", "재현 불가"]
+        required: true
+      - field:    "build_info"
+        type:     "text"
+        question: "보존한 빌드 정보·고정 버전 참조는?"
+        required: true
+    outputs:
+      - tmp_field: "재현성.결과"
+        from:      "reproducibility"
+    hitl: false
+  - id:           "step-03"
+    name:         "검토·보존"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "approval"
+        type:     "enum"
+        question: "PSO 검토 결과는?"
+        options:  ["승인", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안책임자(PSO)"
+    rationale:    "WI §2 승인자 = PSO, PRO §3 RACI SBOM A=PSO"
+
+dod_checklist:
+  - "직·간접 외부 컴포넌트가 모두 수집"
+  - "SBOM 에 컴포넌트·버전·출처·라이선스 기재"
+  - "각 컴포넌트가 SW 분류와 연계"
+  - "릴리스 구성 재현 가능성 확인"
+  - "PSO 검토·릴리스별 SBOM 보존"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "전이 의존성 누락"
+    rule:    "직접 의존성만 기록 금지, 의존성 그래프 전체 SBOM 포함"
+  - section: "§7.2"
+    name:    "재현 불가 릴리스"
+    rule:    "가용 정보 최대 복원·사유 기록, 차기부터 빌드 고정·아카이브 강화"
+  - section: "§7.4"
+    name:    "SBOM 최신성 누락"
+    rule:    "릴리스 게이트(WI-MDCS-01-02-08)에서 SBOM 보유 확인"
+
+triggers:        ["SBOM", "외부 컴포넌트 인벤토리", "구성 재현", "의존성 목록", "software bill of materials"]
+aliases:         ["부품 명세서", "컴포넌트 목록", "의존성 인벤토리"]
+event_triggers:  ["릴리스 시점", "외부 컴포넌트 변경"]
+domains:         ["의료기기", "SW"]

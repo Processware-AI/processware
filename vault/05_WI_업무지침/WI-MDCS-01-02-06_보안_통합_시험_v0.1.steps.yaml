@@ -1,0 +1,94 @@
+wi_id:           "WI-MDCS-01-02-06"
+title:           "보안 통합 시험"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-02"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-02-06-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+entry_gate:      "WI-MDCS-01-02-05.status == done"
+mandatory:       false
+
+extracted_at:    "2026-06-18T15:50:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "통합 시험 케이스 설계"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "perform_decision"
+        type:     "enum"
+        question: "통합 시험을 수행합니까?(권고 활동)"
+        options:  ["수행", "미수행"]
+        required: true
+      - field:    "test_cases"
+        type:     "table"
+        question: "신뢰경계 간 검증 케이스를 설계하세요."
+        columns:  ["케이스 ID", "통합 지점", "검증 대상(인증/권한/데이터)", "기대 결과"]
+        required_if: "perform_decision == 수행"
+    outputs:
+      - tmp_field: "케이스[]"
+        from:      "test_cases"
+    hitl: false
+  - id:           "step-02"
+    name:         "통합 시험 실행 및 결과 분석"
+    section_ref:  "§5.2.2-5.2.3"
+    inputs:
+      - field:    "results"
+        type:     "table"
+        question: "시험 실행 결과와 발견 약점을 기재하세요."
+        columns:  ["케이스 ID", "결과(P/F)", "발견 약점", "조치/연계"]
+        required_if: "perform_decision == 수행"
+    outputs:
+      - tmp_field: "결과[]"
+        from:      "results"
+    hitl: false
+  - id:           "step-03"
+    name:         "검토 승인 또는 미수행 정당화"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "skip_rationale"
+        type:     "text"
+        question: "미수행 시 사유·대체 검증 계획은?"
+        required_if: "perform_decision == 미수행"
+      - field:    "approval"
+        type:     "enum"
+        question: "독립 검토자 결과는?"
+        options:  ["승인", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "미수행정당화"
+        from:      "skip_rationale"
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "검토자(독립)"
+    rationale:    "WI §2 승인자 = 독립 검토자. 권고 활동 미수행 시에도 사유 문서화 승인 필요"
+
+dod_checklist:
+  - "신뢰경계 간 통합 지점이 모두 식별됨"
+  - "경계 간 정책 차이 검증 케이스 설계·실행"
+  - "발견 약점 시정 또는 문제해결 연계·종결"
+  - "독립 검토자 검토·승인 기록 존재"
+  - "(미수행 시) 미수행 사유·대체 검증 문서화"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "통합 시험 미수행(권고)"
+    rule:    "미수행 시 판단 근거·시스템 시험 흡수 계획을 개발 계획·보고서에 문서화"
+  - section: "§7.2"
+    name:    "경계 정책 충돌 발견"
+    rule:    "신뢰경계 정책 충돌 시 보수적 측 보강 및 아키텍처/설계 피드백"
+  - section: "§7.4"
+    name:    "발견 약점 미종결"
+    rule:    "약점 미종결 시 시스템 시험 진행 가부 검토자 판단"
+
+triggers:        ["통합 시험", "보안 통합 테스트", "신뢰경계 통합", "integration testing"]
+aliases:         ["인티그레이션 테스트", "통합 검증"]
+event_triggers:  ["구현 완료 후", "통합 빌드 시점"]
+domains:         ["의료기기", "SW"]

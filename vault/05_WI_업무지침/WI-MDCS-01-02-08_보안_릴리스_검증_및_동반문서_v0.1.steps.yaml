@@ -1,0 +1,94 @@
+wi_id:           "WI-MDCS-01-02-08"
+title:           "보안 릴리스 검증 및 동반문서·무결성·키관리"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-02"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-02-08-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+entry_gate:      "WI-MDCS-01-02-07.status == done"
+
+extracted_at:    "2026-06-18T16:00:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "릴리스 게이트 검증"
+    section_ref:  "§5.2.1-5.2.5"
+    inputs:
+      - field:    "gate_checklist"
+        type:     "table"
+        question: "릴리스 게이트별 합격 여부를 기재하세요."
+        columns:  ["게이트", "기준", "합격 여부", "증적"]
+        required: true
+      - field:    "open_issues"
+        type:     "number"
+        question: "미해결(수용 불가) 보안 이슈 건수는?"
+        validation: "x == 0"
+        required: true
+    derivations:
+      - id:       "release_gate"
+        expr:     |
+          if open_issues == 0 and 모든_게이트_합격: "RELEASE_OK"
+          else: "BLOCKED"
+        description: "릴리스 가부 판정"
+    outputs:
+      - tmp_field: "게이트[]"
+        from:      "gate_checklist"
+    hitl: false
+  - id:           "step-02"
+    name:         "동반문서·무결성·키관리 확인"
+    section_ref:  "§5.2.2-5.2.3"
+    inputs:
+      - field:    "doc_integrity"
+        type:     "table"
+        question: "동반문서·무결성·키관리 확인 결과를 기재하세요."
+        columns:  ["항목", "확인 내용", "충족 여부"]
+        required: true
+    outputs:
+      - tmp_field: "확인[]"
+        from:      "doc_integrity"
+    hitl: false
+  - id:           "step-03"
+    name:         "릴리스 승인"
+    section_ref:  "§5.2.6"
+    inputs:
+      - field:    "approval"
+        type:     "enum"
+        question: "PSO 릴리스 승인 결과는?"
+        options:  ["승인", "보류"]
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안책임자(PSO)"
+    rationale:    "WI §2 승인자 = PSO, PRO §3 RACI 릴리스 검증 A=PSO. 미해결 이슈 0건 게이트 필수"
+
+dod_checklist:
+  - "모든 시험·검토 발견이 Clause 9 로 종결"
+  - "동반문서에 운영·계정·잔여 리스크·폐기 지침 포함·정확"
+  - "배포 파일 무결성(해시/서명) 적용"
+  - "코드서명 키 보호(접근 통제·HSM) 확인"
+  - "미해결(수용 불가) 보안 이슈 0건, 잔여 리스크 정식 승인"
+  - "PSO 릴리스 승인 기록 존재"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "미해결 이슈로 릴리스 차단"
+    rule:    "미해결 고위험 시 릴리스 차단, 예외 수용 시 PSO·리스크 관리 정식 승인+동반문서 안내 선행"
+  - section: "§7.2"
+    name:    "코드서명 키 노출 의심"
+    rule:    "키 노출 의심 시 즉시 폐기·재발급, 영향 배포물 재서명, PRO-MDCS-01-05 사건 처리"
+  - section: "§7.4"
+    name:    "긴급 보안 릴리스"
+    rule:    "긴급 패치는 축약 게이트 진행하되 무결성·미해결 이슈 게이트 생략 금지, 사후 정식 검증 보완"
+
+triggers:        ["보안 릴리스 검증", "동반문서 확정", "코드서명", "무결성 검증", "릴리스 게이트", "release verification"]
+aliases:         ["출시 검증", "릴리스 승인", "code signing"]
+event_triggers:  ["시스템 시험 완료 후", "릴리스 직전"]
+domains:         ["의료기기", "SW"]

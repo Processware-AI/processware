@@ -1,0 +1,87 @@
+wi_id:           "WI-MDCS-01-04-01"
+title:           "보안 변경통제 및 변경이력 관리"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-04"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-04-01-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+
+extracted_at:    "2026-06-18T16:25:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "변경 요청 접수·보안 영향 심의"
+    section_ref:  "§5.2.1-5.2.2"
+    inputs:
+      - field:    "change_request"
+        type:     "table"
+        question: "변경 요청과 보안 영향 평가를 기재하세요."
+        columns:  ["요청 ID", "변경 대상 형상", "변경 내용", "보안 영향 평가"]
+        required: true
+    outputs:
+      - tmp_field: "변경요청[]"
+        from:      "change_request"
+    hitl: false
+  - id:           "step-02"
+    name:         "승인/반려 및 이력 기록"
+    section_ref:  "§5.2.3-5.2.4"
+    inputs:
+      - field:    "ccb_decision"
+        type:     "enum"
+        question: "CCB 결정은?"
+        options:  ["승인", "반려"]
+        required: true
+      - field:    "change_history"
+        type:     "table"
+        question: "승인 변경의 이력을 기재하세요."
+        columns:  ["주체", "일시", "변경 내용", "사유"]
+        required_if: "ccb_decision == 승인"
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "ccb_decision"
+      - tmp_field: "이력[]"
+        from:      "change_history"
+    hitl: required
+    approver_role: "변경통제위원회(CCB)"
+    rationale:    "WI §2 승인자 = CCB, PRO §3 RACI 변경통제 A=CCB"
+  - id:           "step-03"
+    name:         "연계(리스크 재평가·재시험)"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "linkage"
+        type:     "text"
+        question: "보안 영향 큰 변경의 리스크 재평가/재시험 연계 ID 는?"
+        required: false
+    outputs:
+      - tmp_field: "연계"
+        from:      "linkage"
+    hitl: false
+
+dod_checklist:
+  - "모든 변경이 요청 ID 로 등록"
+  - "각 변경에 보안 영향 심의 수행"
+  - "CCB 승인/반려 결정 기록"
+  - "승인 변경 대비 변경 이력 기록률 100%"
+  - "보안 영향 큰 변경의 리스크 재평가/재시험 연계"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "무단 변경 발견"
+    rule:    "무단 변경 발견 시 기준선 대조 영향 평가, PRO-MDCS-01-05 처리, 사후 변경통제 정식 등록"
+  - section: "§7.2"
+    name:    "긴급 변경(보안 핫픽스)"
+    rule:    "긴급 변경은 약식 승인 반영 후 시한 내 정식 CCB 승인·이력 보완"
+  - section: "§7.3"
+    name:    "외부 컴포넌트 변경"
+    rule:    "외부 컴포넌트 버전 변경은 SBOM(WI-MDCS-01-04-02)·취약점 모니터링 즉시 반영"
+
+triggers:        ["변경통제", "변경 이력", "형상관리", "CCB", "change control"]
+aliases:         ["변경 관리", "구성 변경", "configuration change"]
+event_triggers:  ["변경 요청 발생", "보안 패치 적용"]
+domains:         ["의료기기", "SW"]

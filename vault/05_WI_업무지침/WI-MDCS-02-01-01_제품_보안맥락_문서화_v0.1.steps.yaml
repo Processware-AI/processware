@@ -1,0 +1,85 @@
+wi_id:           "WI-MDCS-02-01-01"
+title:           "제품 보안 맥락 문서화"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-02-01"
+parent_pol:      "POL-MDCS-02"
+related_tmp:
+  - "TMP-MDCS-02-01-01-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+
+extracted_at:    "2026-06-18T17:20:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "의도된 환경·최소 요건 정의"
+    section_ref:  "§5.2.1-5.2.2"
+    inputs:
+      - field:    "product_name"
+        type:     "text"
+        question: "대상 제품/버전은?"
+        required: true
+      - field:    "intended_env"
+        type:     "table"
+        question: "의도된 환경과 최소 보안 요건을 기재하세요."
+        columns:  ["환경 요소(네트워크/단말/연동)", "의도된 상태", "최소 보안 요건"]
+        required: true
+    outputs:
+      - tmp_field: "환경[]"
+        from:      "intended_env"
+    hitl: false
+  - id:           "step-02"
+    name:         "가정·경계 문서화"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "assumptions"
+        type:     "table"
+        question: "보안 가정과 책임 경계를 기재하세요."
+        columns:  ["보안 가정", "검증 가능 여부", "책임 경계(제조자/사용자)"]
+        required: true
+    outputs:
+      - tmp_field: "가정[]"
+        from:      "assumptions"
+    hitl: false
+  - id:           "step-03"
+    name:         "검토·연계"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "approval"
+        type:     "enum"
+        question: "PSO 검토 결과는?"
+        options:  ["승인(위협 모델링 연계)", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "결재.검토"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안책임자(PSO)"
+    rationale:    "WI §2 승인자 = PSO, PRO §3 RACI 보안 맥락 A=PSO"
+
+dod_checklist:
+  - "의도된 보안 환경 정의"
+  - "환경 최소 보안 요건 명시"
+  - "보안 가정·책임 경계 문서화"
+  - "REQUIRED SW 관련 가정 포함"
+  - "PSO 검토·위협 모델링 연계"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "과도한 환경 가정"
+    rule:    "환경 미보장 사항 가정 금지, 검증 가능·동반문서 전달 가능 수준으로 한정"
+  - section: "§7.2"
+    name:    "환경 변동"
+    rule:    "운영 환경이 가정과 달라지면 보안 맥락 갱신·위협 모델/리스크 재평가"
+  - section: "§7.4"
+    name:    "REQUIRED SW 가정 미충족"
+    rule:    "REQUIRED SW 최소 요건 미충족 가능 시 잔여 리스크 식별·동반문서 명시"
+
+triggers:        ["제품 보안 맥락", "보안 환경 가정", "환경 최소 요건", "product security context"]
+aliases:         ["보안 컨텍스트", "운영 환경 가정", "보안 경계"]
+event_triggers:  ["리스크 관리 착수", "운영 환경 변경"]
+domains:         ["의료기기", "SW"]

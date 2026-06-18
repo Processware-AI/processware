@@ -1,0 +1,100 @@
+wi_id:           "WI-MDCS-01-02-05"
+title:           "보안 코딩 구현 및 구현 검토(정적분석)"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-02"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-02-05-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+entry_gate:      "WI-MDCS-01-02-04.status == done"
+
+extracted_at:    "2026-06-18T15:45:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "정적분석(SCA) 실행"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "sca_summary"
+        type:     "table"
+        question: "SCA 실행 결과를 심각도별로 기재하세요."
+        columns:  ["도구", "고위험", "중위험", "저위험", "실행 일자"]
+        required: true
+    derivations:
+      - id:       "sca_run_rate"
+        expr:     "빌드 대비 SCA 실행 횟수 / 빌드 횟수 * 100"
+        description: "SCA 실행률(목표 100%)"
+    outputs:
+      - tmp_field: "SCA[].요약"
+        from:      "sca_summary"
+    hitl: false
+  - id:           "step-02"
+    name:         "구현 검토(코드 리뷰)"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "code_review"
+        type:     "table"
+        question: "코딩 표준 편차·약점·추적성 검토 결과를 기재하세요."
+        columns:  ["항목", "편차/약점", "심각도", "설계 추적성"]
+        required: true
+    outputs:
+      - tmp_field: "구현검토[]"
+        from:      "code_review"
+    hitl: false
+  - id:           "step-03"
+    name:         "이슈 처리·연계"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "issue_handling"
+        type:     "table"
+        question: "발견 보안 이슈의 처리/연계 결과를 기재하세요."
+        columns:  ["이슈", "처리(시정/문제해결 연계)", "연계 ID", "종결 여부"]
+        required: false
+    outputs:
+      - tmp_field: "이슈처리[]"
+        from:      "issue_handling"
+    hitl: false
+  - id:           "step-04"
+    name:         "검토 승인"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "approval"
+        type:     "enum"
+        question: "독립 검토자 검토 결과는?"
+        options:  ["승인", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "검토자(독립)"
+    rationale:    "WI §2 승인자 = 독립 검토자, PRO §3 RACI 구현검토 A=검토자"
+
+dod_checklist:
+  - "구현이 보안 코딩 표준 준수(편차 시정 또는 정당화)"
+  - "빌드 대비 SCA 실행률 100%"
+  - "SCA 고위험 항목 0건(시정 또는 문제해결 연계 종결)"
+  - "설계-구현 추적성 확인"
+  - "보안 이슈가 문제해결 프로세스로 연계·추적"
+  - "독립 검토자 검토·승인 기록 존재"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "SCA 오탐"
+    rule:    "오탐 항목은 근거 기록 후 억제하되 검토자 승인 필요, 무분별 억제 금지"
+  - section: "§7.3"
+    name:    "고위험 이슈 미종결"
+    rule:    "고위험 이슈 미종결 시 다음 단계(시험·릴리스) 진행 보류, PRO-MDCS-01-05 처리"
+  - section: "§7.4"
+    name:    "외부 라이브러리 취약점"
+    rule:    "의존성 취약점 시 업그레이드·대체·격리 선택, MAINTAINED 항목은 PRO-MDCS-01-03 모니터링 반영"
+
+triggers:        ["보안 코딩", "정적분석", "SCA", "구현 검토", "코드 리뷰", "secure coding", "static analysis"]
+aliases:         ["코드 스캔", "시큐어 코딩", "SAST"]
+event_triggers:  ["설계 완료 후", "빌드/머지 시점"]
+domains:         ["의료기기", "SW"]

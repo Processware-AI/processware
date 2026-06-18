@@ -1,0 +1,85 @@
+wi_id:           "WI-MDCS-01-06-01"
+title:           "전환SW Clause 4 활동 구현 및 갭 분석"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-06"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-06-01-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+
+extracted_at:    "2026-06-18T17:05:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "Clause 4 활동 구현"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "product_name"
+        type:     "text"
+        question: "대상 전환SW 명칭/버전은?"
+        required: true
+      - field:    "clause4_impl"
+        type:     "table"
+        question: "Clause 4 활동 구현 현황을 기재하세요."
+        columns:  ["Clause 4 활동", "구현 여부", "참조 산출물"]
+        required: true
+    outputs:
+      - tmp_field: "Clause4[]"
+        from:      "clause4_impl"
+    hitl: false
+  - id:           "step-02"
+    name:         "산출물 대비 갭 분석"
+    section_ref:  "§5.2.2-5.2.3"
+    inputs:
+      - field:    "gap_analysis"
+        type:     "table"
+        question: "대상 조항 산출물 대비 갭을 기재하세요."
+        columns:  ["조항(§5.2/§5.7/§7.1.1/§7.2/§7.3)", "충족 상태(충족/부분/미충족)", "갭 내용", "영향"]
+        required: true
+    outputs:
+      - tmp_field: "갭분석[]"
+        from:      "gap_analysis"
+    hitl: false
+  - id:           "step-03"
+    name:         "검토·연계"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "approval"
+        type:     "enum"
+        question: "PSO 검토 결과는?"
+        options:  ["승인(갭 종결 연계)", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "결재.검토"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안책임자(PSO)"
+    rationale:    "WI §2 승인자 = PSO, PRO §3 RACI Clause4 구현·갭분석 A=PSO"
+
+dod_checklist:
+  - "Clause 4 활동이 구현됨(적용성·분류·역할·제3자·동반문서)"
+  - "§5.2·§5.7·§7.1.1·§7.2·§7.3 산출물 대비 갭 분석 수행"
+  - "갭이 미충족/부분충족으로 목록화"
+  - "각 갭의 영향 평가"
+  - "PSO 검토·갭 종결 연계"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "산출물 부재"
+    rule:    "산출물 전무 시 전부 갭 처리, 신규 생성을 갭 종결(WI-MDCS-01-06-02)에서 수행"
+  - section: "§7.2"
+    name:    "부분 충족 판정 모호"
+    rule:    "모호 시 보수적으로 미충족(갭) 분류하여 종결 활동에서 보완"
+  - section: "§7.4"
+    name:    "적용성 재판정 필요"
+    rule:    "범위·분류 오류 발견 시 WI-MDCS-01-01-01 로 회귀 재판정"
+
+triggers:        ["전환SW", "과도기 SW", "갭 분석", "Clause 4 구현", "transitional health software", "gap analysis"]
+aliases:         ["레거시 SW 적합화", "전환 소프트웨어", "Annex F"]
+event_triggers:  ["전환SW 식별", "Annex F 적합화 착수"]
+domains:         ["의료기기", "SW"]

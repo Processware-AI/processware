@@ -1,0 +1,89 @@
+wi_id:           "WI-MDCS-01-05-04"
+title:           "보안 이슈 처리·변경영향 검토·교차통지"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-05"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-05-04-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+entry_gate:      "WI-MDCS-01-05-03.status == done"
+
+extracted_at:    "2026-06-18T16:50:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "처리 방식 결정·변경 영향 검토"
+    section_ref:  "§5.2.1-5.2.2"
+    inputs:
+      - field:    "remediation_type"
+        type:     "enum"
+        question: "처리 방식은?"
+        options:  ["문제해결(패치)", "환경 명세 갱신", "잔여 리스크 수용"]
+        required: true
+      - field:    "change_impact"
+        type:     "table"
+        question: "변경의 안전·보안·유효성 영향을 검토하세요."
+        columns:  ["영역(안전/보안/유효성)", "영향", "신규 리스크"]
+        required: true
+    outputs:
+      - tmp_field: "처리.방식"
+        from:      "remediation_type"
+      - tmp_field: "영향검토[]"
+        from:      "change_impact"
+    hitl: false
+  - id:           "step-02"
+    name:         "처리 연계·교차 통지"
+    section_ref:  "§5.2.3-5.2.4"
+    inputs:
+      - field:    "linkage"
+        type:     "table"
+        question: "처리 연계와 교차/제3자 통지를 기재하세요."
+        columns:  ["연계 대상(변경통제/검증/위협모델)", "연계 ID", "통지 대상(교차제품/제3자)", "통지 상태"]
+        required: true
+    outputs:
+      - tmp_field: "연계통지[]"
+        from:      "linkage"
+    hitl: false
+  - id:           "step-03"
+    name:         "검토·승인"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "approval"
+        type:     "enum"
+        question: "PSO 처리 승인 결과는?"
+        options:  ["승인", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안책임자(PSO)"
+    rationale:    "WI §2 승인자 = PSO, PRO §3 RACI 처리 A=PSO"
+
+dod_checklist:
+  - "처리 방식(패치/환경 명세 갱신) 결정·근거 기록"
+  - "변경의 안전·보안·유효성 영향 검토(신규 리스크 식별)"
+  - "패치는 변경통제·검증으로, 환경 갱신은 위협모델·동반문서로 연계"
+  - "교차 제품·제3자 통지 완료"
+  - "PSO 검토·승인 기록 존재"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "처리 변경의 신규 리스크"
+    rule:    "처리가 신규 리스크 생성 시 식별·평가하여 PRO-MDCS-02-01 반영, 수용 불가 시 대안 모색"
+  - section: "§7.2"
+    name:    "환경 명세 갱신 선택"
+    rule:    "패치 대신 환경 갱신 택하면 새 운영 요건을 동반문서로 명확 전달(미전달 금지)"
+  - section: "§7.4"
+    name:    "처리 지연(잔여 리스크 수용)"
+    rule:    "즉시 처리 안 하면 정식 승인·정기 검토(WI-MDCS-01-05-06) 대상 등록"
+
+triggers:        ["보안 이슈 처리", "패치 결정", "변경 영향 검토", "교차 통지", "remediation", "issue handling"]
+aliases:         ["취약점 조치", "이슈 처리", "교차 제품 통지"]
+event_triggers:  ["분석 완료 후", "처리 방향 결정"]
+domains:         ["의료기기", "SW"]

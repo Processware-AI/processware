@@ -1,0 +1,88 @@
+wi_id:           "WI-MDCS-01-05-05"
+title:           "취약점 공개(규제기관·사용자 통지)"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-05"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-05-05-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+entry_gate:      "WI-MDCS-01-05-04.status == done"
+
+extracted_at:    "2026-06-18T16:55:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "공개 범위 결정·권고문 작성"
+    section_ref:  "§5.2.1-5.2.2"
+    inputs:
+      - field:    "disclosure_scope"
+        type:     "multiselect"
+        question: "공개 대상은?"
+        options:  ["규제기관", "사용자", "기관 관리자", "연구자"]
+        required: true
+      - field:    "advisory_content"
+        type:     "table"
+        question: "권고문 핵심 내용을 기재하세요."
+        columns:  ["취약점 기술", "CVSS", "영향 버전", "해결 방안/완화책"]
+        required: true
+    outputs:
+      - tmp_field: "권고문[]"
+        from:      "advisory_content"
+    hitl: false
+  - id:           "step-02"
+    name:         "규제 통지·사용자 공개"
+    section_ref:  "§5.2.3-5.2.4"
+    inputs:
+      - field:    "notifications"
+        type:     "table"
+        question: "통지/공개 실행 내역을 기재하세요."
+        columns:  ["대상", "채널", "통지 일자", "증적"]
+        required: true
+    outputs:
+      - tmp_field: "통지[]"
+        from:      "notifications"
+    hitl: false
+  - id:           "step-03"
+    name:         "검토·승인"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "approval"
+        type:     "enum"
+        question: "PSGB 공개 승인 결과는?"
+        options:  ["승인", "보류"]
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안운영위원회(PSGB)"
+    rationale:    "WI §2 승인자 = PSGB, PRO §3 RACI 공개 결정 A=PSGB"
+
+dod_checklist:
+  - "공개 대상·시점·범위 결정"
+  - "권고문에 취약점 기술·CVSS·영향 버전·해결 방안 포함"
+  - "규제 통지 대상이면 규제기관 통지 완료"
+  - "사용자·기관 보안 권고 배포"
+  - "협력적 공개(29147) 합의 기간 준수"
+  - "PSGB 검토·승인 및 통지 증적 보존"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "공개 시점 조율"
+    rule:    "패치 전 공개는 악용 위험 → 해결 방안 가용 시점과 조율, 규제 통지 의무 기한 우선"
+  - section: "§7.2"
+    name:    "협력적 공개 합의"
+    rule:    "연구자 비공개 합의 기간 준수, 조기 공개 불가피 시 연구자 사전 협의(29147)"
+  - section: "§7.3"
+    name:    "적극 악용 중 취약점"
+    rule:    "악용 진행 중이면 완화책 우선 즉시 공개, 패치 후속 제공(사용자 보호 우선)"
+
+triggers:        ["취약점 공개", "보안 권고", "규제 통지", "사용자 통지", "vulnerability disclosure", "advisory"]
+aliases:         ["보안 공지", "CVE 공개", "security advisory"]
+event_triggers:  ["처리 종결 후", "규제 통지 기한 도래"]
+domains:         ["의료기기", "SW"]

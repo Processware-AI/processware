@@ -1,0 +1,81 @@
+wi_id:           "WI-MDCS-01-03-01"
+title:           "보안 업데이트 정책 수립(전달 시간대·영향평가 기준)"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-03"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-03-01-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+
+extracted_at:    "2026-06-18T16:05:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "영향평가 기준 정의"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "impact_criteria"
+        type:     "table"
+        question: "영향평가 요소별 등급 기준을 정의하세요."
+        columns:  ["요소(영향/인지도/익스플로잇/배포량/외부통제)", "등급 기준"]
+        required: true
+    outputs:
+      - tmp_field: "영향평가기준[]"
+        from:      "impact_criteria"
+    hitl: false
+  - id:           "step-02"
+    name:         "전달·검증 SLA 및 분류별 대응"
+    section_ref:  "§5.2.2-5.2.3"
+    inputs:
+      - field:    "sla_table"
+        type:     "table"
+        question: "영향 등급별 전달·검증 SLA 와 분류별 대응을 기재하세요."
+        columns:  ["영향 등급", "검증 SLA", "전달 SLA", "MAINTAINED 대응", "SUPPORTED 대응"]
+        required: true
+    outputs:
+      - tmp_field: "SLA[]"
+        from:      "sla_table"
+    hitl: false
+  - id:           "step-03"
+    name:         "검토·승인"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "approval"
+        type:     "enum"
+        question: "PSO 승인 결과는?"
+        options:  ["승인", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안책임자(PSO)"
+    rationale:    "WI §2 승인자 = PSO, PRO §3 RACI 업데이트 정책 A=PSO"
+
+dod_checklist:
+  - "영향평가 요소(5종) 모두 정의·등급화"
+  - "영향 등급별 전달·검증 SLA 설정"
+  - "MAINTAINED/SUPPORTED 별 대응 방식 정의"
+  - "PSGB 검토·PSO 승인 기록 존재"
+  - "정책 배포 확인"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "SLA 충돌(규제 vs 운영)"
+    rule:    "규제 기한 우선, 충족 위한 자원·프로세스 보강 계획"
+  - section: "§7.3"
+    name:    "SUPPORTED SW 업데이트 한계"
+    rule:    "SUPPORTED 는 안내·대체 완화책 제공 방식 정책 명시"
+  - section: "§7.4"
+    name:    "정책 미준수 발생"
+    rule:    "SLA 미준수 반복 시 PRO-MDCS-01-01 정기 검토로 보고하여 정책·자원 재검토"
+
+triggers:        ["보안 업데이트 정책", "패치 SLA", "영향평가 기준", "업데이트 전달 시간대", "update policy"]
+aliases:         ["패치 정책", "업데이트 SLA", "보안 패치 기준"]
+event_triggers:  ["유지보수 체계 수립", "규제 변화", "제품 컨텍스트 변경"]
+domains:         ["의료기기", "SW"]

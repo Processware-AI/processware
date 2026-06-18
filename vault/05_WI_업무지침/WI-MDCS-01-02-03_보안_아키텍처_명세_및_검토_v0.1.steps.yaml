@@ -1,0 +1,102 @@
+wi_id:           "WI-MDCS-01-02-03"
+title:           "보안 아키텍처 명세 및 방어심층화 검토"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-02"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-02-03-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+entry_gate:      "WI-MDCS-01-02-02.status == done"
+
+extracted_at:    "2026-06-18T15:35:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "아키텍처 명세"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "components"
+        type:     "table"
+        question: "컴포넌트·신뢰경계·통제 배치를 명세하세요."
+        columns:  ["컴포넌트", "신뢰경계", "배치된 보안 통제"]
+        required: true
+    outputs:
+      - tmp_field: "아키텍처[].통제배치"
+        from:      "components"
+    hitl: false
+  - id:           "step-02"
+    name:         "방어심층화 배정"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "did_mapping"
+        type:     "table"
+        question: "위협별 방어심층화 계층 통제를 배정하세요."
+        columns:  ["위협", "예방 계층", "탐지 계층", "복구 계층", "단일 실패점"]
+        required: true
+    outputs:
+      - tmp_field: "방어심층화[]"
+        from:      "did_mapping"
+    hitl: false
+  - id:           "step-03"
+    name:         "요구-아키텍처 추적 및 악조건 거동 검토"
+    section_ref:  "§5.2.3-5.2.4"
+    inputs:
+      - field:    "req_trace"
+        type:     "table"
+        question: "보안 요구가 어느 통제로 충족되는지 추적하세요."
+        columns:  ["요구 ID", "충족 통제", "악조건 거동(fail-safe/secure)"]
+        required: true
+    outputs:
+      - tmp_field: "추적표[]"
+        from:      "req_trace"
+    hitl: false
+  - id:           "step-04"
+    name:         "아키텍처 검토"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "review_findings"
+        type:     "table"
+        question: "검토 발견 약점과 종결 상태를 기재하세요."
+        columns:  ["약점", "심각도", "조치", "종결 여부"]
+        required: false
+      - field:    "approval"
+        type:     "enum"
+        question: "독립 검토자 검토 결과는?"
+        options:  ["승인", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "검토[].약점"
+        from:      "review_findings"
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "검토자(독립)"
+    rationale:    "WI §2 승인자 = 독립 검토자, PRO §3 RACI 아키텍처 검토 A=검토자(독립)"
+
+dod_checklist:
+  - "컴포넌트·신뢰경계·통제 배치 명세"
+  - "위협별 방어심층화 계층 배정 및 단일 실패점 완화"
+  - "모든 보안 요구가 아키텍처 통제로 추적"
+  - "악조건(공격·실패·예외) 거동 검토 및 안전 측 동작 확인"
+  - "독립 검토자의 아키텍처 검토·약점 종결 기록 존재"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "단일 실패점 잔존"
+    rule:    "방어심층화 불가 시 사유·보완 통제·잔여 리스크 문서화, PRO-MDCS-02-01 반영"
+  - section: "§7.2"
+    name:    "요구-아키텍처 추적 단절"
+    rule:    "충족 통제 부재 시 아키텍처 보완 또는 요구 재검토, 미해결 시 다음 단계 진행 금지"
+  - section: "§7.4"
+    name:    "위협 모델 갱신 반영"
+    rule:    "신규 위협 식별 시 PRO-MDCS-02-01 위협 모델 갱신 요청 후 아키텍처 재검토"
+
+triggers:        ["보안 아키텍처", "방어심층화", "신뢰경계", "악조건 거동", "defense in depth", "security architecture"]
+aliases:         ["다층 방어", "아키텍처 검토", "trust boundary"]
+event_triggers:  ["보안 요구 정의 완료 후", "아키텍처 중대 변경"]
+domains:         ["의료기기", "SW"]

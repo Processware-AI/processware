@@ -1,0 +1,105 @@
+wi_id:           "WI-MDCS-01-05-03"
+title:           "취약점 분석(영향·근본원인·교차제품·안전유효성)"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-05"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-05-03-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+entry_gate:      "WI-MDCS-01-05-02.status == done"
+
+extracted_at:    "2026-06-18T16:45:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "영향 분석(CVSS·맥락)"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "cvss_base"
+        type:     "number"
+        question: "CVSS 기본 점수는?"
+        validation: "0 <= x <= 10"
+        required: true
+      - field:    "context_adjustment"
+        type:     "text"
+        question: "보안 맥락·방어심층화 반영 후 실제 영향은?"
+        required: true
+    derivations:
+      - id:       "effective_severity"
+        expr:     "CVSS 기본 + 맥락 보정(방어심층화·노출도) → 실효 심각도"
+        description: "맥락 보정 실효 영향"
+    outputs:
+      - tmp_field: "영향.CVSS"
+        from:      "cvss_base"
+      - tmp_field: "영향.맥락보정"
+        from:      "context_adjustment"
+    hitl: false
+  - id:           "step-02"
+    name:         "근본 원인·교차제품·안전유효성 분석"
+    section_ref:  "§5.2.2-5.2.4"
+    inputs:
+      - field:    "root_cause"
+        type:     "text"
+        question: "근본 원인(설계/구현/구성)은?"
+        required: true
+      - field:    "cross_product"
+        type:     "text"
+        question: "교차 제품 영향(공유 컴포넌트)은?"
+        required: false
+      - field:    "safety_impact"
+        type:     "enum"
+        question: "안전·유효성 영향 수준은?"
+        options:  ["없음", "낮음", "중간", "높음(중대)"]
+        required: true
+    outputs:
+      - tmp_field: "분석.근본원인"
+        from:      "root_cause"
+      - tmp_field: "분석.교차제품"
+        from:      "cross_product"
+      - tmp_field: "분석.안전영향"
+        from:      "safety_impact"
+    hitl: false
+  - id:           "step-03"
+    name:         "검토·연계"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "approval"
+        type:     "enum"
+        question: "PSO 검토 결과는?"
+        options:  ["승인(처리 연계)", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "결재.검토"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안책임자(PSO)"
+    rationale:    "WI §2 승인자 = PSO. 분석 충분성·처리 연계 검토"
+
+dod_checklist:
+  - "CVSS + 보안 맥락·방어심층화 반영 영향 평가"
+  - "근본 원인 분석(RCA) 수행"
+  - "교차 제품 영향 식별"
+  - "안전·유효성 영향 평가(필요 시 제품 RM 협력)"
+  - "PSO 검토·처리 연계"
+  - "분석 보고서 보존"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "CVSS 와 실제 영향 괴리"
+    rule:    "방어심층화로 악용 어려우면 맥락 보정 명시, 안전 영향 크면 우선순위 상향"
+  - section: "§7.2"
+    name:    "교차 제품 영향 확산"
+    rule:    "공유 컴포넌트 확산 시 각 제품 라인 통지, PSO 통합 대응 조율(9.5 교차 통지)"
+  - section: "§7.3"
+    name:    "안전 영향 중대"
+    rule:    "환자 안전 중대 영향 시 제품 리스크 관리·규제 통지(WI-MDCS-01-05-05) 즉시 병행"
+
+triggers:        ["취약점 분석", "CVSS 평가", "근본 원인 분석", "교차 제품 영향", "안전 영향", "vulnerability analysis"]
+aliases:         ["영향 분석", "RCA", "심각도 평가"]
+event_triggers:  ["조사 완료 후", "적용 확인 건"]
+domains:         ["의료기기", "SW"]

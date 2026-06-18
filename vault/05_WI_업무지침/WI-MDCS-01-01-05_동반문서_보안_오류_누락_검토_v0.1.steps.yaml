@@ -1,0 +1,100 @@
+wi_id:           "WI-MDCS-01-01-05"
+title:           "동반문서 보안 오류·누락 검토"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-01"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-01-05-01"
+scope_code:      "MDCS"
+scope_type:      "org"
+standards:       ["IEC 81001-5-1"]
+
+extracted_at:    "2026-06-18T15:20:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "항목별 대조"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "doc_list"
+        type:     "table"
+        question: "검토 대상 동반문서를 나열하세요(최신판 확인)."
+        columns:  ["문서명", "버전", "언어", "최신 여부"]
+        required: true
+      - field:    "checklist_result"
+        type:     "table"
+        question: "필수 보안 항목 대조 결과를 기재하세요."
+        columns:  ["보안 항목", "충족 여부", "비고"]
+        required: true
+    outputs:
+      - tmp_field: "대조표[]"
+        from:      "checklist_result"
+    hitl: false
+  - id:           "step-02"
+    name:         "오류·누락 식별 및 영향 판단"
+    section_ref:  "§5.2.2-5.2.3"
+    inputs:
+      - field:    "issues"
+        type:     "table"
+        question: "발견된 오류·누락 이슈를 기재하세요."
+        columns:  ["이슈", "유형(오류/누락)", "사용자 보안 영향", "우선순위"]
+        required: false
+    outputs:
+      - tmp_field: "이슈추적[]"
+        from:      "issues"
+    hitl: false
+  - id:           "step-03"
+    name:         "수정 의뢰·종결 추적"
+    section_ref:  "§5.2.4-5.2.5"
+    inputs:
+      - field:    "issue_status"
+        type:     "text_per_row"
+        question: "각 이슈의 처리 결과·종결 근거는?"
+        rows_from: "issues"
+        required: false
+    outputs:
+      - tmp_field: "이슈추적[].종결근거"
+        from:      "issue_status"
+    hitl: false
+  - id:           "step-04"
+    name:         "검토 승인"
+    section_ref:  "§5.2.6"
+    inputs:
+      - field:    "approval"
+        type:     "enum"
+        question: "PSO 검토 결과는?"
+        options:  ["승인", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안책임자(PSO)"
+    rationale:    "WI §2 승인자 = PSO (동반문서 보안 검증 책임)"
+
+dod_checklist:
+  - "대상 동반문서 최신판 확인"
+  - "필수 보안 항목 전수 대조 수행"
+  - "발견된 오류·누락이 모두 이슈로 등록됨"
+  - "각 이슈의 사용자 보안 영향·우선순위 판단"
+  - "식별된 이슈가 모두 종결되거나 종결 일정 확정(미추적 0건)"
+  - "PSO 검토·승인 기록 존재"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "출시 후 동반문서 오류"
+    rule:    "보안 영향 오류 발견 시 정오표/갱신 즉시 배포, 영향 큰 경우 PRO-MDCS-01-05 연계"
+  - section: "§7.2"
+    name:    "잔여 리스크 안내 누락"
+    rule:    "잔여 리스크 누락 시 WI-MDCS-01-02-08 릴리스 검증으로 에스컬레이션, 보완 전 출시 보류"
+  - section: "§7.3"
+    name:    "다국어/현지화 문서"
+    rule:    "번역본 보안 지침 누락·왜곡 시 원본 대조 수정, 모든 출시 언어판 검토 포함"
+
+triggers:        ["동반문서", "보안 운영 지침", "잔여 리스크 안내", "문서 오류 누락", "accompanying documentation"]
+aliases:         ["사용자 매뉴얼", "보안 가이드", "운영 지침서"]
+event_triggers:  ["신규 릴리스", "동반문서 개정", "사용자 피드백 발생"]
+domains:         ["의료기기", "일반"]

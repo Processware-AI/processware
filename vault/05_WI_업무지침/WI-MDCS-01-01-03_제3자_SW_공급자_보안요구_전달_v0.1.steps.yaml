@@ -1,0 +1,102 @@
+wi_id:           "WI-MDCS-01-01-03"
+title:           "제3자 SW 공급자 보안 요구 전달 및 보증"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-01"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-01-03-01"
+scope_code:      "MDCS"
+scope_type:      "org"
+standards:       ["IEC 81001-5-1"]
+entry_gate:      "WI-MDCS-01-01-01.status == done"
+
+extracted_at:    "2026-06-18T15:12:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "대상 식별"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "third_party_items"
+        type:     "table"
+        question: "보안 영향 외부 SW 항목과 공급자를 나열하세요."
+        columns:  ["외부 SW 항목", "공급자", "분류", "보안 영향"]
+        required: true
+    outputs:
+      - tmp_field: "보증대장[].항목"
+        from:      "third_party_items"
+    hitl: false
+  - id:           "step-02"
+    name:         "보안 요구 도출 및 전달"
+    section_ref:  "§5.2.2-5.2.3"
+    inputs:
+      - field:    "security_reqs"
+        type:     "text_per_row"
+        question: "각 항목에 전달할 보안 요구는?"
+        rows_from: "third_party_items"
+        required: true
+      - field:    "delivery_evidence"
+        type:     "text_per_row"
+        question: "전달 증적(일자/수단/수신확인)은?"
+        rows_from: "third_party_items"
+        required: true
+    outputs:
+      - tmp_field: "보증대장[].전달요구"
+        from:      "security_reqs"
+      - tmp_field: "보증대장[].전달증적"
+        from:      "delivery_evidence"
+    hitl: false
+  - id:           "step-03"
+    name:         "보증 확보"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "assurance_basis"
+        type:     "text_per_row"
+        question: "공급자 보안 활동 보증 근거(계약/증빙/인증)는?"
+        rows_from: "third_party_items"
+        required: true
+    outputs:
+      - tmp_field: "보증대장[].보증근거"
+        from:      "assurance_basis"
+    hitl: false
+  - id:           "step-04"
+    name:         "검토·등록"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "approval"
+        type:     "enum"
+        question: "PSO 검토 결과는?"
+        options:  ["승인", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안책임자(PSO)"
+    rationale:    "WI §2 승인자 = PSO, PRO §3 RACI 제3자 보증 A=PSO"
+
+dod_checklist:
+  - "보안 영향 외부 SW 항목 모두 식별(누락 0건)"
+  - "각 대상에 보안 요구 도출·전달"
+  - "전달 증적(일자·수단·수신 확인) 보유"
+  - "공급자 보안 활동 보증 근거 확보"
+  - "PSO 검토·승인 기록 존재"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "공급자 미협조"
+    rule:    "보안 요구 거부 시 대체 공급자 검토 또는 보완 통제 적용, 잔여 리스크 PRO-MDCS-02-01 반영"
+  - section: "§7.3"
+    name:    "OSS 무공급자"
+    rule:    "공급자 없는 OSS 는 전달 제외하되 제조자 MAINTAINED 책임으로 PRO-MDCS-01-03 모니터링 등록"
+  - section: "§7.4"
+    name:    "계약 갱신·공급자 변경"
+    rule:    "계약 갱신·공급자 변경 시 본 지침 재수행하여 전달·보증 갱신"
+
+triggers:        ["제3자 SW", "외부 SW 공급자", "보안 요구 전달", "공급자 보증", "third-party software"]
+aliases:         ["서드파티 소프트웨어", "공급망 보안", "supplier assurance"]
+event_triggers:  ["외부 SW 도입", "공급 계약 체결·갱신", "SW 분류 완료 후"]
+domains:         ["의료기기", "SW"]

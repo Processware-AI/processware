@@ -1,0 +1,96 @@
+wi_id:           "WI-MDCS-01-06-03"
+title:           "계속 사용 정당화 및 완전 적합 전환 계획 수립"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-06"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-06-03-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+entry_gate:      "WI-MDCS-01-06-02.status == done"
+
+extracted_at:    "2026-06-18T17:15:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "계속 사용 정당화·비업그레이드 정당성"
+    section_ref:  "§5.2.1-5.2.2"
+    inputs:
+      - field:    "target_version"
+        type:     "text"
+        question: "정당화 대상 버전은?"
+        required: true
+      - field:    "justification"
+        type:     "text"
+        question: "계속 사용 정당화 근거(잔여 리스크 기반)는?"
+        required: true
+      - field:    "non_upgrade"
+        type:     "table"
+        question: "비업그레이드 컴포넌트 정당성을 기재하세요."
+        columns:  ["컴포넌트", "비업그레이드 사유", "리스크"]
+        required: false
+    outputs:
+      - tmp_field: "정당화.근거"
+        from:      "justification"
+      - tmp_field: "비업그레이드[]"
+        from:      "non_upgrade"
+    hitl: false
+  - id:           "step-02"
+    name:         "잔여 리스크 전달·전환 계획"
+    section_ref:  "§5.2.3-5.2.4"
+    inputs:
+      - field:    "residual_disclosure"
+        type:     "boolean"
+        question: "릴리스 문서·동반문서에 잔여 리스크를 전달했습니까?"
+        required: true
+      - field:    "transition_plan"
+        type:     "table"
+        question: "완전 적합(Clause 6~9) 전환 계획을 기재하세요."
+        columns:  ["전환 항목(Clause)", "마일스톤", "목표 일자"]
+        required: true
+    outputs:
+      - tmp_field: "전환계획[]"
+        from:      "transition_plan"
+    hitl: false
+  - id:           "step-03"
+    name:         "검토·승인"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "approval"
+        type:     "enum"
+        question: "PSGB 승인 결과는?"
+        options:  ["승인", "사용 중지/대체 결정", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안운영위원회(PSGB)"
+    rationale:    "WI §2 승인자 = PSGB, PRO §3 RACI 정당화·전환 계획 A=PSGB"
+
+dod_checklist:
+  - "대상 버전·전체 잔여 리스크 근거의 계속 사용 정당화 문서화"
+  - "비업그레이드 컴포넌트 정당성·리스크 문서화"
+  - "릴리스 문서·동반문서에 잔여 리스크 전달 명시"
+  - "완전 적합(Clause 6~9) 전환 계획·일정 수립"
+  - "PSO 검토·PSGB 승인 기록 존재"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "정당화 불가(수용 불가 리스크)"
+    rule:    "잔여 리스크 수용 불가 시 정당화 금지, 사용 중지·대체 결정"
+  - section: "§7.2"
+    name:    "잔여 리스크 미전달"
+    rule:    "릴리스/동반문서 미전달 시 출시·운영 보류·보완"
+  - section: "§7.3"
+    name:    "전환 계획 지연"
+    rule:    "일정 지연 시 사유·재계획 PSGB 보고, 지연 기간 잔여 리스크 재평가"
+
+triggers:        ["계속 사용 정당화", "전환 계획", "완전 적합", "비업그레이드 정당성", "transition plan", "justification"]
+aliases:         ["사용 정당화", "적합 전환", "마이그레이션 계획"]
+event_triggers:  ["갭 종결 완료 후", "전환SW 운영 결정"]
+domains:         ["의료기기", "SW"]

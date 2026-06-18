@@ -1,0 +1,106 @@
+wi_id:           "WI-MDCS-01-02-07"
+title:           "보안 시스템 시험(기능·위협완화·취약점·침투)"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-02"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-02-07-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+entry_gate:      "WI-MDCS-01-02-05.status == done"
+
+extracted_at:    "2026-06-18T15:55:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "시험 계획·객관성 문서화"
+    section_ref:  "§5.2 사전준비"
+    inputs:
+      - field:    "tester_objectivity"
+        type:     "text"
+        question: "테스터의 개발 독립성·객관성 확보 방안은?"
+        required: true
+      - field:    "test_matrix"
+        type:     "table"
+        question: "보안 요구·위협 완화별 시험 케이스 매핑을 기재하세요."
+        columns:  ["요구/완화 ID", "시험 유형(기능/완화/취약점/침투)", "케이스 ID"]
+        required: true
+    outputs:
+      - tmp_field: "객관성"
+        from:      "tester_objectivity"
+      - tmp_field: "매트릭스[]"
+        from:      "test_matrix"
+    hitl: false
+  - id:           "step-02"
+    name:         "시험 실행(기능·완화·취약점·침투)"
+    section_ref:  "§5.2.1-5.2.4"
+    inputs:
+      - field:    "test_results"
+        type:     "table"
+        question: "각 시험 유형의 결과를 기재하세요."
+        columns:  ["시험 유형", "케이스 수", "통과", "발견(고/중/저)", "보고서 참조"]
+        required: true
+    outputs:
+      - tmp_field: "결과[]"
+        from:      "test_results"
+    hitl: false
+  - id:           "step-03"
+    name:         "발견 처리·연계"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "findings"
+        type:     "table"
+        question: "발견 사항의 문제해결 연계·종결 상태를 기재하세요."
+        columns:  ["발견", "심각도", "PRO-01-05 연계 ID", "종결 여부"]
+        required: false
+    derivations:
+      - id:       "open_high_count"
+        expr:     "종결되지 않은 고위험 발견 수"
+        description: "릴리스 차단 게이트(0이어야 함)"
+    outputs:
+      - tmp_field: "발견처리[]"
+        from:      "findings"
+    hitl: false
+  - id:           "step-04"
+    name:         "검토 승인"
+    section_ref:  "§5.2.6"
+    inputs:
+      - field:    "approval"
+        type:     "enum"
+        question: "독립 검토자 검토 결과는?"
+        options:  ["승인", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "검토자(독립)"
+    rationale:    "WI §2 승인자 = 독립 검토자, PRO §3 RACI 시스템 시험 A=검토자. 객관성 확보 필수(5.7.5)"
+
+dod_checklist:
+  - "모든 보안 요구·위협 완화에 시험 케이스 매핑(작성률 100%)"
+  - "기능·완화·취약점·침투 시험 실행 완료"
+  - "테스터 객관성(개발 독립성) 문서화"
+  - "모든 발견이 PRO-MDCS-01-05 로 등록·추적"
+  - "미해결(고위험) 발견 0건(릴리스 전)"
+  - "독립 검토자 검토·승인 기록 존재"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "테스터 객관성 부족"
+    rule:    "개발-시험 겸직 시 이해상충 관리, 가능하면 분리·불가 시 독립 검토자 교차 확인, 객관성 수준 문서화"
+  - section: "§7.2"
+    name:    "침투 시험 범위·법적 제약"
+    rule:    "사전 승인 범위·환경에서만 수행, 운영 환경·실데이터 사용 금지, 외부 전문가 계약·범위 문서화"
+  - section: "§7.3"
+    name:    "미해결 발견과 릴리스"
+    rule:    "고위험 미해결 시 릴리스 불가, PRO-MDCS-01-05 종결 또는 수용 가능 잔여 리스크 정식 승인 필요"
+
+triggers:        ["보안 시스템 시험", "침투 시험", "취약점 시험", "위협 완화 효과", "penetration test", "security testing"]
+aliases:         ["펜테스트", "보안 테스트", "취약점 스캔", "DAST"]
+event_triggers:  ["구현 완료 후", "릴리스 전 검증"]
+domains:         ["의료기기", "SW"]

@@ -1,0 +1,95 @@
+wi_id:           "WI-MDCS-01-02-04"
+title:           "안전 설계 개발 및 인터페이스 특성화·설계 검토"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-02"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-02-04-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+entry_gate:      "WI-MDCS-01-02-03.status == done"
+
+extracted_at:    "2026-06-18T15:40:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "안전 설계 개발 및 위협 완화 반영"
+    section_ref:  "§5.2.1-5.2.2"
+    inputs:
+      - field:    "design_modules"
+        type:     "table"
+        question: "모듈별 안전 설계와 적용 모범사례를 기재하세요."
+        columns:  ["모듈", "안전 설계 메커니즘", "적용 모범사례"]
+        required: true
+      - field:    "mitigation_map"
+        type:     "table"
+        question: "위협 완화책의 설계 반영을 매핑하세요."
+        columns:  ["위협/완화책", "설계 반영 메커니즘", "반영 여부"]
+        required: true
+    outputs:
+      - tmp_field: "설계[].메커니즘"
+        from:      "design_modules"
+      - tmp_field: "완화반영[]"
+        from:      "mitigation_map"
+    hitl: false
+  - id:           "step-02"
+    name:         "인터페이스 특성화"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "interfaces"
+        type:     "table"
+        question: "물리·논리 인터페이스를 신뢰경계 관점으로 특성화하세요."
+        columns:  ["인터페이스", "유형(물리/논리)", "신뢰경계", "전달 데이터 분류", "인증/검증 책임"]
+        required: true
+    outputs:
+      - tmp_field: "인터페이스[]"
+        from:      "interfaces"
+    hitl: false
+  - id:           "step-03"
+    name:         "설계 검토"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "review_findings"
+        type:     "table"
+        question: "설계 검토 약점과 종결 상태를 기재하세요."
+        columns:  ["약점", "심각도", "조치", "종결 여부"]
+        required: false
+      - field:    "approval"
+        type:     "enum"
+        question: "독립 검토자 검토 결과는?"
+        options:  ["승인", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "검토[].약점"
+        from:      "review_findings"
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "검토자(독립)"
+    rationale:    "WI §2 승인자 = 독립 검토자, PRO §3 RACI 설계 검토 A=검토자(독립)"
+
+dod_checklist:
+  - "상세 설계에 안전 설계 모범사례 적용"
+  - "위협 모델 완화책이 설계 메커니즘으로 모두 반영(미반영 0건)"
+  - "모든 물리·논리 인터페이스가 신뢰경계·데이터 분류로 특성화"
+  - "독립 설계 검토 수행·약점 추적·종결 기록 존재"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "완화책 설계 미반영"
+    rule:    "대체 완화 설계 마련 또는 불가 시 잔여 리스크 PRO-MDCS-02-01 반영, PSO 가 진행 가부 판단"
+  - section: "§7.2"
+    name:    "인터페이스 신뢰경계 모호"
+    rule:    "신뢰 수준 모호 시 보수적으로 비신뢰 간주, 입력 검증·인증 강화"
+  - section: "§7.3"
+    name:    "외부 인터페이스 통제 불가"
+    rule:    "외부 통제 불가 시 자사측 검증·격리 통제 적용 및 가정·잔여 리스크 문서화"
+
+triggers:        ["안전 설계", "인터페이스 특성화", "설계 검토", "신뢰경계", "위협 완화 반영", "secure design"]
+aliases:         ["시큐어 디자인", "상세 설계", "인터페이스 분석"]
+event_triggers:  ["아키텍처 검토 완료 후", "설계 중대 변경"]
+domains:         ["의료기기", "SW"]

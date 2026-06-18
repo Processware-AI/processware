@@ -1,0 +1,113 @@
+wi_id:           "WI-MDCS-01-01-01"
+title:           "보안 수명주기 적용성 식별 및 SW 항목 분류"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-01"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-01-01-01"
+scope_code:      "MDCS"
+scope_type:      "org"
+standards:       ["IEC 81001-5-1"]
+
+extracted_at:    "2026-06-18T15:05:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "적용성 식별"
+    section_ref:  "§5.2.1"
+    description:  "보안 수명주기 적용 범위 결정 및 제외 사유 기록"
+    inputs:
+      - field:    "product_name"
+        type:     "text"
+        question: "대상 제품/제품군 명칭은?"
+        required: true
+      - field:    "scope_decision"
+        type:     "enum"
+        question: "보안 수명주기 적용 범위는?"
+        options:  ["제품 전체", "제품 일부"]
+        required: true
+      - field:    "exclusion_rationale"
+        type:     "text"
+        question: "제외 항목이 있다면 제외 사유는?"
+        required: false
+    outputs:
+      - tmp_field: "적용성.적용범위"
+        from:      "scope_decision"
+      - tmp_field: "적용성.제외사유"
+        from:      "exclusion_rationale"
+    hitl: false
+  - id:           "step-02"
+    name:         "SW 항목 분해"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "sw_items"
+        type:     "table"
+        question: "적용 범위 내 SW 항목을 모두 나열하세요."
+        columns:  ["항목명", "출처(자체/외부/OTS)", "업데이트 책임주체"]
+        required: true
+    outputs:
+      - tmp_field: "분류표[].항목명"
+        from:      "sw_items"
+    hitl: false
+  - id:           "step-03"
+    name:         "항목별 분류"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "classification"
+        type:     "enum_per_row"
+        question: "각 SW 항목의 분류는?"
+        options:  ["MAINTAINED", "SUPPORTED", "REQUIRED"]
+        rows_from: "sw_items"
+        required: true
+      - field:    "classification_basis"
+        type:     "text_per_row"
+        question: "각 분류의 근거(업데이트 책임 주체)는?"
+        rows_from: "sw_items"
+        required: true
+    outputs:
+      - tmp_field: "분류표[].분류"
+        from:      "classification"
+      - tmp_field: "분류표[].근거"
+        from:      "classification_basis"
+    hitl: false
+  - id:           "step-04"
+    name:         "분류 결과 검토·승인"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "review_decision"
+        type:     "enum"
+        question: "PSO 검토 결과는?"
+        options:  ["승인", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "review_decision"
+    hitl: required
+    approver_role: "보안책임자(PSO)"
+    rationale:    "WI §2 승인자 = PSO, PRO §3 RACI 적용성·SW분류 A=PSO"
+
+dod_checklist:
+  - "적용성 판정(적용 범위·제외 사유) 문서화 완료"
+  - "적용 범위 내 모든 SW 항목 분해되어 누락 없음"
+  - "모든 SW 항목이 MAINTAINED/SUPPORTED/REQUIRED 중 하나로 분류(미분류 0건)"
+  - "각 분류에 근거(업데이트 책임 주체) 기재"
+  - "PSO 검토·승인 기록 존재"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "분류 모호 항목"
+    rule:    "MAINTAINED/SUPPORTED 경계 불분명 시 보수적으로 MAINTAINED 로 분류하고 사유 기재, PSO 최종 판정"
+  - section: "§7.2"
+    name:    "외부 SW 추가·구성 변경"
+    rule:    "신규 외부 컴포넌트 추가 시 본 지침 재수행하여 분류표 갱신, MAINTAINED 신규 항목은 PRO-MDCS-01-03 모니터링 대상 즉시 반영"
+  - section: "§7.4"
+    name:    "분류 정보 부재"
+    rule:    "업데이트 책임 주체 불명 시 SUPPORTED 잠정 분류 후 구매/공급자 관리에 확인 요청"
+
+triggers:        ["보안 수명주기 적용성", "SW 분류", "MAINTAINED", "SUPPORTED", "REQUIRED", "적용 범위 결정"]
+aliases:         ["소프트웨어 분류", "scoping", "software classification"]
+event_triggers:  ["신규 제품 착수", "제품 구성 변경", "외부 컴포넌트 추가"]
+domains:         ["의료기기", "SW"]

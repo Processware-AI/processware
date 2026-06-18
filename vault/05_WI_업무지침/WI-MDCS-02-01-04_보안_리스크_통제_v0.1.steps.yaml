@@ -1,0 +1,95 @@
+wi_id:           "WI-MDCS-02-01-04"
+title:           "보안 리스크 통제(완화 선정·구현·효과 검증·잔여리스크)"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-02-01"
+parent_pol:      "POL-MDCS-02"
+related_tmp:
+  - "TMP-MDCS-02-01-04-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+entry_gate:      "WI-MDCS-02-01-03.status == done"
+
+extracted_at:    "2026-06-18T17:35:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "완화책 선정·구현"
+    section_ref:  "§5.2.1-5.2.2"
+    inputs:
+      - field:    "mitigations"
+        type:     "table"
+        question: "리스크별 완화책 선정·구현을 기재하세요."
+        columns:  ["위협/리스크 ID", "완화책", "구현 방식(설계/구성/운영)", "구현 연계 ID"]
+        required: true
+    outputs:
+      - tmp_field: "완화[]"
+        from:      "mitigations"
+    hitl: false
+  - id:           "step-02"
+    name:         "효과 검증·신규 리스크 판정"
+    section_ref:  "§5.2.3-5.2.4"
+    inputs:
+      - field:    "verification"
+        type:     "table"
+        question: "완화 효과 검증과 신규/증가 리스크를 기재하세요."
+        columns:  ["완화책", "효과 검증 결과", "신규/증가 리스크", "재평가 결과"]
+        required: true
+    outputs:
+      - tmp_field: "검증[]"
+        from:      "verification"
+    hitl: false
+  - id:           "step-03"
+    name:         "잔여 리스크 문서화·협력"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "residual"
+        type:     "table"
+        question: "잔여 리스크와 제품 RM 협력 결과를 기재하세요."
+        columns:  ["잔여 리스크", "수준", "제품 RM 협력 결과", "수용 여부"]
+        required: true
+    outputs:
+      - tmp_field: "잔여리스크[]"
+        from:      "residual"
+    hitl: false
+  - id:           "step-04"
+    name:         "검토·승인"
+    section_ref:  "§5.2.6"
+    inputs:
+      - field:    "approval"
+        type:     "enum"
+        question: "PSO 통제 승인 결과는?"
+        options:  ["승인", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안책임자(PSO)"
+    rationale:    "WI §2 승인자 = PSO, PRO §3 RACI 리스크 통제 A=PSO"
+
+dod_checklist:
+  - "통제 필요 리스크에 완화책 선정·구현"
+  - "완화 효과 검증 수행"
+  - "통제로 인한 신규/증가 리스크 식별·재평가"
+  - "잔여 리스크 문서화 및 제품 RM 협력 수용 확인"
+  - "PSO 검토·승인 기록 존재"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "완화 효과 미입증"
+    rule:    "효과 미입증 시 대체 완화책 또는 추가 통제 후 재검증, 미검증 완화 인정 금지"
+  - section: "§7.2"
+    name:    "통제의 신규 리스크"
+    rule:    "완화책이 신규 리스크 생성 시 재평가, 순효과 음수면 완화책 재설계"
+  - section: "§7.3"
+    name:    "수용 불가 잔여 리스크"
+    rule:    "수용 불가 시 추가 완화·설계 변경, 불가 시 제품 출시·범위 재검토"
+
+triggers:        ["보안 리스크 통제", "완화책", "리스크 완화", "잔여 리스크", "risk control", "mitigation"]
+aliases:         ["리스크 대응", "완화 통제", "residual risk"]
+event_triggers:  ["리스크 평가 완료 후", "통제 필요 판정"]
+domains:         ["의료기기", "SW"]

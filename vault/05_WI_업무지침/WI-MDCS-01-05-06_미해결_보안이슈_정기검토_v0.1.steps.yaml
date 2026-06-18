@@ -1,0 +1,92 @@
+wi_id:           "WI-MDCS-01-05-06"
+title:           "미해결 보안이슈 정기 검토(릴리스별)"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-05"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-05-06-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+
+extracted_at:    "2026-06-18T17:00:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "현황 집계·이슈별 검토"
+    section_ref:  "§5.2.1-5.2.2"
+    inputs:
+      - field:    "review_trigger"
+        type:     "enum"
+        question: "검토 계기는?"
+        options:  ["릴리스 시점", "정기 주기", "이슈 누적"]
+        required: true
+      - field:    "open_issues"
+        type:     "table"
+        question: "미해결 이슈와 결정을 기재하세요."
+        columns:  ["이슈 ID", "심각도", "경과 시간", "결정(처리/수용/에스컬레이션)"]
+        required: true
+    outputs:
+      - tmp_field: "검토[].결정"
+        from:      "open_issues"
+    hitl: false
+  - id:           "step-02"
+    name:         "릴리스 영향 판정·연계"
+    section_ref:  "§5.2.3-5.2.4"
+    inputs:
+      - field:    "release_impact"
+        type:     "table"
+        question: "릴리스 게이트 영향과 연계를 기재하세요."
+        columns:  ["이슈 ID", "릴리스 게이트 영향", "연계 ID(처리/수용 승인)"]
+        required: true
+    outputs:
+      - tmp_field: "릴리스영향[]"
+        from:      "release_impact"
+    hitl: false
+  - id:           "step-03"
+    name:         "검토·승인"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "next_review"
+        type:     "date"
+        question: "다음 검토 시점은?"
+        required: true
+      - field:    "approval"
+        type:     "enum"
+        question: "PSGB 승인 결과는?"
+        options:  ["승인", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "결재.다음검토"
+        from:      "next_review"
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안운영위원회(PSGB)"
+    rationale:    "WI §2 승인자 = PSGB, PRO §3 RACI 정기 검토 A=PSGB"
+
+dod_checklist:
+  - "미해결 이슈 전수 집계(누락 0건)"
+  - "각 이슈에 대해 처리/수용/에스컬레이션 결정"
+  - "릴리스 게이트 영향 판정"
+  - "처리·수용 결정이 적절히 연계"
+  - "PSGB 검토·승인 및 다음 검토 시점 확정"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "고위험 이슈 누적"
+    rule:    "고위험 미해결 누적 시 릴리스 보류 또는 자원 우선 투입(방치 금지)"
+  - section: "§7.2"
+    name:    "잔여 리스크 수용 남용 방지"
+    rule:    "수용에 기한·재평가 조건 부여하여 영구 미해결 방지"
+  - section: "§7.4"
+    name:    "새 정보로 영향 변동"
+    rule:    "악용 사례·CVSS 변동으로 영향 상향 시 즉시 재처리·공개 절차 에스컬레이션"
+
+triggers:        ["미해결 보안이슈", "정기 검토", "릴리스별 검토", "잔여 이슈 검토", "open issue review"]
+aliases:         ["미종결 이슈 검토", "보안 백로그 검토"]
+event_triggers:  ["릴리스 시점", "분기 정기 시점", "이슈 누적"]
+domains:         ["의료기기", "SW"]

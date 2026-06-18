@@ -1,0 +1,82 @@
+wi_id:           "WI-MDCS-01-06-02"
+title:           "갭 종결 활동 수행(보안요구·시험·위협모델·리스크통제·운영지침)"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-06"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-06-02-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+entry_gate:      "WI-MDCS-01-06-01.status == done"
+
+extracted_at:    "2026-06-18T17:10:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "갭별 종결 활동 수행"
+    section_ref:  "§5.2.1-5.2.5"
+    inputs:
+      - field:    "closure_activities"
+        type:     "table"
+        question: "각 갭의 종결 활동과 산출물을 기재하세요."
+        columns:  ["갭(조항)", "종결 활동", "재사용 WI", "산출물", "종결 여부"]
+        required: true
+    outputs:
+      - tmp_field: "종결활동[]"
+        from:      "closure_activities"
+    hitl: false
+  - id:           "step-02"
+    name:         "전체 잔여 리스크 평가"
+    section_ref:  "§5.2.6"
+    inputs:
+      - field:    "residual_risk"
+        type:     "table"
+        question: "종결 후 전체 잔여 보안 리스크를 평가하세요."
+        columns:  ["잔여 리스크", "수준", "보완 통제", "수용 여부"]
+        required: true
+    outputs:
+      - tmp_field: "잔여리스크[]"
+        from:      "residual_risk"
+    hitl: false
+  - id:           "step-03"
+    name:         "검토·승인"
+    section_ref:  "§5.2.7"
+    inputs:
+      - field:    "approval"
+        type:     "enum"
+        question: "PSO 검토 결과는?"
+        options:  ["승인", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안책임자(PSO)"
+    rationale:    "WI §2 승인자 = PSO, PRO §3 RACI 갭 종결 A=PSO"
+
+dod_checklist:
+  - "갭 목록의 각 갭에 대해 종결 활동 수행"
+  - "보안 요구·시스템 시험·위협 모델·리스크 통제·운영지침 산출물 보완"
+  - "미종결 갭은 사유·보완 통제·잔여 리스크로 처리"
+  - "전체 잔여 보안 리스크 평가 수행"
+  - "PSO 검토·승인 기록 존재"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "종결 불가 갭"
+    rule:    "레거시 제약 종결 불가 갭은 보완 통제·잔여 리스크 처리, WI-MDCS-01-06-03 에서 정당화"
+  - section: "§7.2"
+    name:    "시험 중 신규 취약점"
+    rule:    "신규 취약점 발견 시 PRO-MDCS-01-05 처리 및 종결 추적"
+  - section: "§7.4"
+    name:    "종결 범위 변동"
+    rule:    "추가 갭 발견 시 갭 목록 갱신·WI-MDCS-01-06-01 갭 분석 보완"
+
+triggers:        ["갭 종결", "전환SW 보완", "보안 산출물 생성", "잔여 리스크 평가", "gap closure"]
+aliases:         ["갭 보완 활동", "적합화 활동"]
+event_triggers:  ["갭 분석 완료 후", "전환SW 보완 착수"]
+domains:         ["의료기기", "SW"]

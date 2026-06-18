@@ -1,0 +1,97 @@
+wi_id:           "WI-MDCS-01-05-01"
+title:           "취약점 접수 채널 및 출처별 접수·종결 추적"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-05"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-05-01-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+
+extracted_at:    "2026-06-18T16:35:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "접수·초기 분류"
+    section_ref:  "§5.2.1-5.2.2"
+    inputs:
+      - field:    "report_id"
+        type:     "text"
+        question: "접수 고유 ID 는?(자동 채번 가능)"
+        required: true
+      - field:    "source"
+        type:     "enum"
+        question: "보고 출처는?"
+        options:  ["내부", "외부 고객", "고객 불만", "연구자(29147)", "모니터링 연계"]
+        required: true
+      - field:    "received_at"
+        type:     "date"
+        question: "접수 일시는?"
+        required: true
+      - field:    "triage"
+        type:     "enum"
+        question: "1차 분류 결과는?"
+        options:  ["유효(조사 연계)", "중복", "무효(범위 외)"]
+        required: true
+    outputs:
+      - tmp_field: "접수[].출처"
+        from:      "source"
+      - tmp_field: "접수[].분류"
+        from:      "triage"
+    hitl: false
+  - id:           "step-02"
+    name:         "조사 연계·종결 추적"
+    section_ref:  "§5.2.3-5.2.4"
+    inputs:
+      - field:    "tracking_status"
+        type:     "enum"
+        question: "현재 추적 상태는?"
+        options:  ["접수", "조사", "분석", "처리", "공개", "종결"]
+        required: true
+    outputs:
+      - tmp_field: "추적[].상태"
+        from:      "tracking_status"
+    hitl: false
+  - id:           "step-03"
+    name:         "검토·기록"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "approval"
+        type:     "enum"
+        question: "PSO 검토 결과는?"
+        options:  ["승인", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "결재.검토"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안책임자(PSO)"
+    rationale:    "WI §2 승인자 = PSO. 접수 누락·SLA 준수 검토"
+
+dod_checklist:
+  - "모든 출처의 접수 채널이 운영됨"
+  - "각 보고에 고유 ID·출처·접수 일시 기록"
+  - "중복·범위 1차 분류 수행"
+  - "유효 보고가 조사로 연계됨"
+  - "접수~종결 상태 추적(미추적 0건)"
+  - "PSO 검토·대장 보존"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "접수 채널 장애"
+    rule:    "장애 시 대체 채널 안내, 사후 일괄 확인으로 접수 누락 방지"
+  - section: "§7.3"
+    name:    "연구자 협력 공개"
+    rule:    "ISO/IEC 29147 원칙에 따라 응대·공개 일정 협의, 비공개 합의 기간 준수"
+  - section: "§7.4"
+    name:    "대량·캠페인성 보고"
+    rule:    "대량 보고는 대표 건으로 묶어 추적, 모든 보고자에게 처리 상태 안내"
+
+triggers:        ["취약점 접수", "취약점 신고", "보고 채널", "종결 추적", "협력적 공개", "vulnerability intake"]
+aliases:         ["취약점 제보", "버그 바운티 접수", "29147"]
+event_triggers:  ["취약점 보고 수신", "연구자 제보"]
+domains:         ["의료기기", "SW"]

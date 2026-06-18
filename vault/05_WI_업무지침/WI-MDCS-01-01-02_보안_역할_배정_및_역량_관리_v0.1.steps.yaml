@@ -1,0 +1,102 @@
+wi_id:           "WI-MDCS-01-01-02"
+title:           "보안 역할 배정 및 역량 관리"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-01"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-01-02-01"
+scope_code:      "MDCS"
+scope_type:      "org"
+standards:       ["IEC 81001-5-1"]
+
+extracted_at:    "2026-06-18T15:08:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "역할 배정"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "activity_role_map"
+        type:     "table"
+        question: "각 보안 활동에 책임 역할을 배정하세요."
+        columns:  ["보안 활동", "책임 역할", "Accountable(1명)"]
+        required: true
+    outputs:
+      - tmp_field: "배정표[].역할"
+        from:      "activity_role_map"
+    hitl: false
+  - id:           "step-02"
+    name:         "역량 요건 정의"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "competence_req"
+        type:     "text_per_row"
+        question: "각 역할의 보안 역량 요건은?"
+        rows_from: "activity_role_map"
+        required: true
+    outputs:
+      - tmp_field: "역량표[].요건"
+        from:      "competence_req"
+    hitl: false
+  - id:           "step-03"
+    name:         "격차 분석 및 교육·확보 계획"
+    section_ref:  "§5.2.3-5.2.4"
+    inputs:
+      - field:    "gap_plan"
+        type:     "table"
+        question: "역량 격차 및 교육/확보 계획을 기재하세요."
+        columns:  ["역할/인력", "격차", "교육·확보 조치", "기한"]
+        required: true
+    outputs:
+      - tmp_field: "격차계획[]"
+        from:      "gap_plan"
+    hitl: false
+  - id:           "step-04"
+    name:         "역량 평가·기록 및 승인"
+    section_ref:  "§5.2.5-5.2.6"
+    inputs:
+      - field:    "competence_result"
+        type:     "table"
+        question: "역량 평가/교육 이수 결과를 기재하세요."
+        columns:  ["인력", "교육 이수", "평가 결과", "적격 여부"]
+        required: true
+      - field:    "approval"
+        type:     "enum"
+        question: "PSO 승인 결과는?"
+        options:  ["승인", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "평가기록[]"
+        from:      "competence_result"
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안책임자(PSO)"
+    rationale:    "WI §2 승인자 = PSO, PRO §3 RACI 역할배정·역량 A=PSO"
+
+dod_checklist:
+  - "모든 보안 활동에 책임 역할 지정(미지정 0건)"
+  - "각 활동 Accountable 1명 원칙 준수"
+  - "역할별 보안 역량 요건 정의"
+  - "역량 격차에 대한 교육/확보 계획 수립·실행"
+  - "역할별 역량 평가·교육 이수 기록 존재"
+  - "PSGB 검토·PSO 승인 기록 존재"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "역량 미충족 인력"
+    rule:    "요구 역량 미충족 인력은 단독 수행 불가, 교육 완료 또는 적격자 감독 하에서만 참여"
+  - section: "§7.2"
+    name:    "이해상충"
+    rule:    "개발-독립검토 겸직 시 이해상충 관리, 독립성 부족 시 외부/타 인력 배정"
+  - section: "§7.4"
+    name:    "인력 변동"
+    rule:    "핵심 역할 이탈 시 대행자 지정으로 공백 방지, 후임 지정·인수인계·재교육 완료 시까지 유지"
+
+triggers:        ["보안 역할 배정", "역량 관리", "보안 교육", "역할 정의", "competence"]
+aliases:         ["보안 인력 관리", "교육 이수", "자격 관리"]
+event_triggers:  ["조직 개편", "신규 활동 도입", "보안 인력 변동"]
+domains:         ["의료기기", "일반"]

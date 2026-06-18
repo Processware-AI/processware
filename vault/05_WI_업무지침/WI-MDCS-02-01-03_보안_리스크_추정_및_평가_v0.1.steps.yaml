@@ -1,0 +1,93 @@
+wi_id:           "WI-MDCS-02-01-03"
+title:           "보안 리스크 추정 및 평가(CVSS·수용 판정)"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-02-01"
+parent_pol:      "POL-MDCS-02"
+related_tmp:
+  - "TMP-MDCS-02-01-03-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+entry_gate:      "WI-MDCS-02-01-02.status == done"
+
+extracted_at:    "2026-06-18T17:30:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "리스크 추정"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "risk_estimation"
+        type:     "table"
+        question: "위협별 리스크를 추정하세요(CVSS/MITRE + 맥락 보정)."
+        columns:  ["위협 ID", "CVSS 기본", "맥락 보정 점수", "추정 방법"]
+        required: true
+    outputs:
+      - tmp_field: "추정[]"
+        from:      "risk_estimation"
+    hitl: false
+  - id:           "step-02"
+    name:         "수용 평가·우선순위"
+    section_ref:  "§5.2.2-5.2.3"
+    inputs:
+      - field:    "acceptance"
+        type:     "table"
+        question: "수용 기준 대비 평가와 우선순위를 기재하세요."
+        columns:  ["위협 ID", "수용 판정(수용/통제 필요)", "우선순위"]
+        required: true
+    derivations:
+      - id:       "control_needed_list"
+        expr:     "수용 판정 == 통제 필요 인 항목 집합"
+        description: "리스크 통제 연계 대상"
+    outputs:
+      - tmp_field: "평가[]"
+        from:      "acceptance"
+    hitl: false
+  - id:           "step-03"
+    name:         "위협 모델 갱신 통지·검토"
+    section_ref:  "§5.2.4-5.2.5"
+    inputs:
+      - field:    "notification"
+        type:     "text"
+        question: "위협 모델 갱신·관계자 통지 내역은?"
+        required: true
+      - field:    "approval"
+        type:     "enum"
+        question: "PSO 검토 결과는?"
+        options:  ["승인(통제 연계)", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "통지"
+        from:      "notification"
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안책임자(PSO)"
+    rationale:    "WI §2 승인자 = PSO, PRO §3 RACI 리스크 추정·평가 A=PSO"
+
+dod_checklist:
+  - "각 위협 리스크가 일관된 방법(CVSS/MITRE)으로 추정"
+  - "보안 맥락·방어 심층화 반영"
+  - "수용 기준 대비 수용 가능/통제 필요 판정"
+  - "통제 필요 항목 우선순위 결정"
+  - "위협 모델 갱신 통지"
+  - "PSO 검토·리스크 통제 연계"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "CVSS 맥락 미반영"
+    rule:    "CVSS 기본만 사용 금지, 맥락(노출·방어심층화) 보정 점수 함께 기록"
+  - section: "§7.2"
+    name:    "수용 기준 경계 사례"
+    rule:    "경계 리스크는 보수적으로 통제 필요 분류, 안전 영향 시 우선순위 상향"
+  - section: "§7.3"
+    name:    "안전 영향 리스크"
+    rule:    "안전·유효성 영향 리스크는 보안 점수 무관하게 제품 리스크 관리 협력 평가"
+
+triggers:        ["보안 리스크 추정", "리스크 평가", "CVSS 점수", "수용 판정", "risk estimation", "risk evaluation"]
+aliases:         ["리스크 산정", "수용 기준 평가", "위험도 평가"]
+event_triggers:  ["위협 모델링 완료 후", "위협 모델 갱신"]
+domains:         ["의료기기", "SW"]

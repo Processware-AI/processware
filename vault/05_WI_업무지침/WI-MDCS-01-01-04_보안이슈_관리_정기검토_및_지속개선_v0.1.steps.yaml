@@ -1,0 +1,106 @@
+wi_id:           "WI-MDCS-01-01-04"
+title:           "보안 이슈 관리 프로세스 정기 검토 및 지속개선"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-01"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-01-04-01"
+scope_code:      "MDCS"
+scope_type:      "org"
+standards:       ["IEC 81001-5-1"]
+
+extracted_at:    "2026-06-18T15:16:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "효과성 평가"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "review_period"
+        type:     "text"
+        question: "검토 기준 기간은?"
+        required: true
+      - field:    "kpi_results"
+        type:     "table"
+        question: "보안 이슈 관리 KPI 실적을 기재하세요."
+        columns:  ["KPI", "목표", "실적", "달성 여부"]
+        required: true
+    outputs:
+      - tmp_field: "효과성[].KPI실적"
+        from:      "kpi_results"
+    hitl: false
+  - id:           "step-02"
+    name:         "현장 결함 분석"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "field_defects"
+        type:     "table"
+        question: "현장 결함·사고와 근본 원인을 기재하세요."
+        columns:  ["결함/사고", "근본 원인", "프로세스 시사점"]
+        required: false
+    outputs:
+      - tmp_field: "결함분석[]"
+        from:      "field_defects"
+    hitl: false
+  - id:           "step-03"
+    name:         "개선 항목 도출·계획"
+    section_ref:  "§5.2.3-5.2.4"
+    inputs:
+      - field:    "improvements"
+        type:     "table"
+        question: "개선 항목과 담당·기한·완료기준을 기재하세요."
+        columns:  ["개선 항목", "우선순위", "담당", "기한", "완료 기준"]
+        required: true
+    outputs:
+      - tmp_field: "개선계획[]"
+        from:      "improvements"
+    hitl: false
+  - id:           "step-04"
+    name:         "검토 보고·승인"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "review_date"
+        type:     "date"
+        question: "정기 검토 실시 일자는?"
+        required: true
+      - field:    "approval"
+        type:     "enum"
+        question: "PSGB 승인 결과는?"
+        options:  ["승인", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "결재.검토일자"
+        from:      "review_date"
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안운영위원회(PSGB)"
+    rationale:    "WI §2 승인자 = PSGB, PRO §3 RACI 정기 검토 A=PSGB"
+
+dod_checklist:
+  - "검토 기준 기간 데이터 집계"
+  - "프로세스 효과성 평가 수행"
+  - "현장 결함 근본 원인 분석 수행"
+  - "개선 항목 도출·우선순위·담당·기한 지정"
+  - "검토 일자 명시된 검토 보고서 작성"
+  - "PSGB 검토·승인 기록 존재"
+  - "이전 검토 개선 조치 이행 여부 확인"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "검토 주기 미준수 우려"
+    rule:    "데이터 미비 시 가용 데이터로 검토 수행하고 한계 명시·보완 일정 수립, 검토 연기 금지"
+  - section: "§7.2"
+    name:    "중대 보안 사건"
+    rule:    "중대 사건·반복 취약점 발생 시 주기 무관 임시 검토 즉시 실시"
+  - section: "§7.3"
+    name:    "개선 조치 지연"
+    rule:    "기한 내 미완료 시 사유·재계획 PSGB 보고, 리스크 항목은 PRO-MDCS-02-01 반영"
+
+triggers:        ["정기 검토", "지속개선", "보안 프로세스 효과성", "현장 결함 분석", "continual improvement"]
+aliases:         ["연간 검토", "프로세스 개선", "경영검토"]
+event_triggers:  ["연 1회 정기 시점", "중대 보안 사건", "QMS 모니터링 주기"]
+domains:         ["의료기기", "일반"]

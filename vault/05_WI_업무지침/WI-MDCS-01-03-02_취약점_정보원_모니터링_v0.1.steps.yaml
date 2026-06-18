@@ -1,0 +1,81 @@
+wi_id:           "WI-MDCS-01-03-02"
+title:           "취약점 정보원 능동 모니터링"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-03"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-03-02-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+
+extracted_at:    "2026-06-18T16:10:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "정보원 수집·매칭"
+    section_ref:  "§5.2.1-5.2.2"
+    inputs:
+      - field:    "monitoring_log"
+        type:     "table"
+        question: "검토한 정보원과 신규 취약점·SBOM 매칭을 기재하세요."
+        columns:  ["검토 일자", "정보원", "신규 취약점(CVE)", "매칭 컴포넌트/버전"]
+        required: true
+    outputs:
+      - tmp_field: "모니터링[]"
+        from:      "monitoring_log"
+    hitl: false
+  - id:           "step-02"
+    name:         "적용성 1차 판정·연계"
+    section_ref:  "§5.2.3-5.2.4"
+    inputs:
+      - field:    "applicability"
+        type:     "table"
+        question: "매칭 취약점의 적용성 판정과 문제해결 연계를 기재하세요."
+        columns:  ["CVE", "적용 가능 여부", "PRO-01-05 연계 ID"]
+        required: false
+    outputs:
+      - tmp_field: "적용성[]"
+        from:      "applicability"
+    hitl: false
+  - id:           "step-03"
+    name:         "검토·기록"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "approval"
+        type:     "enum"
+        question: "PSO 모니터링 검토 결과는?"
+        options:  ["승인", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "결재.검토"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안책임자(PSO)"
+    rationale:    "WI §2 승인자 = PSO. 모니터링 적정성·연계 확인"
+
+dod_checklist:
+  - "정해진 주기 내 모든 정보원 검토 완료"
+  - "신규 취약점이 SBOM 과 매칭"
+  - "적용 가능 취약점에 적용성 1차 판정 수행"
+  - "적용 가능 취약점이 PRO-MDCS-01-05 로 연계"
+  - "PSO 검토·모니터링 기록 보존"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "SBOM 부정확"
+    rule:    "불일치 발견 시 PRO-MDCS-01-04 SBOM 보정 요청, 보정 전 보수적 모니터링"
+  - section: "§7.2"
+    name:    "0-day·미공개 취약점"
+    rule:    "비공식 인지 0-day 즉시 적용성 평가 후 PRO-MDCS-01-05 우선 연계"
+  - section: "§7.4"
+    name:    "EOL/SUPPORTED 한계"
+    rule:    "SUPPORTED 통제 밖이면 모니터링 유지·대응은 안내/완화책 한정, 잔여 리스크 PRO-MDCS-02-01 반영"
+
+triggers:        ["취약점 모니터링", "정보원 수집", "CVE 매칭", "NVD", "vulnerability monitoring"]
+aliases:         ["취약점 감시", "CVE 모니터링", "위협 인텔리전스"]
+event_triggers:  ["정기 모니터링 주기", "신규 취약점 공개"]
+domains:         ["의료기기", "SW"]

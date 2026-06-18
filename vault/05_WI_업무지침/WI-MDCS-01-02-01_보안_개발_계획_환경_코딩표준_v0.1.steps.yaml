@@ -1,0 +1,105 @@
+wi_id:           "WI-MDCS-01-02-01"
+title:           "보안 개발 계획 및 환경·코딩표준 수립"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-02"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-02-01-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+
+extracted_at:    "2026-06-18T15:25:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "보안 활동 통합 계획"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "project_name"
+        type:     "text"
+        question: "대상 개발 프로젝트명은?"
+        required: true
+      - field:    "activity_plan"
+        type:     "table"
+        question: "개발 단계별 보안 활동·산출물·검토 게이트를 기재하세요."
+        columns:  ["개발 단계", "보안 활동", "산출물", "담당", "완료 기준"]
+        required: true
+    outputs:
+      - tmp_field: "계획[].활동"
+        from:      "activity_plan"
+    hitl: false
+  - id:           "step-02"
+    name:         "개발 환경 보안 통제"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "env_controls"
+        type:     "table"
+        question: "개발 환경 보안 통제를 기재하세요."
+        columns:  ["통제 영역(접근/빌드/비밀정보/아티팩트)", "통제 내용"]
+        required: true
+    outputs:
+      - tmp_field: "환경통제[]"
+        from:      "env_controls"
+    hitl: false
+  - id:           "step-03"
+    name:         "보안 코딩 표준 수립"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "coding_standards"
+        type:     "table"
+        question: "채택할 보안 코딩 표준을 기재하세요."
+        columns:  ["언어/플랫폼", "코딩 규칙 출처", "핵심 규칙"]
+        required: true
+    outputs:
+      - tmp_field: "코딩표준[]"
+        from:      "coding_standards"
+    hitl: false
+  - id:           "step-04"
+    name:         "테일러링 정당화 및 승인"
+    section_ref:  "§5.2.4-5.2.5"
+    inputs:
+      - field:    "tailoring"
+        type:     "table"
+        question: "미적용(테일러링) 항목과 정당화를 기재하세요(없으면 생략)."
+        columns:  ["미적용 요구", "사유", "보완 통제", "잔여 리스크", "승인자"]
+        required: false
+      - field:    "approval"
+        type:     "enum"
+        question: "PSO 승인 결과는?"
+        options:  ["승인", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "테일러링[]"
+        from:      "tailoring"
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안책임자(PSO)"
+    rationale:    "WI §2 승인자 = PSO, PRO §3 RACI 개발계획 A=PSO. 테일러링은 보안 전문가 승인 필요(5.1.1-REQ-002)"
+
+dod_checklist:
+  - "모든 개발 단계에 보안 활동·검토 게이트가 계획에 반영"
+  - "개발 환경 보안 통제(접근·빌드·비밀정보) 정의"
+  - "보안 코딩 표준이 사용 기술에 맞게 채택"
+  - "테일러링 항목 시 보안 전문가 검토·승인·정당화 문서화"
+  - "PSGB 검토·PSO 승인 기록 존재"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "테일러링 남용 방지"
+    rule:    "일괄·관행적 생략 금지, 각 미적용 항목 개별 사유·보완 통제·잔여 리스크 명시 후 보안 전문가 승인"
+  - section: "§7.2"
+    name:    "환경 통제 미비"
+    rule:    "필수 통제 부재 시 착수 전 보완, 불가피 시 보완 일정·임시 통제 계획 기록"
+  - section: "§7.4"
+    name:    "계획 중대 변경"
+    rule:    "아키텍처·기술 스택 중대 변경 시 계획 갱신 및 후속 단계 재계획"
+
+triggers:        ["보안 개발 계획", "개발 환경 보안", "보안 코딩 표준", "테일러링", "secure SDLC plan"]
+aliases:         ["SDLC 계획", "시큐어 코딩", "개발 보안 통제"]
+event_triggers:  ["개발 프로젝트 착수", "기술 스택 변경"]
+domains:         ["의료기기", "SW"]

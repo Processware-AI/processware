@@ -1,0 +1,95 @@
+wi_id:           "WI-MDCS-01-02-02"
+title:           "보안 요구사항 정의 및 검토"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-02"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-02-02-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+entry_gate:      "WI-MDCS-01-02-01.status == done"
+
+extracted_at:    "2026-06-18T15:30:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "보안 능력 요구 도출"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "security_requirements"
+        type:     "table"
+        question: "수명주기 단계별 보안 능력 요구를 도출하세요."
+        columns:  ["요구 ID", "수명주기 단계(설치/운영/유지/폐기)", "보안 요구 내용", "검증 방법"]
+        required: true
+    outputs:
+      - tmp_field: "요구명세[]"
+        from:      "security_requirements"
+    hitl: false
+  - id:           "step-02"
+    name:         "REQUIRED SW 리스크 식별"
+    section_ref:  "§5.2.3"
+    inputs:
+      - field:    "required_sw_risks"
+        type:     "table"
+        question: "REQUIRED SW 관련 보안 가정·리스크를 식별하세요."
+        columns:  ["REQUIRED SW", "보안 가정", "리스크", "반영 요구 ID"]
+        required: false
+    outputs:
+      - tmp_field: "REQUIRED리스크[]"
+        from:      "required_sw_risks"
+    hitl: false
+  - id:           "step-03"
+    name:         "품질 검토"
+    section_ref:  "§5.2.4"
+    inputs:
+      - field:    "quality_review"
+        type:     "table"
+        question: "요구 품질 검토 결과(시험가능·무모순·완전·추적)를 기재하세요."
+        columns:  ["요구 ID", "시험 가능", "무모순", "추적 가능", "시정 조치"]
+        required: true
+    outputs:
+      - tmp_field: "품질검토[]"
+        from:      "quality_review"
+    hitl: false
+  - id:           "step-04"
+    name:         "검토 승인"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "approval"
+        type:     "enum"
+        question: "PSO 검토 결과는?"
+        options:  ["승인", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안책임자(PSO)"
+    rationale:    "WI §2 승인자 = PSO, PRO §3 RACI 보안요구 정의 A=PSO"
+
+dod_checklist:
+  - "설치·운영·유지·폐기 전 단계의 보안 능력 요구 도출"
+  - "모든 요구에 고유 ID·검증 방법 부여"
+  - "REQUIRED SW 관련 리스크·가정이 요구로 반영"
+  - "요구 품질(시험 가능·무모순) 검토 수행·결함 시정"
+  - "PSO 검토·승인 기록 존재"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "시험 불가능 요구"
+    rule:    "검증 불가 요구는 측정 기준·검증 방법 명시하여 구체화, 구체화 불가 시 채택 금지"
+  - section: "§7.2"
+    name:    "요구 간 모순"
+    rule:    "보안-기능 충돌 시 리스크 기반 우선순위·트레이드오프 문서화, 필요 시 PRO-MDCS-02-01 협의"
+  - section: "§7.3"
+    name:    "위협 모델 미완성"
+    rule:    "잠정 요구 표시 후 위협 모델 완료(WI-MDCS-02-01-02) 시 재검토 확정"
+
+triggers:        ["보안 요구사항", "보안 요구 정의", "요구 검토", "REQUIRED SW 리스크", "security requirements"]
+aliases:         ["보안 명세", "요구사항 명세", "보안 스펙"]
+event_triggers:  ["개발 계획 완료 후", "요구 변경"]
+domains:         ["의료기기", "SW"]

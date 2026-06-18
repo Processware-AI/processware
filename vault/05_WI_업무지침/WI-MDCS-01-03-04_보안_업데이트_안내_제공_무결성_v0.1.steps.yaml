@@ -1,0 +1,87 @@
+wi_id:           "WI-MDCS-01-03-04"
+title:           "보안 업데이트 안내·제공·무결성 검증"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-03"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-03-04-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+entry_gate:      "WI-MDCS-01-03-03.status == done"
+
+extracted_at:    "2026-06-18T16:20:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "제공·안내 실행"
+    section_ref:  "§5.2.1-5.2.2"
+    inputs:
+      - field:    "distribution"
+        type:     "table"
+        question: "업데이트 제공/안내 내역을 기재하세요."
+        columns:  ["대상 SW", "분류", "제공 방식(배포/안내)", "무결성 수단(서명/해시)", "완화책(SUPPORTED)"]
+        required: true
+    outputs:
+      - tmp_field: "제공[]"
+        from:      "distribution"
+    hitl: false
+  - id:           "step-02"
+    name:         "사용자 통보"
+    section_ref:  "§5.2.3-5.2.4"
+    inputs:
+      - field:    "notification"
+        type:     "table"
+        question: "사용자 통보 내역을 기재하세요."
+        columns:  ["통보 대상", "통보 채널", "통보 일자", "영향·방법·기한 포함"]
+        required: true
+    outputs:
+      - tmp_field: "통보[]"
+        from:      "notification"
+    hitl: false
+  - id:           "step-03"
+    name:         "검토·기록"
+    section_ref:  "§5.2.5"
+    inputs:
+      - field:    "sla_met"
+        type:     "boolean"
+        question: "정책 SLA 를 준수했습니까?"
+        required: true
+      - field:    "approval"
+        type:     "enum"
+        question: "PSO 검토 결과는?"
+        options:  ["승인", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안책임자(PSO)"
+    rationale:    "WI §2 승인자 = PSO, PRO §3 RACI 안내·제공 A=PSO"
+
+dod_checklist:
+  - "MAINTAINED 업데이트가 무결성 검증 가능 방식으로 배포"
+  - "SUPPORTED SW 호환성·대체 완화책 안내 완료"
+  - "사용자 통보(영향·방법·기한) 및 증적 보유"
+  - "무결성 검증값·방법 제공"
+  - "정책 SLA 준수"
+  - "PSO 검토·배포 기록 보존"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "무결성 수단 미적용 배포 금지"
+    rule:    "서명/해시 없이 MAINTAINED 배포 금지, 수단 미비 시 배포 보류·보완"
+  - section: "§7.2"
+    name:    "배포 실패·롤백"
+    rule:    "배포 후 문제 시 롤백, 원인 PRO-MDCS-01-05 처리, 재배포 전 재검증"
+  - section: "§7.3"
+    name:    "SUPPORTED 사용자 미적용 위험"
+    rule:    "완화책 미적용 위험은 잔여 리스크로 PRO-MDCS-02-01 반영·동반문서 명시"
+
+triggers:        ["보안 업데이트 제공", "패치 배포", "무결성 검증", "사용자 통보", "update distribution"]
+aliases:         ["패치 배포", "업데이트 안내", "코드 서명 배포"]
+event_triggers:  ["업데이트 검증 합격 후", "배포 시점"]
+domains:         ["의료기기", "SW"]

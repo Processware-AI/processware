@@ -1,0 +1,91 @@
+wi_id:           "WI-MDCS-01-03-03"
+title:           "보안 업데이트 검증(효과·회귀)"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-01-03"
+parent_pol:      "POL-MDCS-01"
+related_tmp:
+  - "TMP-MDCS-01-03-03-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+
+extracted_at:    "2026-06-18T16:15:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "효과 검증"
+    section_ref:  "§5.2.1"
+    inputs:
+      - field:    "patch_target"
+        type:     "text"
+        question: "검증 대상 패치와 해결 대상 취약점(CVE)은?"
+        required: true
+      - field:    "efficacy_result"
+        type:     "enum"
+        question: "패치 후 취약점 재현 결과는?"
+        options:  ["재현 불가(해결)", "재현됨(미해결)"]
+        required: true
+    outputs:
+      - tmp_field: "효과검증.결과"
+        from:      "efficacy_result"
+    hitl: false
+  - id:           "step-02"
+    name:         "회귀 시험"
+    section_ref:  "§5.2.2"
+    inputs:
+      - field:    "regression"
+        type:     "table"
+        question: "회귀 시험 결과를 기재하세요."
+        columns:  ["회귀 항목(기능/성능/안전)", "결과(P/F)", "비고"]
+        required: true
+    derivations:
+      - id:       "deployable"
+        expr:     |
+          if 효과=="재현 불가" and 회귀_F_건수==0: "배포 가능"
+          else: "보류"
+        description: "배포 가부 판정"
+    outputs:
+      - tmp_field: "회귀[]"
+        from:      "regression"
+    hitl: false
+  - id:           "step-03"
+    name:         "검토·승인"
+    section_ref:  "§5.2.3-5.2.4"
+    inputs:
+      - field:    "approval"
+        type:     "enum"
+        question: "PSO 검증 승인 결과는?"
+        options:  ["승인(배포 가능)", "재패치 요청"]
+        required: true
+    outputs:
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안책임자(PSO)"
+    rationale:    "WI §2 승인자 = PSO. 효과·무회귀 충족 시에만 배포 승인"
+
+dod_checklist:
+  - "대상 취약점 해결 효과 검증(재현 불가 확인)"
+  - "영향 범위 회귀 시험 실행·통과"
+  - "안전·유효성 관련 회귀 항목 확인"
+  - "효과·무회귀 모두 충족 시 배포 가능 판정"
+  - "개발자 검토·PSO 승인 기록 존재"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "회귀 발생"
+    rule:    "회귀 발생 시 배포 보류, 재패치 또는 추가 완화 후 재검증"
+  - section: "§7.2"
+    name:    "효과 미입증"
+    rule:    "취약점 미해결 시 근본 원인 재분석·재패치 후 검증, 미입증 업데이트 배포 금지"
+  - section: "§7.4"
+    name:    "안전·유효성 영향 의심"
+    rule:    "안전·유효성 영향 가능 시 PRO-MDCS-02-01·제품 리스크 관리 협력 평가"
+
+triggers:        ["보안 업데이트 검증", "회귀 시험", "패치 효과 검증", "regression test"]
+aliases:         ["회귀 테스트", "패치 검증", "업데이트 검증"]
+event_triggers:  ["패치 생성 후", "배포 전 검증"]
+domains:         ["의료기기", "SW"]

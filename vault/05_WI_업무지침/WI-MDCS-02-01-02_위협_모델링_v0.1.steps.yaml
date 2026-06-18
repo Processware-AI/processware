@@ -1,0 +1,96 @@
+wi_id:           "WI-MDCS-02-01-02"
+title:           "위협 모델링(취약점·위협 식별, 위협모델 작성·검토)"
+version:         "0.1"
+parent_pro:      "PRO-MDCS-02-01"
+parent_pol:      "POL-MDCS-02"
+related_tmp:
+  - "TMP-MDCS-02-01-02-01"
+scope_code:      "MDCS"
+scope_type:      "project"
+standards:       ["IEC 81001-5-1"]
+entry_gate:      "WI-MDCS-02-01-01.status == done"
+
+extracted_at:    "2026-06-18T17:25:00+09:00"
+extractor:       "wi-tmp-writer"
+extractor_model: "claude-opus-4-8"
+manual_override: false
+
+steps:
+  - id:           "step-01"
+    name:         "자산·데이터 흐름·위협 식별"
+    section_ref:  "§5.2.1-5.2.2"
+    inputs:
+      - field:    "assets"
+        type:     "table"
+        question: "보호 자산과 CIA 중요도, 신뢰경계를 기재하세요."
+        columns:  ["자산", "CIA 중요도", "신뢰경계"]
+        required: true
+      - field:    "threats"
+        type:     "table"
+        question: "자산별 위협을 식별하세요(STRIDE 등)."
+        columns:  ["위협 ID", "대상 자산", "위협 유형", "CIA 영향"]
+        required: true
+    outputs:
+      - tmp_field: "자산[]"
+        from:      "assets"
+      - tmp_field: "위협[]"
+        from:      "threats"
+    hitl: false
+  - id:           "step-02"
+    name:         "공격 벡터·위협 모델 작성"
+    section_ref:  "§5.2.3-5.2.4"
+    inputs:
+      - field:    "attack_vectors"
+        type:     "text_per_row"
+        question: "각 위협의 공격 벡터·진입점은?"
+        rows_from: "threats"
+        required: true
+    outputs:
+      - tmp_field: "위협[].공격벡터"
+        from:      "attack_vectors"
+    hitl: false
+  - id:           "step-03"
+    name:         "개발팀 검토·PSO 승인"
+    section_ref:  "§5.2.5-5.2.6"
+    inputs:
+      - field:    "dev_review"
+        type:     "text"
+        question: "개발팀 검토·검증 결과와 도출 이슈는?"
+        required: true
+      - field:    "approval"
+        type:     "enum"
+        question: "PSO 승인 결과는?"
+        options:  ["승인(리스크 평가 연계)", "보완요청"]
+        required: true
+    outputs:
+      - tmp_field: "검토.개발팀"
+        from:      "dev_review"
+      - tmp_field: "결재.승인"
+        from:      "approval"
+    hitl: required
+    approver_role: "보안책임자(PSO)"
+    rationale:    "WI §2 승인자 = PSO, PRO §3 RACI 리스크 추정·평가 A=PSO. 개발팀 검토는 7.2 요구"
+
+dod_checklist:
+  - "보호 자산·데이터 흐름·신뢰경계 식별"
+  - "자산별 위협 식별(CIA 영향 기준)"
+  - "위협별 공격 벡터 분석"
+  - "위협 모델 문서화(범위 특화)"
+  - "개발팀 검토·검증 기록 존재"
+  - "PSO 승인·리스크 평가 연계"
+
+exception_hooks:
+  - section: "§7.1"
+    name:    "위협 식별 누락 위험"
+    rule:    "체계(STRIDE 등) 없이 임의 식별 금지, 각 자산·경계에 체계적 매핑"
+  - section: "§7.3"
+    name:    "검토 중 이슈 발견"
+    rule:    "실제 취약점 발견 시 PRO-MDCS-01-05 처리 및 위협 모델 갱신"
+  - section: "§7.4"
+    name:    "신규 위협 인텔리전스"
+    rule:    "신규 공격 기법 입수 시 위협 모델 반영, 정기 검토(WI-MDCS-02-01-05) 재확인"
+
+triggers:        ["위협 모델링", "위협 식별", "공격 벡터", "신뢰경계", "STRIDE", "threat modeling"]
+aliases:         ["스레트 모델", "위협 분석", "attack surface"]
+event_triggers:  ["보안 맥락 완료 후", "신규 위협 발생", "연 1회 정기"]
+domains:         ["의료기기", "SW"]
