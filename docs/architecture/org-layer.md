@@ -1,7 +1,7 @@
 ---
 type: architecture
 title: 조직 계층 도입 설계 방향 — 플랫폼 1 + 조직 루트 N
-version: "0.8"
+version: "0.9"
 status: draft
 updated: 2026-11-04
 decided:
@@ -111,7 +111,7 @@ Obsidian 은 vault 가 자기완결적이어야 wikilink 가 동작한다. 따�
 | **3. 스캐폴드 도구** ✅ 구현 (2026-11-05) | `python -m tools.org init {path}` 가 조직 루트(org.yaml · 폴더)를 만들고 `sync-core` 를 실행한다. `core/vault_base/_manifest.yaml` 의 managed(덮어쓰기)/seed(없을 때만) 규칙으로 `{ORG_ROOT}/vault` 를 채우고, `core/org_base` 로 조직 README · .gitignore 를 시드한다. 플랫폼 repo 의 `vault/` · `inputs/` · `sources/` 는 `core/` 로 이동(git mv)했고 default fallback 은 제거했다. | `tools/org/sync.py` · `core/` |
 | **4. RBAC 조직화** ✅ 구현 (2026-11-05) | 역할 정의는 플랫폼 `policy.yaml` (v0.2), 사용자→역할 배정 · alias · owns_pro · 위임 · enforce 는 `org.yaml` → `rbac`. 판정은 `python3 -m tools.org rbac` (결정론적) 이 하고 감사 로그를 조직 루트 `.processware/rbac_audit.jsonl` 에 남긴다. independence-guard 는 CLI 결과만 전달. | `tools/org/rbac.py` · independence-guard · policy.yaml |
 | **5. 격리 가드** ✅ 구현 (2026-11-05) | `tools/org/guard.py` 가 경로를 org/platform/outside 로 분류하고 managed 파일 · 플랫폼 · outside 쓰기를 거부한다. 3중 강제: Claude Code PreToolUse 훅(`tools.org.hook_guard`) · `vault_rules validate` · qa-reviewer §13. | `tools/org/guard.py` · `.claude/settings.json` · qa-reviewer · vault_rules |
-| **6. 외부 연동** | Redmine 프로젝트 이름을 `lib-{org}-{scope}` · `ws-{org}-{slug}` 로 바꾸고, sync_map DB 와 config 를 조직 루트로 옮긴다. GitHub Actions 는 **조직 repo 쪽에서 플랫폼을 체크아웃해 실행** 하는 구조로 뒤집는다. | publish/redmine · vault-push.yml |
+| **6. 외부 연동** ✅ 구현 (2026-11-05) | `publish/orgctx.py` 가 활성 조직을 해석해 vault · 설정(`{ORG_ROOT}/publish/{target}/config.yaml`) · DB(`.processware/publish/`) · 접두어를 제공. Redmine 식별자 `lib-{org}-{scope}` · `lib-{org}-{scope}-{pro_slug}` · `ws-{org}-{slug}`. config 템플릿 · GitHub Actions 는 `core/org_base` 로 이동해 조직 repo 에 시드. post-commit hook 은 조직 repo 에 설치. | publish/ · core/org_base |
 | **7. 교차 조직 뷰 (선택)** | 컨설팅 펌 관점의 읽기 전용 통합 대시보드. 조직 데이터를 복제하지 않고 각 루트를 읽어 생성한다. 마지막에 한다. | 신규 |
 
 ---
@@ -147,11 +147,12 @@ Obsidian 은 vault 가 자기완결적이어야 wikilink 가 동작한다. 따�
 | 3. 스캐폴드 도구 | ✅ 구현 (2026-11-05) | `core/vault_base/` (구 `vault/` 전체, `_inputs_common` 제거, `.obsidian` 포함) + `_manifest.yaml` · `core/org_base/` (README · .gitignore · inputs/sources README). `tools/org/sync.py` sync-core (managed 덮어쓰기 · seed 보존 · `--force` 재시드 · `--dry-run` · manifest 전수 분류 검사 · org.yaml platform_version 갱신 · `.processware/sync-core.yaml` 기록). `init` 이 sync-core 자동 실행 (`--no-sync` 로 생략). `context.py` default fallback 제거. 테스트 17건. |
 | 4. RBAC 조직화 | ✅ 구현 (2026-11-05) | `.claude/rbac/policy.yaml` v0.2 — 역할 6종 정의만 (PoC users 제거, `act.*` action 추가, 판정 규칙 명문화). `org.yaml` → `rbac`: `enforce` · `users` (역할 목록 또는 {roles, aliases, owns_pro}) · `delegations[]` (until 만료 자동 무시) · `audit_log`. `tools/org/rbac.py` 판정 엔진 (glob 매칭 · deny→allow→target_constraints · 위임 · alias · 독립성) + 감사 로그 `.processware/rbac_audit.jsonl`. CLI `tools.org rbac check|independence|roles|users|log`. independence-guard 는 CLI 결과만 사용 (LLM 판정 제거). 테스트 32건. |
 | 5. 격리 가드 | ✅ 구현 (2026-11-05) | `tools/org/guard.py` (zone org/platform/outside · manifest managed 판정 · read/write 규칙) + CLI `tools.org guard`. Claude Code PreToolUse 훅 `.claude/settings.json` → `tools/org/hook_guard.py` (managed · 제거된 플랫폼 데이터 위치 · outside 쓰기 exit 2 차단, 플랫폼 개발은 허용, 조직 컨텍스트 없으면 생략). `tools.vault_rules validate` 격리 오류. qa-reviewer §13 (category isolation, blocker). 테스트 39건. |
-| 6~7 | ⏳ 미착수 | — |
+| 6. 외부 연동 | ✅ 구현 (2026-11-05) | `publish/orgctx.py` 신규. `dispatcher.py` · `redmine/{sync,library_setup,workspace,db}.py` 를 조직 루트 기준으로 리팩터 (vault_root · org_root git diff · config_path · db_path · project_prefix · enabled 게이트). `lib-{prefix}-{scope}` 상위 프로젝트 자동 생성, `by_scope_code` 는 override 전용. `publish/redmine/config.yaml` → `core/org_base/publish/redmine/config.yaml`, `.github/workflows/vault-push.yml` → `core/org_base/.github/workflows/` (조직 repo 가 플랫폼을 체크아웃해 실행). post-commit hook · install-hook.sh 는 조직 repo 대상. 테스트 5건 (orgctx · 식별자 · dry-run sync · dispatcher CLI). |
+| 7 | ⏳ 미착수 | — |
 
-**알려진 제한 (단계 3 시점)**
+**알려진 제한 (단계 6 시점)**
+- Redmine 실 서버 연동은 네트워크가 없는 환경이라 미검증 (dry-run · 식별자 · 설정 경로만 테스트). 첫 실연동 시 `--setup --dry-run` 으로 확인.
 - 플랫폼 repo 에는 더 이상 `vault/` · `inputs/` · `sources/` 가 없다. 모든 커맨드는 `PROCESSWARE_ORG_ROOT` 또는 `--org`/`--org-root` 가 있어야 동작한다.
-- `publish/redmine/*` Python 과 `.github/workflows/vault-push.yml` 은 플랫폼 repo 루트의 `vault/` 리터럴을 전제하므로 **현재 동작하지 않는다**. 조직 repo 쪽으로 옮기는 것이 단계 6.
 - `/process-plan` Phase −2 (git branch 격리)는 vault 가 있는 repo 에서 branch 를 만든다는 전제다. 조직 루트가 별도 repo 가 되었으므로 git 작업은 `{ORG_ROOT}` 에서 해야 한다 (공통 절에 원칙만 명시, 커맨드 본문 보강은 단계 6~7).
 - 사용자 가이드 4종 · 사용자_매뉴얼은 `vault/`, `.claude/runs/` 리터럴로 설명한다. 조직 루트 기준으로 읽는다. 본문 갱신은 후속 과제.
 - 에이전트가 호출하는 `python3 -m tools.vault_rules` 는 환경변수 `PROCESSWARE_ORG_ROOT` 를 상속받아야 한다. 커맨드가 `--org-root` 로 받은 값은 하위 호출 전에 export 한다.

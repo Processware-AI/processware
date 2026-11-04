@@ -67,8 +67,8 @@ Workspace (팀 관리, 자율 편집)
 
 ```
 /workspace-create sync \
-  --workspace ws-product-alpha \
-  --module lib-iso27001-p001-001
+  --workspace ws-acme-product-alpha \
+  --module lib-acme-iso27001-p001-001
 ```
 
 ### 목록 조회
@@ -80,32 +80,36 @@ Workspace (팀 관리, 자율 편집)
 ### 특정 Workspace 상세
 
 ```
-/workspace-create status --workspace ws-product-alpha
+/workspace-create status --workspace ws-acme-product-alpha
 ```
 
 ## 실행 방법
 
+데이터는 활성 조직 루트, 코드는 플랫폼 (org-layer 단계 6). 식별자는 조직 접두어를 포함한다: `ws-{prefix}-{slug}` · `ws-{prefix}-{slug}-{pro_slug}` (prefix = org.yaml `redmine.project_prefix`, 기본 org_id).
+
 ```bash
+export PROCESSWARE_ORG_ROOT=/work/acme
 python3 publish/dispatcher.py workspace [--target <backend>] create --name "..." --slug "..." --modules "PRO-XXX,PRO-YYY"
-python3 publish/dispatcher.py workspace sync   --workspace ws-{slug} --module lib-{scope}-{pro_slug}
+python3 publish/dispatcher.py workspace sync   --workspace ws-{prefix}-{slug} --module lib-{prefix}-{scope}-{pro_slug}
 python3 publish/dispatcher.py workspace list
-python3 publish/dispatcher.py workspace status --workspace ws-{slug}
+python3 publish/dispatcher.py workspace status --workspace ws-{prefix}-{slug}
 ```
+`--workspace` 는 `ws-{prefix}-{slug}` · `ws-{slug}` · `{slug}` 모두 허용.
 
 ## 사전 조건
 
 1. Process Library 구성 완료 (`/vault-push --setup` 실행)
-2. `publish/{target}/config.yaml` 의 `by_pro` 섹션에 PRO → Library Module 매핑 등록
-3. 접속 정보 및 API KEY 환경변수 설정
+2. `{ORG_ROOT}/publish/{target}/config.yaml` 의 `by_pro` 섹션에 PRO → Library Module 매핑 등록 (setup 이 자동 기록)
+3. org.yaml `redmine.enabled: true` + 접속 정보 및 API KEY 환경변수 설정 (`list` · `status` · `--dry-run` 은 불필요)
 
 ## 이 스킬이 호출되면
 
-1. `publish/config.yaml` 에서 `default_target` 확인 (또는 `--target` 인수 우선)
-2. `publish/{target}/adapter.py` 동적 로드
-3. `by_pro` 매핑 확인
-4. `--modules` 의 각 PRO doc_id → Library Module identifier 변환
-5. 외부 시스템에 `ws-{slug}` 상위 프로젝트 생성
-6. 각 PRO → `ws-{slug}-{pro_slug}` 서브프로젝트 생성
+1. 조직 컨텍스트 해석 (공통 절) → `PROCESSWARE_ORG_ROOT` export
+2. `publish/config.yaml` 에서 `default_target` 확인 (또는 `--target` 인수 우선)
+3. `publish/{target}/adapter.py` 동적 로드, `{ORG_ROOT}/publish/{target}/config.yaml` 의 `by_pro` 매핑 확인
+4. `--modules` 의 각 PRO doc_id → Library Module identifier (`lib-{prefix}-…`) 변환
+5. 외부 시스템에 `ws-{prefix}-{slug}` 상위 프로젝트 생성
+6. 각 PRO → `ws-{prefix}-{slug}-{pro_slug}` 서브프로젝트 생성
 7. Library Module 문서 전체 복사 (워크스페이스 헤더로 변환)
-8. workspace_map DB 등록
+8. workspace_map DB 등록 (`{ORG_ROOT}/.processware/publish/{target}_sync.db`)
 9. 결과 요약 출력

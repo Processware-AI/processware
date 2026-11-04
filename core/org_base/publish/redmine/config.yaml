@@ -1,0 +1,44 @@
+# Redmine 연동 설정 — 조직 루트 {ORG_ROOT}/publish/redmine/config.yaml
+# core/org_base 에서 시드됨 (sync-core 는 덮어쓰지 않는다). 이 조직이 소유·편집.
+# 실행: PROCESSWARE_ORG_ROOT=<이 루트> python3 <플랫폼>/publish/dispatcher.py push [--dry-run]
+# 연동 활성화: org.yaml → redmine.enabled: true  (project_prefix 기본값 = org_id)
+
+redmine:
+  url: "https://redmine.yourorg.com"   # 실제 URL로 교체 (CI 에서는 REDMINE_URL 시크릿으로 덮어씀)
+  api_key: "${REDMINE_API_KEY}"         # 환경변수로 주입
+
+# Redmine 프로젝트 식별자는 조직 접두어를 포함한다:
+#   상위:   lib-{prefix}-{scope}            예: lib-acme-iso27001
+#   모듈:   lib-{prefix}-{scope}-{pro_slug}  예: lib-acme-iso27001-p001-001
+#   작업공간: ws-{prefix}-{slug}             예: ws-acme-product-alpha
+project_mapping:
+  # scope_code → 상위 프로젝트 identifier. 비워 두면 lib-{prefix}-{scope 소문자} 로 자동 결정되고 없으면 생성한다.
+  by_scope_code: {}
+  # 예 (수동 override):
+  #   ISO27001: "lib-acme-isms"
+
+  # PRO doc_id → Library Module identifier (`/vault-push --setup` 이 자동으로 채운다)
+  by_pro: {}
+
+sync_rules:
+  skip_status: [draft]                  # 이 status 문서는 동기화 안 함
+  wiki_types:  [POL, PRO, WI, TMP, EX, MAT, REC-AUDIT, REC-GAP]
+  issue_types: [REC, REC-NCR]
+
+issue_trackers:
+  REC:     "프로세스기록"
+  REC-NCR: "NCR"
+
+# Redmine custom field ID (Redmine 관리자 화면에서 확인 후 채울 것)
+redmine_custom_fields:
+  doc_id:    null   # 예: 10
+  version:   null   # 예: 11
+  standards: null   # 예: 12
+  retention: null   # 예: 13
+
+# Workspace 생성 시 기본 트래커 목록
+workspace_trackers:
+  - name: "프로세스기록"
+    is_in_roadmap: false
+  - name: "NCR"
+    is_in_roadmap: true

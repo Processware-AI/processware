@@ -94,10 +94,10 @@
 ### Phase 5 (외부 시스템 연동) — Redmine 구현 완료
 
 - **Headless CMS 모델**: vault = 콘텐츠 저장소, Redmine = API 소비자. 단방향 Push (vault SSoT → Redmine, 역방향 없음)
-- **Process Library**: `lib-{scope_code}` Redmine 프로젝트로 구성. PRO별 Library Module (`lib-{scope_code}-{pro_slug}`) 서브프로젝트. vault push 관리, 직접 편집 금지
-- **Workspace**: 현업 업무 단위 가상 공간. `ws-{slug}` 상위 프로젝트 + PRO 단위 서브프로젝트로 구성. Library 복사본이므로 팀 자율 편집 가능
-- **자동화**: git post-commit hook + GitHub Actions (`feat/*-output`, `main` 브랜치 + `vault/**/*.md` 경로 트리거)
-- **sync_map SQLite DB**: vault_doc_id ↔ Redmine resource 매핑, 변경분 추적
+- **Process Library**: `lib-{org}-{scope}` Redmine 프로젝트로 구성 (없으면 `--setup` 이 생성). PRO별 Library Module (`lib-{org}-{scope}-{pro_slug}`) 서브프로젝트. vault push 관리, 직접 편집 금지
+- **Workspace**: 현업 업무 단위 가상 공간. `ws-{org}-{slug}` 상위 프로젝트 + PRO 단위 서브프로젝트로 구성. Library 복사본이므로 팀 자율 편집 가능
+- **자동화**: 조직 루트 repo 의 git post-commit hook (`install-hook.sh --org-root`) + 시드된 GitHub Actions (`main` + `vault/**/*.md` 변경 시 플랫폼을 체크아웃해 push)
+- **sync_map SQLite DB**: vault_doc_id ↔ Redmine resource 매핑, 변경분 추적 — `{ORG_ROOT}/.processware/publish/redmine_sync.db`. 연동 설정은 `{ORG_ROOT}/publish/redmine/config.yaml`, on/off 는 org.yaml `redmine.enabled` (org-layer 단계 6)
 - **이슈 동기화**: REC → Redmine Issue (프로세스기록 Tracker), REC-NCR → Issue (NCR Tracker) + STATUS_MAP/PRIORITY_MAP
 
 ### Phase 4.5 명세 (외부 인프라 연동 준비)
@@ -123,7 +123,7 @@ STD_Process_Builder/
 ├── (subproducts/ 없음 — 모든 파생은 별도 repo 운영)
 ├── core/                                    ← 조직 루트 템플릿 (org-layer 단계 3)
 │   ├── vault_base/                          ← vault 템플릿 전체 + _manifest.yaml (managed 덮어쓰기 / seed 1회) → {ORG_ROOT}/vault
-│   └── org_base/                            ← 조직 README · .gitignore · inputs/·sources/ README → {ORG_ROOT}
+│   └── org_base/                            ← 조직 README · .gitignore · inputs/·sources/ README · publish/redmine/config.yaml · .github/workflows/vault-push.yml → {ORG_ROOT}
 ├── tools/vault_rules/                       ← 문서 ID 발급·파일명·frontmatter 검증 CLI (python -m, 활성 조직 vault 기본)
 ├── tools/org/                               ← 조직 CLI (context·validate·init·sync-core·rbac·guard·register·list) + hook_guard — org-layer 단계 1~5
 ├── .claude/                                 ← 4차원 자동화 인프라
@@ -177,8 +177,8 @@ STD_Process_Builder/
 │       ├── pcb_quorum.md                    ← PCB 다단계 quorum (4 모드)
 │       └── auto_trend_mermaid.md            ← round ≥ 2 자동 트렌드
 ├── publish/                            ← Phase 5 외부 시스템 연동
-│   └── redmine/                             ← Redmine 단방향 Push (Headless CMS 모델)
-│       ├── config.yaml                      ← Redmine URL/API KEY + project_mapping + sync_rules
+│   ├── orgctx.py                            ← 활성 조직 컨텍스트 (vault · 설정 · DB 경로, project_prefix) — 단계 6
+│   └── redmine/                             ← Redmine 단방향 Push (Headless CMS 모델). 설정은 {ORG_ROOT}/publish/redmine/config.yaml
 │       ├── requirements.txt                 ← python-frontmatter, requests, PyYAML
 │       ├── redmine_client.py                ← RedmineClient (project, wiki, issue CRUD)
 │       ├── db.py                            ← sync_map + workspace_map SQLite DB
@@ -189,8 +189,6 @@ STD_Process_Builder/
 │       ├── workspace.py                     ← Workspace create/sync/list/status
 │       ├── post-commit.hook                 ← git hook (vault/*.md 변경 감지 → 백그라운드 push)
 │       └── install-hook.sh                  ← post-commit hook 설치 스크립트
-├── .github/workflows/
-│   └── vault-push.yml                       ← GitHub Actions (main 의 vault/**/*.md 변경 시 push · feat/*-output 패턴은 잔존, 해당 브랜치 없음)
 └── (vault/ · inputs/ · sources/ 없음 — 조직 자산은 별도 repo 의 조직 루트에 있다)
 
 {ORG_ROOT}/                                      ← 조직 루트 (별도 git repo) — python3 -m tools.org init 로 생성
@@ -376,20 +374,21 @@ python3 -m tools.org sync-core --dry-run                                      # 
 
 #### 5-A. 최초 설정 (1회)
 ```bash
-# 1. 의존성 설치
+# 1. 의존성 설치 (플랫폼)
 pip3 install -r publish/redmine/requirements.txt
 
-# 2. 환경변수 설정
+# 2. 조직 루트 활성화 + 연동 on
+export PROCESSWARE_ORG_ROOT=/work/acme
+#    org.yaml → redmine.enabled: true (project_prefix 기본 org_id)
+#    {ORG_ROOT}/publish/redmine/config.yaml → url 입력 (sync-core 가 시드)
 export REDMINE_API_KEY=your_api_key
-export REDMINE_URL=https://your-redmine.example.com
 
-# 3. Redmine에 상위 Library 프로젝트 수동 생성 (예: lib-iso27001, lib-cmmi)
-# 4. Library Module 서브프로젝트 자동 생성
-/vault-push --setup               # Redmine 프로젝트 계층 자동 생성
+# 3. Library 계층 자동 생성 — lib-{org}-{scope} (없으면 생성) + lib-{org}-{scope}-{pro_slug}
+/vault-push --setup               # by_pro 를 조직 config 에 자동 기록
 /vault-push --setup --dry-run     # 생성 예정 미리보기
 
-# 5. git hook 설치 (커밋 시 자동 push)
-bash publish/redmine/install-hook.sh
+# 4. 자동 push — 조직 repo 의 git hook 또는 시드된 .github/workflows/vault-push.yml
+bash publish/redmine/install-hook.sh --org-root /work/acme
 ```
 
 #### 5-B. vault → Redmine 동기화
@@ -412,10 +411,10 @@ bash publish/redmine/install-hook.sh
 /workspace-create create --dry-run --name "..." --slug "..." --modules "..."  # 미리보기
 
 /workspace-create sync \
-  --workspace ws-product-alpha \
-  --module lib-iso27001-p001-001   # Library 최신 → Workspace 반영
+  --workspace ws-acme-product-alpha \
+  --module lib-acme-iso27001-p001-001   # Library 최신 → Workspace 반영
 /workspace-create list             # 전체 Workspace 목록
-/workspace-create status --workspace ws-product-alpha  # 상세 조회
+/workspace-create status --workspace ws-acme-product-alpha  # 상세 조회
 ```
 
 ### 6. 폐쇄 루프 시나리오 (PoC 검증된 흐름)
@@ -569,5 +568,5 @@ Phase 4.5 extensions (명세 활성화):
 - **실행 trace / act queue**: 0 — PoC 산출물(trace 10 · queue 6) 은 정리됨. `.claude/runs/`, `.claude/queues/process-act/` 는 명령 실행 시 생성
 - **가이드 문서**: 4 (빌드 / 실행 / 심사 / 제·개정)
 - **Phase 4.5 명세**: 3 utils (영업일 / PCB quorum / 자동 트렌드) + RBAC extensions 4종
-- **Phase 5 구현**: publish/redmine/ (11 파일) + .github/workflows/vault-push.yml + 2 스킬
-- **조직 계층 (org-layer)**: 단계 1 조직 컨텍스트 (`tools/org/`) + 단계 2 경로 추상화 (574건 → `{VAULT}` 등 변수) + 단계 3 스캐폴드 (`core/vault_base` · `core/org_base` · `sync-core`) + 단계 4 RBAC 조직화 (`tools.org rbac`) + 단계 5 격리 가드 (`tools.org guard` · PreToolUse 훅 · vault_rules validate · qa-reviewer §13, unittest 39) 구현 / 단계 6~7 미착수
+- **Phase 5 구현**: publish/ (orgctx + dispatcher + redmine 10 파일) + 조직 repo 시드 (config · vault-push.yml) + 2 스킬
+- **조직 계층 (org-layer)**: 단계 1 조직 컨텍스트 (`tools/org/`) + 단계 2 경로 추상화 (574건 → `{VAULT}` 등 변수) + 단계 3 스캐폴드 (`core/vault_base` · `core/org_base` · `sync-core`) + 단계 4 RBAC 조직화 (`tools.org rbac`) + 단계 5 격리 가드 (`tools.org guard` · PreToolUse 훅 · vault_rules validate · qa-reviewer §13) + 단계 6 외부 연동 (publish/ 조직 루트 기준, `lib-{org}-…` · `ws-{org}-…`, unittest 44) 구현 / 단계 7 미착수

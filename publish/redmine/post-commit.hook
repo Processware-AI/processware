@@ -1,54 +1,45 @@
 #!/usr/bin/env bash
-# vault-redmine-sync: vault/*.md 변경 시 Redmine Library 자동 동기화
-# install-hook.sh 로 .git/hooks/post-commit 에 설치됨
+# vault-redmine-sync: 조직 루트 repo 의 vault/*.md 커밋 시 Redmine Library 자동 동기화
+# install-hook.sh 로 조직 repo 의 .git/hooks/post-commit 에 설치됨 (org-layer 단계 6)
+#
+# 전제: 이 repo 가 조직 루트(org.yaml 존재). 플랫폼 경로는 PROCESSWARE_PLATFORM_ROOT 또는
+#       install-hook.sh 가 기록한 .processware/platform_root 파일에서 읽는다.
 
-# ── 설정 확인 ────────────────────────────────────────────────────────────────
+ORG_ROOT="$(git rev-parse --show-toplevel)"
+[[ -f "$ORG_ROOT/org.yaml" ]] || exit 0                     # 조직 루트가 아니면 스킵
 
-REPO_ROOT="$(git rev-parse --show-toplevel)"
-SYNC_SCRIPT="$REPO_ROOT/publish/redmine/sync.py"
-
-# Redmine API KEY 미설정 시 조용히 스킵
-if [[ -z "${REDMINE_API_KEY:-}" ]]; then
-    exit 0
+PLATFORM_ROOT="${PROCESSWARE_PLATFORM_ROOT:-}"
+if [[ -z "$PLATFORM_ROOT" && -f "$ORG_ROOT/.processware/platform_root" ]]; then
+    PLATFORM_ROOT="$(cat "$ORG_ROOT/.processware/platform_root")"
 fi
+DISPATCHER="$PLATFORM_ROOT/publish/dispatcher.py"
+[[ -f "$DISPATCHER" ]] || exit 0                            # 플랫폼 경로 미설정이면 스킵
+[[ -n "${REDMINE_API_KEY:-}" ]] || exit 0                   # API KEY 미설정이면 조용히 스킵
 
-# sync.py 없으면 스킵
-if [[ ! -f "$SYNC_SCRIPT" ]]; then
-    exit 0
-fi
+CHANGED_VAULT=$(git diff-tree --no-commit-id -r --name-only HEAD | grep "^vault/.*\.md$" || true)
+[[ -n "$CHANGED_VAULT" ]] || exit 0
 
-# ── 변경 파일 감지 ────────────────────────────────────────────────────────────
-
-CHANGED_VAULT=$(git diff-tree --no-commit-id -r --name-only HEAD \
-    | grep "^vault/.*\.md$" || true)
-
-if [[ -z "$CHANGED_VAULT" ]]; then
-    exit 0
-fi
-
-# ── 동기화 실행 (백그라운드, non-blocking) ───────────────────────────────────
+LOG_DIR="$ORG_ROOT/.processware/publish"
+mkdir -p "$LOG_DIR"
+LOG="$LOG_DIR/redmine_sync.log"
 
 echo ""
 echo "[vault-redmine-sync] vault 변경 감지 — Redmine Library 동기화 시작 (백그라운드)"
 echo "$CHANGED_VAULT" | head -5
 CHANGED_COUNT=$(echo "$CHANGED_VAULT" | wc -l | tr -d ' ')
-if [[ "$CHANGED_COUNT" -gt 5 ]]; then
-    echo "  ... 외 $((CHANGED_COUNT - 5))건"
-fi
+[[ "$CHANGED_COUNT" -gt 5 ]] && echo "  ... 외 $((CHANGED_COUNT - 5))건"
 
 (
-    cd "$REPO_ROOT/publish/redmine"
-    python3 sync.py --changed >> "$REPO_ROOT/.claude/states/redmine_sync.log" 2>&1
+    export PROCESSWARE_ORG_ROOT="$ORG_ROOT" PROCESSWARE_PLATFORM_ROOT="$PLATFORM_ROOT"
+    python3 "$DISPATCHER" push --changed >> "$LOG" 2>&1
     EXIT_CODE=$?
     if [[ $EXIT_CODE -eq 0 ]]; then
-        echo "[vault-redmine-sync] ✅ 완료 ($(date '+%Y-%m-%d %H:%M:%S'))" \
-            >> "$REPO_ROOT/.claude/states/redmine_sync.log"
+        echo "[vault-redmine-sync] ✅ 완료 ($(date '+%Y-%m-%d %H:%M:%S'))" >> "$LOG"
     else
-        echo "[vault-redmine-sync] ❌ 오류 발생 (exit $EXIT_CODE)" \
-            >> "$REPO_ROOT/.claude/states/redmine_sync.log"
+        echo "[vault-redmine-sync] ❌ 오류 발생 (exit $EXIT_CODE)" >> "$LOG"
     fi
 ) &
 
 echo "[vault-redmine-sync] 백그라운드 실행 중 (PID: $!)"
-echo "  로그: .claude/states/redmine_sync.log"
+echo "  로그: .processware/publish/redmine_sync.log"
 exit 0

@@ -1,0 +1,93 @@
+# 조직 루트 repo 용 GitHub Actions — vault 변경 시 Redmine Library 단방향 Push
+# core/org_base 에서 시드됨 (sync-core 는 덮어쓰지 않는다). 이 조직이 소유.
+#
+# 필요한 시크릿 (조직 repo Settings → Secrets):
+#   REDMINE_URL, REDMINE_API_KEY
+# 선택 변수:
+#   PROCESSWARE_PLATFORM_REPO (기본 Processware-AI/processware) · PROCESSWARE_PLATFORM_REF (기본 main)
+#   플랫폼 repo 가 private 이면 PLATFORM_TOKEN 시크릿(read 권한 PAT) 을 추가
+
+name: vault → Redmine Library Push
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "vault/**/*.md"
+
+jobs:
+  vault-push:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+
+    steps:
+      - name: Checkout org root
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 2   # --changed (HEAD~1 diff)
+
+      - name: Checkout platform
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ vars.PROCESSWARE_PLATFORM_REPO || 'Processware-AI/processware' }}
+          ref: ${{ vars.PROCESSWARE_PLATFORM_REF || 'main' }}
+          path: .platform
+          token: ${{ secrets.PLATFORM_TOKEN || github.token }}
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: .platform/publish/redmine/requirements.txt
+
+      - name: Install dependencies
+        run: pip install -r .platform/publish/redmine/requirements.txt
+
+      - name: Skip when secrets missing
+        id: gate
+        env:
+          REDMINE_URL: ${{ secrets.REDMINE_URL }}
+          REDMINE_API_KEY: ${{ secrets.REDMINE_API_KEY }}
+        run: |
+          if [ -z "$REDMINE_URL" ] || [ -z "$REDMINE_API_KEY" ]; then
+            echo "⏭  REDMINE_URL / REDMINE_API_KEY 미설정 — push 건너뜀"
+            echo "run=false" >> "$GITHUB_OUTPUT"
+          else
+            echo "run=true" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Patch config URL from secret
+        if: steps.gate.outputs.run == 'true'
+        env:
+          REDMINE_URL: ${{ secrets.REDMINE_URL }}
+        run: |
+          python3 - <<'EOF'
+          import os, yaml
+          p = "publish/redmine/config.yaml"
+          with open(p, encoding="utf-8") as f:
+              cfg = yaml.safe_load(f)
+          cfg["redmine"]["url"] = os.environ["REDMINE_URL"]
+          with open(p, "w", encoding="utf-8") as f:
+              yaml.dump(cfg, f, allow_unicode=True, sort_keys=False)
+          print("config.yaml URL patched")
+          EOF
+
+      - name: vault-push --changed
+        if: steps.gate.outputs.run == 'true'
+        env:
+          REDMINE_API_KEY: ${{ secrets.REDMINE_API_KEY }}
+          PROCESSWARE_ORG_ROOT: ${{ github.workspace }}
+          PROCESSWARE_PLATFORM_ROOT: ${{ github.workspace }}/.platform
+        run: python3 .platform/publish/dispatcher.py push --changed
+
+      - name: Upload sync state
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: redmine-sync-${{ github.run_id }}
+          path: |
+            .processware/publish/redmine_sync.db
+            .processware/publish/redmine_sync.log
+          if-no-files-found: ignore
+          retention-days: 30

@@ -54,24 +54,30 @@ vault를 외부 시스템 Process Library에 단방향 Push하는 스킬입니�
 
 ## 실행 방법
 
+모든 데이터(vault · 설정 · sync_map DB · 로그)는 **활성 조직 루트** 에 있고, 코드는 플랫폼에 있다 (org-layer 단계 6).
+
 ```bash
+export PROCESSWARE_ORG_ROOT=/work/acme            # 또는 --org/--org-root → 하위 호출 전 export
 python3 publish/dispatcher.py push [--target <backend>] [옵션]
 ```
 
 예시:
 ```bash
-python3 publish/dispatcher.py push --dry-run
-python3 publish/dispatcher.py push --target redmine --changed
-python3 publish/dispatcher.py push --setup
+python3 publish/dispatcher.py push --dry-run                 # enabled 와 무관하게 미리보기 가능
+python3 publish/dispatcher.py push --target redmine --changed # 조직 루트 repo 의 HEAD~1 diff
+python3 publish/dispatcher.py push --setup                    # lib-{prefix}-{scope}(없으면 생성) + lib-{prefix}-{scope}-{pro_slug}
 ```
+
+Redmine 식별자는 조직 접두어(org.yaml `redmine.project_prefix`, 기본 org_id)를 포함한다: `lib-{prefix}-{scope}` · `lib-{prefix}-{scope}-{pro_slug}` · `ws-{prefix}-{slug}`.
 
 ## 사전 조건
 
-1. `publish/config.yaml` 에 `default_target` 설정 (또는 `--target` 명시)
-2. `publish/{target}/config.yaml` 에 접속 정보 입력
+1. 조직 루트 `org.yaml` → `redmine.enabled: true` (false 면 `--dry-run` · `--status` 외 호출은 전송 전에 중단)
+2. `{ORG_ROOT}/publish/{target}/config.yaml` 에 접속 정보 입력 (`sync-core` 가 `core/org_base` 에서 시드)
 3. 환경변수 설정: `export REDMINE_API_KEY=your_key` (Redmine 사용 시)
-4. 의존 패키지 설치: `pip3 install -r publish/{target}/requirements.txt`
-5. `/vault-push --setup` 으로 Library 구조 초기화 (최초 1회)
+4. 의존 패키지 설치: `pip3 install -r publish/{target}/requirements.txt` (플랫폼)
+5. `/vault-push --setup` 으로 Library 구조 초기화 (최초 1회) — `by_pro` 가 조직 config 에 자동 기록
+6. 자동 push: 조직 repo 에 `bash publish/redmine/install-hook.sh --org-root {ORG_ROOT}` (post-commit) 또는 시드된 `.github/workflows/vault-push.yml` (시크릿 REDMINE_URL · REDMINE_API_KEY)
 
 ## 새 백엔드 추가 방법
 
@@ -82,8 +88,10 @@ python3 publish/dispatcher.py push --setup
 
 ## 이 스킬이 호출되면
 
-1. `publish/config.yaml` 에서 `default_target` 확인 (또는 `--target` 인수 우선)
-2. `publish/{target}/adapter.py` 동적 로드
-3. `publish/{target}/config.yaml` 설정 로드
-4. 사용자 요청에 맞는 메서드 실행
-5. 결과(생성/갱신/건너뜀/오류) 보고
+1. 조직 컨텍스트 해석 (공통 절) → `PROCESSWARE_ORG_ROOT` export
+2. `publish/config.yaml` 에서 `default_target` 확인 (또는 `--target` 인수 우선)
+3. `publish/{target}/adapter.py` 동적 로드
+4. `{ORG_ROOT}/publish/{target}/config.yaml` 설정 로드 (없으면 `sync-core` 안내 후 중단)
+5. 실제 전송이면 org.yaml `redmine.enabled` 확인
+6. 사용자 요청에 맞는 메서드 실행
+7. 결과(생성/갱신/건너뜀/오류) 보고 — sync_map 은 `{ORG_ROOT}/.processware/publish/{target}_sync.db`

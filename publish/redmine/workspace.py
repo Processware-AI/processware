@@ -1,9 +1,9 @@
 """
 Workspace 생성·동기화·목록 조회.
 
-Workspace = 현업 업무 단위를 묶은 가상 업무공간.
-  ws-{slug}               : 상위 Redmine 프로젝트
-  ws-{slug}-{pro_slug}    : PRO 단위 서브프로젝트 (Library Module 복사본)
+Workspace = 현업 업무 단위를 묶은 가상 업무공간 (조직 접두어 포함 — org-layer 단계 6).
+  ws-{prefix}-{slug}             : 상위 Redmine 프로젝트
+  ws-{prefix}-{slug}-{pro_slug}  : PRO 단위 서브프로젝트 (Library Module 복사본)
 
 CLI:
   python3 workspace.py create --name "..." --slug "..." --modules PRO-XXX,PRO-YYY
@@ -28,7 +28,11 @@ import yaml
 from redmine_client import RedmineClient, client_from_config
 from db import init_db, upsert_workspace, list_workspaces, get_conn
 
-CONFIG_PATH = Path(__file__).parent / "config.yaml"
+# 활성 조직 컨텍스트 (org-layer 단계 6) — vault · 설정 · DB 는 조직 루트에 있다
+_PUBLISH_DIR = Path(__file__).resolve().parents[1]
+if str(_PUBLISH_DIR) not in sys.path:
+    sys.path.insert(0, str(_PUBLISH_DIR))
+import orgctx  # noqa: E402
 
 _IDENT_RE = re.compile(r"[^a-z0-9\-]")
 
@@ -50,17 +54,29 @@ def _slugify(text: str) -> str:
 
 def _pro_slug_from_identifier(identifier: str) -> str:
     """
-    lib-iso27001-p001-001 → iso27001-p001-001
-    lib-cmmi-p001-001     → cmmi-p001-001
-    scope + pro번호 조합으로 멀티 표준 혼합 시 충돌 방지.
+    lib-{prefix}-iso27001-p001-001 → iso27001-p001-001
+    (접두어 없는 구 형식 lib-iso27001-p001-001 도 허용)
     """
-    # "lib-" 접두어 제거
-    without_lib = identifier.removeprefix("lib-")
-    return without_lib   # e.g., iso27001-p001-001
+    prefixed = f"lib-{orgctx.project_prefix()}-"
+    if identifier.startswith(prefixed):
+        return identifier[len(prefixed):]
+    return identifier.removeprefix("lib-")
+
+
+def _ws_identifier(slug: str) -> str:
+    return f"ws-{orgctx.project_prefix()}-{slug}"
+
+
+def _ws_slug(arg: str) -> str:
+    """'ws-{prefix}-{slug}' · 'ws-{slug}' · '{slug}' → slug"""
+    prefixed = f"ws-{orgctx.project_prefix()}-"
+    if arg.startswith(prefixed):
+        return arg[len(prefixed):]
+    return arg.removeprefix("ws-")
 
 
 def _load_config() -> dict:
-    with open(CONFIG_PATH) as f:
+    with open(orgctx.config_path("redmine"), encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
@@ -134,7 +150,7 @@ def _replace_library_header(text: str, source_module: str,
 
 def cmd_create(client: RedmineClient, cfg: dict, args) -> int:
     slug = _slugify(args.slug)
-    ws_identifier = f"ws-{slug}"
+    ws_identifier = _ws_identifier(slug)
     by_pro = cfg["project_mapping"].get("by_pro") or {}
     module_ids = [m.strip() for m in args.modules.split(",") if m.strip()]
 
@@ -177,7 +193,7 @@ def cmd_create(client: RedmineClient, cfg: dict, args) -> int:
     source_modules = []
     for pro_id, lib_id in resolved:
         pro_slug = _pro_slug_from_identifier(lib_id)
-        sub_identifier = f"ws-{slug}-{pro_slug}"
+        sub_identifier = f"{ws_identifier}-{pro_slug}"
         sub_name = f"[{pro_id}] {sub_identifier}"
 
         source_modules.append(lib_id)
@@ -216,11 +232,11 @@ def cmd_create(client: RedmineClient, cfg: dict, args) -> int:
 
 def cmd_sync(client: RedmineClient, cfg: dict, args) -> int:
     """특정 Library Module의 최신 내용을 Workspace Module에 반영."""
-    ws_slug = args.workspace.removeprefix("ws-")
-    lib_module = args.module   # e.g., lib-iso27001-p001-001
+    ws_slug = _ws_slug(args.workspace)
+    lib_module = args.module   # e.g., lib-{prefix}-iso27001-p001-001
 
     pro_slug = _pro_slug_from_identifier(lib_module)
-    dst_project = f"ws-{ws_slug}-{pro_slug}"
+    dst_project = f"{_ws_identifier(ws_slug)}-{pro_slug}"
 
     mode = "[DRY-RUN]" if args.dry_run else "[SYNC]"
     print(f"\n{mode} {lib_module} → {dst_project}\n")
@@ -232,7 +248,7 @@ def cmd_sync(client: RedmineClient, cfg: dict, args) -> int:
             return 1
 
     copied = _copy_wiki_pages(client, lib_module, dst_project,
-                               f"ws-{ws_slug}", dry_run=args.dry_run)
+                               _ws_identifier(ws_slug), dry_run=args.dry_run)
     print(f"\n{mode} 완료: {len(copied)}개 페이지 반영")
     return 0
 
@@ -258,7 +274,7 @@ def cmd_list(args) -> int:
 # ── status ────────────────────────────────────────────────────────────────────
 
 def cmd_status(args) -> int:
-    ws_slug = args.workspace.removeprefix("ws-")
+    ws_slug = _ws_slug(args.workspace)
     rows = list_workspaces()
     found = [r for r in rows if r["workspace_slug"] == ws_slug]
     if not found:
@@ -267,7 +283,7 @@ def cmd_status(args) -> int:
     row = found[0]
     modules = json.loads(row["source_modules"])
     print(f"\nWorkspace: {row['workspace_name']}")
-    print(f"  slug:     ws-{row['workspace_slug']}")
+    print(f"  slug:     {_ws_identifier(row['workspace_slug'])}")
     print(f"  project:  {row['redmine_project_id']}")
     print(f"  created:  {row['created_at'][:10]}")
     print(f"  modules ({len(modules)}):")

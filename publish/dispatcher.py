@@ -13,7 +13,7 @@ vault 외부 시스템 연동 디스패처.
 from __future__ import annotations
 
 import argparse
-import importlib
+import importlib.util
 import sys
 from pathlib import Path
 
@@ -21,6 +21,10 @@ import yaml
 
 _HERE = Path(__file__).parent
 _TOP_CONFIG = _HERE / "config.yaml"
+
+if str(_HERE) not in sys.path:
+    sys.path.insert(0, str(_HERE))
+import orgctx  # noqa: E402  — 활성 조직 컨텍스트 (org-layer 단계 6)
 
 
 def _load_top_config() -> dict:
@@ -50,13 +54,25 @@ def _load_adapter(target: str):
 
 
 def _load_adapter_config(target: str) -> dict:
-    """publish/{target}/config.yaml 로드."""
-    cfg_path = _HERE / target / "config.yaml"
+    """{ORG_ROOT}/publish/{target}/config.yaml 로드 (core/org_base 에서 시드)."""
+    cfg_path = orgctx.config_path(target)
     if not cfg_path.exists():
-        print(f"⚠️  {cfg_path} 없음. 빈 설정으로 진행.", file=sys.stderr)
-        return {}
-    with open(cfg_path) as f:
+        print(f"❌ 연동 설정 없음: {cfg_path}\n"
+              f"   python3 -m tools.org sync-core 로 시드한 뒤 접속 정보를 입력하세요.", file=sys.stderr)
+        sys.exit(1)
+    with open(cfg_path, encoding="utf-8") as f:
         return yaml.safe_load(f) or {}
+
+
+def _needs_enabled(args) -> bool:
+    """실제 전송이 일어나는 호출만 org.yaml redmine.enabled 를 요구한다."""
+    if getattr(args, "dry_run", False):
+        return False
+    if args.cmd == "push" and getattr(args, "status", False):
+        return False
+    if args.cmd == "workspace" and args.ws_cmd in ("list", "status"):
+        return False
+    return True
 
 
 # ── push 서브커맨드 ────────────────────────────────────────────────────────────
@@ -149,6 +165,10 @@ def main() -> int:
     build_workspace_parser(sub)
 
     args = parser.parse_args()
+
+    print(orgctx.banner(), file=sys.stderr)
+    if _needs_enabled(args):
+        orgctx.ensure_enabled(args.target)
 
     AdapterClass = _load_adapter(args.target)
     adapter_cfg = _load_adapter_config(args.target)

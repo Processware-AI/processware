@@ -18,8 +18,11 @@ import yaml
 
 from redmine_client import RedmineClient
 
-VAULT_ROOT = Path(__file__).parents[2] / "vault"
-CONFIG_PATH = Path(__file__).parent / "config.yaml"
+# 활성 조직 컨텍스트 (org-layer 단계 6) — vault · 설정 · DB 는 조직 루트에 있다
+_PUBLISH_DIR = Path(__file__).resolve().parents[1]
+if str(_PUBLISH_DIR) not in sys.path:
+    sys.path.insert(0, str(_PUBLISH_DIR))
+import orgctx  # noqa: E402
 
 # Redmine identifier는 소문자·숫자·하이픈만 허용, 최대 100자
 _IDENT_RE = re.compile(r"[^a-z0-9\-]")
@@ -42,7 +45,7 @@ def _pro_slug(doc_id: str) -> str:
 def scan_pro_files() -> list[dict]:
     """vault 에서 type=PRO 파일 전체 스캔 → 메타 목록 반환."""
     results = []
-    for path in VAULT_ROOT.rglob("*.md"):
+    for path in orgctx.vault_root().rglob("*.md"):
         if "99_템플릿" in str(path) or "README" in path.name:
             continue
         try:
@@ -66,11 +69,19 @@ def scan_pro_files() -> list[dict]:
     return results
 
 
+def parent_identifier_for(scope_code: str, cfg: dict) -> str:
+    """상위 프로젝트 identifier — config by_scope_code override, 없으면 lib-{prefix}-{scope}."""
+    by_scope = (cfg.get("project_mapping") or {}).get("by_scope_code") or {}
+    if scope_code in by_scope and by_scope[scope_code]:
+        return by_scope[scope_code]
+    return f"lib-{orgctx.project_prefix()}-{_slugify(scope_code)}"
+
+
 def build_project_identifier(scope_code: str, pro_doc_id: str) -> str:
-    """lib-iso27001-p001-001 형식 identifier 생성."""
+    """lib-{prefix}-iso27001-p001-001 형식 identifier 생성 (조직 접두어 포함)."""
     scope_slug = _slugify(scope_code)
     pro_part = _pro_slug(pro_doc_id)
-    return f"lib-{scope_slug}-{pro_part}"
+    return f"lib-{orgctx.project_prefix()}-{scope_slug}-{pro_part}"
 
 
 def setup_library(client: RedmineClient, cfg: dict,
@@ -87,7 +98,6 @@ def setup_library(client: RedmineClient, cfg: dict,
         print("  vault에 PRO 파일이 없습니다. /process-plan 실행 후 재시도하세요.")
         return {"created": [], "existing": [], "skipped": []}
 
-    by_scope = cfg["project_mapping"].get("by_scope_code", {})
     by_pro = cfg["project_mapping"].get("by_pro", {}) or {}
 
     created, existing, skipped = [], [], []
@@ -96,11 +106,11 @@ def setup_library(client: RedmineClient, cfg: dict,
         scope = pro["scope_code"]
         doc_id = pro["doc_id"]
 
-        if not scope or scope not in by_scope:
-            skipped.append({"doc_id": doc_id, "reason": f"scope_code '{scope}' not in project_mapping"})
+        if not scope:
+            skipped.append({"doc_id": doc_id, "reason": "scope_code / standards 없음"})
             continue
 
-        parent_identifier = by_scope[scope]
+        parent_identifier = parent_identifier_for(scope, cfg)
         sub_identifier = build_project_identifier(scope, doc_id)
         sub_name = f"[{doc_id}] {pro['title']}"
 
@@ -110,12 +120,14 @@ def setup_library(client: RedmineClient, cfg: dict,
             created.append(sub_identifier)
             continue
 
-        # 상위 프로젝트 확인
-        parent = client.get_project(parent_identifier)
-        if not parent:
-            print(f"  ❌ 상위 프로젝트 '{parent_identifier}' 없음 — Redmine에 먼저 생성하세요.")
-            skipped.append({"doc_id": doc_id, "reason": f"parent '{parent_identifier}' not found"})
-            continue
+        # 상위 프로젝트 확인 / 생성 (lib-{prefix}-{scope})
+        parent, parent_new = client.get_or_create_project(
+            identifier=parent_identifier,
+            name=f"[{orgctx.org_id()}] {scope} Library",
+            description=f"processware Library — org {orgctx.org_id()} / scope {scope}",
+        )
+        if parent_new:
+            print(f"  ✅  created     {parent_identifier}  (상위)")
 
         # 서브프로젝트 확인/생성
         proj, is_new = client.get_or_create_project(
@@ -173,9 +185,10 @@ def create_wiki_index_pages(client: RedmineClient, cfg: dict,
 
 
 def _update_config_by_pro(by_pro: dict) -> None:
-    """config.yaml project_mapping.by_pro 섹션만 업데이트."""
-    with open(CONFIG_PATH) as f:
+    """{ORG_ROOT}/publish/redmine/config.yaml 의 project_mapping.by_pro 섹션만 업데이트."""
+    cfg_path = orgctx.config_path("redmine")
+    with open(cfg_path, encoding="utf-8") as f:
         cfg = yaml.safe_load(f)
     cfg["project_mapping"]["by_pro"] = by_pro
-    with open(CONFIG_PATH, "w") as f:
+    with open(cfg_path, "w", encoding="utf-8") as f:
         yaml.dump(cfg, f, allow_unicode=True, sort_keys=False, default_flow_style=False)

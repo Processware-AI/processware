@@ -41,6 +41,9 @@ vault/.obsidian/hotkeys.json
 .processware/runs/ingest_*
 .processware/states/*.log
 .processware/states/*.db
+.processware/publish/*.db        # Redmine sync_map (재생성 가능)
+.processware/publish/*.log
+.processware/platform_root       # install-hook.sh 가 기록하는 로컬 경로
 
 # 환경·임시
 *.log

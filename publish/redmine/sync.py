@@ -14,18 +14,26 @@ import yaml
 
 from redmine_client import RedmineClient, client_from_config
 from transformer import transform
-from db import init_db, upsert_sync, get_sync, mark_failed, get_status_summary, DEFAULT_DB_PATH
-from library_setup import setup_library, create_wiki_index_pages
+from db import init_db, upsert_sync, get_sync, mark_failed, get_status_summary
+from library_setup import setup_library, create_wiki_index_pages, parent_identifier_for
 from issue_sync import sync_issue
 
-VAULT_ROOT = Path(__file__).parents[2] / "vault"
-CONFIG_PATH = Path(__file__).parent / "config.yaml"
+# 활성 조직 컨텍스트 (org-layer 단계 6) — vault · 설정 · DB 는 조직 루트에 있다
+_PUBLISH_DIR = Path(__file__).resolve().parents[1]
+if str(_PUBLISH_DIR) not in sys.path:
+    sys.path.insert(0, str(_PUBLISH_DIR))
+import orgctx  # noqa: E402
 
 
 # ── 설정 로드 ──────────────────────────────────────────────────────────────────
 
 def load_config() -> dict:
-    with open(CONFIG_PATH) as f:
+    """{ORG_ROOT}/publish/redmine/config.yaml (core/org_base 에서 시드)."""
+    p = orgctx.config_path("redmine")
+    if not p.is_file():
+        print(f"❌ 연동 설정 없음: {p}\n   python3 -m tools.org sync-core 로 시드한 뒤 접속 정보를 입력하세요.", file=sys.stderr)
+        sys.exit(1)
+    with open(p, encoding="utf-8") as f:
         return yaml.safe_load(f)
 
 
@@ -36,20 +44,22 @@ def collect_vault_files(changed_only: bool = False,
                         type_filter: str = None,
                         scope_filter: str = None) -> list[Path]:
     """동기화 대상 .md 파일 목록 반환."""
+    vault_root = orgctx.vault_root()
+    org_root = orgctx.org_root()
     if doc_id:
-        matches = list(VAULT_ROOT.rglob(f"*{doc_id}*.md"))
+        matches = list(vault_root.rglob(f"*{doc_id}*.md"))
         return matches
 
     if changed_only:
         result = subprocess.run(
             ["git", "diff", "HEAD~1", "HEAD", "--name-only", "--diff-filter=ACM"],
             capture_output=True, text=True,
-            cwd=VAULT_ROOT.parent,
+            cwd=org_root,                       # 조직 루트 repo 기준
         )
-        paths = [VAULT_ROOT.parent / p for p in result.stdout.splitlines()
+        paths = [org_root / p for p in result.stdout.splitlines()
                  if p.startswith("vault/") and p.endswith(".md")]
     else:
-        paths = list(VAULT_ROOT.rglob("*.md"))
+        paths = list(vault_root.rglob("*.md"))
 
     # README, template 제외
     paths = [p for p in paths
@@ -93,10 +103,10 @@ def resolve_redmine_project(meta: dict, cfg: dict) -> str | None:
     if parent_pro in by_pro:
         return by_pro[parent_pro]
 
-    # scope_code 또는 standards[0] → 상위 프로젝트
+    # scope_code 또는 standards[0] → 상위 프로젝트 (by_scope_code override, 없으면 lib-{prefix}-{scope} 자동)
     scope_code = meta.get("scope_code") or (meta.get("standards") or [None])[0]
-    if scope_code and scope_code in by_scope:
-        return by_scope[scope_code]
+    if scope_code:
+        return parent_identifier_for(scope_code, cfg)
 
     return None
 
@@ -123,7 +133,7 @@ def sync_file(path: Path, client: RedmineClient, cfg: dict,
     meta = post.metadata
     doc_id = meta.get("doc_id", path.stem)
     doc_type = meta.get("type", "")
-    vault_path = str(path.relative_to(VAULT_ROOT.parent))
+    vault_path = str(path.relative_to(orgctx.org_root()))
 
     if should_skip(meta, cfg):
         return {"doc_id": doc_id, "status": "skipped", "reason": "draft"}
@@ -200,6 +210,9 @@ def main():
                         help="Redmine Library 프로젝트 계층 자동 생성 + config.yaml by_pro 갱신")
     args = parser.parse_args()
 
+    print(orgctx.banner(), file=sys.stderr)
+    if not (args.dry_run or args.status):
+        orgctx.ensure_enabled("redmine")
     cfg = load_config()
     init_db()
 
