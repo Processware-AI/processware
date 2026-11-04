@@ -30,7 +30,8 @@ def _target_path(data: dict):
 
 
 def main() -> int:
-    for s in (sys.stdout, sys.stderr):
+    # Windows 콘솔(cp949)에서도 훅 JSON(한글 경로)을 깨지지 않게 읽고 쓴다 — stdin 도 반드시 UTF-8
+    for s in (sys.stdin, sys.stdout, sys.stderr):
         if hasattr(s, "reconfigure"):
             try:
                 s.reconfigure(encoding="utf-8", errors="replace")
@@ -42,7 +43,8 @@ def main() -> int:
 
     try:
         data = json.load(sys.stdin)
-    except Exception:
+    except Exception as e:
+        print(f"[org-guard] 훅 입력 파싱 실패, 가드 생략: {e}", file=sys.stderr)
         return 0
     path = _target_path(data)
     if not path:
