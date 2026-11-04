@@ -1,9 +1,12 @@
 ---
 type: architecture
 title: 조직 계층 도입 설계 방향 — 플랫폼 1 + 조직 루트 N
-version: "0.1"
+version: "0.2"
 status: draft
 updated: 2026-11-04
+decided:
+  - "2026-11-04: 조직 루트는 플랫폼 repo 밖 별도 repo 로 둔다"
+  - "2026-11-04: 공개 표준 ingest 산출물은 조직 루트에 둔다 (조직 간 공유 지식 팩 없음)"
 tags: [architecture, multi-tenant, org-layer, vault-isolation]
 related:
   - derivative-products.md
@@ -32,17 +35,16 @@ related:
 
 ## 1. 공유 / 조직별 분리 기준
 
-현재 repo 를 세 층으로 가른다.
+현재 repo 를 두 층으로 가른다.
 
 | 층 | 내용 | 현재 위치 |
 |---|---|---|
 | **플랫폼 (공유)** | 에이전트 29 · 커맨드 9 · utils, `tools/vault_rules`, 구성원칙 · 문서체계 · 번호체계 · 표준분류레지스트리, 99_템플릿 · 골든샘플 | `.claude/`, `tools/`, `vault/00_공통관리` · `01_구성원칙` · `99_템플릿` |
-| **지식 팩 (공유 가능)** | 공개 표준의 ingest 산출물 (requirements.yaml · structure.yaml · business_flow.yaml) | `inputs/01_표준원문` · `02_법규` · `03_해설서` · `05_산업가이드` |
-| **조직 (격리)** | 적용요건, POL~REF, MAT-001~, AsIs, 실행 trace · act queue · 체크포인트, RBAC 사용자 배정, Redmine 매핑 | `vault/02~09`, `vault/90_MAT`, `inputs/04_AsIs`, `.claude/runs|queues|states`, `.claude/rbac/`, `publish/*/config.yaml` |
+| **조직 (격리)** | 원본 소스 · ingest 산출물 전체(공개 표준 포함), 적용요건, POL~REF, MAT-001~, AsIs, 실행 trace · act queue · 체크포인트, RBAC 사용자 배정, Redmine 매핑 | `sources/`, `inputs/01~05`, `vault/02~09`, `vault/90_MAT`, `.claude/runs|queues|states`, `.claude/rbac/`, `publish/*/config.yaml` |
 
 핵심 관찰 두 가지:
 
-1. **공개 표준을 요건화한 결과는 조직과 무관하다.** ISO 9001 의 requirements.yaml 은 어느 조직에서나 같다. 조직 고유 정보는 `04_AsIs` 와 `02_적용요건` 에서 시작한다.
+1. **입력은 전부 조직 루트에 둔다.** 공개 표준의 requirements.yaml 은 내용상 조직과 무관하지만, 표준 원문 저작권과 조직별 ingest 버전 · delta 이력이 달라질 수 있으므로 조직 간 공유 지식 팩을 두지 않는다 (2026-11-04 결정). 같은 표준을 여러 조직에서 쓰면 조직마다 `/process-ingest` 를 다시 돌린다.
 2. **MAT · trace · queue · RBAC 가 repo 당 하나라는 점이 격리의 본체다.** 이들을 조직 루트 아래로 내리는 것이 설계 변경의 핵심이다.
 
 ---
@@ -59,14 +61,15 @@ processware/                        ← 플랫폼 repo (공유)
 ├── tools/
 │   ├── vault_rules/                ← 기존 (--vault 루트 인자 그대로 사용)
 │   └── org/                        ← 신규: init / switch / sync-core / validate
-├── core/vault_base/                ← 00_공통관리 · 01_구성원칙 · 99_템플릿 + 폴더 README + MAT-001~009 빈 양식
-└── knowledge/standards/{표준}/     ← 공개 표준 ingest 산출물 (조직 무관, 선택 사항)
+└── core/vault_base/                ← 00_공통관리 · 01_구성원칙 · 99_템플릿 + 폴더 README + MAT-001~009 빈 양식
 
-{ORG_ROOT}/                         ← 조직 루트 (조직별 별도 git repo 권장)
+{ORG_ROOT}/                         ← 조직 루트 (조직별 별도 git repo — 결정)
 ├── org.yaml                        ← org_id · 명칭 · 사용 영역코드 · rbac 사용자 배정 · redmine 매핑
-├── inputs/
-│   └── 04_AsIs/                    ← 조직 내부 자산 (기밀)
-├── sources/                        ← 조직이 투하한 원본 파일 (저작권 · 기밀)
+├── sources/                        ← 조직이 투하한 원본 파일 (표준 PDF · 법규 · AsIs, 저작권 · 기밀)
+├── inputs/                         ← /process-ingest 산출물 전체 (공개 표준 포함, 조직 루트에 둠 — 결정)
+│   ├── 01_표준원문 · 02_법규 · 03_해설서 · 05_산업가이드
+│   ├── 04_AsIs/                    ← 조직 내부 자산 (기밀)
+│   └── 06_목표흐름/                ← business_flow.yaml / .md
 ├── vault/                          ← Obsidian vault — 자기완결
 │   ├── 00_공통관리 · 01_구성원칙 · 99_템플릿   ← core/vault_base 에서 sync-core 로 복사된 사본
 │   ├── 02_적용요건 · 03_POL ~ 09_REF · 90_MAT ← 조직 산출물
@@ -78,7 +81,7 @@ processware/                        ← 플랫폼 repo (공유)
     └── sync_map.sqlite             ← Redmine 등 외부 연동 매핑
 ```
 
-### 2.1 조직 루트를 플랫폼 repo 밖 별도 repo 로 두는 이유
+### 2.1 조직 루트를 플랫폼 repo 밖 별도 repo 로 둔다 (결정)
 
 컨설팅 상황의 **NDA** 때문이다. 한 repo 안에 `orgs/A`, `orgs/B` 를 두면:
 
@@ -121,8 +124,8 @@ Obsidian 은 vault 가 자기완결적이어야 wikilink 가 동작한다. 따�
 
 | # | 결정 | 선택지 | 권장 |
 |---|---|---|---|
-| 1 | 조직 루트 위치 | (a) 플랫폼 repo 밖 별도 repo / (b) 플랫폼 repo 안 `orgs/{org}/` | **(a)** — NDA 격리. 단일 조직 내부 운영이 전부라면 (b) 가 더 단순 |
-| 2 | 공개 표준 ingest 산출물 공유 | (a) `knowledge/standards/` 지식 팩으로 조직 간 공유 / (b) 조직 루트에 남김 | 표준 원문 저작권 때문에 산출물까지 공유 금지라면 (b) |
+| 1 | 조직 루트 위치 | (a) 플랫폼 repo 밖 별도 repo / (b) 플랫폼 repo 안 `orgs/{org}/` | ✅ **(a) 결정 (2026-11-04)** — NDA 격리 |
+| 2 | 공개 표준 ingest 산출물 공유 | (a) `knowledge/standards/` 지식 팩으로 조직 간 공유 / (b) 조직 루트에 둠 | ✅ **(b) 결정 (2026-11-04)** — 저작권 · 조직별 ingest 버전 분리. 플랫폼 repo 에 `knowledge/` 없음 |
 | 3 | 3-Vault 파생 프로덕트와의 관계 | 파생 ②(Project Asset Generator) 는 "조직의 코어 vault" 를 입력으로 받음 | 조직 컨텍스트(`PROCESSWARE_ORG_ROOT`) 를 파생 프로덕트에도 같은 환경변수로 전달 |
 | 4 | 하위 호환 기간 | `default` 조직 fallback 을 언제까지 유지할지 | 단계 3 마이그레이션 완료 후 제거 |
 
