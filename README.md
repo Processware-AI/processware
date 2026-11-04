@@ -8,9 +8,9 @@
 - 파생 ①: [processware-rfp-to-proposal](https://github.com/Processware-AI/processware-rfp-to-proposal) — RFP → 응시자 제안서(Proposal) 자동 작성
 - 파생 ② (향후): Project Asset Generator — 채택 제안서 + 코어 vault → 사업 산출물
 
-> 상위 개념: `AI-Driven CMMI Operating Platform.md` (Layer 1/2/3 비전) · `표준프로세스_AI관리체계_4차원PDCA.md` (4차원 PDCA 설계)
+> 상위 개념: `docs/AI-Driven CMMI Operating Platform.md` (Layer 1/2/3 비전) · `docs/표준프로세스_AI관리체계_4차원PDCA.md` (4차원 PDCA 설계)
 > 파생 프로덕트 비전: `docs/architecture/derivative-products.md` (3-Vault 생태계 — 코어 + RFP-to-Proposal + Project Asset Generator)
-> 차원별 운영 가이드: `표준_빌드_워크플로우_가이드.md` (1) · `표준_프로세스_실행_가이드.md` (2) · `표준_프로세스_심사_가이드.md` (3) · `표준_프로세스_제개정_가이드.md` (4)
+> 차원별 운영 가이드 (`vault/09_REF_참고자료/`): `표준_빌드_워크플로우_가이드.md` (1) · `표준_프로세스_실행_가이드.md` (2) · `표준_프로세스_심사_가이드.md` (3) · `표준_프로세스_제개정_가이드.md` (4)
 
 ## 5단계 자동화 매트릭스
 
@@ -109,17 +109,19 @@
 ```
 STD_Process_Builder/
 ├── README.md
-├── docs/
-│   └── architecture/
-│       └── derivative-products.md           ← 파생 프로덕트 3-Vault 비전 + 분리 로드맵
+├── docs/                                    ← 설계·비전 문서 + 세션 회고
+│   ├── architecture/
+│   │   └── derivative-products.md           ← 파생 프로덕트 3-Vault 비전 + 분리 로드맵
+│   ├── AI-Driven CMMI Operating Platform.md ← Layer 1/2/3 비전 (ML3→ML4→ML5)
+│   ├── 표준프로세스_AI관리체계_4차원PDCA.md  ← 4차원 PDCA 설계
+│   ├── 전용AI에이전트_프레임워크_설계안.md   ← 독립 제품화 설계안 (참고 — §독립 프레임워크 설계)
+│   ├── Redmine_연동_설계서.md               ← Phase 5 외부 시스템 연동 설계
+│   ├── 프로세스 정제 필요성.md
+│   └── 세션회고_YYYY-MM-DD_*.md             ← 세션별 결정 기록
 ├── (subproducts/ 없음 — 모든 파생은 별도 repo 운영)
-├── AI-Driven CMMI Operating Platform.md     ← Layer 1/2/3 비전 (ML3→ML4→ML5)
-├── 표준프로세스_AI관리체계_4차원PDCA.md      ← 4차원 PDCA 설계
-├── 전용AI에이전트_프레임워크_설계안.md       ← 차원 1 독립 제품화 설계 (Python/SDK)
-├── 표준_빌드_워크플로우_가이드.md           ← 차원 1 운영 가이드 (worktree 정책)
-├── 표준_프로세스_실행_가이드.md             ← 차원 2 운영 가이드 (Phase 1~4 + 2.5/3.5)
-├── 표준_프로세스_심사_가이드.md             ← 차원 3 운영 가이드 (Phase 1~4 + 4.5 명세)
-├── 표준_프로세스_제개정_가이드.md           ← 차원 4 운영 가이드 (Phase 1~2 + 4.5 명세)
+├── inputs/                                  ← /process-ingest 정제 산출물 (01_표준원문 ~ 05_산업가이드)
+├── sources/                                 ← 원본 표준·법규 파일 투하 (PDF/DOCX/HWPX)
+├── tools/vault_rules/                       ← 문서 ID 발급·파일명·frontmatter 검증 CLI (python -m)
 ├── .claude/                                 ← 4차원 자동화 인프라
 │   ├── commands/                            ← 슬래시 커맨드 7 + 통합 스킬 2
 │   │   ├── process-ingest.md               ← 차원 0 (9 Phase + flow-proposer)
@@ -163,14 +165,12 @@ STD_Process_Builder/
 │   │   └── act-coordinator.md               ← 차원 4 Phase 1 (As-Is + MAT-001)
 │   ├── rbac/
 │   │   └── policy.yaml                      ← 6 역할 + Phase 4.5 extensions 4종
-│   ├── queues/
-│   │   └── act/                             ← 차원 4 인계 큐 (queue-q*)
-│   ├── runs/                                ← 실행 trace (5 prefix)
-│   │   ├── run-{hex}/                       ← 차원 2 do trace
-│   │   ├── run-a*/                          ← 차원 3 audit trace
-│   │   ├── run-k*/                          ← 차원 3 kpi trace
-│   │   ├── run-g*/                          ← 차원 3 audit (GAP 분석) trace
-│   │   └── run-c*/                          ← 차원 4 act trace
+│   ├── states/                              ← 차원 1 체크포인트 (_state.yaml, 런타임 생성 · .gitkeep 만 존재)
+│   ├── queues/process-act/                  ← 차원 4 인계 큐 (queue-q*.yaml) — 런타임 생성, 현재 없음
+│   ├── runs/                                ← 실행 trace — 런타임 생성, 현재 없음
+│   │   │                                       run-{hex}/ do · run-a*/ audit · run-k*/ kpi
+│   │   │                                       run-g*/ GAP 분석 · run-c*/ act · run-b*/ backfill
+│   │   └── (ingest_* 는 .gitignore, 나머지 trace 는 감사 증적으로 커밋 대상)
 │   └── utils/                               ← Phase 4.5 명세 (3)
 │       ├── business_days_kr.md              ← 한국 영업일 (KST 공휴일 14개)
 │       ├── pcb_quorum.md                    ← PCB 다단계 quorum (4 모드)
@@ -189,16 +189,13 @@ STD_Process_Builder/
 │       ├── post-commit.hook                 ← git hook (vault/*.md 변경 감지 → 백그라운드 push)
 │       └── install-hook.sh                  ← post-commit hook 설치 스크립트
 ├── .github/workflows/
-│   └── vault-push.yml                       ← GitHub Actions (feat/*-output · main + vault/**/*.md)
+│   └── vault-push.yml                       ← GitHub Actions (main 의 vault/**/*.md 변경 시 push · feat/*-output 패턴은 잔존, 해당 브랜치 없음)
 └── vault/                                   ← Obsidian Vault 루트 (영구 자산)
     ├── 00_공통관리/                         ← 문서체계·번호체계·용어집·레지스트리
     ├── 00_MOC/                              ← 인덱스(Map of Content)
     ├── 01_구성원칙/                         ← 최상위 기준
-    ├── 02_표준/                             ← 표준별 작업 공간
-    │   ├── _scaffold/                       ← 새 표준 편입용 스캐폴드 템플릿
-    │   │   └── _inputs/                     ← 카테고리별 입력자료 투하 폴더
-    │   └── CMMI-DEV-ML3/                    ← (예시) 첫 편입 표준
-    │       └── _inputs/04_AsIs/             ← 차원 4 As-Is 입력 (queue-q*.md 추적)
+    ├── 02_적용요건/                         ← 조직 적용요건 정의서 ({명칭}/적용요건.md, 차원 1 산출)
+    │                                           (차원 4 As-Is 입력 queue-q*.md 도 표준별 _inputs/04_AsIs/ 에 적재 — 현재 등재 표준 없음)
     ├── 03_POL_정책/                         ← POL-*
     ├── 04_PRO_절차/                         ← PRO-*
     ├── 05_WI_업무지침/                      ← WI-* + .cache/ steps.yaml fallback
@@ -206,7 +203,7 @@ STD_Process_Builder/
     ├── 07_EX_작성예시/                      ← EX-*
     ├── 08_REC_기록/                         ← REC-* (차원 2 do 산출)
     │   └── AUDIT/                           ← REC sub-type AUDIT/NCR (차원 3 산출)
-    ├── 09_REF_참고자료/                     ← REF-*
+    ├── 09_REF_참고자료/                     ← REF-* + 차원별 운영 가이드 4종 + 사용자_매뉴얼/
     ├── 90_MAT_통합매핑/                     ← MAT-001~010 전사 공통 + MAT-011~ 표준별
     │   └── MAT-010_프로세스_플로우맵.md     ← PRO 선후관계 + WI 시퀀스 (flow-mapper 파생)
     ├── 99_템플릿/                           ← Obsidian Templates
@@ -262,8 +259,8 @@ STD_Process_Builder/
                                                        개정판 (v1.1) → 다음 사이클
 ```
 
-> Plan→Do→Check→Act→Plan' 폐쇄 루프 PoC 검증 (run-c4f8a1b2 / queue-qa1b2c3d4 → PRO v1.0→v1.1 → KPI round 2 회복).
-> **27 에이전트 / 6 슬래시 / 10 trace / 6 act queue / MAT 10종 운영**.
+> Plan→Do→Check→Act→Plan' 폐쇄 루프는 CMMI-DEV-ML3 PoC 로 검증 완료 (run-c4f8a1b2 / queue-qa1b2c3d4 → PRO v1.0→v1.1 → KPI round 2 회복).
+> PoC 당시의 trace·act queue·표준 산출물은 모두 정리되어 현재 repo 에는 없다 (표준 빌드 미시작 상태). 아래 trace/queue ID 는 설명용 예시.
 
 ## 사용법
 
@@ -294,7 +291,7 @@ STD_Process_Builder/
 /process-plan ISO9001 --max-attempts 5 --skip-qa            # 자가수정·QA 옵션
 ```
 
-> 상세: `표준_빌드_워크플로우_가이드.md`
+> 상세: `vault/09_REF_참고자료/표준_빌드_워크플로우_가이드.md`
 
 ### 1-1. 차원 2B (Backfill) — 레거시 REC 변환
 ```bash
@@ -320,7 +317,7 @@ STD_Process_Builder/
 /process-do --rebuild-catalog --scope CMMI                             # MAT-007 카탈로그 재구축
 ```
 
-> 상세: `표준_프로세스_실행_가이드.md`
+> 상세: `vault/09_REF_참고자료/표준_프로세스_실행_가이드.md`
 
 ### 3. 차원 3 (Check) — 심사·NCR·KPI
 ```bash
@@ -350,7 +347,7 @@ STD_Process_Builder/
 /process-check --rbac-check --action audit.confirm --target REC-AUDIT-...
 ```
 
-> 상세: `표준_프로세스_심사_가이드.md`
+> 상세: `vault/09_REF_참고자료/표준_프로세스_심사_가이드.md`
 
 ### 4. 차원 4 (Act) — 제·개정
 ```bash
@@ -367,7 +364,7 @@ STD_Process_Builder/
 /process-act --list [--status pending|completed|...]
 ```
 
-> 상세: `표준_프로세스_제개정_가이드.md`
+> 상세: `vault/09_REF_참고자료/표준_프로세스_제개정_가이드.md`
 
 ### 5. Phase 5 (외부 시스템 연동) — Redmine
 
@@ -549,13 +546,13 @@ Phase 4.5 extensions (명세 활성화):
 
 단일 차원 4 사이클 (queue-qa1b2c3d4 → run-c4f8a1b2 → PRO v1.0→v1.1 → CAPA REC-003 → NCR-001 close) 로 critical 3건 회복 + data_gap 2건 해소.
 
-상세: `표준_프로세스_심사_가이드.md` §7-C / `표준_프로세스_제개정_가이드.md` §6-A
+상세: `vault/09_REF_참고자료/표준_프로세스_심사_가이드.md` §7-C / `표준_프로세스_제개정_가이드.md` §6-A
 
 ## 독립 프레임워크 설계 (참고)
 
-현재 Claude Code 하네스로 검증된 개념을 Python 기반 독립 실행 프레임워크로 승격하는 설계안이 `전용AI에이전트_프레임워크_설계안.md` 에 있습니다. Claude Agent SDK + LangGraph 하이브리드 구성을 1순위로 권장하며, 4단계 MVP 로드맵(Phase 1 : CLI 포팅 → Phase 4 : SaaS)이 제시되어 있습니다.
+현재 Claude Code 하네스로 검증된 개념을 Python 기반 독립 실행 프레임워크로 승격하는 설계안이 `docs/전용AI에이전트_프레임워크_설계안.md` 에 있습니다. Claude Agent SDK + LangGraph 하이브리드 구성을 1순위로 권장하며, 4단계 MVP 로드맵(Phase 1 : CLI 포팅 → Phase 4 : SaaS)이 제시되어 있습니다.
 
-본 README 의 4 차원 자동화 (차원 2~4) 및 Phase 5 (외부 시스템 연동 — Redmine 구현 완료) 까지 포함한 전체 플랫폼을 독립 제품화 검토 단계. Phase 6 이상 (Notion/Codebeamer 연동, AI Agent Gateway) 실 구현 시 독립 패키지 분리 예정.
+**현재 상태**: 차원 1 만 먼저 Python 패키지화한 `processmine/` scaffold 는 2026-05-14 에 회수했습니다. inputs/ ingest 산출물을 건너뛰고 LLM 사전 지식으로 단축 생성하면서 결정론·근거 추적성이라는 본래 목적과 충돌했기 때문입니다. 4차원 PDCA 의 코드화 진입점은 원점에서 재논의 중이며, 코드로 남은 것은 `tools/vault_rules/` (문서 ID·파일명·frontmatter 규칙 CLI) 와 `publish/redmine/` (Phase 5 연동) 뿐입니다. Phase 6 이상 (Notion/Codebeamer 연동, AI Agent Gateway) 실 구현 시 독립 패키지 분리 예정.
 
 ## 누적 통계 (main 기준)
 
@@ -563,8 +560,7 @@ Phase 4.5 extensions (명세 활성화):
 - **슬래시 커맨드**: 7 (`/process-ingest`, `/process-plan`, `/process-do`, `/process-backfill`, `/process-check`, `/process-audit`, `/process-act`)
 - **통합 스킬**: 2 (`/vault-push`, `/workspace-create`) — Phase 5 Redmine 연동
 - **운영 MAT**: 10 슬롯 (MAT-001~009 + MAT-010 프로세스 플로우맵)
-- **PoC trace**: 10 (do 5, audit 1, kpi 2, act 2)
-- **act queue**: 6 (3 done — 1 단일 + 2 batch / 3 pending)
+- **실행 trace / act queue**: 0 — PoC 산출물(trace 10 · queue 6) 은 정리됨. `.claude/runs/`, `.claude/queues/process-act/` 는 명령 실행 시 생성
 - **가이드 문서**: 4 (빌드 / 실행 / 심사 / 제·개정)
 - **Phase 4.5 명세**: 3 utils (영업일 / PCB quorum / 자동 트렌드) + RBAC extensions 4종
 - **Phase 5 구현**: publish/redmine/ (11 파일) + .github/workflows/vault-push.yml + 2 스킬
