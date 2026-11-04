@@ -10,6 +10,7 @@
 
 > 상위 개념: `docs/AI-Driven CMMI Operating Platform.md` (Layer 1/2/3 비전) · `docs/표준프로세스_AI관리체계_4차원PDCA.md` (4차원 PDCA 설계)
 > 파생 프로덕트 비전: `docs/architecture/derivative-products.md` (3-Vault 생태계 — 코어 + RFP-to-Proposal + Project Asset Generator)
+> 조직 계층 설계: `docs/architecture/org-layer.md` — 현재는 **단일 조직 전용(repo 1 = 조직 1)**. 분리 축이 표준이지 조직이 아니며, 다조직 운영을 위한 "플랫폼 1 + 조직 루트 N" 전환 방향을 정리
 > 차원별 운영 가이드 (`vault/09_REF_참고자료/`): `표준_빌드_워크플로우_가이드.md` (1) · `표준_프로세스_실행_가이드.md` (2) · `표준_프로세스_심사_가이드.md` (3) · `표준_프로세스_제개정_가이드.md` (4)
 
 ## 5단계 자동화 매트릭스
@@ -111,7 +112,8 @@ STD_Process_Builder/
 ├── README.md
 ├── docs/                                    ← 설계·비전 문서 + 세션 회고
 │   ├── architecture/
-│   │   └── derivative-products.md           ← 파생 프로덕트 3-Vault 비전 + 분리 로드맵
+│   │   ├── derivative-products.md           ← 파생 프로덕트 3-Vault 비전 + 분리 로드맵
+│   │   └── org-layer.md                     ← 조직 계층 도입 설계 (플랫폼 1 + 조직 루트 N, draft)
 │   ├── AI-Driven CMMI Operating Platform.md ← Layer 1/2/3 비전 (ML3→ML4→ML5)
 │   ├── 표준프로세스_AI관리체계_4차원PDCA.md  ← 4차원 PDCA 설계
 │   ├── 전용AI에이전트_프레임워크_설계안.md   ← 독립 제품화 설계안 (참고 — §독립 프레임워크 설계)
