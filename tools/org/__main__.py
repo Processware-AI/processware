@@ -2,7 +2,8 @@
 
   context     활성 조직 컨텍스트 출력 (env | json | table)
   validate    org.yaml 검증
-  init        조직 루트 뼈대 생성 (org.yaml + 폴더). vault 공통 폴더 복사(sync-core)는 단계 3
+  init        조직 루트 생성 (org.yaml + 폴더 + sync-core)
+  sync-core   플랫폼 core/ → 조직 루트 동기화 (managed 덮어쓰기 · seed 보존)
   register    조직 루트를 레지스트리(~/.processware/orgs.yaml)에 등록
   unregister  레지스트리에서 제거
   list        레지스트리 목록
@@ -13,20 +14,13 @@ from __future__ import annotations
 import argparse
 import datetime as _dt
 import json
-import subprocess
 import sys
 from pathlib import Path
 
 from . import registry
-from .context import (
-    ENV_ORG_ROOT,
-    MODE_DEFAULT,
-    ORG_YAML,
-    OrgContextError,
-    find_platform_root,
-    resolve,
-)
+from .context import ENV_ORG_ROOT, ORG_YAML, OrgContextError, find_platform_root, resolve
 from .schema import ORG_ID_RE, load_org_yaml, validate_org
+from .sync import SyncError, platform_version, sync_core
 
 ORG_SKELETON = (
     "sources",
@@ -50,20 +44,10 @@ def _ctx(args):
         _die(str(e))
 
 
-def _warn_default(ctx):
-    if ctx.mode == MODE_DEFAULT:
-        print(
-            f"[org] 활성 조직 없음 → default 조직(플랫폼 repo vault/) 으로 fallback. "
-            f"{ENV_ORG_ROOT} 또는 --org/--org-root 를 지정하세요. (단계 3 완료 후 이 fallback 은 제거됨)",
-            file=sys.stderr,
-        )
-
-
 # ── commands ──────────────────────────────────────────────────────────────
 
 def cmd_context(args):
     ctx = _ctx(args)
-    _warn_default(ctx)
     if args.format == "json":
         print(json.dumps(ctx.as_dict(), ensure_ascii=False, indent=2))
     elif args.format == "table":
@@ -82,8 +66,6 @@ def cmd_validate(args):
             ctx = resolve(org=args.org, org_root=args.org_root, strict=False)
         except OrgContextError as e:
             _die(str(e))
-        if ctx.mode == MODE_DEFAULT:
-            _die("검증할 org.yaml 이 없습니다 (default 모드). --org-root 또는 --file 을 지정하세요.")
         y = ctx.org_yaml
     data = load_org_yaml(y)
     errors, warnings = validate_org(data)
@@ -94,17 +76,6 @@ def cmd_validate(args):
     if errors:
         sys.exit(1)
     print(f"OK {y}")
-
-
-def _platform_version(platform_root: Path) -> str:
-    try:
-        out = subprocess.run(
-            ["git", "-C", str(platform_root), "rev-parse", "--short", "HEAD"],
-            capture_output=True, text=True, timeout=5,
-        )
-        return out.stdout.strip() or "unknown"
-    except Exception:
-        return "unknown"
 
 
 def cmd_init(args):
@@ -120,7 +91,7 @@ def cmd_init(args):
         tmpl.replace("{org_id}", args.org_id)
             .replace("{name}", args.name.replace('"', '\\"'))
             .replace("{created}", _dt.date.today().isoformat())
-            .replace("{platform_version}", _platform_version(find_platform_root()))
+            .replace("{platform_version}", platform_version(find_platform_root()))
     )
 
     if args.dry_run:
@@ -137,11 +108,35 @@ def cmd_init(args):
     y.write_text(content, encoding="utf-8")
     print(f"조직 루트 생성: {root}")
     print(f"  org_id={args.org_id}  name={args.name}")
-    print("  vault/ 는 비어 있음 — 공통 폴더(00_공통관리·01_구성원칙·99_템플릿) 복사는 단계 3 sync-core 에서.")
+    if not args.no_sync:
+        ctx = resolve(org_root=root)
+        try:
+            rep = sync_core(ctx)
+        except SyncError as e:
+            _die(str(e))
+        print("  " + rep.summary().replace("\n", "\n  "))
+        if not rep.ok:
+            sys.exit(1)
     if args.register:
         oid, _ = registry.register(root)
         print(f"  레지스트리 등록: {oid} → {root}")
     print(f"\n활성화: export {ENV_ORG_ROOT}={root}")
+
+
+def cmd_sync_core(args):
+    ctx = _ctx(args)
+    try:
+        rep = sync_core(ctx, dry_run=args.dry_run, force=args.force)
+    except (SyncError, OrgContextError) as e:
+        _die(str(e))
+    print(rep.summary())
+    if args.verbose:
+        for label, items in (("created", rep.created), ("updated", rep.updated),
+                             ("seed-kept", rep.skipped_seed), ("org created", rep.org_base_created)):
+            for it in items:
+                print(f"  {label:<11} {it}")
+    if not rep.ok:
+        sys.exit(1)
 
 
 def cmd_register(args):
@@ -215,7 +210,13 @@ def main():
     p.add_argument("--org-id", required=True)
     p.add_argument("--name", required=True)
     p.add_argument("--register", action="store_true", help="생성 후 레지스트리에 등록")
+    p.add_argument("--no-sync", action="store_true", help="sync-core 를 실행하지 않음 (vault 비움)")
     p.add_argument("--dry-run", action="store_true")
+
+    p = sub.add_parser("sync-core", parents=[common], help="플랫폼 core/ → 조직 루트 동기화")
+    p.add_argument("--dry-run", action="store_true", help="변경 미리보기")
+    p.add_argument("--force", action="store_true", help="seed 파일도 덮어쓴다 (재시드)")
+    p.add_argument("--verbose", "-v", action="store_true", help="파일 단위 목록 출력")
 
     p = sub.add_parser("register", help="조직 루트를 레지스트리에 등록")
     p.add_argument("path")
@@ -230,6 +231,7 @@ def main():
         "context": cmd_context,
         "validate": cmd_validate,
         "init": cmd_init,
+        "sync-core": cmd_sync_core,
         "register": cmd_register,
         "unregister": cmd_unregister,
         "list": cmd_list,

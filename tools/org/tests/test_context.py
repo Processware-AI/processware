@@ -10,8 +10,10 @@ from pathlib import Path
 from tools.org import OrgContextError, resolve, find_platform_root
 from tools.org import registry
 from tools.org.schema import validate_org
+from tools.org.sync import Manifest, sync_core, _glob_to_re
 
 PLATFORM = Path(__file__).resolve().parents[3]
+VAULT_BASE = PLATFORM / "core" / "vault_base"
 PY = sys.executable
 
 ORG_ENV_KEYS = ("PROCESSWARE_ORG_ROOT", "PROCESSWARE_ORG", "PROCESSWARE_HOME", "PROCESSWARE_PLATFORM_ROOT")
@@ -27,7 +29,7 @@ def _clean_env():
 def _write_org(root: Path, org_id="acme", name="ACME Corp", extra=""):
     root.mkdir(parents=True, exist_ok=True)
     (root / "org.yaml").write_text(
-        f"org_id: {org_id}\nname: \"{name}\"\n{extra}", encoding="utf-8"
+        f"org_id: {org_id}\nname: \"{name}\"\nplatform_version: \"x\"\n{extra}", encoding="utf-8"
     )
 
 
@@ -47,17 +49,9 @@ class EnvIsolation(unittest.TestCase):
 
 
 class TestResolve(EnvIsolation):
-    def test_fallback_default_uses_platform_vault(self):
-        ctx = resolve(cwd=PLATFORM)
-        self.assertEqual(ctx.mode, "default")
-        self.assertEqual(ctx.org_id, "default")
-        self.assertEqual(ctx.vault, PLATFORM / "vault")
-        self.assertEqual(ctx.runs, PLATFORM / ".claude" / "runs")
-        self.assertIsNone(ctx.org_yaml)
-
-    def test_allow_default_false_raises(self):
+    def test_no_org_raises(self):
         with self.assertRaises(OrgContextError):
-            resolve(cwd=PLATFORM, allow_default=False)
+            resolve(cwd=PLATFORM)
 
     def test_org_root_arg(self):
         root = Path(self.tmp.name) / "acme"
@@ -112,7 +106,7 @@ class TestResolve(EnvIsolation):
         _write_org(root)
         ctx = resolve(org_root=root, cwd=PLATFORM)
         self.assertTrue(ctx.contains(root / "vault" / "x.md"))
-        self.assertFalse(ctx.contains(PLATFORM / "vault" / "x.md"))
+        self.assertFalse(ctx.contains(PLATFORM / "core" / "x.md"))
 
     def test_find_platform_root(self):
         self.assertEqual(find_platform_root(PLATFORM / "tools" / "org"), PLATFORM)
@@ -136,6 +130,64 @@ class TestSchema(unittest.TestCase):
         self.assertTrue(any("foo" in w for w in warnings))
 
 
+class TestSync(EnvIsolation):
+    def test_glob(self):
+        self.assertTrue(_glob_to_re("00_공통관리/**").match("00_공통관리/a/b.md"))
+        self.assertTrue(_glob_to_re("*/README.md").match("00_MOC/README.md"))
+        self.assertFalse(_glob_to_re("*/README.md").match("a/b/README.md"))
+        self.assertTrue(_glob_to_re("90_MAT_통합매핑/MAT-*.md").match("90_MAT_통합매핑/MAT-001_x.md"))
+        self.assertTrue(_glob_to_re(".obsidian/**").match(".obsidian/app.json"))
+
+    def test_manifest_covers_every_vault_base_file(self):
+        m = Manifest.load(VAULT_BASE)
+        missing = [
+            p.relative_to(VAULT_BASE).as_posix()
+            for p in VAULT_BASE.rglob("*")
+            if p.is_file() and p.name != "_manifest.yaml"
+            and m.classify(p.relative_to(VAULT_BASE).as_posix()) is None
+        ]
+        self.assertEqual(missing, [])
+        self.assertEqual(m.classify("00_공통관리/01_문서체계.md"), "managed")
+        self.assertEqual(m.classify("00_MOC/README.md"), "managed")
+        self.assertEqual(m.classify("00_MOC/MOC_전체표준.md"), "seed")
+        self.assertEqual(m.classify("90_MAT_통합매핑/MAT-001_문서관리대장.md"), "seed")
+
+    def test_sync_create_update_preserve(self):
+        root = Path(self.tmp.name) / "acme"
+        _write_org(root)
+        ctx = resolve(org_root=root, cwd=PLATFORM)
+
+        rep = sync_core(ctx)
+        self.assertTrue(rep.ok, rep.unclassified)
+        self.assertGreater(len(rep.created), 50)
+        self.assertEqual(rep.updated, [])
+        self.assertTrue((ctx.vault / "01_구성원칙" / "표준프로세스_구성원칙.md").is_file())
+        self.assertTrue((ctx.vault / "90_MAT_통합매핑" / "MAT-001_문서관리대장.md").is_file())
+        self.assertTrue((root / "inputs" / "README.md").is_file())       # org_base
+        self.assertTrue((root / ".gitignore").is_file())
+        self.assertTrue((root / ".processware" / "sync-core.yaml").is_file())
+        self.assertNotIn('platform_version: "x"', (root / "org.yaml").read_text(encoding="utf-8"))
+
+        # managed 는 덮어쓰고, seed 는 보존
+        managed = ctx.vault / "01_구성원칙" / "표준프로세스_구성원칙.md"
+        seed = ctx.vault / "90_MAT_통합매핑" / "MAT-001_문서관리대장.md"
+        managed.write_text("tampered", encoding="utf-8")
+        seed.write_text("org-owned", encoding="utf-8")
+        rep2 = sync_core(ctx)
+        self.assertIn("01_구성원칙/표준프로세스_구성원칙.md", rep2.updated)
+        self.assertIn("90_MAT_통합매핑/MAT-001_문서관리대장.md", rep2.skipped_seed)
+        self.assertNotEqual(managed.read_text(encoding="utf-8"), "tampered")
+        self.assertEqual(seed.read_text(encoding="utf-8"), "org-owned")
+
+        # --force 는 seed 도 재시드, dry-run 은 쓰지 않음
+        rep3 = sync_core(ctx, dry_run=True, force=True)
+        self.assertIn("90_MAT_통합매핑/MAT-001_문서관리대장.md", rep3.updated)
+        self.assertEqual(seed.read_text(encoding="utf-8"), "org-owned")
+        rep4 = sync_core(ctx, force=True)
+        self.assertNotEqual(seed.read_text(encoding="utf-8"), "org-owned")
+        self.assertEqual(len(rep4.updated), 1)
+
+
 class TestCli(EnvIsolation):
     def _run(self, *argv, env=None, cwd=PLATFORM):
         e = _clean_env()
@@ -146,12 +198,14 @@ class TestCli(EnvIsolation):
             [PY, "-m", *argv], cwd=cwd, env=e, capture_output=True, text=True, encoding="utf-8"
         )
 
-    def test_init_then_context_and_vault_rules(self):
+    def test_init_syncs_then_context_and_vault_rules(self):
         root = Path(self.tmp.name) / "acme"
         r = self._run("tools.org", "init", str(root), "--org-id", "acme", "--name", "ACME", "--register")
         self.assertEqual(r.returncode, 0, r.stderr)
         self.assertTrue((root / "org.yaml").is_file())
         self.assertTrue((root / ".processware" / "queues" / "process-act").is_dir())
+        self.assertTrue((root / "vault" / "00_공통관리" / "01_문서체계.md").is_file())
+        self.assertIn("sync-core", r.stdout)
 
         r = self._run("tools.org", "validate", "--org-root", str(root))
         self.assertEqual(r.returncode, 0, r.stderr)
@@ -161,20 +215,27 @@ class TestCli(EnvIsolation):
         self.assertIn("PROCESSWARE_ORG_ID=acme", r.stdout)
         self.assertIn(f"PROCESSWARE_VAULT={root.resolve() / 'vault'}", r.stdout)
 
-        # vault_rules 가 조직 vault 를 기본 루트로 쓰는지
-        r = self._run("tools.vault_rules", "folder", "--type", "POL",
-                      env={"PROCESSWARE_ORG_ROOT": str(root)})
+        r = self._run("tools.org", "sync-core", "--org-root", str(root), "--dry-run")
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn("[dry-run]", r.stdout)
+
+        # vault_rules 가 조직 vault 를 기본 루트로 쓰는지 (REC 폴더 + MAT 다음 번호)
+        env = {"PROCESSWARE_ORG_ROOT": str(root)}
+        r = self._run("tools.vault_rules", "folder", "--type", "POL", env=env)
         self.assertEqual(r.returncode, 0, r.stderr)
         self.assertTrue(r.stdout.strip().startswith(str(root.resolve())), r.stdout)
+        r = self._run("tools.vault_rules", "next-id", "--type", "MAT", env=env)
+        self.assertTrue(r.stdout.strip().startswith("MAT-0"), r.stdout + r.stderr)
 
         r = self._run("tools.org", "list")
         self.assertIn("acme", r.stdout)
 
-    def test_context_default_warns(self):
+    def test_no_org_fails_clearly(self):
         r = self._run("tools.org", "context")
-        self.assertEqual(r.returncode, 0, r.stderr)
-        self.assertIn("PROCESSWARE_ORG_MODE=default", r.stdout)
-        self.assertIn("fallback", r.stderr)
+        self.assertNotEqual(r.returncode, 0)
+        self.assertIn("PROCESSWARE_ORG_ROOT", r.stderr)
+        r = self._run("tools.vault_rules", "folder", "--type", "POL")
+        self.assertNotEqual(r.returncode, 0)
 
     def test_context_bad_root_fails(self):
         r = self._run("tools.org", "context", "--org-root", str(Path(self.tmp.name) / "nope"))

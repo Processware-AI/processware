@@ -4,23 +4,23 @@ description: Process Library에서 PRO Module을 선택·복사하여 현업 업
 
 현업 업무(프로젝트/스코프)를 위한 Workspace를 Process Library에서 복사·조합하여 생성합니다.
 
-## 조직 컨텍스트 (공통 — org-layer §3 단계 1·2)
+## 조직 컨텍스트 (공통 — org-layer §3 단계 1~3)
 
 본 문서와 에이전트 정의의 경로 변수는 **활성 조직 루트** 기준이다. 규약 전문: `.claude/utils/org_context.md`
 
-| 변수 | 의미 | default 모드 (미설정) | 조직 모드 |
-|---|---|---|---|
-| `{VAULT}` | Obsidian vault | `vault/` | `{ORG_ROOT}/vault/` |
-| `{INPUTS}` · `{SOURCES}` | ingest 산출물 · 원본 파일 | `inputs/` · `sources/` | `{ORG_ROOT}/inputs/` · `sources/` |
-| `{RUNS}` · `{QUEUES}` · `{STATES}` | 실행 trace · 인계 큐 · 체크포인트 | `.claude/runs|queues|states/` | `{ORG_ROOT}/.processware/runs|queues|states/` |
+| 변수 | 의미 | 경로 (조직 루트 기준) |
+|---|---|---|
+| `{VAULT}` | Obsidian vault | `{ORG_ROOT}/vault/` |
+| `{INPUTS}` · `{SOURCES}` | ingest 산출물 · 원본 파일 | `{ORG_ROOT}/inputs/` · `sources/` |
+| `{RUNS}` · `{QUEUES}` · `{STATES}` | 실행 trace · 인계 큐 · 체크포인트 | `{ORG_ROOT}/.processware/runs|queues|states/` |
 
-1. 진입 직후 1회 해석한다. 인자 `--org-root <path>` > `--org <id>` > 환경변수 `PROCESSWARE_ORG_ROOT` > `PROCESSWARE_ORG` > **fallback: default 조직(플랫폼 repo)**.
+1. 진입 직후 1회 해석한다. 인자 `--org-root <path>` > `--org <id>` > 환경변수 `PROCESSWARE_ORG_ROOT` > `PROCESSWARE_ORG`. 어느 것도 없으면 **즉시 실패** (default fallback 없음 — 플랫폼 repo 에는 vault 가 없다).
    ```bash
    python3 -m tools.org context --format env [--org <id> | --org-root <path>]
    ```
-   exit ≠ 0 이면 즉시 중단하고 stderr 를 사용자에게 보여준다. 성공 시 `PROCESSWARE_VAULT` → `{VAULT}` 등으로 변수를 바인딩하고, `조직: {id} ({mode}) · 루트: {root}` 1줄을 출력하며, trace 첫 이벤트에 `org_id` · `org_root` · `org_source` 를 기록한다.
+   exit ≠ 0 이면 즉시 중단하고 stderr 를 사용자에게 보여준다. 성공 시 `PROCESSWARE_VAULT` → `{VAULT}` 등으로 변수를 바인딩하고, `조직: {id} · 루트: {root}` 1줄을 출력하며, trace 첫 이벤트에 `org_id` · `org_root` · `org_source` 를 기록한다.
 2. 에이전트에 위임할 때 바인딩된 변수 값을 프롬프트 첫머리에 그대로 전달한다 (에이전트는 전달받은 값을 쓰고, 없을 때만 직접 해석).
-3. `--org-root` 로 받은 값은 하위 `python3 -m tools.*` 호출 전에 `PROCESSWARE_ORG_ROOT` 로 export 한다. 활성 조직 루트 밖에는 읽고 쓰지 않는다. 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`) 은 변수화 대상이 아니다.
+3. `--org-root` 로 받은 값은 하위 `python3 -m tools.*` 호출 전에 `PROCESSWARE_ORG_ROOT` 로 export 한다. 활성 조직 루트 밖에는 읽고 쓰지 않으며, git 작업(branch · commit)도 조직 루트 repo 에서 한다. `{VAULT}/00_공통관리` · `01_구성원칙` · `99_템플릿` · 폴더 `README.md` 는 플랫폼 관리 파일이라 수정하지 않는다 (sync-core 가 덮어씀). 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`, `core/`) 은 변수화 대상이 아니다.
 
 ---
 

@@ -1,0 +1,51 @@
+# Processware 조직 루트 repo — .gitignore (core/org_base 에서 시드, 조직이 소유)
+
+# OS
+.DS_Store
+._*
+**/._*
+Thumbs.db
+
+# sources/ — 원본 파일 (저작권·기밀). README 만 추적
+/sources/**
+!/sources/
+!/sources/README.md
+
+# inputs/ — ingest 산출물 (YAML·MD·py 만, 바이너리 금지)
+/inputs/**
+!/inputs/
+!/inputs/README.md
+!/inputs/*/
+!/inputs/*/README.md
+!/inputs/*/*.yaml
+!/inputs/*/*.md
+!/inputs/*/*/
+!/inputs/*/*/*.yaml
+!/inputs/*/*/*.md
+!/inputs/*/*/*/
+!/inputs/*/*/*/*.yaml
+!/inputs/*/*/*/*.md
+!/inputs/*/*/*/*.py
+!/inputs/*/*/*/*.tmp
+inputs/**/._*
+
+# vault — 생성 캐시·QA 임시
+vault/05_WI_업무지침/.cache/
+vault/02_적용요건/**/99_QA리포트_*.md
+vault/.obsidian/workspace*
+vault/.obsidian/cache/
+vault/.obsidian/appearance.json
+vault/.obsidian/hotkeys.json
+
+# .processware — runs/ 는 감사 증적이므로 추적. 재생성 가능한 것만 제외
+.processware/runs/ingest_*
+.processware/states/*.log
+.processware/states/*.db
+
+# 환경·임시
+*.log
+*.tmp
+.env
+.env.*
+*.swp
+__pycache__/

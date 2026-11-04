@@ -121,10 +121,11 @@ STD_Process_Builder/
 │   ├── 프로세스 정제 필요성.md
 │   └── 세션회고_YYYY-MM-DD_*.md             ← 세션별 결정 기록
 ├── (subproducts/ 없음 — 모든 파생은 별도 repo 운영)
-├── inputs/                                  ← /process-ingest 정제 산출물 (01_표준원문 ~ 05_산업가이드)
-├── sources/                                 ← 원본 표준·법규 파일 투하 (PDF/DOCX/HWPX)
+├── core/                                    ← 조직 루트 템플릿 (org-layer 단계 3)
+│   ├── vault_base/                          ← vault 템플릿 전체 + _manifest.yaml (managed 덮어쓰기 / seed 1회) → {ORG_ROOT}/vault
+│   └── org_base/                            ← 조직 README · .gitignore · inputs/·sources/ README → {ORG_ROOT}
 ├── tools/vault_rules/                       ← 문서 ID 발급·파일명·frontmatter 검증 CLI (python -m, 활성 조직 vault 기본)
-├── tools/org/                               ← 조직 컨텍스트 CLI (context·validate·init·register·list) — org-layer 단계 1
+├── tools/org/                               ← 조직 컨텍스트 CLI (context·validate·init·sync-core·register·list) — org-layer 단계 1·3
 ├── .claude/                                 ← 4차원 자동화 인프라
 │   ├── commands/                            ← 슬래시 커맨드 7 + 통합 스킬 2
 │   │   ├── process-ingest.md               ← 차원 0 (9 Phase + flow-proposer)
@@ -168,12 +169,7 @@ STD_Process_Builder/
 │   │   └── act-coordinator.md               ← 차원 4 Phase 1 (As-Is + MAT-001)
 │   ├── rbac/
 │   │   └── policy.yaml                      ← 6 역할 + Phase 4.5 extensions 4종
-│   ├── states/                              ← 차원 1 체크포인트 (_state.yaml, 런타임 생성 · .gitkeep 만 존재)
-│   ├── queues/process-act/                  ← 차원 4 인계 큐 (queue-q*.yaml) — 런타임 생성, 현재 없음
-│   ├── runs/                                ← 실행 trace — 런타임 생성, 현재 없음
-│   │   │                                       run-{hex}/ do · run-a*/ audit · run-k*/ kpi
-│   │   │                                       run-g*/ GAP 분석 · run-c*/ act · run-b*/ backfill
-│   │   └── (ingest_* 는 .gitignore, 나머지 trace 는 감사 증적으로 커밋 대상)
+│   │   (runs/ · queues/ · states/ 는 플랫폼에 없음 → 조직 루트 .processware/ 참조)
 │   └── utils/                               ← Phase 4.5 명세 (3) + 조직 컨텍스트 규약 (1)
 │       ├── org_context.md                   ← 활성 조직 루트 해석 규약 (org-layer 단계 1, impl)
 │       ├── business_days_kr.md              ← 한국 영업일 (KST 공휴일 14개)
@@ -194,26 +190,24 @@ STD_Process_Builder/
 │       └── install-hook.sh                  ← post-commit hook 설치 스크립트
 ├── .github/workflows/
 │   └── vault-push.yml                       ← GitHub Actions (main 의 vault/**/*.md 변경 시 push · feat/*-output 패턴은 잔존, 해당 브랜치 없음)
-└── vault/                                   ← Obsidian Vault 루트 (영구 자산)
-    ├── 00_공통관리/                         ← 문서체계·번호체계·용어집·레지스트리
-    ├── 00_MOC/                              ← 인덱스(Map of Content)
-    ├── 01_구성원칙/                         ← 최상위 기준
-    ├── 02_적용요건/                         ← 조직 적용요건 정의서 ({명칭}/적용요건.md, 차원 1 산출)
-    │                                           (차원 4 As-Is 입력 queue-q*.md 도 표준별 _inputs/04_AsIs/ 에 적재 — 현재 등재 표준 없음)
-    ├── 03_POL_정책/                         ← POL-*
-    ├── 04_PRO_절차/                         ← PRO-*
-    ├── 05_WI_업무지침/                      ← WI-* + .cache/ steps.yaml fallback
-    ├── 06_TMP_템플릿/                       ← TMP-*
-    ├── 07_EX_작성예시/                      ← EX-*
-    ├── 08_REC_기록/                         ← REC-* (차원 2 do 산출)
-    │   └── AUDIT/                           ← REC sub-type AUDIT/NCR (차원 3 산출)
-    ├── 09_REF_참고자료/                     ← REF-* + 차원별 운영 가이드 4종 + 사용자_매뉴얼/
-    ├── 90_MAT_통합매핑/                     ← MAT-001~010 전사 공통 + MAT-011~ 표준별
-    │   └── MAT-010_프로세스_플로우맵.md     ← PRO 선후관계 + WI 시퀀스 (flow-mapper 파생)
-    ├── 99_템플릿/                           ← Obsidian Templates
-    │   └── _골든샘플/                       ← POL/PRO/WI 품질 하한선 참조 예시
-    ├── 99_폐기_보관/                        ← 만료/폐지 문서 아카이브
-    └── _inputs_common/                      ← 복수 표준 공통 입력자료
+└── (vault/ · inputs/ · sources/ 없음 — 조직 자산은 별도 repo 의 조직 루트에 있다)
+
+{ORG_ROOT}/                                      ← 조직 루트 (별도 git repo) — python3 -m tools.org init 로 생성
+├── org.yaml                                     ← org_id · 명칭 · 영역코드 · RBAC 배정 · Redmine
+├── sources/ · inputs/                           ← 원본 파일 · /process-ingest 산출물 (01_표준원문 ~ 06_목표흐름)
+├── vault/                                       ← Obsidian Vault (영구 자산)
+│   ├── 00_공통관리 · 01_구성원칙 · 99_템플릿    ← 플랫폼 관리 (sync-core 가 덮어씀)
+│   ├── 00_MOC · 90_MAT_통합매핑/MAT-001~009     ← 플랫폼 시드 → 조직 소유
+│   ├── 02_적용요건/                             ← 조직 적용요건 정의서 ({명칭}/적용요건.md)
+│   ├── 03_POL_정책 · 04_PRO_절차 · 05_WI_업무지침 · 06_TMP_템플릿 · 07_EX_작성예시
+│   ├── 08_REC_기록/ (+ AUDIT/)                  ← 차원 2·3 산출
+│   ├── 09_REF_참고자료/                         ← REF + 운영 가이드 4종 + 사용자_매뉴얼
+│   └── 99_폐기_보관/
+└── .processware/
+    ├── runs/                                    ← 실행 trace (run-{hex} do · run-a* audit · run-k* kpi · run-g* GAP · run-c* act · run-b* backfill)
+    ├── queues/process-act/                      ← 차원 4 인계 큐 (queue-q*.yaml)
+    ├── states/                                  ← 차원 1 체크포인트 (_state.yaml)
+    └── sync-core.yaml                           ← 마지막 sync-core 기록
 ```
 
 ## 4차원 PDCA 폐쇄 루프 흐름 (전체)
@@ -268,15 +262,16 @@ STD_Process_Builder/
 
 ## 사용법
 
-### 0. 사전 준비
-0. **조직 컨텍스트 (선택)** — 모든 커맨드는 활성 조직 루트 기준으로 경로를 해석한다. 미설정 시 이 repo 의 `vault/` 가 `default` 조직이다 (단계 3 마이그레이션 후 제거 예정). 규약: `.claude/utils/org_context.md`
-   ```bash
-   python3 -m tools.org init /work/acme --org-id acme --name "ACME" --register   # 조직 루트 뼈대 (별도 repo 권장)
-   export PROCESSWARE_ORG_ROOT=/work/acme                                        # 또는 커맨드마다 --org acme / --org-root <path>
-   python3 -m tools.org context --format table                                   # 해석 결과 확인
-   ```
-1. Obsidian 에서 `vault/` 폴더를 **Open folder as vault** 로 열기.
-2. **입력자료 배치 (권장)** — `vault/02_표준/{표준코드}/_inputs/` 에 표준원문·법규·해설서·As-Is 투하. 상세 규칙: `vault/00_공통관리/05_입력자료_규칙.md`
+### 0. 사전 준비 — 조직 루트 만들기 (필수)
+플랫폼 repo 에는 vault 가 없다. 모든 커맨드는 **활성 조직 루트** 기준으로 동작하며, 미지정 시 즉시 실패한다. 규약: `.claude/utils/org_context.md`
+```bash
+python3 -m tools.org init /work/acme --org-id acme --name "ACME" --register   # 조직 루트 생성 (별도 git repo 권장) + vault 공통 폴더·MAT 시드
+export PROCESSWARE_ORG_ROOT=/work/acme                                        # 또는 export PROCESSWARE_ORG=acme / 커맨드마다 --org acme
+python3 -m tools.org context --format table                                   # 해석 결과 확인
+python3 -m tools.org sync-core --dry-run                                      # 플랫폼 갱신 후 조직 vault 에 반영 (미리보기)
+```
+1. Obsidian 에서 `{ORG_ROOT}/vault/` 폴더를 **Open folder as vault** 로 열기.
+2. 입력자료 배치 — `{ORG_ROOT}/sources/` 에 표준원문·법규·해설서·As-Is 투하. 상세 규칙: `vault/00_공통관리/05_입력자료_규칙.md`
 
 ### 0-1. 차원 0 (Ingest) — 표준 전처리
 ```bash
@@ -574,4 +569,4 @@ Phase 4.5 extensions (명세 활성화):
 - **가이드 문서**: 4 (빌드 / 실행 / 심사 / 제·개정)
 - **Phase 4.5 명세**: 3 utils (영업일 / PCB quorum / 자동 트렌드) + RBAC extensions 4종
 - **Phase 5 구현**: publish/redmine/ (11 파일) + .github/workflows/vault-push.yml + 2 스킬
-- **조직 계층 (org-layer)**: 단계 1 조직 컨텍스트 (`tools/org/`, unittest 15) + 단계 2 경로 추상화 (에이전트 29 · 커맨드 9 의 경로 574건 → `{VAULT}` 등 변수) 구현 / 단계 3~7 미착수
+- **조직 계층 (org-layer)**: 단계 1 조직 컨텍스트 (`tools/org/`) + 단계 2 경로 추상화 (574건 → `{VAULT}` 등 변수) + 단계 3 스캐폴드 (`core/vault_base` · `core/org_base` · `sync-core`, unittest 17) 구현 / 단계 4~7 미착수

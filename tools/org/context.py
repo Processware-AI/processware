@@ -5,12 +5,10 @@
   2. 인자 org     (CLI --org <id>, 레지스트리 조회)
   3. 환경변수 PROCESSWARE_ORG_ROOT
   4. 환경변수 PROCESSWARE_ORG (레지스트리 조회)
-  5. fallback: default 조직 = 플랫폼 repo 의 vault/ (단계 3 마이그레이션 완료 후 제거 예정)
+  (어느 것도 없으면 OrgContextError — default fallback 은 단계 3 마이그레이션과 함께 제거됨, 2026-11-04 결정)
 
-조직 모드 레이아웃 ({ORG_ROOT} 기준):
-  vault/  inputs/  sources/  .processware/{runs,queues,states}
-default 모드 레이아웃 (플랫폼 repo 기준):
-  vault/  inputs/  sources/  .claude/{runs,queues,states}
+조직 루트 레이아웃 ({ORG_ROOT} 기준):
+  org.yaml  vault/  inputs/  sources/  .processware/{runs,queues,states}
 """
 
 from __future__ import annotations
@@ -24,9 +22,7 @@ ENV_ORG_ROOT = "PROCESSWARE_ORG_ROOT"
 ENV_ORG = "PROCESSWARE_ORG"
 ENV_PLATFORM_ROOT = "PROCESSWARE_PLATFORM_ROOT"
 ORG_YAML = "org.yaml"
-DEFAULT_ORG_ID = "default"
 MODE_ORG = "org"
-MODE_DEFAULT = "default"
 
 # 플랫폼 repo 루트 판별 마커 (하나라도 있으면 플랫폼 루트)
 _PLATFORM_MARKERS = ("tools/vault_rules/__init__.py", ".claude/commands")
@@ -39,8 +35,8 @@ class OrgContextError(Exception):
 @dataclass(frozen=True)
 class OrgContext:
     org_id: str
-    mode: str            # "org" | "default"
-    source: str          # 해석 근거 (arg:org-root / arg:org / env:... / fallback:default)
+    mode: str            # 항상 "org" (호환 유지용 필드)
+    source: str          # 해석 근거 (arg:org-root / arg:org / env:PROCESSWARE_ORG_ROOT / env:PROCESSWARE_ORG)
     org_root: Path
     vault: Path
     inputs: Path
@@ -115,18 +111,6 @@ def _org_layout(root: Path) -> dict:
     }
 
 
-def _default_layout(platform_root: Path) -> dict:
-    dot = platform_root / ".claude"
-    return {
-        "vault": platform_root / "vault",
-        "inputs": platform_root / "inputs",
-        "sources": platform_root / "sources",
-        "runs": dot / "runs",
-        "queues": dot / "queues",
-        "states": dot / "states",
-    }
-
-
 # ── 해석 ───────────────────────────────────────────────────────────────────
 
 def resolve(
@@ -134,12 +118,11 @@ def resolve(
     org_root: "os.PathLike[str] | str | None" = None,
     cwd: "os.PathLike[str] | str | None" = None,
     strict: bool = True,
-    allow_default: bool = True,
 ) -> OrgContext:
     """활성 조직 컨텍스트를 해석한다.
 
-    strict=True   : 조직 모드에서 org.yaml 검증 오류가 있으면 OrgContextError.
-    allow_default : False 이면 fallback 을 금지하고 OrgContextError (단계 3 완료 후 기본 동작).
+    strict=True : org.yaml 검증 오류가 있으면 OrgContextError.
+    활성 조직을 특정할 수 없으면 OrgContextError (fallback 없음).
     """
     from . import registry  # 지연 import (순환 방지)
 
@@ -168,18 +151,9 @@ def resolve(
         root, source = found, f"env:{ENV_ORG}"
 
     if root is None:
-        if not allow_default:
-            raise OrgContextError(
-                f"활성 조직이 없습니다. {ENV_ORG_ROOT} 를 설정하거나 --org/--org-root 를 지정하세요."
-            )
-        return OrgContext(
-            org_id=DEFAULT_ORG_ID,
-            mode=MODE_DEFAULT,
-            source="fallback:default",
-            org_root=platform_root,
-            platform_root=platform_root,
-            org_yaml=None,
-            **_default_layout(platform_root),
+        raise OrgContextError(
+            f"활성 조직이 없습니다. {ENV_ORG_ROOT}=<조직 루트> 를 설정하거나 --org <id> / --org-root <path> 를 지정하세요. "
+            "조직 루트가 아직 없으면: python3 -m tools.org init <path> --org-id <id> --name <명칭>"
         )
 
     root = root.expanduser().resolve()

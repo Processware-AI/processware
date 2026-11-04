@@ -1,0 +1,23 @@
+# core/vault_base 동기화 규칙 — tools/org sync-core 가 읽는다 (org-layer.md §3 단계 3)
+#
+# managed : 플랫폼 관리 파일. sync 마다 조직 vault 에 덮어쓴다. 조직별 추가는 별도 파일로.
+# seed    : 조직 시드 파일. 조직 vault 에 없을 때만 복사하고 이후 조직이 소유·갱신한다 (--force 로 재시드).
+# 두 목록 어디에도 없는 파일이 vault_base 에 있으면 sync-core 가 오류로 보고한다 (분류 누락 방지).
+# 경로는 vault_base 기준 POSIX 상대경로. ** / * / ? 지원. managed 가 seed 보다 우선.
+
+version: 1
+
+managed:
+  - ".obsidian/**"
+  - ".obsidian-README.md"
+  - "README.md"
+  - "*/README.md"                       # 각 폴더 README (00_MOC/README.md, 90_MAT_통합매핑/README.md 포함)
+  - "00_공통관리/**"                    # 문서체계 · 번호체계 · 용어집 · 입력자료 규칙 · 파이프라인 상태규약 · 표준분류레지스트리
+  - "01_구성원칙/**"                    # 표준프로세스_구성원칙
+  - "99_템플릿/**"                      # Obsidian Templates + _골든샘플
+  - "09_REF_참고자료/사용자_매뉴얼/**"  # 사용자 매뉴얼
+  - "09_REF_참고자료/*_가이드.md"       # 차원별 운영 가이드 4종
+
+seed:
+  - "00_MOC/*.md"                       # 인덱스 — 조직이 표준 등재 시 갱신
+  - "90_MAT_통합매핑/MAT-*.md"          # MAT-001~009 빈 양식 — 조직이 채움

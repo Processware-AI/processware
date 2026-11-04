@@ -1,7 +1,7 @@
 ---
 type: architecture
 title: 조직 계층 도입 설계 방향 — 플랫폼 1 + 조직 루트 N
-version: "0.5"
+version: "0.6"
 status: draft
 updated: 2026-11-04
 decided:
@@ -62,8 +62,10 @@ processware/                        ← 플랫폼 repo (공유)
 │   └── rbac/policy.yaml            ← 역할 정의 템플릿 (사용자 배정 없음)
 ├── tools/
 │   ├── vault_rules/                ← 기존 (--vault 루트 인자 그대로 사용)
-│   └── org/                        ← 신규: init / switch / sync-core / validate
-└── core/vault_base/                ← 00_공통관리 · 01_구성원칙 · 99_템플릿 + 폴더 README + MAT-001~009 빈 양식
+│   └── org/                        ← context / validate / init / sync-core / register / list
+└── core/
+    ├── vault_base/                 ← vault 템플릿 전체 + _manifest.yaml (managed: 00_공통관리 · 01_구성원칙 · 99_템플릿 · 폴더 README · 가이드 / seed: MOC · MAT-001~009)
+    └── org_base/                   ← 조직 루트 템플릿 (README · .gitignore · inputs/·sources/ README) — 없을 때만 복사
 
 {ORG_ROOT}/                         ← 조직 루트 (조직별 별도 git repo — 결정)
 ├── org.yaml                        ← org_id · 명칭 · 사용 영역코드 · rbac 사용자 배정 · redmine 매핑
@@ -73,7 +75,8 @@ processware/                        ← 플랫폼 repo (공유)
 │   ├── 04_AsIs/                    ← 조직 내부 자산 (기밀)
 │   └── 06_목표흐름/                ← business_flow.yaml / .md
 ├── vault/                          ← Obsidian vault — 자기완결
-│   ├── 00_공통관리 · 01_구성원칙 · 99_템플릿   ← core/vault_base 에서 sync-core 로 복사된 사본
+│   ├── 00_공통관리 · 01_구성원칙 · 99_템플릿   ← managed: sync-core 가 덮어씀 (직접 수정 금지)
+│   ├── 00_MOC · 90_MAT_통합매핑               ← seed: 최초 1회 복사 후 조직 소유
 │   ├── 02_적용요건 · 03_POL ~ 09_REF · 90_MAT ← 조직 산출물
 │   └── 99_폐기_보관
 └── .processware/
@@ -105,7 +108,7 @@ Obsidian 은 vault 가 자기완결적이어야 wikilink 가 동작한다. 따�
 |---|---|---|
 | **1. 조직 컨텍스트 도입** ✅ 구현 (2026-11-04) | `PROCESSWARE_ORG_ROOT` 환경변수 또는 모든 커맨드의 `--org <id>` / `--org-root <path>` 옵션으로 활성 조직을 정한다. 미지정 시 현재 `vault/` 를 `default` 조직으로 취급해 하위 호환을 유지한다 (단계 3 완료 시 이 fallback 은 제거). 구현: `tools/org/` (context · schema · registry · CLI) + `.claude/utils/org_context.md` 규약 + 커맨드 9개 공통 절 + `tools/vault_rules` 기본 vault 연동. §6 참조. | 커맨드 9 · tools |
 | **2. 경로 추상화** ✅ 구현 (2026-11-04) | 에이전트 29 · 커맨드 9 · utils 1 의 리터럴 경로 574건을 `{VAULT}` `{INPUTS}` `{SOURCES}` `{RUNS}` `{QUEUES}` `{STATES}` 로 치환. frontmatter(description · argument-hint)는 사용자 입력 예시라 리터럴 유지. 커맨드 공통 절이 변수 바인딩·에이전트 전달을 규정, 에이전트마다 변수 안내 1줄. 단계 1 의 임시 치환 브리지 삭제. | 에이전트 29 · 커맨드 9 |
-| **3. 스캐폴드 도구** | `python -m tools.org init {org_id}` 가 조직 루트를 생성하고 `core/vault_base` 를 복사한다. 현재 `vault/` 는 첫 조직(`default`) 으로 마이그레이션한다. | 신규 `tools/org/` |
+| **3. 스캐폴드 도구** ✅ 구현 (2026-11-05) | `python -m tools.org init {path}` 가 조직 루트(org.yaml · 폴더)를 만들고 `sync-core` 를 실행한다. `core/vault_base/_manifest.yaml` 의 managed(덮어쓰기)/seed(없을 때만) 규칙으로 `{ORG_ROOT}/vault` 를 채우고, `core/org_base` 로 조직 README · .gitignore 를 시드한다. 플랫폼 repo 의 `vault/` · `inputs/` · `sources/` 는 `core/` 로 이동(git mv)했고 default fallback 은 제거했다. | `tools/org/sync.py` · `core/` |
 | **4. RBAC 조직화** | 현재 `policy.yaml` 은 역할 6종 정의만 있고 **사용자 배정이 없다**. 역할 정의는 플랫폼 템플릿으로 남기고, 사용자→역할 배정과 audit_log 는 `org.yaml` 로 내린다. independence-guard 는 활성 조직 파일만 읽는다. | independence-guard · policy.yaml |
 | **5. 격리 가드** | 에이전트가 활성 조직 루트 밖의 vault 경로에 쓰려 하면 거부하는 검증을 qa-reviewer 와 `vault_rules validate` 에 추가한다. | qa-reviewer · vault_rules |
 | **6. 외부 연동** | Redmine 프로젝트 이름을 `lib-{org}-{scope}` · `ws-{org}-{slug}` 로 바꾸고, sync_map DB 와 config 를 조직 루트로 옮긴다. GitHub Actions 는 **조직 repo 쪽에서 플랫폼을 체크아웃해 실행** 하는 구조로 뒤집는다. | publish/redmine · vault-push.yml |
@@ -129,7 +132,7 @@ Obsidian 은 vault 가 자기완결적이어야 wikilink 가 동작한다. 따�
 | 1 | 조직 루트 위치 | (a) 플랫폼 repo 밖 별도 repo / (b) 플랫폼 repo 안 `orgs/{org}/` | ✅ **(a) 결정 (2026-11-04)** — NDA 격리 |
 | 2 | 공개 표준 ingest 산출물 공유 | (a) `knowledge/standards/` 지식 팩으로 조직 간 공유 / (b) 조직 루트에 둠 | ✅ **(b) 결정 (2026-11-04)** — 저작권 · 조직별 ingest 버전 분리. 플랫폼 repo 에 `knowledge/` 없음 |
 | 3 | 3-Vault 파생 프로덕트와의 관계 | 파생 ②(Project Asset Generator) 는 "조직의 코어 vault" 를 입력으로 받음 | ✅ **결정 (2026-11-04)** — 조직 컨텍스트를 파생 프로덕트에도 같은 환경변수 `PROCESSWARE_ORG_ROOT` 로 전달. 파생 ① 은 코어 vault 를 입력으로 받지 않으므로 해당 없음 |
-| 4 | 하위 호환 기간 | `default` 조직 fallback 을 언제까지 유지할지 | ✅ **결정 (2026-11-04)** — 단계 3 마이그레이션 완료 후 제거. 이후 `PROCESSWARE_ORG_ROOT` 미설정 시 커맨드는 즉시 실패 |
+| 4 | 하위 호환 기간 | `default` 조직 fallback 을 언제까지 유지할지 | ✅ **결정 (2026-11-04)** — 단계 3 마이그레이션 완료 후 제거. 이후 `PROCESSWARE_ORG_ROOT` 미설정 시 커맨드는 즉시 실패 → **단계 3 에서 실행 완료 (2026-11-05)** |
 
 선결 결정 4건 모두 확정 (2026-11-04). 다음 단계는 §3 의 1단계(조직 컨텍스트 도입)부터 구현 착수.
 
@@ -141,14 +144,15 @@ Obsidian 은 vault 가 자기완결적이어야 wikilink 가 동작한다. 따�
 |---|---|---|
 | 1. 조직 컨텍스트 도입 | ✅ 구현 (2026-11-04) | `tools/org/` — `context.py` (해석 우선순위 5단계 · 레이아웃), `schema.py` (org.yaml 검증), `registry.py` (`~/.processware/orgs.yaml`), `__main__.py` (`context` · `validate` · `init` · `register` · `unregister` · `list`), `templates/org.yaml`, `tests/` (unittest 15건). `.claude/utils/org_context.md` 해석 규약. 커맨드 9개에 "조직 컨텍스트 (공통)" 절 + `argument-hint` 에 `--org` / `--org-root` 추가. `tools/vault_rules` 의 `--vault` 기본값을 활성 조직 vault 로 연동. |
 | 2. 경로 추상화 | ✅ 구현 (2026-11-04) | `.claude/agents/*` (29) · `.claude/commands/*` (9) · `.claude/utils/auto_trend_mermaid.md` 본문 리터럴 574건 → 변수 표기. `.claude/utils/org_context.md` §3 이 변수 정의. 커맨드 공통 절 재작성 (변수 표·바인딩·에이전트 전달·하위 호출 export). 에이전트 29개 본문 첫 줄에 경로 변수 안내. |
-| 3. 스캐폴드 도구 | ⏳ 미착수 | `init` 은 org.yaml + 폴더 뼈대까지만. `core/vault_base/` 신설 + `sync-core` 미구현 |
+| 3. 스캐폴드 도구 | ✅ 구현 (2026-11-05) | `core/vault_base/` (구 `vault/` 전체, `_inputs_common` 제거, `.obsidian` 포함) + `_manifest.yaml` · `core/org_base/` (README · .gitignore · inputs/sources README). `tools/org/sync.py` sync-core (managed 덮어쓰기 · seed 보존 · `--force` 재시드 · `--dry-run` · manifest 전수 분류 검사 · org.yaml platform_version 갱신 · `.processware/sync-core.yaml` 기록). `init` 이 sync-core 자동 실행 (`--no-sync` 로 생략). `context.py` default fallback 제거. 테스트 17건. |
 | 4~7 | ⏳ 미착수 | — |
 
-**단계 1 의 알려진 제한**
-- 조직 모드에서 `/process-plan` 을 돌리면 vault 공통 폴더(00_공통관리 · 01_구성원칙 · 99_템플릿) 가 없어 기준 문서를 찾지 못한다 → 단계 3 `sync-core` 전까지는 default 모드만 실사용 가능.
-- `publish/redmine/*` Python 은 아직 `vault/` 리터럴을 쓴다 (단계 6).
-- 에이전트가 호출하는 `python3 -m tools.vault_rules` 는 환경변수 `PROCESSWARE_ORG_ROOT` 를 상속받아야 조직 vault 를 본다. 커맨드가 `--org-root` 로 받은 값은 하위 호출 전에 환경변수로 export 한다.
-- 사용자 가이드 4종(`vault/09_REF_참고자료/*_가이드.md`)은 default 모드 리터럴 경로로 설명한다. 조직 모드 안내는 단계 3 이후.
+**알려진 제한 (단계 3 시점)**
+- 플랫폼 repo 에는 더 이상 `vault/` · `inputs/` · `sources/` 가 없다. 모든 커맨드는 `PROCESSWARE_ORG_ROOT` 또는 `--org`/`--org-root` 가 있어야 동작한다.
+- `publish/redmine/*` Python 과 `.github/workflows/vault-push.yml` 은 플랫폼 repo 루트의 `vault/` 리터럴을 전제하므로 **현재 동작하지 않는다**. 조직 repo 쪽으로 옮기는 것이 단계 6.
+- `/process-plan` Phase −2 (git branch 격리)는 vault 가 있는 repo 에서 branch 를 만든다는 전제다. 조직 루트가 별도 repo 가 되었으므로 git 작업은 `{ORG_ROOT}` 에서 해야 한다 (공통 절에 원칙만 명시, 커맨드 본문 보강은 단계 6~7).
+- 사용자 가이드 4종 · 사용자_매뉴얼은 `vault/`, `.claude/runs/` 리터럴로 설명한다. 조직 루트 기준으로 읽는다. 본문 갱신은 후속 과제.
+- 에이전트가 호출하는 `python3 -m tools.vault_rules` 는 환경변수 `PROCESSWARE_ORG_ROOT` 를 상속받아야 한다. 커맨드가 `--org-root` 로 받은 값은 하위 호출 전에 export 한다.
 
 ---
 
