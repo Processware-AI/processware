@@ -71,7 +71,7 @@ def cmd_version(args):
 
 def cmd_validate(args):
     """Validate a vault document file. Exits 0=OK, 1=errors."""
-    errors = validate_file(args.file, args.vault)
+    errors = _isolation_errors(args.file) + validate_file(args.file, args.vault)
     if errors:
         for e in errors:
             print(f"ERROR: {e}", file=sys.stderr)
@@ -139,6 +139,20 @@ def _require(args, attr):
 def _die(msg):
     print(f"ERROR: {msg}", file=sys.stderr)
     sys.exit(1)
+
+
+def _isolation_errors(file_path):
+    """격리 가드 (org-layer 단계 5): 파일이 활성 조직 vault 안에 있고 플랫폼 관리 파일이 아니어야 한다."""
+    try:
+        from tools.org import resolve
+        from tools.org.guard import Guard
+        ctx = resolve(strict=False)
+    except Exception:
+        return []
+    res = Guard(ctx).check(file_path, mode="write")
+    if res.ok:
+        return []
+    return [f"격리 위반 [{res.zone}{' managed' if res.managed else ''}]: {res.reason}"]
 
 
 def _apply_org_context(args):

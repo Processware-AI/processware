@@ -27,7 +27,7 @@ argument-hint: "<source_file> --standard <ID> [--version <ver>] [--category <01-
    ```
    exit ≠ 0 이면 즉시 중단하고 stderr 를 사용자에게 보여준다. 성공 시 `PROCESSWARE_VAULT` → `{VAULT}` 등으로 변수를 바인딩하고, `조직: {id} · 루트: {root}` 1줄을 출력하며, trace 첫 이벤트에 `org_id` · `org_root` · `org_source` 를 기록한다.
 2. 에이전트에 위임할 때 바인딩된 변수 값을 프롬프트 첫머리에 그대로 전달한다 (에이전트는 전달받은 값을 쓰고, 없을 때만 직접 해석).
-3. `--org-root` 로 받은 값은 하위 `python3 -m tools.*` 호출 전에 `PROCESSWARE_ORG_ROOT` 로 export 한다. 활성 조직 루트 밖에는 읽고 쓰지 않으며, git 작업(branch · commit)도 조직 루트 repo 에서 한다. `{VAULT}/00_공통관리` · `01_구성원칙` · `99_템플릿` · 폴더 `README.md` 는 플랫폼 관리 파일이라 수정하지 않는다 (sync-core 가 덮어씀). 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`, `core/`) 은 변수화 대상이 아니다.
+3. `--org-root` 로 받은 값은 하위 `python3 -m tools.*` 호출 전에 `PROCESSWARE_ORG_ROOT` 로 export 한다. 활성 조직 루트 밖에는 읽고 쓰지 않으며, git 작업(branch · commit)도 조직 루트 repo 에서 한다. `{VAULT}/00_공통관리` · `01_구성원칙` · `99_템플릿` · 폴더 `README.md` 는 플랫폼 관리 파일이라 수정하지 않는다 (sync-core 가 덮어씀). 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`, `core/`) 은 변수화 대상이 아니다. 격리는 3중으로 강제된다: Claude Code PreToolUse 훅(`.claude/settings.json` → `tools.org.hook_guard`) · `tools.vault_rules validate` · qa-reviewer §13 — 확인이 필요하면 `python3 -m tools.org guard --path <경로>`.
 
 ---
 

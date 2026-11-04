@@ -8,6 +8,7 @@
   unregister  레지스트리에서 제거
   list        레지스트리 목록
   rbac        권한 판정 (check · roles · users · independence · log) — 단계 4
+  guard       격리 가드 — 경로가 활성 조직 루트 안인지 · 플랫폼 관리 파일인지 (exit 0 / 2) — 단계 5
 """
 
 from __future__ import annotations
@@ -23,6 +24,7 @@ from .context import ENV_ORG_ROOT, ORG_YAML, OrgContextError, find_platform_root
 from .schema import ORG_ID_RE, load_org_yaml, validate_org
 from .sync import SyncError, platform_version, sync_core
 from .rbac import Rbac, RbacError
+from .guard import Guard
 
 ORG_SKELETON = (
     "sources",
@@ -247,6 +249,19 @@ def cmd_rbac(args):
         return
 
 
+def cmd_guard(args):
+    ctx = _ctx(args)
+    results = Guard(ctx).check_many(args.path, mode=args.mode, allow_platform=args.allow_platform)
+    if args.format == "json":
+        print(json.dumps([r.as_dict() for r in results], ensure_ascii=False, indent=2))
+    else:
+        for r in results:
+            mark = "✅" if r.ok else "❌"
+            tag = f"{r.zone}" + (" managed" if r.managed else "")
+            print(f"{mark} {r.mode} [{tag}] {r.path}" + (f"\n     {r.reason}" if r.reason else ""))
+    sys.exit(0 if all(r.ok for r in results) else 2)
+
+
 def _die(msg):
     print(f"ERROR: {msg}", file=sys.stderr)
     sys.exit(1)
@@ -309,6 +324,12 @@ def main():
 
     sub.add_parser("list", help="레지스트리 목록")
 
+    p = sub.add_parser("guard", parents=[common], help="격리 가드 (단계 5) — exit 0 전부 허용 / 2 하나라도 거부")
+    p.add_argument("--path", action="append", required=True, help="검사할 경로 (반복 가능)")
+    p.add_argument("--mode", choices=["read", "write"], default="write")
+    p.add_argument("--allow-platform", action="store_true", help="플랫폼 자산 쓰기 허용 (플랫폼 개발 작업)")
+    p.add_argument("--format", choices=["text", "json"], default="text")
+
     p = sub.add_parser("rbac", parents=[common], help="권한 판정 (단계 4)")
     rs = p.add_subparsers(dest="rbac_cmd", required=True)
     q = rs.add_parser("check", parents=[common], help="사용자가 action 을 수행할 수 있는지 (exit 0 허용 / 2 거부)")
@@ -339,6 +360,7 @@ def main():
         "unregister": cmd_unregister,
         "list": cmd_list,
         "rbac": cmd_rbac,
+        "guard": cmd_guard,
     }[args.command](args)
 
 

@@ -1,7 +1,7 @@
 ---
 type: util-spec
-title: 조직 컨텍스트 — 활성 조직 루트 해석 규약 (org-layer §3 단계 1~4)
-version: "0.4"
+title: 조직 컨텍스트 — 활성 조직 루트 해석 규약 (org-layer §3 단계 1~5)
+version: "0.5"
 owner: "QMR"
 status: impl                            # 단계 1 tools/org/ + 단계 2 경로 변수화 + 단계 3 sync-core 완료
 created: 2026-11-04
@@ -90,7 +90,10 @@ exit ≠ 0 이면 **즉시 중단** 하고 stderr 메시지를 사용자에게 �
 - 플랫폼 자산은 읽기 전용. `/process-act` 의 개정 제안도 조직 vault 안의 자산만 대상으로 한다.
 - `{VAULT}/00_공통관리` · `01_구성원칙` · `99_템플릿` · 각 폴더 `README.md` 는 **플랫폼 관리(managed)** 파일이다. 에이전트는 이 파일들을 수정하지 않는다 (sync-core 가 덮어쓴다). 조직별 추가는 별도 파일로.
 - git 작업(branch · commit)은 조직 루트 repo 에서 수행한다. 플랫폼 repo 는 건드리지 않는다.
-- 단계 5 에서 `tools.org.OrgContext.contains(path)` 를 qa-reviewer 와 `vault_rules validate` 가 강제한다.
+- **강제 (단계 5)** — `tools/org/guard.py` 가 경로를 org / platform / outside 로 분류하고 쓰기를 판정한다 (org 허용 · managed 거부 · platform 거부 · outside 거부):
+  1. **Claude Code 훅**: `.claude/settings.json` PreToolUse (Write/Edit/MultiEdit/NotebookEdit) → `python3 -m tools.org.hook_guard`. 조직 컨텍스트가 있을 때 managed 파일 · 제거된 플랫폼 `vault/` 등 · outside 쓰기를 exit 2 로 차단. 플랫폼 자산 편집(개발 작업)은 차단하지 않는다.
+  2. **`tools.vault_rules validate`**: 조직 vault 밖이거나 managed 파일이면 `격리 위반` 오류.
+  3. **qa-reviewer §13**: 산출물 전수를 `python3 -m tools.org guard --mode write --path …` 로 검사, 위반은 blocker.
 
 ---
 
@@ -98,6 +101,7 @@ exit ≠ 0 이면 **즉시 중단** 하고 stderr 메시지를 사용자에게 �
 
 - `tools/vault_rules` — `--vault` 미지정 시 활성 조직의 vault 를 쓴다. 조직 미지정 시 실패. `next-seq --glob` 의 상대 경로는 조직 루트 기준.
 - `tools/org sync-core` — 플랫폼 `core/vault_base` → `{VAULT}`, `core/org_base` → `{ORG_ROOT}` 동기화. `core/vault_base/_manifest.yaml` 의 managed(덮어쓰기) / seed(없을 때만) 규칙.
+- `tools/org guard` — 격리 판정 (단계 5). `--path` 반복, `--mode read|write`, `--allow-platform`, exit 0/2. 훅 진입점은 `tools/org/hook_guard.py`.
 - `tools/org rbac` — 권한 판정 (단계 4). 역할 정의 `.claude/rbac/policy.yaml` (플랫폼) + 배정 `org.yaml` → `rbac` (조직). `check --user U --action A [--target T]` exit 0/2, `independence --auditor A --executors a,b`, `roles`, `users`, `log`. 감사 로그 `{ORG_ROOT}/.processware/rbac_audit.jsonl`. 사용자 기본값 `PROCESSWARE_USER`.
 - `publish/redmine/*` — 단계 6 전까지 플랫폼 repo 루트의 `vault/` 리터럴을 전제하므로 **현재 동작하지 않는다** (알려진 제한).
 - 라이브러리 사용: `from tools.org import resolve; ctx = resolve()` → `ctx.vault`, `ctx.runs` …

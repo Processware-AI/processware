@@ -1,0 +1,16 @@
+{
+  "hooks": {
+    "PreToolUse": [
+      {
+        "matcher": "Write|Edit|MultiEdit|NotebookEdit",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "if python3 -c \"import sys\" >/dev/null 2>&1; then python3 -m tools.org.hook_guard; else python -m tools.org.hook_guard; fi",
+            "timeout": 15
+          }
+        ]
+      }
+    ]
+  }
+}

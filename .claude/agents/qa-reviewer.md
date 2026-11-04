@@ -1,7 +1,7 @@
 ---
 name: qa-reviewer
 description: 생성된 모든 산출물이 표준프로세스_구성원칙.md 의 프레임(8종 유형 체계, 폴더 배치, 파일명, 분리 원칙)을 준수하는지 감사한다. 릴리스 승인 전 호출.
-tools: Read, Grep, Glob, Edit
+tools: Read, Grep, Glob, Edit, Bash
 model: opus
 ---
 
@@ -224,6 +224,17 @@ python3 -m tools.vault_rules validate --file {파일경로}
 - `wikilink_rename_mismatch`: 식별번호 매칭되나 한국어명 불일치 수
 - `wikilink_orphan`: 어디서도 참조되지 않는 파일 수 (README/_state.yaml/_inputs 제외)
 
+### 13. 조직 격리 (CRITICAL — org-layer 단계 5)
+
+모든 산출물은 **활성 조직 루트 안** 에 있어야 하고, **플랫폼 관리(managed) 파일** 을 건드리지 않았어야 한다. 판정은 CLI 에 위임한다 (LLM 추론 없음):
+
+```bash
+python3 -m tools.org guard --mode write --format json --path <산출물1> --path <산출물2> ...
+```
+- exit 0 → Pass. exit 2 → 거부된 항목마다 Fail (`category: isolation`, `severity: blocker`).
+- 추가로 `git -C {ORG_ROOT} status --short -- vault/00_공통관리 vault/01_구성원칙 vault/99_템플릿` 와 `vault/*/README.md` 의 변경을 확인한다. 변경이 있으면 **managed 파일 훼손** → blocker. 복구: `python3 -m tools.org sync-core` (덮어쓰기).
+- 플랫폼 repo(`{PROCESSWARE_PLATFORM_ROOT}`) 의 `vault/` · `inputs/` · `sources/` · `.processware/` 에 파일이 생겼으면 위치 오류 → blocker (`tools.org guard` 가 잡는다).
+
 ## 절차
 ### State Check
 S-1. `_state.yaml` 의 선행 phase(preflight/analyze/design/write/trace) 모두 `done` 확인. 아니면 중단.
@@ -231,6 +242,7 @@ S-2. 자기 phase `qa` 를 `status: running` + `started` 로 Edit.
 
 ### 검사
 1. Glob 으로 대상 산출물 전수 수집.
+1.5. §13 격리 가드 — 수집한 산출물 전체를 `tools.org guard` 에 넘겨 1회 검사. blocker 가 있으면 나머지 항목과 무관하게 QA Fail.
 2. 각 항목별 Pass/Fail + 근거(파일:라인) 표로 정리.
 3. Fail 항목을 `{VAULT}/02_적용요건/{슬러그}/02_작업노트.md` 이슈 로그에 Edit 로 기입.
 4. 종합 결과를 `{VAULT}/02_적용요건/{슬러그}/99_QA리포트_{YYYYMMDD}.md` 로 저장.
@@ -239,7 +251,7 @@ S-2. 자기 phase `qa` 를 `status: running` + `started` 로 Edit.
 모든 Fail 항목에 **아래 필드 의무 기입**:
 - `issue_id`: `QA-{YYYYMMDD}-{###}`
 - `severity`: `blocker | major | minor`
-- `category`: `frontmatter | filename | folder | structure | citation | copyright | link | traceability | mat | style`
+- `category`: `frontmatter | filename | folder | structure | citation | copyright | link | traceability | mat | style | isolation`
 - `description`: 1~2줄 설명
 - `assigned_to`: 라우팅 표(상태규약 §7) 에 따른 담당 에이전트 이름
 - `fix_scope[]`: `{path, action}` 리스트 — 구체적 파일·조치
@@ -258,6 +270,7 @@ S-2. 자기 phase `qa` 를 `status: running` + `started` 로 Edit.
 | link 본문 wikilink missing/orphan (TMP/EX) | wi-tmp-writer |
 | link 본문 wikilink missing/orphan (POL/PRO) | process-designer |
 | traceability/mat 자체 정합 | traceability-mapper |
+| isolation §13 (조직 밖 · managed 훼손) | 생성한 에이전트 (로그 추적) — managed 는 `sync-core` 로 복구 |
 | 판단 불가 | `manual` (사용자 에스컬레이션) |
 
 ### State 갱신

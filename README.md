@@ -125,8 +125,9 @@ STD_Process_Builder/
 │   ├── vault_base/                          ← vault 템플릿 전체 + _manifest.yaml (managed 덮어쓰기 / seed 1회) → {ORG_ROOT}/vault
 │   └── org_base/                            ← 조직 README · .gitignore · inputs/·sources/ README → {ORG_ROOT}
 ├── tools/vault_rules/                       ← 문서 ID 발급·파일명·frontmatter 검증 CLI (python -m, 활성 조직 vault 기본)
-├── tools/org/                               ← 조직 컨텍스트 CLI (context·validate·init·sync-core·register·list) — org-layer 단계 1·3
+├── tools/org/                               ← 조직 CLI (context·validate·init·sync-core·rbac·guard·register·list) + hook_guard — org-layer 단계 1~5
 ├── .claude/                                 ← 4차원 자동화 인프라
+│   ├── settings.json                        ← PreToolUse 훅: 조직 격리 가드 (tools.org.hook_guard)
 │   ├── commands/                            ← 슬래시 커맨드 7 + 통합 스킬 2
 │   │   ├── process-ingest.md               ← 차원 0 (9 Phase + flow-proposer)
 │   │   ├── process-plan.md                 ← 차원 1 (Phase 3.5 + --flow 포함)
@@ -569,4 +570,4 @@ Phase 4.5 extensions (명세 활성화):
 - **가이드 문서**: 4 (빌드 / 실행 / 심사 / 제·개정)
 - **Phase 4.5 명세**: 3 utils (영업일 / PCB quorum / 자동 트렌드) + RBAC extensions 4종
 - **Phase 5 구현**: publish/redmine/ (11 파일) + .github/workflows/vault-push.yml + 2 스킬
-- **조직 계층 (org-layer)**: 단계 1 조직 컨텍스트 (`tools/org/`) + 단계 2 경로 추상화 (574건 → `{VAULT}` 등 변수) + 단계 3 스캐폴드 (`core/vault_base` · `core/org_base` · `sync-core`) + 단계 4 RBAC 조직화 (`tools.org rbac`, org.yaml 배정·위임·감사 로그, unittest 32) 구현 / 단계 5~7 미착수
+- **조직 계층 (org-layer)**: 단계 1 조직 컨텍스트 (`tools/org/`) + 단계 2 경로 추상화 (574건 → `{VAULT}` 등 변수) + 단계 3 스캐폴드 (`core/vault_base` · `core/org_base` · `sync-core`) + 단계 4 RBAC 조직화 (`tools.org rbac`) + 단계 5 격리 가드 (`tools.org guard` · PreToolUse 훅 · vault_rules validate · qa-reviewer §13, unittest 39) 구현 / 단계 6~7 미착수
