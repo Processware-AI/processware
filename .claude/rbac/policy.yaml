@@ -1,6 +1,8 @@
-# RBAC 정책 — 차원 3 Check Phase 4
-# 본 파일은 independence-guard 에이전트가 rbac_check 모드에서 참조한다.
-# 직접 수정 가능하지만, 변경 시 모든 활성 audit/kpi trace 에 즉시 영향. 변경 이력은 git history.
+# RBAC 역할 정의 — 플랫폼 공통 (org-layer §3 단계 4)
+#
+# 본 파일은 **역할(role)의 권한만** 정의한다. 사용자 → 역할 배정 · 위임 · 감사 로그는 조직 루트의 org.yaml (rbac:) 에 있다.
+# 판정 엔진: tools/org/rbac.py  (CLI: python3 -m tools.org rbac check --user <이름> --action <scope.verb> [--target <id>])
+# independence-guard 에이전트는 이 CLI 결과만 사용한다 (LLM 추론 없음).
 #
 # 6 역할 (role) — 표준 ISO/CMMI 거버넌스 구조 동형:
 #   - auditor       : 차원 3 심사원 (내부/외부)
@@ -11,17 +13,18 @@
 #   - viewer        : 조회 전용 (감사관·외부 이해관계자)
 #
 # action 식별자 패턴: {scope}.{verb}[.{subscope}]
-#   scope: audit | do | build-process | rbac
-#   verb:  start / confirm / close-ncr / kpi / list-ncr / show / act-queue / rbac-check / read / write
+#   scope: audit | do | build-process | act | rbac
+#   verb:  start / resume / confirm / approve / reject / close-ncr / kpi / list-ncr / show / act-queue / trigger-rebuild / read / write
 #
-# 매칭 규칙: role.allow[] 의 항목과 action 을 prefix 매칭. 와일드카드 `*` 허용.
-# 거부가 default — allow[] 에 없으면 denied.
+# 매칭 규칙: glob (fnmatch). `audit.*` 는 모든 audit.* 에, `*.start` 는 모든 scope 의 start 에 일치.
+# 판정 순서: 역할별로 deny → allow → target_constraints. 유효 역할 중 하나라도 allow 면 allowed. 어디에도 없으면 denied (거부가 기본).
+# 사용자가 여러 역할을 가지면 각 역할을 독립적으로 평가한다 (한 역할의 deny 가 다른 역할의 allow 를 막지 않음).
 
-version: "0.1"
+version: "0.2"
 created: 2026-05-02
-updated: 2026-05-02
+updated: 2026-11-05
 owner: "QMR"
-status: draft
+status: active
 
 roles:
 
@@ -39,13 +42,18 @@ roles:
       - audit.act-queue.read
       - do.read                  # 차원 2 trace / REC 조회 (사후 검토)
       - build-process.read       # 차원 1 자산 조회
-    deny:                         # 명시적 deny — auditor 는 차원 2 실행 금지
+      - act.status
+      - act.list
+    deny:                         # 명시적 deny — auditor 는 차원 2 실행 · 차원 4 개정 금지
       - do.start
       - do.approve
       - do.reject
       - build-process.write
+      - act.start
+      - act.approve
+      - act.reject
     target_constraints:
-      independence_required: true   # ISO §9.2 — independence-guard 가 강제
+      independence_required: true   # ISO §9.2 — 호출자가 independence 검증을 추가로 수행
 
   executor:
     description: "차원 2 업무 담당자. /process-do 실행 권한. 차원 3 보고서는 조회만."
@@ -54,15 +62,22 @@ roles:
       - do.resume
       - do.status
       - do.read
+      - do.approve                  # HITL 승인자로 지정된 경우 (WI RACI 가 최종 판단)
+      - do.reject
       - audit.kpi.show              # 본인 작업의 KPI 결과 조회
       - audit.list-ncr              # 본인 작업과 연계된 NCR 조회
       - audit.act-queue.read        # 본인에게 할당된 act queue 조회
       - build-process.read
+      - act.status
+      - act.list
     deny:
       - audit.start
       - audit.confirm
       - audit.close-ncr
       - audit.kpi.start
+      - act.start
+      - act.approve
+      - act.reject
       - rbac.*
 
   process_owner:
@@ -74,18 +89,25 @@ roles:
       - audit.kpi.check-regressions
       - audit.act-queue.read
       - audit.act-queue.dispatch    # act queue 의 항목을 차원 4 에 dispatch
+      - act.start                   # 차원 4 사이클 시작 (RCA → 개정 계획)
+      - act.resume
+      - act.status
+      - act.list
+      - act.trigger-rebuild
       - build-process.start         # 차원 4 → 차원 1 재실행 트리거
       - build-process.read
       - do.read
     target_constraints:
-      owns_pro_required: true        # 자기 PRO 만 — users[].owns_pro[] 와 비교
+      owns_pro_required: true        # target 이 PRO-* 이면 org.yaml users[].owns_pro 에 있어야 함
 
   qmr:
-    description: "QMR — 전 차원 모니터링. 정책 결정·KPI 측정·정합성 검증."
+    description: "QMR — 전 차원 모니터링. 정책 결정·KPI 측정·정합성 검증. PCB 승인."
     allow:
       - audit.*
+      - act.*                        # PCB 승인/반려 포함
       - do.read
       - build-process.read
+      - build-process.start
       - rbac.read                    # RBAC 정책 조회 (변경은 admin)
 
   admin:
@@ -93,7 +115,7 @@ roles:
     allow:
       - "*"                          # 모든 작업
     target_constraints:
-      escalation_log: true           # 모든 admin 작업은 별도 감사 로그 (Phase 4.5)
+      escalation_log: true           # 모든 admin 작업은 감사 로그 (rbac_audit.jsonl 에 기록)
 
   viewer:
     description: "조회 전용 — 외부 감사관·이해관계자. 모든 자산 read 가능, 쓰기는 모두 deny."
@@ -103,74 +125,63 @@ roles:
       - audit.kpi.show
       - audit.act-queue.read
       - do.read
+      - do.status
       - build-process.read
+      - act.status
+      - act.list
     deny:
       - "*.start"
       - "*.confirm"
+      - "*.approve"
+      - "*.reject"
       - "*.close-ncr"
       - "*.write"
       - "*.dispatch"
       - "rbac.*"
 
-# 사용자 (Phase 4 PoC — 시스템 사용자명 → role 매핑)
-users:
-  - username: "dongseok"
-    role: executor                   # PoC: 차원 2 이행자로 등록
-    aliases: []
-    owns_pro: []
-  - username: "이감사"               # 가상 — PoC 심사원
-    role: auditor
-    aliases: []
-    owns_pro: []
-  - username: "박팀장"
-    role: process_owner
-    aliases: []
-    owns_pro: []                     # 운영 시 owns_pro: ["PRO-CMMI-04-01"] 등
-  - username: "박상무"
-    role: qmr                        # PoC 시나리오에서 Sponsor 였으나 RBAC 상 QMR 권한 (전 차원)
-    aliases: ["박 상무"]
-    owns_pro: []
+# ── 조직별 설정은 org.yaml 로 이동 (단계 4) ──
+#   rbac.enforce      : false 면 모든 판정 bypass_disabled (도입 초기). 운영 전환 시 true
+#   rbac.users        : 사용자 → 역할 목록 | {roles, aliases, owns_pro}
+#   rbac.delegations  : [{from, to, roles, until, reason}] — 한시 권한 위임 (만료 후 자동 무시)
+#   rbac.audit_log    : 기본 .processware/rbac_audit.jsonl — rbac_denied · rbac_allowed(민감 작업) · rbac_bypass · independence_passed|failed
 
-# Phase 4.5 확장 항목 (명세 활성화 — 실 구현은 외부 인프라 연동 시점에)
+# Phase 4.5 확장 항목 (명세 — 실 구현은 외부 인프라 연동 시점에)
 extensions:
-  external_idp:                       # SAML / OIDC 연동 (Phase 4.5)
-    enabled: true                      # 명세 활성화 (인터페이스만)
+  external_idp:                       # SAML / OIDC 연동
+    enabled: false
     provider: oidc                     # oidc | saml | none
-    issuer_url: "https://idp.example.com/realms/std-process-builder"
-    client_id: "std-process-builder"
+    issuer_url: "https://idp.example.com/realms/processware"
+    client_id: "processware"
     role_claim: "groups"               # IdP 의 group claim 을 RBAC role 로 매핑
-    role_mapping:                      # IdP group → RBAC role
+    role_mapping:                      # IdP group → RBAC role (조직별 override 는 org.yaml 에서 — 미구현)
       "qms-auditors": auditor
       "qms-executors": executor
       "qms-process-owners": process_owner
       "qms-qmr": qmr
       "qms-admin": admin
       "qms-viewers": viewer
-    fallback: bypass_with_warning      # IdP 미응답 시 — bypass | strict_deny
+    fallback: strict_deny              # IdP 미응답 시 — bypass | strict_deny
 
-  delegation:                         # 위임 (A → B 한시 권한)
-    enabled: true                      # 명세 활성화
-    storage: ".claude/rbac/delegations.yaml"   # 위임 record 별도 파일
-    max_duration_days: 30              # 단일 위임 최대 기간
-    revocable: true                    # 위임자가 즉시 회수 가능
-    audit_log_required: true           # 위임 / 회수 모두 audit_log 에 기록
-    use_cases:
-      - "휴가·출장 시 process_owner → 다른 PO 에 한시 권한 위임"
-      - "PCB 위원이 회의 불참 시 대리 위원에 한시 권한"
+  delegation:                         # 위임 (A → B 한시 권한) — 구현됨: org.yaml rbac.delegations[]
+    enabled: true
+    storage: "org.yaml → rbac.delegations[]"
+    max_duration_days: 30              # 권장 상한 (schema 는 경고만)
+    revocable: true                    # org.yaml 에서 항목 삭제 = 회수
+    audit_log_required: true
 
-  audit_log:                          # 모든 RBAC 거부 + 위임 + 가드 통과 등 별도 로그
-    enabled: true                      # 명세 활성화
-    path: ".claude/audit_log/rbac.jsonl"
+  audit_log:                          # 구현됨: tools/org/rbac.py → {ORG_ROOT}/.processware/rbac_audit.jsonl
+    enabled: true
+    path: ".processware/rbac_audit.jsonl"
     events_logged:
       - rbac_denied
-      - rbac_allowed (if action in [audit.confirm, audit.close-ncr, act.approve, act.reject, build-process.start])
-      - delegation_granted
-      - delegation_revoked
-      - independence_overridden        # PoC --override-independence 사용 시
-    retention_days: 1825               # 5년 (심사 증적 보관 정책 일치)
+      - rbac_allowed                   # 민감 작업만: audit.confirm · audit.close-ncr · audit.act-queue.dispatch · act.* · build-process.start · rbac.*
+      - rbac_bypass                    # enforce: false
+      - independence_passed
+      - independence_failed
+    retention_days: 1825               # 5년 (심사 증적 보관 정책 일치) — 정리 도구는 미구현
 
-  external_notifications:             # PCB / NCR / KPI 회귀 외부 알림 (Phase 4.5 신규)
-    enabled: true                      # 명세 활성화
+  external_notifications:             # PCB / NCR / KPI 회귀 외부 알림 (명세)
+    enabled: false
     channels:
       - kind: email
         provider: smtp
@@ -212,4 +223,4 @@ extensions:
           - event: act_queue_dispatched
             issue_type: "Task"
             assignee_field: "{queue.assignment.responsible_name}"
-    fallback: file_drop_out             # 외부 채널 실패 시 — 기존 .claude/runs/{trace}/*.md drop-out 으로 fallback
+    fallback: file_drop_out             # 외부 채널 실패 시 — {RUNS}/{trace}/*.md drop-out 으로 fallback

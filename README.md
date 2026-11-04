@@ -70,7 +70,7 @@
 - **NCR 자동 발행**: finding 별 REC-NCR + SLA 휴리스틱 (critical 20영업일 / major 60일 / minor 90일) + R/A 자동 추정
 - **KPI 대시보드**: PRO/WI §KPI 자동 추출 + 메타 KPI 5종 + 회귀 탐지 (default ±5%p) + Mermaid 시계열 시각화
 - **ISO §9.2 독립성 강제**: independence-guard 가 audit 진입 시 auditor ≠ trace.executed_by 자동 검증
-- **RBAC 6 역할**: auditor / executor / process_owner / qmr / admin / viewer
+- **RBAC 6 역할**: auditor / executor / process_owner / qmr / admin / viewer — 역할 정의는 플랫폼, 사용자 배정·alias·owns_pro·한시 위임·enforce 는 조직 org.yaml. 판정 `python3 -m tools.org rbac check` (결정론적) + 감사 로그
 
 ### 차원 3 (Audit) — 외부 표준 GAP 분석
 - **외부 표준 대조**: 표준 조항 ↔ 내부 POL/PRO/WI 커버리지 자동 판정 (COVERED / PARTIAL / GAP / N/A)
@@ -168,7 +168,7 @@ STD_Process_Builder/
 │   │   ├── pcb-gatekeeper.md                ← 차원 4 Phase 1 (HITL + 4.5 quorum)
 │   │   └── act-coordinator.md               ← 차원 4 Phase 1 (As-Is + MAT-001)
 │   ├── rbac/
-│   │   └── policy.yaml                      ← 6 역할 + Phase 4.5 extensions 4종
+│   │   └── policy.yaml                      ← 역할 6종 정의 (플랫폼 공통). 사용자 배정·위임은 조직 org.yaml → rbac (단계 4)
 │   │   (runs/ · queues/ · states/ 는 플랫폼에 없음 → 조직 루트 .processware/ 참조)
 │   └── utils/                               ← Phase 4.5 명세 (3) + 조직 컨텍스트 규약 (1)
 │       ├── org_context.md                   ← 활성 조직 루트 해석 규약 (org-layer 단계 1, impl)
@@ -569,4 +569,4 @@ Phase 4.5 extensions (명세 활성화):
 - **가이드 문서**: 4 (빌드 / 실행 / 심사 / 제·개정)
 - **Phase 4.5 명세**: 3 utils (영업일 / PCB quorum / 자동 트렌드) + RBAC extensions 4종
 - **Phase 5 구현**: publish/redmine/ (11 파일) + .github/workflows/vault-push.yml + 2 스킬
-- **조직 계층 (org-layer)**: 단계 1 조직 컨텍스트 (`tools/org/`) + 단계 2 경로 추상화 (574건 → `{VAULT}` 등 변수) + 단계 3 스캐폴드 (`core/vault_base` · `core/org_base` · `sync-core`, unittest 17) 구현 / 단계 4~7 미착수
+- **조직 계층 (org-layer)**: 단계 1 조직 컨텍스트 (`tools/org/`) + 단계 2 경로 추상화 (574건 → `{VAULT}` 등 변수) + 단계 3 스캐폴드 (`core/vault_base` · `core/org_base` · `sync-core`) + 단계 4 RBAC 조직화 (`tools.org rbac`, org.yaml 배정·위임·감사 로그, unittest 32) 구현 / 단계 5~7 미착수

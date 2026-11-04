@@ -162,7 +162,7 @@ KPI 측정·시계열 누적·회귀 탐지를 담당하는 단일 진입점. 4 
 /process-check --rbac-check --action audit.start --target PRO-CMMI-04-01
 /process-check --rbac-check --action audit.close-ncr --target REC-NCR-04-01-2026-001
 ```
-→ `independence-guard` 를 `rbac_check` 모드로 호출. 현재 사용자의 권한이 해당 action 을 허용하는지 검증 후 결과 stdout.
+→ `independence-guard` 를 `rbac_check` 모드로 호출 (내부적으로 `python3 -m tools.org rbac check --user <현재 사용자> --action <id> [--target <id>]`). 현재 사용자(`--user` 인자 > `PROCESSWARE_USER` > OS 사용자명)의 유효 역할(org.yaml `rbac.users` + 활성 위임)이 해당 action 을 허용하는지 검증 후 결과 stdout. exit 0 허용 / 2 거부.
 사용 시점: 운영 자동화 스크립트가 작업 전에 권한 사전 검증할 때, 또는 사용자가 자기 권한 확인할 때.
 
 ### 1-7. `close-ncr` 모드 — `/process-check --close-ncr <ncr_id> --capa <REC> [--closed-by <이름>] [--reason "..."]`
@@ -228,7 +228,7 @@ A-3. **독립성 가드 (ISO §9.2) — Phase 4 부터 `independence-guard` 정�
      - `passed` → 정상 진행.
      - `failed` → 즉시 abort + 위반 trace 출력 (independence-guard 의 §C-2 메시지 그대로).
      - `overridden` → 경고 + state.yaml.independence 에 violations[] 기록 후 진행.
-   - **추가 RBAC 검증** (Phase 4): independence-guard 를 `rbac_check` 모드로 다시 호출 (action: `audit.start`, target: scope.ids[0]). denied 시 abort.
+   - **추가 RBAC 검증** (Phase 4): independence-guard 를 `rbac_check` 모드로 다시 호출 (actor: --auditor, action: `audit.start`, target: scope.ids[0]). `denied` / `unknown_user` 시 abort. `bypass_disabled` (org.yaml `rbac.enforce: false`) 시 경고 후 진행.
    - state.yaml 에 `independence: { checked: true, violations: [...], overridden: false, rbac_verdict: allowed }` 기록.
    - trace.jsonl 에 `independence_guard_invoked` + `rbac_check_invoked` 이벤트.
 A-4. trace_id 생성 (`run-a` + 8자 hex 권장 — 차원 2 와 충돌 방지). `{RUNS}/{trace_id}/` 디렉터리 생성 + `state.yaml` 초기화.
@@ -358,7 +358,7 @@ LN-4. 0건이면 "조건 충족 NCR 없음" 안내.
 #### 2-K-A. `start` / `update`
 
 KA-1. 인자 파싱: scope (표준코드 또는 PRO/WI doc_id), `--period from..to`, `--baseline auto|<N>`, `--regression-threshold-pp`.
-KA-1.5. **RBAC 검증 (Phase 4)**: `independence-guard` `rbac_check` 모드 호출 (action: `audit.kpi.start`). denied 시 abort.
+KA-1.5. **RBAC 검증 (Phase 4)**: `independence-guard` `rbac_check` 모드 호출 (actor: 현재 사용자, action: `audit.kpi.start`). denied / unknown_user 시 abort.
    - KPI 측정은 독립성 검증 불필요 (사후 통계 — 측정자가 이행자와 동일해도 무관).
 KA-2. trace_id 생성 (`run-k` + 8자 hex).
 KA-3. `{RUNS}/{trace_id}/state.yaml` 초기화 (kind: kpi, scope, options).
@@ -516,7 +516,7 @@ finalized_at: null
   - `{VAULT}/90_MAT_통합매핑/MAT-008_*.md` (Phase 3 — 신규 또는 Edit append, 표준별 §섹션 / §회차 시계열 / §회귀 알림 / Phase 4 — §"차원 4 인계" 추가)
   - `{QUEUES}/process-act/queue-q*.yaml` (Phase 4 — 신규 / dispatch / done 시 Edit)
   - `{RUNS}/{trace_id}/*` (전체) — audit trace `run-a*` / kpi trace `run-k*` 분리
-- **읽기만**: `.claude/rbac/policy.yaml` — 본 커맨드는 절대 수정 안 함 (admin 권한 사용자가 직접 편집).
+- **읽기만**: `.claude/rbac/policy.yaml` (플랫폼 역할 정의) · `{ORG_ROOT}/org.yaml` → `rbac` (조직 사용자 배정) — 본 커맨드는 절대 수정 안 함 (admin 이 직접 편집). 감사 로그 `{ORG_ROOT}/.processware/rbac_audit.jsonl` 은 `tools.org rbac` CLI 가 기록.
 - 동일 (scope, 회차, 연도) 조합의 REC-AUDIT 일련번호 충돌 절대 금지 — Glob 재검증 후 Write.
 
 ---

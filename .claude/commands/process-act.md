@@ -120,8 +120,8 @@ argument-hint: "start <queue_id> | --resume <trace_id> | --approve <trace_id> [-
 
 A-1. 큐 yaml Read 성공 + status 검증 (pending 또는 in_progress).
 A-2. **RBAC 검증** (Phase 4 차원 3 의 independence-guard 동형):
-   - `independence-guard` `rbac_check` 모드 호출 (action: `act.start`, target: queue.target.scope_id).
-   - act 의 RBAC 정책: process_owner / qmr / admin 만 허용 (auditor·executor 는 deny).
+   - `independence-guard` `rbac_check` 모드 호출 (actor: 현재 사용자 또는 queue.dispatched_to, action: `act.start`, target: queue.target.scope_id).
+   - act 의 RBAC 정책 (`.claude/rbac/policy.yaml`): process_owner (자기 PRO 만 — owns_pro) / qmr / admin 허용, auditor·executor·viewer 는 deny. `--approve` / `--reject` 는 action `act.approve` / `act.reject` (qmr · admin).
 A-3. 큐의 source / target / rationale / recommendation 추출.
 A-4. trace_id 생성 (`run-c` + 8자 hex). `{RUNS}/{trace_id}/state.yaml` 초기화.
 A-5. 큐 status: pending → in_progress 전환 + dispatched_at 채움 (이미 dispatched 면 그대로).

@@ -1,7 +1,7 @@
 ---
 type: architecture
 title: 조직 계층 도입 설계 방향 — 플랫폼 1 + 조직 루트 N
-version: "0.6"
+version: "0.7"
 status: draft
 updated: 2026-11-04
 decided:
@@ -109,7 +109,7 @@ Obsidian 은 vault 가 자기완결적이어야 wikilink 가 동작한다. 따�
 | **1. 조직 컨텍스트 도입** ✅ 구현 (2026-11-04) | `PROCESSWARE_ORG_ROOT` 환경변수 또는 모든 커맨드의 `--org <id>` / `--org-root <path>` 옵션으로 활성 조직을 정한다. 미지정 시 현재 `vault/` 를 `default` 조직으로 취급해 하위 호환을 유지한다 (단계 3 완료 시 이 fallback 은 제거). 구현: `tools/org/` (context · schema · registry · CLI) + `.claude/utils/org_context.md` 규약 + 커맨드 9개 공통 절 + `tools/vault_rules` 기본 vault 연동. §6 참조. | 커맨드 9 · tools |
 | **2. 경로 추상화** ✅ 구현 (2026-11-04) | 에이전트 29 · 커맨드 9 · utils 1 의 리터럴 경로 574건을 `{VAULT}` `{INPUTS}` `{SOURCES}` `{RUNS}` `{QUEUES}` `{STATES}` 로 치환. frontmatter(description · argument-hint)는 사용자 입력 예시라 리터럴 유지. 커맨드 공통 절이 변수 바인딩·에이전트 전달을 규정, 에이전트마다 변수 안내 1줄. 단계 1 의 임시 치환 브리지 삭제. | 에이전트 29 · 커맨드 9 |
 | **3. 스캐폴드 도구** ✅ 구현 (2026-11-05) | `python -m tools.org init {path}` 가 조직 루트(org.yaml · 폴더)를 만들고 `sync-core` 를 실행한다. `core/vault_base/_manifest.yaml` 의 managed(덮어쓰기)/seed(없을 때만) 규칙으로 `{ORG_ROOT}/vault` 를 채우고, `core/org_base` 로 조직 README · .gitignore 를 시드한다. 플랫폼 repo 의 `vault/` · `inputs/` · `sources/` 는 `core/` 로 이동(git mv)했고 default fallback 은 제거했다. | `tools/org/sync.py` · `core/` |
-| **4. RBAC 조직화** | 현재 `policy.yaml` 은 역할 6종 정의만 있고 **사용자 배정이 없다**. 역할 정의는 플랫폼 템플릿으로 남기고, 사용자→역할 배정과 audit_log 는 `org.yaml` 로 내린다. independence-guard 는 활성 조직 파일만 읽는다. | independence-guard · policy.yaml |
+| **4. RBAC 조직화** ✅ 구현 (2026-11-05) | 역할 정의는 플랫폼 `policy.yaml` (v0.2), 사용자→역할 배정 · alias · owns_pro · 위임 · enforce 는 `org.yaml` → `rbac`. 판정은 `python3 -m tools.org rbac` (결정론적) 이 하고 감사 로그를 조직 루트 `.processware/rbac_audit.jsonl` 에 남긴다. independence-guard 는 CLI 결과만 전달. | `tools/org/rbac.py` · independence-guard · policy.yaml |
 | **5. 격리 가드** | 에이전트가 활성 조직 루트 밖의 vault 경로에 쓰려 하면 거부하는 검증을 qa-reviewer 와 `vault_rules validate` 에 추가한다. | qa-reviewer · vault_rules |
 | **6. 외부 연동** | Redmine 프로젝트 이름을 `lib-{org}-{scope}` · `ws-{org}-{slug}` 로 바꾸고, sync_map DB 와 config 를 조직 루트로 옮긴다. GitHub Actions 는 **조직 repo 쪽에서 플랫폼을 체크아웃해 실행** 하는 구조로 뒤집는다. | publish/redmine · vault-push.yml |
 | **7. 교차 조직 뷰 (선택)** | 컨설팅 펌 관점의 읽기 전용 통합 대시보드. 조직 데이터를 복제하지 않고 각 루트를 읽어 생성한다. 마지막에 한다. | 신규 |
@@ -145,7 +145,8 @@ Obsidian 은 vault 가 자기완결적이어야 wikilink 가 동작한다. 따�
 | 1. 조직 컨텍스트 도입 | ✅ 구현 (2026-11-04) | `tools/org/` — `context.py` (해석 우선순위 5단계 · 레이아웃), `schema.py` (org.yaml 검증), `registry.py` (`~/.processware/orgs.yaml`), `__main__.py` (`context` · `validate` · `init` · `register` · `unregister` · `list`), `templates/org.yaml`, `tests/` (unittest 15건). `.claude/utils/org_context.md` 해석 규약. 커맨드 9개에 "조직 컨텍스트 (공통)" 절 + `argument-hint` 에 `--org` / `--org-root` 추가. `tools/vault_rules` 의 `--vault` 기본값을 활성 조직 vault 로 연동. |
 | 2. 경로 추상화 | ✅ 구현 (2026-11-04) | `.claude/agents/*` (29) · `.claude/commands/*` (9) · `.claude/utils/auto_trend_mermaid.md` 본문 리터럴 574건 → 변수 표기. `.claude/utils/org_context.md` §3 이 변수 정의. 커맨드 공통 절 재작성 (변수 표·바인딩·에이전트 전달·하위 호출 export). 에이전트 29개 본문 첫 줄에 경로 변수 안내. |
 | 3. 스캐폴드 도구 | ✅ 구현 (2026-11-05) | `core/vault_base/` (구 `vault/` 전체, `_inputs_common` 제거, `.obsidian` 포함) + `_manifest.yaml` · `core/org_base/` (README · .gitignore · inputs/sources README). `tools/org/sync.py` sync-core (managed 덮어쓰기 · seed 보존 · `--force` 재시드 · `--dry-run` · manifest 전수 분류 검사 · org.yaml platform_version 갱신 · `.processware/sync-core.yaml` 기록). `init` 이 sync-core 자동 실행 (`--no-sync` 로 생략). `context.py` default fallback 제거. 테스트 17건. |
-| 4~7 | ⏳ 미착수 | — |
+| 4. RBAC 조직화 | ✅ 구현 (2026-11-05) | `.claude/rbac/policy.yaml` v0.2 — 역할 6종 정의만 (PoC users 제거, `act.*` action 추가, 판정 규칙 명문화). `org.yaml` → `rbac`: `enforce` · `users` (역할 목록 또는 {roles, aliases, owns_pro}) · `delegations[]` (until 만료 자동 무시) · `audit_log`. `tools/org/rbac.py` 판정 엔진 (glob 매칭 · deny→allow→target_constraints · 위임 · alias · 독립성) + 감사 로그 `.processware/rbac_audit.jsonl`. CLI `tools.org rbac check|independence|roles|users|log`. independence-guard 는 CLI 결과만 사용 (LLM 판정 제거). 테스트 32건. |
+| 5~7 | ⏳ 미착수 | — |
 
 **알려진 제한 (단계 3 시점)**
 - 플랫폼 repo 에는 더 이상 `vault/` · `inputs/` · `sources/` 가 없다. 모든 커맨드는 `PROCESSWARE_ORG_ROOT` 또는 `--org`/`--org-root` 가 있어야 동작한다.

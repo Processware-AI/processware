@@ -1,7 +1,7 @@
 ---
 type: util-spec
-title: 조직 컨텍스트 — 활성 조직 루트 해석 규약 (org-layer §3 단계 1~3)
-version: "0.3"
+title: 조직 컨텍스트 — 활성 조직 루트 해석 규약 (org-layer §3 단계 1~4)
+version: "0.4"
 owner: "QMR"
 status: impl                            # 단계 1 tools/org/ + 단계 2 경로 변수화 + 단계 3 sync-core 완료
 created: 2026-11-04
@@ -98,6 +98,7 @@ exit ≠ 0 이면 **즉시 중단** 하고 stderr 메시지를 사용자에게 �
 
 - `tools/vault_rules` — `--vault` 미지정 시 활성 조직의 vault 를 쓴다. 조직 미지정 시 실패. `next-seq --glob` 의 상대 경로는 조직 루트 기준.
 - `tools/org sync-core` — 플랫폼 `core/vault_base` → `{VAULT}`, `core/org_base` → `{ORG_ROOT}` 동기화. `core/vault_base/_manifest.yaml` 의 managed(덮어쓰기) / seed(없을 때만) 규칙.
+- `tools/org rbac` — 권한 판정 (단계 4). 역할 정의 `.claude/rbac/policy.yaml` (플랫폼) + 배정 `org.yaml` → `rbac` (조직). `check --user U --action A [--target T]` exit 0/2, `independence --auditor A --executors a,b`, `roles`, `users`, `log`. 감사 로그 `{ORG_ROOT}/.processware/rbac_audit.jsonl`. 사용자 기본값 `PROCESSWARE_USER`.
 - `publish/redmine/*` — 단계 6 전까지 플랫폼 repo 루트의 `vault/` 리터럴을 전제하므로 **현재 동작하지 않는다** (알려진 제한).
 - 라이브러리 사용: `from tools.org import resolve; ctx = resolve()` → `ctx.vault`, `ctx.runs` …
 

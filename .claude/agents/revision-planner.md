@@ -168,7 +168,7 @@ dependencies:                             # 다른 큐와의 의존성
       reason: "단독 권고 (PRO §7 명문화) — 본 큐의 §7 개정과 동시 처리"
 
 assignment:
-  responsible_role: "Process Owner"        # PRO 의 owner — RBAC users[].owns_pro 에서 식별
+  responsible_role: "Process Owner"        # PRO 의 owner — org.yaml rbac.users[].owns_pro 에서 식별
   approver_role: "PCB"                     # 승인 게이트
   due_date: "2026-05-30"                   # 큐의 sla_due_date 인용
 
