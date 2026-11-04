@@ -1,12 +1,14 @@
 ---
 type: architecture
 title: 조직 계층 도입 설계 방향 — 플랫폼 1 + 조직 루트 N
-version: "0.2"
+version: "0.3"
 status: draft
 updated: 2026-11-04
 decided:
   - "2026-11-04: 조직 루트는 플랫폼 repo 밖 별도 repo 로 둔다"
   - "2026-11-04: 공개 표준 ingest 산출물은 조직 루트에 둔다 (조직 간 공유 지식 팩 없음)"
+  - "2026-11-04: 파생 프로덕트(파생 ②)에도 조직 컨텍스트를 같은 환경변수 PROCESSWARE_ORG_ROOT 로 전달한다"
+  - "2026-11-04: default 조직 fallback 은 마이그레이션(단계 3) 완료 후 제거한다"
 tags: [architecture, multi-tenant, org-layer, vault-isolation]
 related:
   - derivative-products.md
@@ -101,7 +103,7 @@ Obsidian 은 vault 가 자기완결적이어야 wikilink 가 동작한다. 따�
 
 | 단계 | 내용 | 영향 범위 |
 |---|---|---|
-| **1. 조직 컨텍스트 도입** | `PROCESSWARE_ORG_ROOT` 환경변수 또는 모든 커맨드의 `--org` 옵션으로 활성 조직을 정한다. 미지정 시 현재 `vault/` 를 `default` 조직으로 취급해 하위 호환을 유지한다. | 커맨드 9 |
+| **1. 조직 컨텍스트 도입** | `PROCESSWARE_ORG_ROOT` 환경변수 또는 모든 커맨드의 `--org` 옵션으로 활성 조직을 정한다. 미지정 시 현재 `vault/` 를 `default` 조직으로 취급해 하위 호환을 유지한다 (단계 3 완료 시 이 fallback 은 제거). | 커맨드 9 |
 | **2. 경로 추상화** | 에이전트 · 커맨드 38개 중 **30개** 가 `vault/08_REC_기록` 같은 경로를 하드코딩하고 있다 (08_REC 68회 · 90_MAT 38회 · 05_WI 19회 · 02_적용요건 19회 …). 이를 `{VAULT}` · `{RUNS}` · `{QUEUES}` · `{STATES}` 변수로 치환한다. `tools/vault_rules` 는 이미 `--vault` 루트 인자를 받으므로 그대로 쓴다. | 에이전트 · 커맨드 30 |
 | **3. 스캐폴드 도구** | `python -m tools.org init {org_id}` 가 조직 루트를 생성하고 `core/vault_base` 를 복사한다. 현재 `vault/` 는 첫 조직(`default`) 으로 마이그레이션한다. | 신규 `tools/org/` |
 | **4. RBAC 조직화** | 현재 `policy.yaml` 은 역할 6종 정의만 있고 **사용자 배정이 없다**. 역할 정의는 플랫폼 템플릿으로 남기고, 사용자→역할 배정과 audit_log 는 `org.yaml` 로 내린다. independence-guard 는 활성 조직 파일만 읽는다. | independence-guard · policy.yaml |
@@ -126,8 +128,10 @@ Obsidian 은 vault 가 자기완결적이어야 wikilink 가 동작한다. 따�
 |---|---|---|---|
 | 1 | 조직 루트 위치 | (a) 플랫폼 repo 밖 별도 repo / (b) 플랫폼 repo 안 `orgs/{org}/` | ✅ **(a) 결정 (2026-11-04)** — NDA 격리 |
 | 2 | 공개 표준 ingest 산출물 공유 | (a) `knowledge/standards/` 지식 팩으로 조직 간 공유 / (b) 조직 루트에 둠 | ✅ **(b) 결정 (2026-11-04)** — 저작권 · 조직별 ingest 버전 분리. 플랫폼 repo 에 `knowledge/` 없음 |
-| 3 | 3-Vault 파생 프로덕트와의 관계 | 파생 ②(Project Asset Generator) 는 "조직의 코어 vault" 를 입력으로 받음 | 조직 컨텍스트(`PROCESSWARE_ORG_ROOT`) 를 파생 프로덕트에도 같은 환경변수로 전달 |
-| 4 | 하위 호환 기간 | `default` 조직 fallback 을 언제까지 유지할지 | 단계 3 마이그레이션 완료 후 제거 |
+| 3 | 3-Vault 파생 프로덕트와의 관계 | 파생 ②(Project Asset Generator) 는 "조직의 코어 vault" 를 입력으로 받음 | ✅ **결정 (2026-11-04)** — 조직 컨텍스트를 파생 프로덕트에도 같은 환경변수 `PROCESSWARE_ORG_ROOT` 로 전달. 파생 ① 은 코어 vault 를 입력으로 받지 않으므로 해당 없음 |
+| 4 | 하위 호환 기간 | `default` 조직 fallback 을 언제까지 유지할지 | ✅ **결정 (2026-11-04)** — 단계 3 마이그레이션 완료 후 제거. 이후 `PROCESSWARE_ORG_ROOT` 미설정 시 커맨드는 즉시 실패 |
+
+선결 결정 4건 모두 확정 (2026-11-04). 다음 단계는 §3 의 1단계(조직 컨텍스트 도입)부터 구현 착수.
 
 ---
 
