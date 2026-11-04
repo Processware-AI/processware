@@ -9,6 +9,7 @@
   list        레지스트리 목록
   rbac        권한 판정 (check · roles · users · independence · log) — 단계 4
   guard       격리 가드 — 경로가 활성 조직 루트 안인지 · 플랫폼 관리 파일인지 (exit 0 / 2) — 단계 5
+  overview    교차 조직 뷰 — 레지스트리의 모든 조직을 읽기 전용으로 집계 (table | md | json) — 단계 7
 """
 
 from __future__ import annotations
@@ -25,6 +26,7 @@ from .schema import ORG_ID_RE, load_org_yaml, validate_org
 from .sync import SyncError, platform_version, sync_core
 from .rbac import Rbac, RbacError
 from .guard import Guard
+from .overview import collect, render_json, render_markdown, render_table
 
 ORG_SKELETON = (
     "sources",
@@ -262,6 +264,23 @@ def cmd_guard(args):
     sys.exit(0 if all(r.ok for r in results) else 2)
 
 
+def cmd_overview(args):
+    rows = collect(org_ids=args.org_ids or None, extra_roots=args.roots or None)
+    if not rows:
+        _die(f"집계할 조직이 없습니다 — 레지스트리({registry.registry_path()})가 비어 있고 --root 도 없음")
+    current = platform_version(find_platform_root())
+    text = {"json": render_json, "md": render_markdown, "table": render_table}[args.format](rows, current)
+    if args.out:
+        out = Path(args.out).expanduser()
+        out.parent.mkdir(parents=True, exist_ok=True)
+        out.write_text(text, encoding="utf-8")
+        print(f"저장: {out}  (조직 {len(rows)}개)")
+    else:
+        print(text)
+    if any(not r.ok for r in rows):
+        sys.exit(3)
+
+
 def _die(msg):
     print(f"ERROR: {msg}", file=sys.stderr)
     sys.exit(1)
@@ -330,6 +349,12 @@ def main():
     p.add_argument("--allow-platform", action="store_true", help="플랫폼 자산 쓰기 허용 (플랫폼 개발 작업)")
     p.add_argument("--format", choices=["text", "json"], default="text")
 
+    p = sub.add_parser("overview", help="교차 조직 뷰 (단계 7) — 읽기 전용. 해석 실패 조직이 있으면 exit 3")
+    p.add_argument("--org", dest="org_ids", action="append", help="레지스트리의 특정 조직만 (반복 가능)")
+    p.add_argument("--root", dest="roots", action="append", help="레지스트리에 없는 조직 루트 추가 (반복 가능)")
+    p.add_argument("--format", choices=["table", "md", "json"], default="table")
+    p.add_argument("--out", help="파일로 저장 (md 보고서 등)")
+
     p = sub.add_parser("rbac", parents=[common], help="권한 판정 (단계 4)")
     rs = p.add_subparsers(dest="rbac_cmd", required=True)
     q = rs.add_parser("check", parents=[common], help="사용자가 action 을 수행할 수 있는지 (exit 0 허용 / 2 거부)")
@@ -361,6 +386,7 @@ def main():
         "list": cmd_list,
         "rbac": cmd_rbac,
         "guard": cmd_guard,
+        "overview": cmd_overview,
     }[args.command](args)
 
 

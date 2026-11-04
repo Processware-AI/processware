@@ -1,7 +1,7 @@
 ---
 type: util-spec
-title: 조직 컨텍스트 — 활성 조직 루트 해석 규약 (org-layer §3 단계 1~6)
-version: "0.6"
+title: 조직 컨텍스트 — 활성 조직 루트 해석 규약 (org-layer §3 단계 1~7)
+version: "0.7"
 owner: "QMR"
 status: impl                            # 단계 1 tools/org/ + 단계 2 경로 변수화 + 단계 3 sync-core 완료
 created: 2026-11-04
@@ -101,6 +101,7 @@ exit ≠ 0 이면 **즉시 중단** 하고 stderr 메시지를 사용자에게 �
 
 - `tools/vault_rules` — `--vault` 미지정 시 활성 조직의 vault 를 쓴다. 조직 미지정 시 실패. `next-seq --glob` 의 상대 경로는 조직 루트 기준.
 - `tools/org sync-core` — 플랫폼 `core/vault_base` → `{VAULT}`, `core/org_base` → `{ORG_ROOT}` 동기화. `core/vault_base/_manifest.yaml` 의 managed(덮어쓰기) / seed(없을 때만) 규칙.
+- `tools/org overview` — 교차 조직 뷰 (단계 7). 레지스트리의 모든 조직을 읽기 전용으로 집계 (`--format table|md|json`, `--out`, `--org`, `--root`). 어떤 조직 루트에도 쓰지 않는다.
 - `tools/org guard` — 격리 판정 (단계 5). `--path` 반복, `--mode read|write`, `--allow-platform`, exit 0/2. 훅 진입점은 `tools/org/hook_guard.py`.
 - `tools/org rbac` — 권한 판정 (단계 4). 역할 정의 `.claude/rbac/policy.yaml` (플랫폼) + 배정 `org.yaml` → `rbac` (조직). `check --user U --action A [--target T]` exit 0/2, `independence --auditor A --executors a,b`, `roles`, `users`, `log`. 감사 로그 `{ORG_ROOT}/.processware/rbac_audit.jsonl`. 사용자 기본값 `PROCESSWARE_USER`.
 - `publish/*` — `publish/orgctx.py` 가 활성 조직을 해석한다 (단계 6). vault `{VAULT}`, 설정 `{ORG_ROOT}/publish/{target}/config.yaml`, sync_map `{ORG_ROOT}/.processware/publish/{target}_sync.db`, 접두어 org.yaml `redmine.project_prefix`. 실제 전송은 org.yaml `redmine.enabled: true` 일 때만.

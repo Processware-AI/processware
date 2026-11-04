@@ -1,9 +1,9 @@
 ---
 type: architecture
 title: 조직 계층 도입 설계 방향 — 플랫폼 1 + 조직 루트 N
-version: "0.9"
-status: draft
-updated: 2026-11-04
+version: "1.0"
+status: implemented
+updated: 2026-11-05
 decided:
   - "2026-11-04: 조직 루트는 플랫폼 repo 밖 별도 repo 로 둔다"
   - "2026-11-04: 공개 표준 ingest 산출물은 조직 루트에 둔다 (조직 간 공유 지식 팩 없음)"
@@ -112,7 +112,7 @@ Obsidian 은 vault 가 자기완결적이어야 wikilink 가 동작한다. 따�
 | **4. RBAC 조직화** ✅ 구현 (2026-11-05) | 역할 정의는 플랫폼 `policy.yaml` (v0.2), 사용자→역할 배정 · alias · owns_pro · 위임 · enforce 는 `org.yaml` → `rbac`. 판정은 `python3 -m tools.org rbac` (결정론적) 이 하고 감사 로그를 조직 루트 `.processware/rbac_audit.jsonl` 에 남긴다. independence-guard 는 CLI 결과만 전달. | `tools/org/rbac.py` · independence-guard · policy.yaml |
 | **5. 격리 가드** ✅ 구현 (2026-11-05) | `tools/org/guard.py` 가 경로를 org/platform/outside 로 분류하고 managed 파일 · 플랫폼 · outside 쓰기를 거부한다. 3중 강제: Claude Code PreToolUse 훅(`tools.org.hook_guard`) · `vault_rules validate` · qa-reviewer §13. | `tools/org/guard.py` · `.claude/settings.json` · qa-reviewer · vault_rules |
 | **6. 외부 연동** ✅ 구현 (2026-11-05) | `publish/orgctx.py` 가 활성 조직을 해석해 vault · 설정(`{ORG_ROOT}/publish/{target}/config.yaml`) · DB(`.processware/publish/`) · 접두어를 제공. Redmine 식별자 `lib-{org}-{scope}` · `lib-{org}-{scope}-{pro_slug}` · `ws-{org}-{slug}`. config 템플릿 · GitHub Actions 는 `core/org_base` 로 이동해 조직 repo 에 시드. post-commit hook 은 조직 repo 에 설치. | publish/ · core/org_base |
-| **7. 교차 조직 뷰 (선택)** | 컨설팅 펌 관점의 읽기 전용 통합 대시보드. 조직 데이터를 복제하지 않고 각 루트를 읽어 생성한다. 마지막에 한다. | 신규 |
+| **7. 교차 조직 뷰** ✅ 구현 (2026-11-05) | 컨설팅 펌 관점의 읽기 전용 통합 뷰. `python3 -m tools.org overview` 가 레지스트리의 각 조직 루트를 읽어 자산 · 실행 · 심사 · RBAC · 연동 · 플랫폼 버전 현황을 한 표(table / Markdown / JSON)로 만든다. 조직 데이터는 복제하지 않는다. | `tools/org/overview.py` |
 
 ---
 
@@ -148,7 +148,9 @@ Obsidian 은 vault 가 자기완결적이어야 wikilink 가 동작한다. 따�
 | 4. RBAC 조직화 | ✅ 구현 (2026-11-05) | `.claude/rbac/policy.yaml` v0.2 — 역할 6종 정의만 (PoC users 제거, `act.*` action 추가, 판정 규칙 명문화). `org.yaml` → `rbac`: `enforce` · `users` (역할 목록 또는 {roles, aliases, owns_pro}) · `delegations[]` (until 만료 자동 무시) · `audit_log`. `tools/org/rbac.py` 판정 엔진 (glob 매칭 · deny→allow→target_constraints · 위임 · alias · 독립성) + 감사 로그 `.processware/rbac_audit.jsonl`. CLI `tools.org rbac check|independence|roles|users|log`. independence-guard 는 CLI 결과만 사용 (LLM 판정 제거). 테스트 32건. |
 | 5. 격리 가드 | ✅ 구현 (2026-11-05) | `tools/org/guard.py` (zone org/platform/outside · manifest managed 판정 · read/write 규칙) + CLI `tools.org guard`. Claude Code PreToolUse 훅 `.claude/settings.json` → `tools/org/hook_guard.py` (managed · 제거된 플랫폼 데이터 위치 · outside 쓰기 exit 2 차단, 플랫폼 개발은 허용, 조직 컨텍스트 없으면 생략). `tools.vault_rules validate` 격리 오류. qa-reviewer §13 (category isolation, blocker). 테스트 39건. |
 | 6. 외부 연동 | ✅ 구현 (2026-11-05) | `publish/orgctx.py` 신규. `dispatcher.py` · `redmine/{sync,library_setup,workspace,db}.py` 를 조직 루트 기준으로 리팩터 (vault_root · org_root git diff · config_path · db_path · project_prefix · enabled 게이트). `lib-{prefix}-{scope}` 상위 프로젝트 자동 생성, `by_scope_code` 는 override 전용. `publish/redmine/config.yaml` → `core/org_base/publish/redmine/config.yaml`, `.github/workflows/vault-push.yml` → `core/org_base/.github/workflows/` (조직 repo 가 플랫폼을 체크아웃해 실행). post-commit hook · install-hook.sh 는 조직 repo 대상. 테스트 5건 (orgctx · 식별자 · dry-run sync · dispatcher CLI). |
-| 7 | ⏳ 미착수 | — |
+| 7. 교차 조직 뷰 | ✅ 구현 (2026-11-05) | `tools/org/overview.py` — 레지스트리(+`--root`)의 조직 루트를 읽기 전용으로 집계: 자산 수(POL~MAT · 적용요건 모듈 · 영역코드), trace(접두어별 · 진행 중), act queue(status별), NCR open/closed · AUDIT · GAP, RBAC(enforce · 사용자 · 거부 건수), Redmine on/off, platform_version drift, 최근 sync-core · 활동. `tools.org overview --format table|md|json [--out]`. 조직 루트에 쓰지 않음(테스트로 보장). 해석 실패 조직은 ❌ 로 포함하고 exit 3. 테스트 4건. |
+
+**단계 1~7 전부 구현 완료 (2026-11-05). 총 테스트 48건.**
 
 **알려진 제한 (단계 6 시점)**
 - Redmine 실 서버 연동은 네트워크가 없는 환경이라 미검증 (dry-run · 식별자 · 설정 경로만 테스트). 첫 실연동 시 `--setup --dry-run` 으로 확인.

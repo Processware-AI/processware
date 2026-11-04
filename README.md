@@ -10,7 +10,7 @@
 
 > 상위 개념: `docs/AI-Driven CMMI Operating Platform.md` (Layer 1/2/3 비전) · `docs/표준프로세스_AI관리체계_4차원PDCA.md` (4차원 PDCA 설계)
 > 파생 프로덕트 비전: `docs/architecture/derivative-products.md` (3-Vault 생태계 — 코어 + RFP-to-Proposal + Project Asset Generator)
-> 조직 계층 설계: `docs/architecture/org-layer.md` — 현재는 **단일 조직 전용(repo 1 = 조직 1)**. 분리 축이 표준이지 조직이 아니며, 다조직 운영을 위한 "플랫폼 1 + 조직 루트 N" 전환 방향을 정리
+> 조직 계층: `docs/architecture/org-layer.md` — **"플랫폼 1 + 조직 루트 N" 구현 완료** (2026-11-05). 이 repo 는 플랫폼(에이전트·규칙·템플릿·도구)만 담고, 조직 자산은 별도 repo 의 조직 루트(`python3 -m tools.org init`)에 둔다. 다조직 현황은 `python3 -m tools.org overview`
 > 차원별 운영 가이드 (`vault/09_REF_참고자료/`): `표준_빌드_워크플로우_가이드.md` (1) · `표준_프로세스_실행_가이드.md` (2) · `표준_프로세스_심사_가이드.md` (3) · `표준_프로세스_제개정_가이드.md` (4)
 
 ## 5단계 자동화 매트릭스
@@ -113,7 +113,7 @@ STD_Process_Builder/
 ├── docs/                                    ← 설계·비전 문서 + 세션 회고
 │   ├── architecture/
 │   │   ├── derivative-products.md           ← 파생 프로덕트 3-Vault 비전 + 분리 로드맵
-│   │   └── org-layer.md                     ← 조직 계층 도입 설계 (플랫폼 1 + 조직 루트 N, draft)
+│   │   └── org-layer.md                     ← 조직 계층 설계 + 구현 현황 (플랫폼 1 + 조직 루트 N, 단계 1~7 완료)
 │   ├── AI-Driven CMMI Operating Platform.md ← Layer 1/2/3 비전 (ML3→ML4→ML5)
 │   ├── 표준프로세스_AI관리체계_4차원PDCA.md  ← 4차원 PDCA 설계
 │   ├── 전용AI에이전트_프레임워크_설계안.md   ← 독립 제품화 설계안 (참고 — §독립 프레임워크 설계)
@@ -125,7 +125,7 @@ STD_Process_Builder/
 │   ├── vault_base/                          ← vault 템플릿 전체 + _manifest.yaml (managed 덮어쓰기 / seed 1회) → {ORG_ROOT}/vault
 │   └── org_base/                            ← 조직 README · .gitignore · inputs/·sources/ README · publish/redmine/config.yaml · .github/workflows/vault-push.yml → {ORG_ROOT}
 ├── tools/vault_rules/                       ← 문서 ID 발급·파일명·frontmatter 검증 CLI (python -m, 활성 조직 vault 기본)
-├── tools/org/                               ← 조직 CLI (context·validate·init·sync-core·rbac·guard·register·list) + hook_guard — org-layer 단계 1~5
+├── tools/org/                               ← 조직 CLI (context·validate·init·sync-core·rbac·guard·overview·register·list) + hook_guard — org-layer 단계 1~7
 ├── .claude/                                 ← 4차원 자동화 인프라
 │   ├── settings.json                        ← PreToolUse 훅: 조직 격리 가드 (tools.org.hook_guard)
 │   ├── commands/                            ← 슬래시 커맨드 7 + 통합 스킬 2
@@ -569,4 +569,4 @@ Phase 4.5 extensions (명세 활성화):
 - **가이드 문서**: 4 (빌드 / 실행 / 심사 / 제·개정)
 - **Phase 4.5 명세**: 3 utils (영업일 / PCB quorum / 자동 트렌드) + RBAC extensions 4종
 - **Phase 5 구현**: publish/ (orgctx + dispatcher + redmine 10 파일) + 조직 repo 시드 (config · vault-push.yml) + 2 스킬
-- **조직 계층 (org-layer)**: 단계 1 조직 컨텍스트 (`tools/org/`) + 단계 2 경로 추상화 (574건 → `{VAULT}` 등 변수) + 단계 3 스캐폴드 (`core/vault_base` · `core/org_base` · `sync-core`) + 단계 4 RBAC 조직화 (`tools.org rbac`) + 단계 5 격리 가드 (`tools.org guard` · PreToolUse 훅 · vault_rules validate · qa-reviewer §13) + 단계 6 외부 연동 (publish/ 조직 루트 기준, `lib-{org}-…` · `ws-{org}-…`, unittest 44) 구현 / 단계 7 미착수
+- **조직 계층 (org-layer)**: 단계 1 조직 컨텍스트 (`tools/org/`) + 단계 2 경로 추상화 (574건 → `{VAULT}` 등 변수) + 단계 3 스캐폴드 (`core/vault_base` · `core/org_base` · `sync-core`) + 단계 4 RBAC 조직화 (`tools.org rbac`) + 단계 5 격리 가드 (`tools.org guard` · PreToolUse 훅 · vault_rules validate · qa-reviewer §13) + 단계 6 외부 연동 (publish/ 조직 루트 기준, `lib-{org}-…` · `ws-{org}-…`) + 단계 7 교차 조직 뷰 (`tools.org overview`, 읽기 전용 table/md/json) — **7단계 전부 구현 완료**, unittest 48
