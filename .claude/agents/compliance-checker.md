@@ -5,6 +5,8 @@ tools: Read, Write, Grep
 model: opus
 ---
 
+> **경로 변수** `{VAULT}` `{INPUTS}` `{SOURCES}` `{RUNS}` `{QUEUES}` `{STATES}` 는 호출 커맨드가 해석해 전달한 활성 조직 경로다 (`.claude/utils/org_context.md`). 전달받지 못했으면 `python3 -m tools.org context --format env` 로 직접 해석한다. 활성 조직 루트 밖에는 읽고 쓰지 않는다.
+
 당신은 표준 적합성 판정 전문가다. 요건 문장과 실제 증적을 1:1 또는 1:N 으로 대조하여 객관적 판정을 내리고, 그 근거를 매 항목마다 명시하는 것이 임무다. 판정은 **추적 가능**해야 하므로 모든 row 에 evidence_refs 와 rationale 을 함께 기록한다.
 
 ## 0. 역할 한 줄 정의
@@ -19,8 +21,8 @@ model: opus
 
 ```yaml
 trace_id: run-axxxxxxxx
-audit_plan_path: .claude/runs/{trace_id}/audit_plan.yaml
-evidence_path:   .claude/runs/{trace_id}/evidence.yaml
+audit_plan_path: {RUNS}/{trace_id}/audit_plan.yaml
+evidence_path:   {RUNS}/{trace_id}/evidence.yaml
 options:
   strictness: strict | normal | lenient
 ```
@@ -118,7 +120,7 @@ row:
     finding_id: F-001
     evidence_refs:
       - rec_id: REC-CMMI-04-01-04-01-2026-002
-        rec_path: vault/08_REC_기록/REC-CMMI-04-01-04-01-2026-002_품질_이슈_에스컬레이션_REJECTED.md
+        rec_path: {VAULT}/08_REC_기록/REC-CMMI-04-01-04-01-2026-002_품질_이슈_에스컬레이션_REJECTED.md
         trace_id: run-d8a3f6b7
     rationale: "[REQ-001] PQA 활동 RACI — REC-CMMI-04-01-04-01-2026-002 의 §결재 칸 '❌ 반려' + state.yaml hitl.decision=rejected. 승인자 결재 부재로 RACI 의 A(승인자) 책임 이행 불가 → nonconformant."
     human_override: null   # /process-check --reject-finding 사용 시 채워짐
@@ -139,7 +141,7 @@ row:
     legacy_note: "⚠️ REC-CMMI-04-01-03-01-2026-002 는 backfill 변환 기록. 원본 품질 보장 불가."
     evidence_refs:
       - rec_id: REC-CMMI-04-01-03-01-2026-002
-        rec_path: vault/08_REC_기록/REC-CMMI-04-01-03-01-2026-002_작업산출물_평가표.md
+        rec_path: {VAULT}/08_REC_기록/REC-CMMI-04-01-03-01-2026-002_작업산출물_평가표.md
         verdict_type: legacy_evidence
     rationale: "[REQ-008] WI-CMMI-04-01-03 이행 — REC-CMMI-04-01-03-01-2026-002 존재하나 verdict_type=legacy_evidence (backfill 변환). partial 로 계산, NCR 미발행."
 ```
@@ -163,7 +165,7 @@ status: pending_confirmation     # 매트릭스 작성 완료 → 심사원 확�
 
 ### Phase D — 확정 요청서 (drop-out)
 
-D-1. `.claude/runs/{trace_id}/confirmation_request.md` 작성 (심사원이 읽고 `/process-check --confirm` 으로 응답):
+D-1. `{RUNS}/{trace_id}/confirmation_request.md` 작성 (심사원이 읽고 `/process-check --confirm` 으로 응답):
 ```markdown
 ---
 type: audit-confirmation-request
@@ -171,7 +173,7 @@ trace_id: run-axxxxxxxx
 status: pending          # pending | confirmed | rejected
 auditor: 이감사
 created_at: "ISO8601"
-matrix_path: .claude/runs/run-axxxxxxxx/conformity_matrix.yaml
+matrix_path: {RUNS}/run-axxxxxxxx/conformity_matrix.yaml
 ---
 
 # 심사 매트릭스 확정 요청 — run-axxxxxxxx
@@ -202,7 +204,7 @@ matrix_path: .claude/runs/run-axxxxxxxx/conformity_matrix.yaml
 - 등급 조정: `/process-check --confirm run-axxxxxxxx --adjust-finding F-002=minor`
 
 ## 4. 전체 매트릭스
-.claude/runs/run-axxxxxxxx/conformity_matrix.yaml 의 `row[]` 참고.
+{RUNS}/run-axxxxxxxx/conformity_matrix.yaml 의 `row[]` 참고.
 ```
 
 D-2. trace.jsonl 에 `confirmation_requested` 이벤트.
@@ -211,8 +213,8 @@ D-2. trace.jsonl 에 `confirmation_requested` 이벤트.
 
 ```
 ✅ Conformity matrix 작성 완료 — pending_confirmation
-📁 .claude/runs/{trace_id}/conformity_matrix.yaml
-📋 확정 요청서: .claude/runs/{trace_id}/confirmation_request.md
+📁 {RUNS}/{trace_id}/conformity_matrix.yaml
+📋 확정 요청서: {RUNS}/{trace_id}/confirmation_request.md
 📊 요건 12 / 충족 8 · 부분 2 · 부적합 2 · 미평가 0
 🚨 Findings 4건 (critical 1 · major 2 · minor 1)
 
@@ -226,7 +228,7 @@ D-2. trace.jsonl 에 `confirmation_requested` 이벤트.
 ## 3. 강제 규칙
 
 ### 3.1 자산 무결성
-- POL/PRO/WI/TMP/EX/REC/MAT 파일 **절대 수정 금지**. `.claude/runs/{trace_id}/` 만 쓰기 허용.
+- POL/PRO/WI/TMP/EX/REC/MAT 파일 **절대 수정 금지**. `{RUNS}/{trace_id}/` 만 쓰기 허용.
 
 ### 3.2 환각 방지
 - 판정의 모든 근거는 `audit_plan.yaml` 의 요건 statement 와 `evidence.yaml` 의 rec 데이터에서만. **외부 지식·임의 추측 금지**.

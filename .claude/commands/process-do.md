@@ -13,26 +13,32 @@ argument-hint: "<WI번호 | 자연어> | --resume <trace_id> | --approve <trace_
 
 ---
 
-## 조직 컨텍스트 (공통 — org-layer §3 단계 1)
+## 조직 컨텍스트 (공통 — org-layer §3 단계 1·2)
 
-본 커맨드의 모든 vault · inputs · sources · runs · queues · states 경로는 **활성 조직 루트** 기준으로 해석한다. 규약 전문: `.claude/utils/org_context.md`
+본 문서와 에이전트 정의의 경로 변수는 **활성 조직 루트** 기준이다. 규약 전문: `.claude/utils/org_context.md`
 
-1. 진입 직후 1회 해석한다. 인자 `--org-root <path>` > `--org <id>` > 환경변수 `PROCESSWARE_ORG_ROOT` > `PROCESSWARE_ORG` > **fallback: default 조직(플랫폼 repo 의 `vault/`)**.
+| 변수 | 의미 | default 모드 (미설정) | 조직 모드 |
+|---|---|---|---|
+| `{VAULT}` | Obsidian vault | `vault/` | `{ORG_ROOT}/vault/` |
+| `{INPUTS}` · `{SOURCES}` | ingest 산출물 · 원본 파일 | `inputs/` · `sources/` | `{ORG_ROOT}/inputs/` · `sources/` |
+| `{RUNS}` · `{QUEUES}` · `{STATES}` | 실행 trace · 인계 큐 · 체크포인트 | `.claude/runs|queues|states/` | `{ORG_ROOT}/.processware/runs|queues|states/` |
+
+1. 진입 직후 1회 해석한다. 인자 `--org-root <path>` > `--org <id>` > 환경변수 `PROCESSWARE_ORG_ROOT` > `PROCESSWARE_ORG` > **fallback: default 조직(플랫폼 repo)**.
    ```bash
    python3 -m tools.org context --format env [--org <id> | --org-root <path>]
    ```
-   exit ≠ 0 이면 즉시 중단하고 stderr 를 사용자에게 보여준다. 성공 시 `조직: {id} ({mode}) · 루트: {root}` 1줄을 출력하고 trace 첫 이벤트에 `org_id` · `org_root` · `org_source` 를 기록한다.
-2. **경로 치환 (단계 2 완료 전 임시)**: 본 문서와 에이전트 정의의 `vault/…` → `{PROCESSWARE_VAULT}/…`, `inputs/…` → `{PROCESSWARE_INPUTS}/…`, `sources/…` → `{PROCESSWARE_SOURCES}/…`, `.claude/runs|queues|states/…` → `{PROCESSWARE_RUNS|QUEUES|STATES}/…` 로 읽는다. 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`) 은 치환하지 않는다.
-3. 활성 조직 루트 밖에는 읽고 쓰지 않는다. `--org`/`--org-root` 는 다른 모드 인자와 함께 어느 위치에나 올 수 있다.
+   exit ≠ 0 이면 즉시 중단하고 stderr 를 사용자에게 보여준다. 성공 시 `PROCESSWARE_VAULT` → `{VAULT}` 등으로 변수를 바인딩하고, `조직: {id} ({mode}) · 루트: {root}` 1줄을 출력하며, trace 첫 이벤트에 `org_id` · `org_root` · `org_source` 를 기록한다.
+2. 에이전트에 위임할 때 바인딩된 변수 값을 프롬프트 첫머리에 그대로 전달한다 (에이전트는 전달받은 값을 쓰고, 없을 때만 직접 해석).
+3. `--org-root` 로 받은 값은 하위 `python3 -m tools.*` 호출 전에 `PROCESSWARE_ORG_ROOT` 로 export 한다. 활성 조직 루트 밖에는 읽고 쓰지 않는다. 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`) 은 변수화 대상이 아니다.
 
 ---
 
 ## 0. 실행 원칙
 
 - **자산은 읽기 전용**: POL/PRO/WI/TMP/EX 는 본 커맨드가 절대 수정하지 않는다 (개정은 차원 4·1의 책임).
-- **REC 만 신규 생성**: 산출물은 `vault/08_REC_기록/` 에만 쓴다.
+- **REC 만 신규 생성**: 산출물은 `{VAULT}/08_REC_기록/` 에만 쓴다.
 - **MAT-005 만 갱신**: 추적성은 MAT-005 의 `## 실행 기록 (운영 인스턴스)` 섹션에 1행 append.
-- **모든 입력·LLM 출력 전수 로그**: `.claude/runs/{trace_id}/trace.jsonl` (심사 증적).
+- **모든 입력·LLM 출력 전수 로그**: `{RUNS}/{trace_id}/trace.jsonl` (심사 증적).
 - **환각 방지**: TMP 필드에 직접 매핑 가능한 값만 REC 에 기록한다. 매핑 불가능한 자유 서술이 필요하면 사람에게 추가 질문.
 - **HITL 강제 정지·재개**: WI §5.3 "완료 조건" 에 "승인" 표현이 있거나, WI §2 "수행 주체" 의 "승인자" 역할이 있으면 반드시 사람 승인 게이트 발동. Phase 2 부터 진짜 정지 (`pending_approval`) + 외부 채널 drop-out + `/process-do --approve|--reject` 응답 후 재개.
 
@@ -89,7 +95,7 @@ argument-hint: "<WI번호 | 자연어> | --resume <trace_id> | --approve <trace_
 ```
 /process-do --check-approvals
 ```
-→ 모든 `.claude/runs/run-*/approval_request.md` 의 frontmatter 를 스캔. `status: approved/rejected` 인 drop-in 응답이 있으면 자동으로 처리 (외부 채널 사용자가 파일을 직접 편집한 경우의 일괄 회수).
+→ 모든 `{RUNS}/run-*/approval_request.md` 의 frontmatter 를 스캔. `status: approved/rejected` 인 drop-in 응답이 있으면 자동으로 처리 (외부 채널 사용자가 파일을 직접 편집한 경우의 일괄 회수).
 
 ### 1-7-bis. `check-timeouts` 모드 — `/process-do --check-timeouts [--dry-run]`
 ```
@@ -130,7 +136,7 @@ argument-hint: "<WI번호 | 자연어> | --resume <trace_id> | --approve <trace_
 #### Phase A0. 자연어 라우팅 (Phase 3 — 인자가 doc_id 가 아닐 때)
 A0-1. 인자가 `WI-`/`PRO-` 접두사 + 영역코드 패턴이면 본 단계 skip → A-1 로.
 A0-2. 그 외 자연어면 `process-router` 에이전트 호출:
-   - 입력: `query`, `catalog_path: vault/90_MAT_통합매핑/MAT-007_프로세스_카탈로그.md`, `options.auto_threshold` (기본 0.9), `scope_filter` (선택)
+   - 입력: `query`, `catalog_path: {VAULT}/90_MAT_통합매핑/MAT-007_프로세스_카탈로그.md`, `options.auto_threshold` (기본 0.9), `scope_filter` (선택)
 A0-3. process-router 반환 처리:
    - `mode: auto_accepted` → 사용자에게 "자동 매칭: {doc_id} ({title}, confidence {score})" 안내 + Phase A 진입.
    - `mode: candidates_presented` → 후보 표 출력 + "[1/2/3] 또는 doc_id 직접 입력" 대기. 응답 수신 후 Phase A 진입.
@@ -143,7 +149,7 @@ A-2. WI 파일 Read 성공 확인. frontmatter 의 다음 필드 추출:
    - `doc_id`, `parent_pro`, `parent_pol`, `related_tmp[]`, `related_ex[]`, `owner`, `reviewer`, `approver`, `standards`, `scope_code`
 A-3. **TMP 필수 확인**: `related_tmp[]` 가 비어 있으면 실행 중단 (REC 산출 불가 — TMP 부재).
 A-4. trace_id 생성 (예: `run-` + 8자 hex).
-A-5. `.claude/runs/{trace_id}/` 디렉터리 생성 + `state.yaml` 초기화.
+A-5. `{RUNS}/{trace_id}/` 디렉터리 생성 + `state.yaml` 초기화.
 
 #### Phase B. process-executor 위임
 B-1. 서브에이전트 `process-executor` 를 다음 컨텍스트로 호출:
@@ -158,7 +164,7 @@ B-1. 서브에이전트 `process-executor` 를 다음 컨텍스트로 호출:
 - state.yaml 갱신
 - trace.jsonl 1라인/이벤트
 - HITL step 도달 시 hitl-gatekeeper 위임 → 정지
-- 모든 step 완료 시 .claude/runs/{trace_id}/rec_payload.yaml 생성
+- 모든 step 완료 시 {RUNS}/{trace_id}/rec_payload.yaml 생성
 ```
 
 B-2. process-executor 가 `state.status: ready_to_finalize` 로 만들면 Phase C 로.
@@ -235,7 +241,7 @@ RC-2. 결과 출력:
 
 ### 2-E. `check-approvals` 모드
 
-CA-1. `Glob ".claude/runs/run-*/approval_request.md"` 전수 스캔.
+CA-1. `Glob "{RUNS}/run-*/approval_request.md"` 전수 스캔.
 CA-2. 각 파일의 frontmatter `status` 검사:
    - `pending` → 그대로 두기 (대기 중 표시).
    - `approved` / `rejected` → drop-in 응답으로 간주, `hitl-gatekeeper` `gate_response` 자동 호출.
@@ -248,7 +254,7 @@ CA-4. drop-in 으로 처리된 trace_id 들에 대해 `approve`/`reject` 모드�
 
 ### 3-1. 디렉터리 구조
 ```
-.claude/runs/{trace_id}/
+{RUNS}/{trace_id}/
 ├── state.yaml          ← 실행 상태 (재개·HITL 대기)
 ├── trace.jsonl         ← 입력·LLM 출력·승인 전수 로그
 └── rec_payload.yaml    ← process-executor → rec-writer 인계용
@@ -258,10 +264,10 @@ CA-4. drop-in 으로 처리된 trace_id 들에 대해 `approve`/`reject` 모드�
 ```yaml
 trace_id: run-a3f9c2b1
 wi_id: WI-CMMI-04-01-03
-wi_path: vault/05_WI_업무지침/WI-CMMI-04-01-03_...md
-tmp_path: vault/06_TMP_템플릿/TMP-CMMI-04-01-03-01_...md
-ex_path:  vault/07_EX_작성예시/EX-CMMI-04-01-03-01_...md
-pro_path: vault/04_PRO_절차/PRO-CMMI-04-01_...md
+wi_path: {VAULT}/05_WI_업무지침/WI-CMMI-04-01-03_...md
+tmp_path: {VAULT}/06_TMP_템플릿/TMP-CMMI-04-01-03-01_...md
+ex_path:  {VAULT}/07_EX_작성예시/EX-CMMI-04-01-03-01_...md
+pro_path: {VAULT}/04_PRO_절차/PRO-CMMI-04-01_...md
 status: running | pending_approval | ready_to_finalize | completed | aborted
 started_at: "ISO8601"
 executed_by: "{사용자명}"
@@ -319,8 +325,8 @@ finalized_at: null
 
 ## 5. 안전 가드
 
-- 본 커맨드 실행 중 `vault/03~07_*` (자산 영역) 의 어떤 파일도 **수정하지 않는다**. 검증 위반 즉시 중단.
-- `vault/08_REC_기록/` 와 `vault/90_MAT_통합매핑/MAT-005_*.md` 만 쓰기 허용.
+- 본 커맨드 실행 중 `{VAULT}/03~07_*` (자산 영역) 의 어떤 파일도 **수정하지 않는다**. 검증 위반 즉시 중단.
+- `{VAULT}/08_REC_기록/` 와 `{VAULT}/90_MAT_통합매핑/MAT-005_*.md` 만 쓰기 허용.
 - main / feat 브랜치에 직접 push 금지. 커밋은 사용자가 명시 요청 시에만.
 - `--dry-run` 외 모드에서 REC 파일을 동일 경로로 덮어쓰는 것은 금지 (일련번호 충돌 시 다음 번호로 진행).
 
@@ -330,9 +336,9 @@ finalized_at: null
 
 ```
 ✅ 실행 완료 — WI-CMMI-04-01-03 작업산출물 평가
-📁 REC: vault/08_REC_기록/REC-CMMI-04-01-03-01-2026-001_작업산출물_평가서.md
+📁 REC: {VAULT}/08_REC_기록/REC-CMMI-04-01-03-01-2026-001_작업산출물_평가서.md
 📋 MAT-005 갱신: 실행 기록 섹션 1행 append
-🔍 trace_id: run-a3f9c2b1  (.claude/runs/run-a3f9c2b1/)
+🔍 trace_id: run-a3f9c2b1  ({RUNS}/run-a3f9c2b1/)
 👤 실행자: {사용자명}
 ⏸ HITL: required=true / approver=PM / decision=approved (mock)
 ⏱ 소요 시간: 4분 12초

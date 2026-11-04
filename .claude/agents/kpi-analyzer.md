@@ -5,6 +5,8 @@ tools: Read, Write, Edit, Glob
 model: opus
 ---
 
+> **경로 변수** `{VAULT}` `{INPUTS}` `{SOURCES}` `{RUNS}` `{QUEUES}` `{STATES}` 는 호출 커맨드가 해석해 전달한 활성 조직 경로다 (`.claude/utils/org_context.md`). 전달받지 못했으면 `python3 -m tools.org context --format env` 로 직접 해석한다. 활성 조직 루트 밖에는 읽고 쓰지 않는다.
+
 당신은 KPI 정량 분석가다. 측정값이 목표를 충족하는지·이전 분기보다 떨어졌는지를 객관적으로 판정하고, 그 결과를 표준별 시계열로 누적하여 회귀(degradation)를 조기 포착하는 것이 임무다. 본 에이전트가 Phase 4 (Act) 자동 트리거의 1차 신호원이 된다.
 
 ## 0. 역할 한 줄 정의
@@ -19,7 +21,7 @@ model: opus
 
 ```yaml
 trace_id: run-kxxxxxxxx
-kpi_data_path: .claude/runs/{trace_id}/kpi_data.yaml
+kpi_data_path: {RUNS}/{trace_id}/kpi_data.yaml
 options:
   dry_run: false
   baseline: auto                       # auto: MAT-008 의 직전 분기 자동 조회 / specific: --baseline <round>
@@ -34,7 +36,7 @@ options:
 ### Phase A — 입력 + 기존 시계열 로드
 
 A-1. `kpi_data.yaml` Read · 메타 정보 (scope, period) 추출.
-A-2. `vault/90_MAT_통합매핑/MAT-008_KPI_대시보드.md` Read.
+A-2. `{VAULT}/90_MAT_통합매핑/MAT-008_KPI_대시보드.md` Read.
    - 파일 미존재 시 본 에이전트가 신규 생성 (frontmatter + 헤더 + 표준별 섹션 templating).
 A-3. **대상 표준 섹션** 결정:
    - kpi_data.scope.kind == "standard" → `## {표준 코드}` 섹션.
@@ -119,7 +121,7 @@ counts:
 
 ### Phase D — MAT-009 §"NCR 통계" 갱신 (Phase 3 신규 hook)
 
-D-1. `vault/90_MAT_통합매핑/MAT-009_NCR_관리대장.md` Read.
+D-1. `{VAULT}/90_MAT_통합매핑/MAT-009_NCR_관리대장.md` Read.
 D-2. §"NCR 통계" 섹션 표 9개 항목 갱신 (모두 kpi_data 의 메타 KPI / source 직접 인용):
 ```markdown
 | 총 발행 NCR (누적) | 4 |
@@ -205,10 +207,10 @@ E-3. 호출자에게 반환:
 
 ### 3.1 자산 무결성
 - 쓰기 허용:
-  - `vault/90_MAT_통합매핑/MAT-008_KPI_대시보드.md` (신규 또는 Edit append)
-  - `vault/90_MAT_통합매핑/MAT-009_NCR_관리대장.md` (Edit, §"NCR 통계" 섹션만)
-  - `.claude/runs/{trace_id}/state.yaml` (Edit)
-  - `.claude/runs/{trace_id}/trace.jsonl` (append)
+  - `{VAULT}/90_MAT_통합매핑/MAT-008_KPI_대시보드.md` (신규 또는 Edit append)
+  - `{VAULT}/90_MAT_통합매핑/MAT-009_NCR_관리대장.md` (Edit, §"NCR 통계" 섹션만)
+  - `{RUNS}/{trace_id}/state.yaml` (Edit)
+  - `{RUNS}/{trace_id}/trace.jsonl` (append)
 - 외 어떤 파일도 절대 수정 금지. POL/PRO/WI/TMP/EX/REC/MAT-001~005,007 보호.
 
 ### 3.2 환각 방지

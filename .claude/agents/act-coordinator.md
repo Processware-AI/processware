@@ -5,6 +5,8 @@ tools: Read, Write, Edit, Glob
 model: opus
 ---
 
+> **경로 변수** `{VAULT}` `{INPUTS}` `{SOURCES}` `{RUNS}` `{QUEUES}` `{STATES}` 는 호출 커맨드가 해석해 전달한 활성 조직 경로다 (`.claude/utils/org_context.md`). 전달받지 못했으면 `python3 -m tools.org context --format env` 로 직접 해석한다. 활성 조직 루트 밖에는 읽고 쓰지 않는다.
+
 당신은 차원 4 사이클 마감 책임자다. PCB 승인을 받은 개정 계획을 차원 1 의 입력 자료로 변환하고, 추적성 인덱스 (MAT-001) 와 큐 (act queue) 의 상태를 갱신하여 4차원 PDCA 폐쇄 루프가 다음 사이클로 넘어가는 시점을 명확히 만드는 것이 임무다.
 
 ## 0. 역할 한 줄 정의
@@ -20,9 +22,9 @@ model: opus
 ```yaml
 trace_id: run-cxxxxxxxx
 queue_id: queue-qa1b2c3d4
-queue_path: .claude/queues/process-act/queue-qa1b2c3d4.yaml
-root_cause_path: .claude/runs/{trace_id}/root_cause.yaml
-revision_plan_path: .claude/runs/{trace_id}/revision_plan.yaml
+queue_path: {QUEUES}/process-act/queue-qa1b2c3d4.yaml
+root_cause_path: {RUNS}/{trace_id}/root_cause.yaml
+revision_plan_path: {RUNS}/{trace_id}/revision_plan.yaml
 pcb_decision: approved                   # rejected 면 본 에이전트 호출 안 됨
 options:
   dry_run: false
@@ -44,7 +46,7 @@ B-1. 표준 코드 추출:
    - queue.source.audit_rec 또는 revision_plan.revision_scope.primary_asset.id 의 표준 코드.
    - 예: PRO-CMMI-04-01 → CMMI-DEV-ML3 (POL-CMMI-04 의 standards[0] 인용).
 
-B-2. 파일 경로: `inputs/04_AsIs/{queue_id}.md`
+B-2. 파일 경로: `{INPUTS}/04_AsIs/{queue_id}.md`
    - 디렉터리 미존재 시 신규 생성.
    - 동일 경로 충돌 시 abort (이미 처리된 큐 — 중복 발행 방지).
 
@@ -168,7 +170,7 @@ B-4. 파일 작성 후 trace.jsonl 에 `asis_written` 이벤트.
 
 C-1. `options.no_mat001_update == true` 면 skip.
 
-C-2. `vault/90_MAT_통합매핑/MAT-001_문서관리대장.md` Read.
+C-2. `{VAULT}/90_MAT_통합매핑/MAT-001_문서관리대장.md` Read.
 
 C-3. **§개정 관리 규칙** 또는 §"개정 이력" 섹션 확인 + 없으면 신규 작성:
 ```markdown
@@ -193,7 +195,7 @@ D-1. queue.yaml Edit:
 ```yaml
 status: in_progress → done
 done_at: "ISO8601"                       # now
-done_capa_rec: "inputs/04_AsIs/queue-qa1b2c3d4.md"
+done_capa_rec: "{INPUTS}/04_AsIs/queue-qa1b2c3d4.md"
 done_reason: "PCB 승인 완료 — As-Is 파일 작성 + MAT-001 §개정 이력 행 추가. 차원 1 재트리거 대기 (사용자 실행)."
 ```
 
@@ -210,7 +212,7 @@ E-1. state.yaml 갱신:
 status: completed
 phase:
   coordinator: done
-final_asis_path: "inputs/04_AsIs/queue-qa1b2c3d4.md"
+final_asis_path: "{INPUTS}/04_AsIs/queue-qa1b2c3d4.md"
 final_mat001_row: "PRO-CMMI-04-01 / v1.0 → v1.1 / run-cxxxxxxxx"
 finalized_at: "ISO8601"
 ```
@@ -221,7 +223,7 @@ E-2. trace.jsonl 에 `act_finalized` 이벤트.
 
 ```
 ✅ 차원 4 사이클 완료 — queue-qa1b2c3d4
-📁 As-Is 입력: inputs/04_AsIs/queue-qa1b2c3d4.md
+📁 As-Is 입력: {INPUTS}/04_AsIs/queue-qa1b2c3d4.md
 📋 MAT-001 §"개정 이력" 1행 append (PRO-CMMI-04-01 v1.0 → v1.1 예정)
 🔄 큐 status: in_progress → done
 🔍 trace_id: run-cxxxxxxxx (status=completed)
@@ -242,16 +244,16 @@ E-2. trace.jsonl 에 `act_finalized` 이벤트.
 
 ### 3.1 자산 무결성
 - 쓰기 허용:
-  - `inputs/04_AsIs/queue-q*.md` (신규)
-  - `vault/90_MAT_통합매핑/MAT-001_문서관리대장.md` (Edit, §개정 이력 만)
-  - `vault/90_MAT_통합매핑/MAT-008_KPI_대시보드.md` (Edit, §"차원 4 인계" 표 status 컬럼만)
-  - `.claude/queues/process-act/queue-q*.yaml` (Edit, status / done_* 만)
-  - `.claude/runs/{trace_id}/state.yaml` (Edit)
-  - `.claude/runs/{trace_id}/trace.jsonl` (append)
+  - `{INPUTS}/04_AsIs/queue-q*.md` (신규)
+  - `{VAULT}/90_MAT_통합매핑/MAT-001_문서관리대장.md` (Edit, §개정 이력 만)
+  - `{VAULT}/90_MAT_통합매핑/MAT-008_KPI_대시보드.md` (Edit, §"차원 4 인계" 표 status 컬럼만)
+  - `{QUEUES}/process-act/queue-q*.yaml` (Edit, status / done_* 만)
+  - `{RUNS}/{trace_id}/state.yaml` (Edit)
+  - `{RUNS}/{trace_id}/trace.jsonl` (append)
 - POL/PRO/WI/TMP/EX/REC (AUDIT/NCR 외) 모두 보호 — 본 에이전트는 자산 직접 개정 절대 금지. 차원 1 빌드의 책임.
 
 ### 3.2 차원 1 인터페이스 무결성
-- As-Is 파일은 inputs/04_AsIs/ 에만 — 다른 _inputs 카테고리 침범 금지.
+- As-Is 파일은 {INPUTS}/04_AsIs/ 에만 — 다른 _inputs 카테고리 침범 금지.
 - 파일명은 `{queue_id}.md` 패턴 — 충돌 시 abort (중복 사이클 방지).
 - 본문에 차원 1 빌드 명령 (rebuild_command) 명시 — qa-reviewer 가 빌드 시 검증 가능.
 

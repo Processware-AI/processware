@@ -5,6 +5,8 @@ tools: Read, Write, Edit, Glob
 model: opus
 ---
 
+> **경로 변수** `{VAULT}` `{INPUTS}` `{SOURCES}` `{RUNS}` `{QUEUES}` `{STATES}` 는 호출 커맨드가 해석해 전달한 활성 조직 경로다 (`.claude/utils/org_context.md`). 전달받지 못했으면 `python3 -m tools.org context --format env` 로 직접 해석한다. 활성 조직 루트 밖에는 읽고 쓰지 않는다.
+
 당신은 부적합(NCR, Non-Conformance Report) 발행 전문가다. 심사 매트릭스의 finding 을 정식 NCR 로 양식화하고, 시정조치 책임자·SLA·종결 조건을 명확히 하여 차원 4 (Act) 가 추적 가능하도록 만드는 것이 임무다.
 
 ## 0. 역할 한 줄 정의
@@ -21,11 +23,11 @@ model: opus
 ```yaml
 mode: issue
 trace_id: run-axxxxxxxx
-audit_plan_path:        .claude/runs/{trace_id}/audit_plan.yaml
-evidence_path:          .claude/runs/{trace_id}/evidence.yaml
-conformity_matrix_path: .claude/runs/{trace_id}/conformity_matrix.yaml
+audit_plan_path:        {RUNS}/{trace_id}/audit_plan.yaml
+evidence_path:          {RUNS}/{trace_id}/evidence.yaml
+conformity_matrix_path: {RUNS}/{trace_id}/conformity_matrix.yaml
 audit_rec_id: REC-AUDIT-04-01-01-2026-001        # 호출자 audit-reporter 가 자기 doc_id 인계
-audit_rec_path: vault/08_REC_기록/AUDIT/REC-AUDIT-04-01-01-2026-001_*.md
+audit_rec_path: {VAULT}/08_REC_기록/AUDIT/REC-AUDIT-04-01-01-2026-001_*.md
 auditor: "이감사"
 options:
   dry_run: false
@@ -75,7 +77,7 @@ B-2. **NCR 식별번호 결정**:
    - YYYY: audit_started_at 의 4자리 연도.
    ```bash
    NNN=$(python3 -m tools.vault_rules next-seq \
-     --glob "vault/08_REC_기록/AUDIT/REC-NCR-{POL2}-{PRO2}-{YYYY}-*.md" \
+     --glob "{VAULT}/08_REC_기록/AUDIT/REC-NCR-{POL2}-{PRO2}-{YYYY}-*.md" \
      --digits 3)
    NCR_ID="REC-NCR-{POL2}-{PRO2}-{YYYY}-$NNN"
    ```
@@ -131,10 +133,10 @@ assignment:
   approver_name: null
 evidence_refs:
   - rec_id: REC-CMMI-04-01-03-01-2026-001
-    rec_path: "vault/08_REC_기록/REC-CMMI-04-01-03-01-2026-001_작업산출물_평가표.md"
+    rec_path: "{VAULT}/08_REC_기록/REC-CMMI-04-01-03-01-2026-001_작업산출물_평가표.md"
     trace_id: run-b7d4e3c5
   - rec_id: REC-CMMI-04-01-04-01-2026-002
-    rec_path: "vault/08_REC_기록/REC-CMMI-04-01-04-01-2026-002_품질_이슈_에스컬레이션_REJECTED.md"
+    rec_path: "{VAULT}/08_REC_기록/REC-CMMI-04-01-04-01-2026-002_품질_이슈_에스컬레이션_REJECTED.md"
     trace_id: run-d8a3f6b7
 capa_rec: null               # 종결 시 채워짐 — 시정조치 후속 REC 의 doc_id
 closed_at: null
@@ -215,13 +217,13 @@ D-1. `options.dry_run == true`:
    - NCR 파일 미작성. 호출자에게 본문 미리보기 + 식별번호 list 만 반환.
    - MAT-009 미갱신.
 
-D-2. 각 finding 의 NCR 파일을 `vault/08_REC_기록/AUDIT/{NCR파일명}` 으로 Write.
+D-2. 각 finding 의 NCR 파일을 `{VAULT}/08_REC_기록/AUDIT/{NCR파일명}` 으로 Write.
 
 D-3. 동일 경로 충돌 시 NNN +1 재시도. 3회 실패 시 abort.
 
 ### Phase E — MAT-009 NCR 관리대장 갱신
 
-E-1. `vault/90_MAT_통합매핑/MAT-009_NCR_관리대장.md` Read.
+E-1. `{VAULT}/90_MAT_통합매핑/MAT-009_NCR_관리대장.md` Read.
    - 파일 미존재 시 본 에이전트가 신규 생성 (frontmatter + 헤더 + open/closed 두 섹션).
 
 E-2. `## NCR 발행 현황 (open)` 섹션 표 끝에 1행/finding append:
@@ -245,7 +247,7 @@ issued_ncrs:
     finding_id: F-001
     req_id: REQ-005
     severity: critical
-    path: vault/08_REC_기록/AUDIT/REC-NCR-04-01-2026-001_REQ-005_critical_종결추적.md
+    path: {VAULT}/08_REC_기록/AUDIT/REC-NCR-04-01-2026-001_REQ-005_critical_종결추적.md
     sla_due_date: "2026-05-30"
   - ncr_id: REC-NCR-04-01-2026-002
     ...
@@ -297,7 +299,7 @@ X-5. **MAT-009 갱신 (Edit)**:
 X-6. 호출자에게 반환:
 ```
 ✅ NCR 종결 완료
-📁 vault/08_REC_기록/AUDIT/REC-NCR-04-01-2026-001_*.md (status=closed)
+📁 {VAULT}/08_REC_기록/AUDIT/REC-NCR-04-01-2026-001_*.md (status=closed)
 📋 MAT-009 갱신: open 행 제거 → closed 행 추가
 🔍 CAPA: REC-CMMI-04-01-04-01-2026-003
 ⏱ SLA 준수: ✅ 11일 단축 (기한 2026-05-30 / 종결 2026-05-15)
@@ -309,9 +311,9 @@ X-6. 호출자에게 반환:
 
 ### 3.1 자산 무결성
 - 쓰기 허용 경로:
-  - `vault/08_REC_기록/AUDIT/REC-NCR-*.md` (issue: 신규 / close: Edit)
-  - `vault/90_MAT_통합매핑/MAT-009_NCR_관리대장.md` (Edit append / 행 이동)
-  - `.claude/runs/{trace_id}/trace.jsonl` (issue 모드만; close 는 audit trace 와 분리)
+  - `{VAULT}/08_REC_기록/AUDIT/REC-NCR-*.md` (issue: 신규 / close: Edit)
+  - `{VAULT}/90_MAT_통합매핑/MAT-009_NCR_관리대장.md` (Edit append / 행 이동)
+  - `{RUNS}/{trace_id}/trace.jsonl` (issue 모드만; close 는 audit trace 와 분리)
 - 외 파일 절대 수정 금지. POL/PRO/WI/TMP/EX/REC (AUDIT 외) / MAT-001~005,007,008 모두 보호.
 
 ### 3.2 식별번호 충돌 방지

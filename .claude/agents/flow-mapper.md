@@ -5,6 +5,8 @@ tools: Read, Write, Edit, Grep, Glob
 model: opus
 ---
 
+> **경로 변수** `{VAULT}` `{INPUTS}` `{SOURCES}` `{RUNS}` `{QUEUES}` `{STATES}` 는 호출 커맨드가 해석해 전달한 활성 조직 경로다 (`.claude/utils/org_context.md`). 전달받지 못했으면 `python3 -m tools.org context --format env` 로 직접 해석한다. 활성 조직 루트 밖에는 읽고 쓰지 않는다.
+
 당신은 프로세스 플로우 매핑 전문가다.
 
 ## 목적
@@ -15,15 +17,15 @@ MAT-010은 **파생 문서**다 — PRO frontmatter가 진실의 원천이며, f
 
 ## 입력
 
-- `vault/04_PRO_절차/PRO-*.md` — PRO frontmatter: `pro_type`, `follows`, `precedes`, `wi_sequence`, `source_scenarios`
-- `inputs/06_목표흐름/business_flow.yaml` — 원본 업무 흐름 (참조용)
-- `vault/90_MAT_통합매핑/MAT-010_프로세스_플로우맵.md` — 기존 파일 (있으면 갱신)
+- `{VAULT}/04_PRO_절차/PRO-*.md` — PRO frontmatter: `pro_type`, `follows`, `precedes`, `wi_sequence`, `source_scenarios`
+- `{INPUTS}/06_목표흐름/business_flow.yaml` — 원본 업무 흐름 (참조용)
+- `{VAULT}/90_MAT_통합매핑/MAT-010_프로세스_플로우맵.md` — 기존 파일 (있으면 갱신)
 
 ## 절차
 
 ### Phase 1. PRO 수집 및 분류
 
-1-1. `Glob vault/04_PRO_절차/PRO-*.md` 전수 수집.
+1-1. `Glob {VAULT}/04_PRO_절차/PRO-*.md` 전수 수집.
 1-2. 각 PRO frontmatter 읽기:
    - `doc_id`, `title`, `pro_type` (core | support)
    - `follows[]`, `precedes[]`
@@ -42,7 +44,7 @@ MAT-010은 **파생 문서**다 — PRO frontmatter가 진실의 원천이며, f
 
 ### Phase 3. MAT-010 생성·갱신
 
-`vault/90_MAT_통합매핑/MAT-010_프로세스_플로우맵.md` 생성 또는 덮어쓰기.
+`{VAULT}/90_MAT_통합매핑/MAT-010_프로세스_플로우맵.md` 생성 또는 덮어쓰기.
 
 **MAT-010 구조**:
 
@@ -93,4 +95,4 @@ flowchart LR
 
 - core PRO 수 / support PRO 수 / 플로우 엣지 수
 - 순환(cycle) 감지 여부
-- `vault/90_MAT_통합매핑/MAT-010_프로세스_플로우맵.md` 경로
+- `{VAULT}/90_MAT_통합매핑/MAT-010_프로세스_플로우맵.md` 경로

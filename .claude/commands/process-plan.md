@@ -7,26 +7,32 @@ argument-hint: "<모듈_또는_요건> [--restart] [--resume] [--from <phase>] [
 
 빌드 대상: **$ARGUMENTS**
 
-## 조직 컨텍스트 (공통 — org-layer §3 단계 1)
+## 조직 컨텍스트 (공통 — org-layer §3 단계 1·2)
 
-본 커맨드의 모든 vault · inputs · sources · runs · queues · states 경로는 **활성 조직 루트** 기준으로 해석한다. 규약 전문: `.claude/utils/org_context.md`
+본 문서와 에이전트 정의의 경로 변수는 **활성 조직 루트** 기준이다. 규약 전문: `.claude/utils/org_context.md`
 
-1. 진입 직후 1회 해석한다. 인자 `--org-root <path>` > `--org <id>` > 환경변수 `PROCESSWARE_ORG_ROOT` > `PROCESSWARE_ORG` > **fallback: default 조직(플랫폼 repo 의 `vault/`)**.
+| 변수 | 의미 | default 모드 (미설정) | 조직 모드 |
+|---|---|---|---|
+| `{VAULT}` | Obsidian vault | `vault/` | `{ORG_ROOT}/vault/` |
+| `{INPUTS}` · `{SOURCES}` | ingest 산출물 · 원본 파일 | `inputs/` · `sources/` | `{ORG_ROOT}/inputs/` · `sources/` |
+| `{RUNS}` · `{QUEUES}` · `{STATES}` | 실행 trace · 인계 큐 · 체크포인트 | `.claude/runs|queues|states/` | `{ORG_ROOT}/.processware/runs|queues|states/` |
+
+1. 진입 직후 1회 해석한다. 인자 `--org-root <path>` > `--org <id>` > 환경변수 `PROCESSWARE_ORG_ROOT` > `PROCESSWARE_ORG` > **fallback: default 조직(플랫폼 repo)**.
    ```bash
    python3 -m tools.org context --format env [--org <id> | --org-root <path>]
    ```
-   exit ≠ 0 이면 즉시 중단하고 stderr 를 사용자에게 보여준다. 성공 시 `조직: {id} ({mode}) · 루트: {root}` 1줄을 출력하고 trace 첫 이벤트에 `org_id` · `org_root` · `org_source` 를 기록한다.
-2. **경로 치환 (단계 2 완료 전 임시)**: 본 문서와 에이전트 정의의 `vault/…` → `{PROCESSWARE_VAULT}/…`, `inputs/…` → `{PROCESSWARE_INPUTS}/…`, `sources/…` → `{PROCESSWARE_SOURCES}/…`, `.claude/runs|queues|states/…` → `{PROCESSWARE_RUNS|QUEUES|STATES}/…` 로 읽는다. 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`) 은 치환하지 않는다.
-3. 활성 조직 루트 밖에는 읽고 쓰지 않는다. `--org`/`--org-root` 는 다른 모드 인자와 함께 어느 위치에나 올 수 있다.
+   exit ≠ 0 이면 즉시 중단하고 stderr 를 사용자에게 보여준다. 성공 시 `PROCESSWARE_VAULT` → `{VAULT}` 등으로 변수를 바인딩하고, `조직: {id} ({mode}) · 루트: {root}` 1줄을 출력하며, trace 첫 이벤트에 `org_id` · `org_root` · `org_source` 를 기록한다.
+2. 에이전트에 위임할 때 바인딩된 변수 값을 프롬프트 첫머리에 그대로 전달한다 (에이전트는 전달받은 값을 쓰고, 없을 때만 직접 해석).
+3. `--org-root` 로 받은 값은 하위 `python3 -m tools.*` 호출 전에 `PROCESSWARE_ORG_ROOT` 로 export 한다. 활성 조직 루트 밖에는 읽고 쓰지 않는다. 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`) 은 변수화 대상이 아니다.
 
 ---
 
 ## 실행 원칙
-- 기준 문서: `vault/01_구성원칙/표준프로세스_구성원칙.md`
-- 문서체계: `vault/00_공통관리/01_문서체계.md` (8종 유형)
-- 번호체계: `vault/00_공통관리/02_문서번호체계.md`
-- 입력자료 규칙: `vault/00_공통관리/05_입력자료_규칙.md`
-- **파이프라인 상태 규약**: `vault/00_공통관리/06_파이프라인_상태규약.md` (체크포인트/재개/자가수정)
+- 기준 문서: `{VAULT}/01_구성원칙/표준프로세스_구성원칙.md`
+- 문서체계: `{VAULT}/00_공통관리/01_문서체계.md` (8종 유형)
+- 번호체계: `{VAULT}/00_공통관리/02_문서번호체계.md`
+- 입력자료 규칙: `{VAULT}/00_공통관리/05_입력자료_규칙.md`
+- **파이프라인 상태 규약**: `{VAULT}/00_공통관리/06_파이프라인_상태규약.md` (체크포인트/재개/자가수정)
 - 모든 산출물: Obsidian 호환 MD(frontmatter + `[[wikilink]]`)
 
 ---
@@ -39,15 +45,15 @@ argument-hint: "<모듈_또는_요건> [--restart] [--resume] [--from <phase>] [
 
 표준 빌드 시작 전, 다음 두 파일에 **신규 표준 식별 정보**를 등록하고 main 에 직접 commit·push 한다:
 
-- `vault/00_공통관리/02_문서번호체계.md` — 영역 코드 표 신규 행 + MAT 표준별 추적성 표 신규 행
-- `vault/00_공통관리/07_표준분류레지스트리.md` — §2 해당 섹션에 row 추가 + §6 메타 모델 YAML block 추가
+- `{VAULT}/00_공통관리/02_문서번호체계.md` — 영역 코드 표 신규 행 + MAT 표준별 추적성 표 신규 행
+- `{VAULT}/00_공통관리/07_표준분류레지스트리.md` — §2 해당 섹션에 row 추가 + §6 메타 모델 YAML block 추가
 
 **진행 절차**:
 ```bash
 git checkout main
 git pull --ff-only
 # (위 2개 파일 편집)
-git add vault/00_공통관리/02_문서번호체계.md vault/00_공통관리/07_표준분류레지스트리.md
+git add {VAULT}/00_공통관리/02_문서번호체계.md {VAULT}/00_공통관리/07_표준분류레지스트리.md
 git commit -m "feat(registry): {표준코드} 영역코드 등록 + 표준분류레지스트리 등재"
 git push origin main
 ```
@@ -108,7 +114,7 @@ main 에 merge 는 사용자 결정 사항. PR 생성 안내만 출력 (`gh pr c
 ## Phase −1: State 결정 (가장 먼저)
 
 ### −1-1. `_state.yaml` 탐색
-경로: `.claude/states/{슬러그}_state.yaml`
+경로: `{STATES}/{슬러그}_state.yaml`
 
 | 상황 | 기본 동작 | 플래그 override |
 |---|---|---|
@@ -129,10 +135,10 @@ main 에 merge 는 사용자 결정 사항. PR 생성 안내만 출력 (`gh pr c
 
 (Fresh 시작 또는 `--from preflight` 시에만 실행. 재개 시엔 state 에서 done 이면 생략.)
 
-0-1. `inputs/` 존재 확인
+0-1. `{INPUTS}/` 존재 확인
    - 없으면 사용자에게:
      ```
-     [Preflight 경고] inputs/ 에 입력자료가 없습니다.
+     [Preflight 경고] {INPUTS}/ 에 입력자료가 없습니다.
      옵션:
        A) 지금 입력자료를 배치하고 재실행 (권장)
        B) LLM 추정만으로 진행 (정확도·감사 방어력 낮음)
@@ -141,7 +147,7 @@ main 에 merge 는 사용자 결정 사항. PR 생성 안내만 출력 (`gh pr c
 
 0-2. 입력물 인벤토리 요약 보고(파일 수·카테고리·라이선스 상태).
 
-0-4. **골든샘플 3종 선행 로드** (`vault/99_템플릿/_골든샘플/`): GS-POL-QMS-002 / GS-PRO-QMS-102 / GS-WI-102-04.
+0-4. **골든샘플 3종 선행 로드** (`{VAULT}/99_템플릿/_골든샘플/`): GS-POL-QMS-002 / GS-PRO-QMS-102 / GS-WI-102-04.
 
 0-5. `_state.yaml` 의 `phases.preflight` 를 `status: done` 으로 갱신, `current_phase: analyze`.
 
@@ -152,9 +158,9 @@ main 에 merge 는 사용자 결정 사항. PR 생성 안내만 출력 (`gh pr c
 각 에이전트는 **Phase −1(자체 Prerequisite 확인)** 을 실행하고, 완료 시 **done-marker 갱신** 을 한다 (상태규약 §4).
 
 1. **Analyze** — Agent `standard-analyzer`
-   - 1-0. `vault/02_적용요건/{슬러그}/적용요건.md` 존재 확인
+   - 1-0. `{VAULT}/02_적용요건/{슬러그}/적용요건.md` 존재 확인
      - **있으면**: 기존 적용요건.md 를 requirements baseline 으로 로드 → Phase 2(design) 로
-     - **없으면**: standard-analyzer 가 `inputs/` 분석 → 적용요건.md 생성 후 → Phase 2(design) 로
+     - **없으면**: standard-analyzer 가 `{INPUTS}/` 분석 → 적용요건.md 생성 후 → Phase 2(design) 로
    - 출력: `02_적용요건/{슬러그}/적용요건.md` (신규 생성 시), `09_REF_참고자료/`, `90_MAT/MAT-002`
    - done-marker 로 `phases.analyze` 완료 기록
 
@@ -167,7 +173,7 @@ main 에 merge 는 사용자 결정 사항. PR 생성 안내만 출력 (`gh pr c
    - done-marker: `phases.write`
 
 3.5. **Flow** — Agent `flow-mapper`
-   - 입력: `vault/04_PRO_절차/PRO-*.md` frontmatter (pro_type, follows, precedes, wi_sequence)
+   - 입력: `{VAULT}/04_PRO_절차/PRO-*.md` frontmatter (pro_type, follows, precedes, wi_sequence)
    - 출력: `90_MAT_통합매핑/MAT-010_프로세스_플로우맵.md` (파생 문서, 덮어쓰기)
    - done-marker: `phases.flow`
    - **`--flow` 단독 실행 시**: 이 단계만 실행 (1~3 단계 생략). PRO/WI 가 이미 존재해야 함.
@@ -254,8 +260,8 @@ R-6. QA 결과로 루프 재평가.
 
 ## 최종 보고
 - 🧭 state 요약 (attempts, 최종 overall_status, 각 phase 소요 시간)
-- 📥 `inputs/` 활용 요약
-- 📋 적용요건.md 경로 (`vault/02_적용요건/{슬러그}/적용요건.md`) + REQ 수
+- 📥 `{INPUTS}/` 활용 요약
+- 📋 적용요건.md 경로 (`{VAULT}/02_적용요건/{슬러그}/적용요건.md`) + REQ 수
 - 🔄 자가수정 루프 요약 (attempt 별 Pass/Fail, 수정 건수)
 - ✅ 생성 파일 트리
 - 📊 요구사항 커버리지

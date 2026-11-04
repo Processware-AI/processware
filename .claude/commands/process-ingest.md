@@ -7,30 +7,36 @@ argument-hint: "<source_file> --standard <ID> [--version <ver>] [--category <01-
 
 대상 입력: **$ARGUMENTS**
 
-본 커맨드는 `sources/` 에 배치된 원본 문서(PDF·DOCX·PPTX 등)를 **추출 → 정규화 → 요구사항 단위 분할 → 분류 → 추적성 매핑 → QA 검토** 단계로 처리하여, `/process-plan` 이 안정적으로 읽을 수 있는 **정규화된 입력 패키지** 를 `inputs/` 에 생성한다.
+본 커맨드는 `{SOURCES}/` 에 배치된 원본 문서(PDF·DOCX·PPTX 등)를 **추출 → 정규화 → 요구사항 단위 분할 → 분류 → 추적성 매핑 → QA 검토** 단계로 처리하여, `/process-plan` 이 안정적으로 읽을 수 있는 **정규화된 입력 패키지** 를 `{INPUTS}/` 에 생성한다.
 
 ---
 
-## 조직 컨텍스트 (공통 — org-layer §3 단계 1)
+## 조직 컨텍스트 (공통 — org-layer §3 단계 1·2)
 
-본 커맨드의 모든 vault · inputs · sources · runs · queues · states 경로는 **활성 조직 루트** 기준으로 해석한다. 규약 전문: `.claude/utils/org_context.md`
+본 문서와 에이전트 정의의 경로 변수는 **활성 조직 루트** 기준이다. 규약 전문: `.claude/utils/org_context.md`
 
-1. 진입 직후 1회 해석한다. 인자 `--org-root <path>` > `--org <id>` > 환경변수 `PROCESSWARE_ORG_ROOT` > `PROCESSWARE_ORG` > **fallback: default 조직(플랫폼 repo 의 `vault/`)**.
+| 변수 | 의미 | default 모드 (미설정) | 조직 모드 |
+|---|---|---|---|
+| `{VAULT}` | Obsidian vault | `vault/` | `{ORG_ROOT}/vault/` |
+| `{INPUTS}` · `{SOURCES}` | ingest 산출물 · 원본 파일 | `inputs/` · `sources/` | `{ORG_ROOT}/inputs/` · `sources/` |
+| `{RUNS}` · `{QUEUES}` · `{STATES}` | 실행 trace · 인계 큐 · 체크포인트 | `.claude/runs|queues|states/` | `{ORG_ROOT}/.processware/runs|queues|states/` |
+
+1. 진입 직후 1회 해석한다. 인자 `--org-root <path>` > `--org <id>` > 환경변수 `PROCESSWARE_ORG_ROOT` > `PROCESSWARE_ORG` > **fallback: default 조직(플랫폼 repo)**.
    ```bash
    python3 -m tools.org context --format env [--org <id> | --org-root <path>]
    ```
-   exit ≠ 0 이면 즉시 중단하고 stderr 를 사용자에게 보여준다. 성공 시 `조직: {id} ({mode}) · 루트: {root}` 1줄을 출력하고 trace 첫 이벤트에 `org_id` · `org_root` · `org_source` 를 기록한다.
-2. **경로 치환 (단계 2 완료 전 임시)**: 본 문서와 에이전트 정의의 `vault/…` → `{PROCESSWARE_VAULT}/…`, `inputs/…` → `{PROCESSWARE_INPUTS}/…`, `sources/…` → `{PROCESSWARE_SOURCES}/…`, `.claude/runs|queues|states/…` → `{PROCESSWARE_RUNS|QUEUES|STATES}/…` 로 읽는다. 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`) 은 치환하지 않는다.
-3. 활성 조직 루트 밖에는 읽고 쓰지 않는다. `--org`/`--org-root` 는 다른 모드 인자와 함께 어느 위치에나 올 수 있다.
+   exit ≠ 0 이면 즉시 중단하고 stderr 를 사용자에게 보여준다. 성공 시 `PROCESSWARE_VAULT` → `{VAULT}` 등으로 변수를 바인딩하고, `조직: {id} ({mode}) · 루트: {root}` 1줄을 출력하며, trace 첫 이벤트에 `org_id` · `org_root` · `org_source` 를 기록한다.
+2. 에이전트에 위임할 때 바인딩된 변수 값을 프롬프트 첫머리에 그대로 전달한다 (에이전트는 전달받은 값을 쓰고, 없을 때만 직접 해석).
+3. `--org-root` 로 받은 값은 하위 `python3 -m tools.*` 호출 전에 `PROCESSWARE_ORG_ROOT` 로 export 한다. 활성 조직 루트 밖에는 읽고 쓰지 않는다. 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`) 은 변수화 대상이 아니다.
 
 ---
 
 ## 0. 핵심 원칙
 
-- **소스와 산출물 분리**: 원본 파일은 `sources/` 에서만. `inputs/` 는 ingest 출력 전용 — 바이너리 파일 진입 절대 금지.
+- **소스와 산출물 분리**: 원본 파일은 `{SOURCES}/` 에서만. `{INPUTS}/` 는 ingest 출력 전용 — 바이너리 파일 진입 절대 금지.
 - **스캔본 처리 정책**: `--ocr` 플래그 없으면 즉시 중단. `--ocr` 지정 시 `ocrmypdf`(Tesseract 백엔드)로 자동 OCR 처리 후 계속 진행. OCR 처리된 파일은 `_state.yaml.ocr_processed: true` 마킹.
 - **HITL 강제 게이트**: Phase 7 QA 완료 후 반드시 사람이 검토·확인해야 Phase 8 실행 가능. 자동 통과 없음.
-- **입력 불변**: `sources/` 원본은 본 커맨드가 절대 수정하지 않는다. 읽기 전용.
+- **입력 불변**: `{SOURCES}/` 원본은 본 커맨드가 절대 수정하지 않는다. 읽기 전용.
 - **멱등성**: 동일 standard_id 재실행 시 기존 outputs 덮어쓰기 전 사용자 확인.
 
 ---
@@ -39,13 +45,13 @@ argument-hint: "<source_file> --standard <ID> [--version <ver>] [--category <01-
 
 ```
 projectroot/
-  sources/                              ← 원본 파일 전용 (바이너리 허용)
+  {SOURCES}/                              ← 원본 파일 전용 (바이너리 허용)
     ISO9001_2015.pdf
     개인정보보호법_2024.pdf
     ISO9001_2024_개정사항.pdf           ← delta 문서
     현_품질매뉴얼_v3.docx
 
-  inputs/                               ← ingest 출력 전용 (바이너리 금지)
+  {INPUTS}/                               ← ingest 출력 전용 (바이너리 금지)
     01_표준원문/
       ISO9001/
         structure.yaml
@@ -67,7 +73,7 @@ projectroot/
     06_목표흐름/
       business_flow.yaml    ← flow-proposer 생성 (사람이 직접 수정 가능)
 
-  vault/                                ← process-plan 산출물
+  {VAULT}/                                ← process-plan 산출물
     02_적용요건/
     ...
 ```
@@ -90,16 +96,16 @@ projectroot/
 
 ### 2-1. 신규 ingest (기본)
 ```
-/process-ingest sources/ISO9001_2015.pdf --standard ISO9001 --version 2015
-/process-ingest sources/개인정보보호법.pdf --standard 개인정보보호법 --version 2024 --category 02
-/process-ingest sources/현_품질매뉴얼.docx --standard 현_품질매뉴얼 --category 04
+/process-ingest {SOURCES}/ISO9001_2015.pdf --standard ISO9001 --version 2015
+/process-ingest {SOURCES}/개인정보보호법.pdf --standard 개인정보보호법 --version 2024 --category 02
+/process-ingest {SOURCES}/현_품질매뉴얼.docx --standard 현_품질매뉴얼 --category 04
 ```
 
 ### 2-2. delta 모드 (표준 개정)
 ```
-/process-ingest sources/ISO9001_2024_개정사항.pdf --standard ISO9001 --mode delta --base-version 2015
+/process-ingest {SOURCES}/ISO9001_2024_개정사항.pdf --standard ISO9001 --mode delta --base-version 2015
 ```
-→ 기존 `inputs/01_표준원문/ISO9001/requirements.yaml` 와 대조하여 ADD/MODIFIED/DEPRECATED 처리.
+→ 기존 `{INPUTS}/01_표준원문/ISO9001/requirements.yaml` 와 대조하여 ADD/MODIFIED/DEPRECATED 처리.
 
 ### 2-3. confirm 모드 (HITL 승인)
 ```
@@ -119,7 +125,7 @@ projectroot/
 /process-ingest --list
 /process-ingest --list --category 01
 ```
-→ `inputs/` 내 완료된 ingest 목록 + 상태 출력.
+→ `{INPUTS}/` 내 완료된 ingest 목록 + 상태 출력.
 
 ---
 
@@ -128,8 +134,8 @@ projectroot/
 ### Phase 1. Source Intake
 
 1-1. `--standard` 슬러그 생성 (소문자·언더스코어). 예: `ISO9001_2015`  
-1-2. `sources/<source_file>` 존재 확인. 없으면 abort.  
-1-3. `inputs/<category>/<standard_id>/` 이미 존재 시:
+1-2. `{SOURCES}/<source_file>` 존재 확인. 없으면 abort.  
+1-3. `{INPUTS}/<category>/<standard_id>/` 이미 존재 시:
   - `_state.yaml` 의 `overall_status` 확인.
   - `done` 또는 `pending_confirmation` → "이미 처리됨. 재실행하시겠습니까? (Y/N)"
   - N 이면 중단.  
@@ -137,7 +143,7 @@ projectroot/
 ```yaml
 standard_id: ISO9001
 version: "2015"
-source_file: sources/ISO9001_2015.pdf
+source_file: {SOURCES}/ISO9001_2015.pdf
 category: "01_표준원문"
 mode: new          # new | delta
 overall_status: running
@@ -177,11 +183,11 @@ counts:
   이 파일은 이미지 기반 PDF(스캔본)입니다.
 
   OCR로 자동 처리하려면:
-    /process-ingest sources/ISO9001_2015.pdf --standard ISO9001 --ocr
+    /process-ingest {SOURCES}/ISO9001_2015.pdf --standard ISO9001 --ocr
 
   또는 외부 도구로 텍스트 변환 후 재투입:
     1. Adobe Acrobat / ABBYY FineReader 등으로 텍스트 PDF 변환
-    2. 변환 파일을 sources/ 에 배치 후 재실행
+    2. 변환 파일을 {SOURCES}/ 에 배치 후 재실행
   ```
   `_state.yaml.overall_status: aborted` + `abort_reason: scanned_pdf`.
 
@@ -202,12 +208,12 @@ counts:
   2-OCR-2. OCR 실행:
   ```bash
   ocrmypdf --force-ocr -l kor+eng \
-    sources/ISO9001_2015.pdf \
-    .claude/runs/ingest_{standard_slug}/ocr_output.pdf
+    {SOURCES}/ISO9001_2015.pdf \
+    {RUNS}/ingest_{standard_slug}/ocr_output.pdf
   ```
   - `-l kor+eng`: 한국어 + 영어 동시 인식 (한글 문서 대응).
   - `--force-ocr`: 기존 텍스트 레이어 무시 후 재인식 (혼합 PDF 대응).
-  - 출력 파일은 `.claude/runs/ingest_{standard_slug}/` 임시 디렉터리. `sources/` 와 `inputs/` 에는 쓰지 않는다.
+  - 출력 파일은 `{RUNS}/ingest_{standard_slug}/` 임시 디렉터리. `{SOURCES}/` 와 `{INPUTS}/` 에는 쓰지 않는다.
 
   2-OCR-3. OCR 성공 시 → OCR'd PDF 에서 텍스트 재추출 → 이후 Phase 2-3 이상 정상 진행.
 
@@ -226,7 +232,7 @@ counts:
   계속 진행하시겠습니까? (Y/N)
   ```
 
-2-3. 추출된 텍스트 → `inputs/<category>/<standard_id>/clauses.md` 임시 저장 (raw).  
+2-3. 추출된 텍스트 → `{INPUTS}/<category>/<standard_id>/clauses.md` 임시 저장 (raw).  
 2-4. 페이지번호·헤더·푸터·목차 페이지 제거.  
 2-5. 추출 로그 → `qa/extraction_quality_report.md` 초안:
   - 총 페이지 수, 추출 성공 페이지 수, 추출 실패 페이지 목록.
@@ -351,7 +357,7 @@ requirements:
 ```yaml
 source_map:
   - requirement_id: ISO9001-7.5.1-REQ-001
-    source_file: sources/ISO9001_2015.pdf
+    source_file: {SOURCES}/ISO9001_2015.pdf
     page: 23
     clause: "7.5.1"
     paragraph_index: 2
@@ -449,10 +455,10 @@ status: pending_review
    조항 87개 / 요건 142건 / 검토 필요 11건
 
 📋 검토 파일:
-   inputs/01_표준원문/ISO9001/qa/review_request.md
+   {INPUTS}/01_표준원문/ISO9001/qa/review_request.md
 
 ✏️  직접 수정 가능:
-   inputs/01_표준원분/ISO9001/requirements.yaml
+   {INPUTS}/01_표준원분/ISO9001/requirements.yaml
 
 ▶  검토 완료 후:
    /process-ingest --confirm ISO9001
@@ -484,7 +490,7 @@ counts:
 ```
 ✅ ISO9001 인제스트 완료
 
-📁 출력 위치: inputs/01_표준원문/ISO9001/
+📁 출력 위치: {INPUTS}/01_표준원문/ISO9001/
    ├── structure.yaml      (조항 구조)
    ├── requirements.yaml   (요건 142건)
    ├── clauses.md          (전문 텍스트)
@@ -496,7 +502,7 @@ counts:
    normative 98건 / recommendation 22건 / informative 22건
 
 ▶  다음 단계:
-   /process-ingest sources/ISO27001.pdf --standard ISO27001   # 추가 표준 ingest
+   /process-ingest {SOURCES}/ISO27001.pdf --standard ISO27001   # 추가 표준 ingest
    /process-plan "OOO사 품질경영체계"                          # 프로세스 생성
 ```
 
@@ -506,16 +512,16 @@ counts:
 
 **`--confirm` 완료 직후 자동 실행.** 추가 표준 ingest 예정이면 사용자에게 확인 후 진행.
 
-9-1. `inputs/06_목표흐름/business_flow.yaml` 존재 확인.
+9-1. `{INPUTS}/06_목표흐름/business_flow.yaml` 존재 확인.
    - **있으면**: "기존 business_flow.yaml이 있습니다. 갱신(delta)하시겠습니까? (Y/N)"
    - **없으면**: 신규 생성 모드.
 9-2. Agent `flow-proposer` 호출.
-   - 표준 분석 → 시나리오 도출 → HITL 선택 → `inputs/06_목표흐름/business_flow.yaml` 저장.
+   - 표준 분석 → 시나리오 도출 → HITL 선택 → `{INPUTS}/06_목표흐름/business_flow.yaml` 저장.
 9-3. 완료 보고:
 ```
 ✅ 업무 시나리오 확정 완료
 
-📁 inputs/06_목표흐름/business_flow.yaml
+📁 {INPUTS}/06_목표흐름/business_flow.yaml
    시나리오 N건 확정 (추가 M건 포함)
 
 ▶  다음 단계:
@@ -529,7 +535,7 @@ counts:
 
 ### 전제
 - 기존 ingest 완료된 표준이 존재 (`overall_status: done`).
-- 인간이 개정사항 문서를 `sources/` 에 직접 등록.
+- 인간이 개정사항 문서를 `{SOURCES}/` 에 직접 등록.
 - delta 문서는 변경된 조항만 포함하거나, 개정 요약 문서 형태도 허용.
 
 ### 시퀀스
@@ -563,7 +569,7 @@ D-5. confirm 후 기존 `requirements.yaml` 에 delta 반영 + `_state.yaml` 버
 
 ## 5. 상태 관리
 
-**경로**: `.claude/states/ingest_{standard_slug}_state.yaml`
+**경로**: `{STATES}/ingest_{standard_slug}_state.yaml`
 
 **status 값**:
 
@@ -571,33 +577,33 @@ D-5. confirm 후 기존 `requirements.yaml` 에 delta 반영 + `_state.yaml` 버
 |---|---|
 | `running` | 처리 중 |
 | `pending_review` | Phase 7 완료, 인간 검토 대기 (HITL 게이트) |
-| `done` | confirm 완료, inputs/ 패키지 확정 |
+| `done` | confirm 완료, {INPUTS}/ 패키지 확정 |
 | `aborted` | 스캔본 감지 또는 사용자 중단 |
 
 ---
 
 ## 6. 안전 가드
 
-- **`sources/` 읽기 전용**: 원본 파일 절대 수정 안 함.
-- **`inputs/` 바이너리 금지**: 본 커맨드가 `inputs/` 에 쓰는 파일은 YAML·MD·TXT 만 허용. 바이너리 생성 시 버그로 간주.
-- **`vault/` 불가침**: 본 커맨드는 `vault/` 어떤 파일도 읽거나 쓰지 않는다.
-- **스캔본**: `--ocr` 없으면 즉시 abort. `--ocr` 있으면 `ocrmypdf` 자동 처리. OCR 임시 파일은 `.claude/runs/ingest_*/` 에만 저장 — `sources/`·`inputs/` 에는 절대 쓰지 않음.
+- **`{SOURCES}/` 읽기 전용**: 원본 파일 절대 수정 안 함.
+- **`{INPUTS}/` 바이너리 금지**: 본 커맨드가 `{INPUTS}/` 에 쓰는 파일은 YAML·MD·TXT 만 허용. 바이너리 생성 시 버그로 간주.
+- **`{VAULT}/` 불가침**: 본 커맨드는 `{VAULT}/` 어떤 파일도 읽거나 쓰지 않는다.
+- **스캔본**: `--ocr` 없으면 즉시 abort. `--ocr` 있으면 `ocrmypdf` 자동 처리. OCR 임시 파일은 `{RUNS}/ingest_*/` 에만 저장 — `{SOURCES}/`·`{INPUTS}/` 에는 절대 쓰지 않음.
 - **재실행 보호**: `overall_status: done` 상태에서 재실행 시 반드시 사용자 확인.
 
 ---
 
 ## 7. process-plan 연동 — 바이너리 가드
 
-`/process-plan` 실행 시 `inputs/` 스캔:
+`/process-plan` 실행 시 `{INPUTS}/` 스캔:
 - `.pdf` / `.docx` / `.pptx` / `.xlsx` / `.hwp` 발견 시:
   ```
-  ❌ inputs/ 에 바이너리 파일이 있습니다 — 작업 중단
+  ❌ {INPUTS}/ 에 바이너리 파일이 있습니다 — 작업 중단
 
   발견된 파일:
-    inputs/01_표준원문/ISO9001_2015.pdf
+    {INPUTS}/01_표준원문/ISO9001_2015.pdf
 
   조치:
-    /process-ingest sources/ISO9001_2015.pdf --standard ISO9001 --version 2015
+    /process-ingest {SOURCES}/ISO9001_2015.pdf --standard ISO9001 --version 2015
   ```
 - 바이너리 파일이 없을 때만 process-plan 정상 진행.
 
@@ -606,15 +612,15 @@ D-5. confirm 후 기존 `requirements.yaml` 에 delta 반영 + `_state.yaml` 버
 ## 8. 전체 파이프라인 위치
 
 ```
-[sources/]           ← 인간이 원본 배치
+[{SOURCES}/]           ← 인간이 원본 배치
       ↓
 /process-ingest      ← 차원 0: 전처리
       ↓ (HITL 검토·confirm)
-[inputs/]            ← 정규화된 YAML·MD 패키지
+[{INPUTS}/]            ← 정규화된 YAML·MD 패키지
       ↓
 /process-plan        ← 차원 1: 프로세스 생성
       ↓
-[vault/02_적용요건/ + POL·PRO·WI·TMP·EX·MAT]
+[{VAULT}/02_적용요건/ + POL·PRO·WI·TMP·EX·MAT]
       ↓
 /process-do          ← 차원 2: 실행
 /process-check       ← 차원 3: 심사

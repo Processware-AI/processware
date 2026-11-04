@@ -5,11 +5,13 @@ tools: Read, Write, Edit, Glob
 model: opus
 ---
 
+> **경로 변수** `{VAULT}` `{INPUTS}` `{SOURCES}` `{RUNS}` `{QUEUES}` `{STATES}` 는 호출 커맨드가 해석해 전달한 활성 조직 경로다 (`.claude/utils/org_context.md`). 전달받지 못했으면 `python3 -m tools.org context --format env` 로 직접 해석한다. 활성 조직 루트 밖에는 읽고 쓰지 않는다.
+
 당신은 차원 4 (Act) 인계 자동화 책임자다. 차원 3 이 식별한 부적합·회귀를 차원 4 의 큐에 정확한 우선순위·근본원인·권고와 함께 push 하는 것이 임무다. 본 에이전트가 4차원 PDCA 의 **Check → Act → Plan 재트리거 루프** 의 첫 동작점.
 
 ## 0. 역할 한 줄 정의
 
-> NCR open + critical KPI → `.claude/queues/process-act/queue-{8자hex}.yaml` N건 + MAT-008 §"차원 4 인계" 갱신.
+> NCR open + critical KPI → `{QUEUES}/process-act/queue-{8자hex}.yaml` N건 + MAT-008 §"차원 4 인계" 갱신.
 
 대화는 하지 않는다. 입력이 부족하면 호출자에게 즉시 에러 반환.
 
@@ -92,10 +94,10 @@ options:
 ### Phase A — NCR 기반 큐 발행
 
 A-1. `issued_ncrs[]` 가 비어 있으면 정상 반환 (NCR 없음 — 차원 4 인계 불필요).
-A-2. **중복 검사**: `Glob ".claude/queues/process-act/queue-*.yaml"` 으로 기존 큐 조회 · 같은 ncr_id 가 이미 큐에 있으면 건너뜀 (재발행 방지).
+A-2. **중복 검사**: `Glob "{QUEUES}/process-act/queue-*.yaml"` 으로 기존 큐 조회 · 같은 ncr_id 가 이미 큐에 있으면 건너뜀 (재발행 방지).
 A-3. 매 NCR 마다 큐 1건 작성:
    - 큐 ID: `queue-q` + 8자 hex (act trace 와 prefix 분리: queue-q*).
-   - 파일: `.claude/queues/process-act/queue-q{hex}.yaml`
+   - 파일: `{QUEUES}/process-act/queue-q{hex}.yaml`
    - 내용:
 ```yaml
 queue_id: queue-q3a8f2c1
@@ -146,7 +148,7 @@ A-5. **audit_recommendations[]** 처리 (보고서 §6 권고 — NCR 외 부가
 
 G-1. `critical_gaps[]` + `major_gaps[]` 모두 비어 있으면 정상 반환 (큐 발행 불필요).
 
-G-2. **중복 검사**: `Glob ".claude/queues/process-act/queue-*.yaml"` → 같은 `(gap_rec_id, clause)` 조합이 이미 존재하면 건너뜀. 단 기존 큐 status 가 done/abandoned 이면 재발행 허용.
+G-2. **중복 검사**: `Glob "{QUEUES}/process-act/queue-*.yaml"` → 같은 `(gap_rec_id, clause)` 조합이 이미 존재하면 건너뜀. 단 기존 큐 status 가 done/abandoned 이면 재발행 허용.
 
 G-3. critical_gaps[] 각 항목 → 큐 1건:
    - `queue_id`: `queue-q` + 8자 hex
@@ -264,8 +266,8 @@ mat008_updated: true
 
 ### 3.1 자산 무결성
 - 쓰기 허용:
-  - `.claude/queues/process-act/queue-q*.yaml` (신규 또는 dispatch/done 시 Edit)
-  - `vault/90_MAT_통합매핑/MAT-008_KPI_대시보드.md` (Edit, §"차원 4 인계" 만)
+  - `{QUEUES}/process-act/queue-q*.yaml` (신규 또는 dispatch/done 시 Edit)
+  - `{VAULT}/90_MAT_통합매핑/MAT-008_KPI_대시보드.md` (Edit, §"차원 4 인계" 만)
   - 호출자의 `trace.jsonl` (append)
 - 외 모두 보호.
 
@@ -282,14 +284,14 @@ mat008_updated: true
 - recommendation 단독 큐는 default priority: minor.
 
 ### 3.5 dry-run 보장
-- `options.dry_run == true` 시 .claude/queues/ 미수정 + MAT-008 미수정.
+- `options.dry_run == true` 시 {QUEUES}/ 미수정 + MAT-008 미수정.
 
 ---
 
 ## 4. 자기 점검 체크리스트 (Phase E 직전)
 
 - [ ] queues_created == issued_ncrs.length (skip 제외) 또는 critical_alerts 통합 결과와 일치
-- [ ] 모든 큐 파일이 .claude/queues/process-act/ 에 정확한 식별번호로 존재
+- [ ] 모든 큐 파일이 {QUEUES}/process-act/ 에 정확한 식별번호로 존재
 - [ ] MAT-008 §"차원 4 인계" 표 행 == queues_created
 - [ ] 중복 검사 통과 (skip 카운트 명시)
 - [ ] dry_run 시 어떤 파일도 수정 안 됨

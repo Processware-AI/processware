@@ -7,23 +7,29 @@ argument-hint: "start <queue_id> | --resume <trace_id> | --approve <trace_id> [-
 
 대상 입력: **$ARGUMENTS**
 
-본 커맨드는 차원 3 (`/process-check`) 의 act-trigger 가 발행한 큐 (`.claude/queues/process-act/queue-q*.yaml`) 를 받아 **근본 원인 분석 → 개정 범위 결정 → PCB 승인 → 차원 1 재트리거** 의 4단계로 자산 개정을 자동화한다. 4차원 PDCA 의 **Act → Plan 재트리거 폐쇄 루프**.
+본 커맨드는 차원 3 (`/process-check`) 의 act-trigger 가 발행한 큐 (`{QUEUES}/process-act/queue-q*.yaml`) 를 받아 **근본 원인 분석 → 개정 범위 결정 → PCB 승인 → 차원 1 재트리거** 의 4단계로 자산 개정을 자동화한다. 4차원 PDCA 의 **Act → Plan 재트리거 폐쇄 루프**.
 
 상위 설계: `docs/표준프로세스_AI관리체계_4차원PDCA.md` §3 차원 4 / §5.4 차원 4 재트리거 조건 / `docs/AI-Driven CMMI Operating Platform.md` Layer 3 자동 최적화 (ML5)
 
 ---
 
-## 조직 컨텍스트 (공통 — org-layer §3 단계 1)
+## 조직 컨텍스트 (공통 — org-layer §3 단계 1·2)
 
-본 커맨드의 모든 vault · inputs · sources · runs · queues · states 경로는 **활성 조직 루트** 기준으로 해석한다. 규약 전문: `.claude/utils/org_context.md`
+본 문서와 에이전트 정의의 경로 변수는 **활성 조직 루트** 기준이다. 규약 전문: `.claude/utils/org_context.md`
 
-1. 진입 직후 1회 해석한다. 인자 `--org-root <path>` > `--org <id>` > 환경변수 `PROCESSWARE_ORG_ROOT` > `PROCESSWARE_ORG` > **fallback: default 조직(플랫폼 repo 의 `vault/`)**.
+| 변수 | 의미 | default 모드 (미설정) | 조직 모드 |
+|---|---|---|---|
+| `{VAULT}` | Obsidian vault | `vault/` | `{ORG_ROOT}/vault/` |
+| `{INPUTS}` · `{SOURCES}` | ingest 산출물 · 원본 파일 | `inputs/` · `sources/` | `{ORG_ROOT}/inputs/` · `sources/` |
+| `{RUNS}` · `{QUEUES}` · `{STATES}` | 실행 trace · 인계 큐 · 체크포인트 | `.claude/runs|queues|states/` | `{ORG_ROOT}/.processware/runs|queues|states/` |
+
+1. 진입 직후 1회 해석한다. 인자 `--org-root <path>` > `--org <id>` > 환경변수 `PROCESSWARE_ORG_ROOT` > `PROCESSWARE_ORG` > **fallback: default 조직(플랫폼 repo)**.
    ```bash
    python3 -m tools.org context --format env [--org <id> | --org-root <path>]
    ```
-   exit ≠ 0 이면 즉시 중단하고 stderr 를 사용자에게 보여준다. 성공 시 `조직: {id} ({mode}) · 루트: {root}` 1줄을 출력하고 trace 첫 이벤트에 `org_id` · `org_root` · `org_source` 를 기록한다.
-2. **경로 치환 (단계 2 완료 전 임시)**: 본 문서와 에이전트 정의의 `vault/…` → `{PROCESSWARE_VAULT}/…`, `inputs/…` → `{PROCESSWARE_INPUTS}/…`, `sources/…` → `{PROCESSWARE_SOURCES}/…`, `.claude/runs|queues|states/…` → `{PROCESSWARE_RUNS|QUEUES|STATES}/…` 로 읽는다. 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`) 은 치환하지 않는다.
-3. 활성 조직 루트 밖에는 읽고 쓰지 않는다. `--org`/`--org-root` 는 다른 모드 인자와 함께 어느 위치에나 올 수 있다.
+   exit ≠ 0 이면 즉시 중단하고 stderr 를 사용자에게 보여준다. 성공 시 `PROCESSWARE_VAULT` → `{VAULT}` 등으로 변수를 바인딩하고, `조직: {id} ({mode}) · 루트: {root}` 1줄을 출력하며, trace 첫 이벤트에 `org_id` · `org_root` · `org_source` 를 기록한다.
+2. 에이전트에 위임할 때 바인딩된 변수 값을 프롬프트 첫머리에 그대로 전달한다 (에이전트는 전달받은 값을 쓰고, 없을 때만 직접 해석).
+3. `--org-root` 로 받은 값은 하위 `python3 -m tools.*` 호출 전에 `PROCESSWARE_ORG_ROOT` 로 export 한다. 활성 조직 루트 밖에는 읽고 쓰지 않는다. 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`) 은 변수화 대상이 아니다.
 
 ---
 
@@ -31,9 +37,9 @@ argument-hint: "start <queue_id> | --resume <trace_id> | --approve <trace_id> [-
 
 - **act queue 가 단일 입력**: 차원 3 의 큐만 처리. 큐 외 임의 개정 트리거 금지 (사후 추적성 위해).
 - **기존 자산 우선 (구성원칙 §8)**: As-Is 파일에 기존 PRO/WI 의 인용 포함 → 차원 1 빌드 시 신규 생성보다 기존 확장 채택.
-- **신규 자산 절대 생성 안 함**: 본 커맨드는 As-Is 입력 파일 (`inputs/04_AsIs/queue-q*.md`) + MAT-001 행만 작성. POL/PRO/WI/TMP/EX 개정은 차원 1 (`/process-plan --from write`) 의 책임.
+- **신규 자산 절대 생성 안 함**: 본 커맨드는 As-Is 입력 파일 (`{INPUTS}/04_AsIs/queue-q*.md`) + MAT-001 행만 작성. POL/PRO/WI/TMP/EX 개정은 차원 1 (`/process-plan --from write`) 의 책임.
 - **PCB (Process Control Board) 승인 강제**: PCB = 표준 자산 개정의 최종 승인 게이트. ISO/IEC 27001 §9.3 (관리검토) 동형. 자동 승인은 `--auto-approve` 플래그 (PoC 한정).
-- **모든 trace 기록**: `.claude/runs/{trace_id}/trace.jsonl` 전수 로그. trace prefix `run-c*` (change/CAPA — audit `run-a*` / kpi `run-k*` 와 분리).
+- **모든 trace 기록**: `{RUNS}/{trace_id}/trace.jsonl` 전수 로그. trace prefix `run-c*` (change/CAPA — audit `run-a*` / kpi `run-k*` 와 분리).
 - **As-Is 입력 파일은 차원 1 의 입력**: 차원 1 빌드가 자동으로 읽어 개정에 반영. 본 커맨드는 작성만.
 
 ---
@@ -65,7 +71,7 @@ argument-hint: "start <queue_id> | --resume <trace_id> | --approve <trace_id> [-
    - 통합 RCA 의 confidence 가 medium 이하면 사용자에게 분리 처리 권고.
    - 통합 As-Is 파일 1건 = 큐 다수 처리 → 차원 1 빌드 시 한 번에 다수 자산 개정 (정합 검증 부담 증가).
 → 인자 파싱:
-- queue_id 가 `.claude/queues/process-act/queue-q*.yaml` 에 존재하고 `status in [pending, in_progress]` 확인.
+- queue_id 가 `{QUEUES}/process-act/queue-q*.yaml` 에 존재하고 `status in [pending, in_progress]` 확인.
 - queue 가 dispatched_to 채워져 있으면 그 사람의 권한으로 진행 (RBAC).
 - trace_id 생성 (`run-c` + 8자 hex).
 - state.yaml 초기화.
@@ -92,7 +98,7 @@ argument-hint: "start <queue_id> | --resume <trace_id> | --approve <trace_id> [-
 → 현재 phase / RCA 결과 / revision plan 요약 / PCB 승인 상태 출력.
 
 ### 1-7. `list` 모드 — `/process-act --list [--status <상태>]`
-→ `.claude/runs/run-c*` 디렉터리 전수 스캔 + state.yaml status 필터. 표 stdout.
+→ `{RUNS}/run-c*` 디렉터리 전수 스캔 + state.yaml status 필터. 표 stdout.
 
 ### 1-8. 공통 옵션
 | 플래그 | 효과 | 적용 모드 |
@@ -117,7 +123,7 @@ A-2. **RBAC 검증** (Phase 4 차원 3 의 independence-guard 동형):
    - `independence-guard` `rbac_check` 모드 호출 (action: `act.start`, target: queue.target.scope_id).
    - act 의 RBAC 정책: process_owner / qmr / admin 만 허용 (auditor·executor 는 deny).
 A-3. 큐의 source / target / rationale / recommendation 추출.
-A-4. trace_id 생성 (`run-c` + 8자 hex). `.claude/runs/{trace_id}/state.yaml` 초기화.
+A-4. trace_id 생성 (`run-c` + 8자 hex). `{RUNS}/{trace_id}/state.yaml` 초기화.
 A-5. 큐 status: pending → in_progress 전환 + dispatched_at 채움 (이미 dispatched 면 그대로).
 
 #### Phase B. rca-analyzer 위임 (근본 원인 분석)
@@ -130,7 +136,7 @@ B-1. `rca-analyzer` 호출:
 - trace_id
 
 [출력]
-- .claude/runs/{trace_id}/root_cause.yaml
+- {RUNS}/{trace_id}/root_cause.yaml
   └ method, why_chain[] (5why 의 경우 5단계 trace), causes[] (Fishbone 의 6 카테고리), root_cause_summary, evidence_refs[]
 - trace.jsonl rca_started ~ rca_done
 ```
@@ -143,7 +149,7 @@ C-1. `revision-planner` 호출:
 - queue_data, root_cause_path, trace_id
 
 [출력]
-- .claude/runs/{trace_id}/revision_plan.yaml
+- {RUNS}/{trace_id}/revision_plan.yaml
   └ revision_scope (POL/PRO/WI/TMP/EX 식별), rebuild_mode (--from design|write|restart),
     estimated_impact (low/medium/high), affected_assets[], recommended_actions[]
 ```
@@ -180,9 +186,9 @@ E-2. `act-coordinator` 호출:
 - options: { dry_run, no_mat001_update }
 
 [출력]
-- inputs/04_AsIs/queue-q{hex}.md (신규 As-Is 입력 파일)
-- vault/90_MAT_통합매핑/MAT-001_문서관리대장.md (Edit, §"개정 이력" 또는 신규 섹션 추가)
-- .claude/queues/process-act/queue-q*.yaml (Edit, status: done + done_capa_rec: As-Is 파일 식별)
+- {INPUTS}/04_AsIs/queue-q{hex}.md (신규 As-Is 입력 파일)
+- {VAULT}/90_MAT_통합매핑/MAT-001_문서관리대장.md (Edit, §"개정 이력" 또는 신규 섹션 추가)
+- {QUEUES}/process-act/queue-q*.yaml (Edit, status: done + done_capa_rec: As-Is 파일 식별)
 - state.yaml status: completed + final_asis_path + finalized_at
 - trace.jsonl 마지막 라인 act_finalized
 ```
@@ -224,7 +230,7 @@ TR-2. revision_plan 의 `recommended_actions[]` 명령들을 stdout 출력 (실�
 
   /process-plan CMMI-DEV-ML3 --from write --target PRO-CMMI-04-01
 
-  As-Is 입력 파일: inputs/04_AsIs/queue-qa1b2c3d4.md
+  As-Is 입력 파일: {INPUTS}/04_AsIs/queue-qa1b2c3d4.md
   영향 자산: PRO-CMMI-04-01 v1.0 → v1.1 (예상)
   관련 큐: queue-qa1b2c3d4 (NCR-001 / F-001 종결 추적)
 
@@ -242,7 +248,7 @@ S-1. trace 의 state.yaml + RCA 요약 + revision plan 요약 + PCB 승인 상�
 
 ### 2-F. `list` 모드
 
-L-1. `Glob ".claude/runs/run-c*/state.yaml"` 전수 스캔.
+L-1. `Glob "{RUNS}/run-c*/state.yaml"` 전수 스캔.
 L-2. `--status` 필터 적용 후 표 stdout (trace_id / queue_id / status / 마지막 갱신 / scope_id).
 
 ---
@@ -251,7 +257,7 @@ L-2. `--status` 필터 적용 후 표 stdout (trace_id / queue_id / status / 마
 
 ### 3-1. 디렉터리 구조
 ```
-.claude/runs/{trace_id}/
+{RUNS}/{trace_id}/
 ├── state.yaml           ← 차원 4 사이클 상태 (재개·PCB 대기)
 ├── trace.jsonl          ← 입력·LLM 분석·PCB 응답 전수 로그
 ├── root_cause.yaml      ← rca-analyzer 산출
@@ -264,7 +270,7 @@ L-2. `--status` 필터 적용 후 표 stdout (trace_id / queue_id / status / 마
 trace_id: run-cxxxxxxxx
 kind: act                                # audit/kpi/process-act 구분
 queue_id: queue-qa1b2c3d4
-queue_path: .claude/queues/process-act/queue-qa1b2c3d4.yaml
+queue_path: {QUEUES}/process-act/queue-qa1b2c3d4.yaml
 queue_kind: ncr_capa                     # 큐의 kind 인용
 priority: critical                       # 큐의 priority 인용
 status: running | pending_pcb_approval | pcb_approved | completed | rejected | aborted
@@ -335,10 +341,10 @@ related_ncr: REC-NCR-04-01-2026-001       # 큐가 NCR 큐일 때
 ## 5. 안전 가드
 
 - 본 커맨드 실행 중 다음 외 어떤 파일도 **수정하지 않는다**:
-  - `inputs/04_AsIs/queue-q*.md` (신규)
-  - `vault/90_MAT_통합매핑/MAT-001_문서관리대장.md` (Edit, §개정 이력 만)
-  - `.claude/queues/process-act/queue-q*.yaml` (Edit, status / done_* 만)
-  - `.claude/runs/{trace_id}/*` (전체)
+  - `{INPUTS}/04_AsIs/queue-q*.md` (신규)
+  - `{VAULT}/90_MAT_통합매핑/MAT-001_문서관리대장.md` (Edit, §개정 이력 만)
+  - `{QUEUES}/process-act/queue-q*.yaml` (Edit, status / done_* 만)
+  - `{RUNS}/{trace_id}/*` (전체)
 - POL/PRO/WI/TMP/EX/REC/MAT-002~008 모두 보호.
 - 차원 1 재트리거 (`/process-plan`) 는 **본 커맨드가 직접 실행 안 함** — 명령만 stdout. 사용자가 별도 권한·자원 검증 후 실행.
 
@@ -349,9 +355,9 @@ related_ncr: REC-NCR-04-01-2026-001       # 큐가 NCR 큐일 때
 ### 6-1. start 종료 시 (auto_approve=false → pending_pcb_approval)
 ```
 🔧 차원 4 사이클 시작 — queue-qa1b2c3d4 (NCR-001 critical)
-📁 RCA: .claude/runs/run-c{hex}/root_cause.yaml
-📁 Revision plan: .claude/runs/run-c{hex}/revision_plan.yaml (PRO-CMMI-04-01, --from write, impact: medium)
-📋 PCB 승인 요청서: .claude/runs/run-c{hex}/pcb_request.md
+📁 RCA: {RUNS}/run-c{hex}/root_cause.yaml
+📁 Revision plan: {RUNS}/run-c{hex}/revision_plan.yaml (PRO-CMMI-04-01, --from write, impact: medium)
+📋 PCB 승인 요청서: {RUNS}/run-c{hex}/pcb_request.md
 👤 actor: dongseok (role: process_owner)
 ⏸ PCB 승인 대기
 
@@ -363,7 +369,7 @@ related_ncr: REC-NCR-04-01-2026-001       # 큐가 NCR 큐일 때
 ### 6-2. approve 종료 시 (completed)
 ```
 ✅ 차원 4 사이클 완료 — queue-qa1b2c3d4
-📁 As-Is 입력: inputs/04_AsIs/queue-qa1b2c3d4.md
+📁 As-Is 입력: {INPUTS}/04_AsIs/queue-qa1b2c3d4.md
 📋 MAT-001 §"개정 이력" 1행 append (PRO-CMMI-04-01 v1.0 → v1.1 예정)
 🔄 큐 status: in_progress → done (capa: 본 As-Is 파일)
 🔍 trace_id: run-c{hex} (status=completed)

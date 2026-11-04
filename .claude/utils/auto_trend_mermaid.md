@@ -107,7 +107,7 @@ D-Trend-8. trace.jsonl 에 `trend_diagrams_generated` 이벤트.
 ## 6. 외부 BI 연동 (Phase 5+)
 
 - Mermaid 는 가독성 한계 (8 round 이상). Phase 5+ 외부 BI (Grafana, Metabase) 연동 검토.
-- 데이터 소스: MAT-008 §회차 시계열 표 + .claude/runs/run-k*/kpi_data.yaml.
+- 데이터 소스: MAT-008 §회차 시계열 표 + {RUNS}/run-k*/kpi_data.yaml.
 - 외부 BI hook: `extensions.external_bi` (policy.yaml 신규 섹션 — Phase 5).
 
 ## 7. PoC 적용 시점

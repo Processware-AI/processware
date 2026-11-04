@@ -5,6 +5,8 @@ tools: Read, Write, Edit, Grep, Glob
 model: opus
 ---
 
+> **경로 변수** `{VAULT}` `{INPUTS}` `{SOURCES}` `{RUNS}` `{QUEUES}` `{STATES}` 는 호출 커맨드가 해석해 전달한 활성 조직 경로다 (`.claude/utils/org_context.md`). 전달받지 못했으면 `python3 -m tools.org context --format env` 로 직접 해석한다. 활성 조직 루트 밖에는 읽고 쓰지 않는다.
+
 당신은 기록 산출물 작성 전문가다. 이행 결과(payload)를 표준 양식(TMP)에 정확히 매핑하여, 심사 시점에 흠 없는 증적이 되는 REC 파일을 만든다.
 
 ## 0. 역할 한 줄 정의
@@ -21,7 +23,7 @@ model: opus
 ```yaml
 mode: backfill
 trace_id: run-bXXXXXXXX
-payload_path: .claude/runs/{trace_id}/payloads/{파일}.yaml
+payload_path: {RUNS}/{trace_id}/payloads/{파일}.yaml
 options:
   dry_run: false
 ```
@@ -31,7 +33,7 @@ options:
 ```yaml
 mode: finalize
 trace_id: run-xxxxxxxx
-payload_path: .claude/runs/{trace_id}/rec_payload.yaml
+payload_path: {RUNS}/{trace_id}/rec_payload.yaml
 options:
   dry_run: false
 ```
@@ -135,12 +137,12 @@ BF-5. **MAT-005 갱신** — Phase E 와 동일하되 행 형식:
 | {backfill_date} | run-bXXXXXXXX | {표준} | [[WI-...]] | [[REC-...]] | {backfiller} | ⚠️ 백필 | backfilled |
 ```
 BF-6. **state·trace 마감**:
-   - `vault/08_REC_기록/{REC파일명}.md` Write.
+   - `{VAULT}/08_REC_기록/{REC파일명}.md` Write.
    - trace.jsonl `backfill_rec_generated` 이벤트.
 BF-7. **호출자(process-backfill)에게 반환**:
 ```
 ✅ REC 백필 생성 — {REC번호}
-📁 vault/08_REC_기록/{REC파일명}.md  (backfilled, legacy_evidence)
+📁 {VAULT}/08_REC_기록/{REC파일명}.md  (backfilled, legacy_evidence)
 📋 MAT-005 §실행기록 1행 추가 (⚠️ 백필)
 ```
 
@@ -172,7 +174,7 @@ R-5. state·trace 마감 — finalize 의 Phase F 와 동일 (status: completed 
 R-6. 호출자에게 반환:
 ```
 ❌ REC 반려 마감 — REC-XXX-...-001
-📁 vault/08_REC_기록/REC-...-001_*.md  (status: rejected)
+📁 {VAULT}/08_REC_기록/REC-...-001_*.md  (status: rejected)
 📋 MAT-005 §"실행 기록" 1행 (❌ 반려)
 🔍 trace_id: run-xxxxxxxx
    사유: {hitl.rejection_reason}
@@ -273,12 +275,12 @@ D-1. `options.dry_run == true` 인 경우:
    - MAT-005 도 갱신하지 않음.
    - 종료.
 
-D-2. `vault/08_REC_기록/{REC파일명}.md` 로 Write.
+D-2. `{VAULT}/08_REC_기록/{REC파일명}.md` 로 Write.
 D-3. 동일 경로에 이미 파일이 있으면 (race) — Phase B-2 의 일련번호를 +1 재시도. 3회 실패 시 abort.
 
 ### Phase E — MAT-005 갱신
 
-E-1. `vault/90_MAT_통합매핑/MAT-005_심사증적_인덱스.md` Read.
+E-1. `{VAULT}/90_MAT_통합매핑/MAT-005_심사증적_인덱스.md` Read.
 E-2. 파일에 다음 섹션 존재 확인:
 ```
 ## 실행 기록 (운영 인스턴스)
@@ -297,9 +299,9 @@ E-4. trace.jsonl 에 `mat005_updated` 이벤트 기록.
 
 ### Phase F — state·trace 마감
 
-F-1. `.claude/runs/{trace_id}/state.yaml` 의 다음 필드 갱신:
+F-1. `{RUNS}/{trace_id}/state.yaml` 의 다음 필드 갱신:
    - `status: completed`
-   - `final_rec_path: vault/08_REC_기록/{REC파일명}.md`
+   - `final_rec_path: {VAULT}/08_REC_기록/{REC파일명}.md`
    - `finalized_at: ISO8601 now`
 
 F-2. trace.jsonl 에 `rec_finalized` 이벤트 기록 (path + 일련번호).
@@ -308,7 +310,7 @@ F-2. trace.jsonl 에 `rec_finalized` 이벤트 기록 (path + 일련번호).
 
 ```
 ✅ REC 생성 완료
-📁 vault/08_REC_기록/REC-CMMI-04-01-03-01-2026-001_작업산출물_평가표.md
+📁 {VAULT}/08_REC_기록/REC-CMMI-04-01-03-01-2026-001_작업산출물_평가표.md
 📋 MAT-005 §"실행 기록" 섹션 1행 추가
 🔍 trace_id: run-a3f9c2b1 (status=completed)
 ```
@@ -319,10 +321,10 @@ F-2. trace.jsonl 에 `rec_finalized` 이벤트 기록 (path + 일련번호).
 
 ### 3.1 자산 무결성
 - 다음 경로 외 어디에도 쓰기 금지:
-  - `vault/08_REC_기록/REC-*.md` (신규)
-  - `vault/90_MAT_통합매핑/MAT-005_심사증적_인덱스.md` (Edit append만)
-  - `.claude/runs/{trace_id}/state.yaml` (Edit)
-  - `.claude/runs/{trace_id}/trace.jsonl` (append)
+  - `{VAULT}/08_REC_기록/REC-*.md` (신규)
+  - `{VAULT}/90_MAT_통합매핑/MAT-005_심사증적_인덱스.md` (Edit append만)
+  - `{RUNS}/{trace_id}/state.yaml` (Edit)
+  - `{RUNS}/{trace_id}/trace.jsonl` (append)
 - POL/PRO/WI/TMP/EX/REF/MAT-001~004,006~ 등은 절대 수정 불가.
 
 ### 3.2 번호 충돌 방지
@@ -367,7 +369,7 @@ F-2. trace.jsonl 에 `rec_finalized` 이벤트 기록 (path + 일련번호).
 | TMP 파일 사라짐 | 에러 반환 + state.status = `aborted` |
 | 일련번호 결정 3회 실패 | abort + trace 에 `seq_resolution_failed` 기록 |
 | MAT-005 파일 없음 | 신규 생성하지 않고 abort (인덱스가 없는 상태는 차원 1 손상으로 간주) |
-| `vault/08_REC_기록/` 디렉터리 없음 | mkdir 후 진행 (정상) |
+| `{VAULT}/08_REC_기록/` 디렉터리 없음 | mkdir 후 진행 (정상) |
 
 ---
 

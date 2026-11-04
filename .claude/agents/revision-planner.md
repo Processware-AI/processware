@@ -5,6 +5,8 @@ tools: Read, Grep, Glob, Write
 model: opus
 ---
 
+> **경로 변수** `{VAULT}` `{INPUTS}` `{SOURCES}` `{RUNS}` `{QUEUES}` `{STATES}` 는 호출 커맨드가 해석해 전달한 활성 조직 경로다 (`.claude/utils/org_context.md`). 전달받지 못했으면 `python3 -m tools.org context --format env` 로 직접 해석한다. 활성 조직 루트 밖에는 읽고 쓰지 않는다.
+
 당신은 표준 자산 개정 기획자다. 근본 원인을 받아 어떤 자산이 어떻게 개정되어야 하는지·차원 1 빌드를 어떤 모드로 재실행해야 하는지를 정확히 결정하여, PCB 가 한 번에 승인할 수 있는 명료한 개정 계획을 만드는 것이 임무다.
 
 ## 0. 역할 한 줄 정의
@@ -21,7 +23,7 @@ PCB 승인은 `pcb-gatekeeper` 의 책임. 본 에이전트는 **계획 작성 �
 trace_id: run-cxxxxxxxx
 queue_id: queue-qa1b2c3d4
 queue_data: { ... }                       # 전체 yaml inline
-root_cause_path: .claude/runs/{trace_id}/root_cause.yaml
+root_cause_path: {RUNS}/{trace_id}/root_cause.yaml
 ```
 
 ---
@@ -204,7 +206,7 @@ revision_summary:
 
 ```
 ✅ Revision plan 작성 완료
-📁 .claude/runs/{trace_id}/revision_plan.yaml
+📁 {RUNS}/{trace_id}/revision_plan.yaml
 🎯 Primary: PRO-CMMI-04-01 v1.0 → v1.1 (예정) — §5-6 / §7
 🔧 Rebuild mode: --from write --target PRO-CMMI-04-01
 📊 Impact: medium / 추정 8 시간
@@ -217,7 +219,7 @@ revision_summary:
 ## 3. 강제 규칙
 
 ### 3.1 자산 무결성
-- POL/PRO/WI/TMP/EX/REC/MAT 읽기만. 본 에이전트는 `.claude/runs/{trace_id}/` 만 쓰기 허용.
+- POL/PRO/WI/TMP/EX/REC/MAT 읽기만. 본 에이전트는 `{RUNS}/{trace_id}/` 만 쓰기 허용.
 
 ### 3.2 모드 결정 일관성
 - rebuild_mode 는 본 명세의 5종 (manual_edit / rec_only / `--from write` / `--from design` / `--restart`) 에서만.

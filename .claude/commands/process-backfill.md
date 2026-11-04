@@ -12,24 +12,30 @@ argument-hint: "<파일|폴더> [--wi WI-XX] [--backfiller <이름>] [--date YYY
 
 ---
 
-## 조직 컨텍스트 (공통 — org-layer §3 단계 1)
+## 조직 컨텍스트 (공통 — org-layer §3 단계 1·2)
 
-본 커맨드의 모든 vault · inputs · sources · runs · queues · states 경로는 **활성 조직 루트** 기준으로 해석한다. 규약 전문: `.claude/utils/org_context.md`
+본 문서와 에이전트 정의의 경로 변수는 **활성 조직 루트** 기준이다. 규약 전문: `.claude/utils/org_context.md`
 
-1. 진입 직후 1회 해석한다. 인자 `--org-root <path>` > `--org <id>` > 환경변수 `PROCESSWARE_ORG_ROOT` > `PROCESSWARE_ORG` > **fallback: default 조직(플랫폼 repo 의 `vault/`)**.
+| 변수 | 의미 | default 모드 (미설정) | 조직 모드 |
+|---|---|---|---|
+| `{VAULT}` | Obsidian vault | `vault/` | `{ORG_ROOT}/vault/` |
+| `{INPUTS}` · `{SOURCES}` | ingest 산출물 · 원본 파일 | `inputs/` · `sources/` | `{ORG_ROOT}/inputs/` · `sources/` |
+| `{RUNS}` · `{QUEUES}` · `{STATES}` | 실행 trace · 인계 큐 · 체크포인트 | `.claude/runs|queues|states/` | `{ORG_ROOT}/.processware/runs|queues|states/` |
+
+1. 진입 직후 1회 해석한다. 인자 `--org-root <path>` > `--org <id>` > 환경변수 `PROCESSWARE_ORG_ROOT` > `PROCESSWARE_ORG` > **fallback: default 조직(플랫폼 repo)**.
    ```bash
    python3 -m tools.org context --format env [--org <id> | --org-root <path>]
    ```
-   exit ≠ 0 이면 즉시 중단하고 stderr 를 사용자에게 보여준다. 성공 시 `조직: {id} ({mode}) · 루트: {root}` 1줄을 출력하고 trace 첫 이벤트에 `org_id` · `org_root` · `org_source` 를 기록한다.
-2. **경로 치환 (단계 2 완료 전 임시)**: 본 문서와 에이전트 정의의 `vault/…` → `{PROCESSWARE_VAULT}/…`, `inputs/…` → `{PROCESSWARE_INPUTS}/…`, `sources/…` → `{PROCESSWARE_SOURCES}/…`, `.claude/runs|queues|states/…` → `{PROCESSWARE_RUNS|QUEUES|STATES}/…` 로 읽는다. 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`) 은 치환하지 않는다.
-3. 활성 조직 루트 밖에는 읽고 쓰지 않는다. `--org`/`--org-root` 는 다른 모드 인자와 함께 어느 위치에나 올 수 있다.
+   exit ≠ 0 이면 즉시 중단하고 stderr 를 사용자에게 보여준다. 성공 시 `PROCESSWARE_VAULT` → `{VAULT}` 등으로 변수를 바인딩하고, `조직: {id} ({mode}) · 루트: {root}` 1줄을 출력하며, trace 첫 이벤트에 `org_id` · `org_root` · `org_source` 를 기록한다.
+2. 에이전트에 위임할 때 바인딩된 변수 값을 프롬프트 첫머리에 그대로 전달한다 (에이전트는 전달받은 값을 쓰고, 없을 때만 직접 해석).
+3. `--org-root` 로 받은 값은 하위 `python3 -m tools.*` 호출 전에 `PROCESSWARE_ORG_ROOT` 로 export 한다. 활성 조직 루트 밖에는 읽고 쓰지 않는다. 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`) 은 변수화 대상이 아니다.
 
 ---
 
 ## 0. 실행 원칙
 
 - **기존 자산 절대 수정 금지**: POL/PRO/WI/TMP/EX/MAT 파일 읽기 전용.
-- **REC 만 신규 생성**: `vault/08_REC_기록/` 에만 쓴다.
+- **REC 만 신규 생성**: `{VAULT}/08_REC_기록/` 에만 쓴다.
 - **legacy_evidence 명시**: 모든 백필 REC 의 frontmatter 에 `status: backfilled` + `verdict_type: legacy_evidence` 기록.
 - **75% 임계값**: confidence < 75% 는 ⚠️ 경고 표시 + 사람 확정 필수.
 - **매칭 불가 파일**: ❌ 표시 후 제외. 강제 진행하지 않는다.
@@ -42,12 +48,12 @@ argument-hint: "<파일|폴더> [--wi WI-XX] [--backfiller <이름>] [--date YYY
 ### 1-1. `start` 모드
 
 ```
-/process-backfill sources/old_docs/                        # 배치 (폴더)
-/process-backfill sources/sprint_review.docx               # 단건
-/process-backfill sources/old_docs/ --backfiller "홍길동" --date 2026-03
-/process-backfill sources/old.docx --wi WI-CMMI-04-01-03   # 단건 + 수동 WI 지정
-/process-backfill sources/scan.pdf --ocr                   # 스캔본 PDF OCR 처리
-/process-backfill sources/old_docs/ --ocr --dry-run        # 스캔본 포함 폴더 미리보기
+/process-backfill {SOURCES}/old_docs/                        # 배치 (폴더)
+/process-backfill {SOURCES}/sprint_review.docx               # 단건
+/process-backfill {SOURCES}/old_docs/ --backfiller "홍길동" --date 2026-03
+/process-backfill {SOURCES}/old.docx --wi WI-CMMI-04-01-03   # 단건 + 수동 WI 지정
+/process-backfill {SOURCES}/scan.pdf --ocr                   # 스캔본 PDF OCR 처리
+/process-backfill {SOURCES}/old_docs/ --ocr --dry-run        # 스캔본 포함 폴더 미리보기
 ```
 
 `--wi` 는 단건 전용. 폴더 배치 시 `--wi` 지정은 무시하고 자동 매칭 적용.
@@ -69,7 +75,7 @@ trace 진행 상태·결과 조회.
 
 ### 1-5. `list` 모드 — `/process-backfill --list`
 
-`.claude/runs/run-b*/state.yaml` Glob → 백필 이력 테이블 출력.
+`{RUNS}/run-b*/state.yaml` Glob → 백필 이력 테이블 출력.
 
 ---
 
@@ -81,7 +87,7 @@ trace 진행 상태·결과 조회.
 1-2. 단건인 경우: 해당 파일 1건 목록.  
 1-3. 지원 확장자 외 파일은 목록에서 제외하고 로그.  
 1-4. trace_id 생성: `run-b{8자리 hex}`.  
-1-5. `.claude/runs/{trace_id}/state.yaml` 초기화:
+1-5. `{RUNS}/{trace_id}/state.yaml` 초기화:
 
 ```yaml
 trace_id: run-bXXXXXXXX
@@ -103,8 +109,8 @@ files: []             # Phase 1 완료 후 채워짐
 1-7. **scope 추론** (파일별):
    - `--scope` 명시 시: 모든 파일에 해당 값 적용.
    - `--scope` 미지정 + 폴더 입력: 입력 루트 바로 아래 첫 번째 서브폴더명을 scope 레이블로 사용.
-     - 예: `sources/projects/project-A/sprint.docx` → scope: `"project-A"` (입력 루트가 `sources/`인 경우)
-     - 예: `sources/old_docs/2024/Q1/sprint.docx` → scope: `"2024"` (입력 루트가 `sources/old_docs/`인 경우는 `"2024"`)
+     - 예: `{SOURCES}/projects/project-A/sprint.docx` → scope: `"project-A"` (입력 루트가 `{SOURCES}/`인 경우)
+     - 예: `{SOURCES}/old_docs/2024/Q1/sprint.docx` → scope: `"2024"` (입력 루트가 `{SOURCES}/old_docs/`인 경우는 `"2024"`)
      실제로는 입력 루트 바로 아래 첫 번째 디렉토리명을 사용.
    - `--scope` 미지정 + 단건 입력: scope: `"(미지정)"`.
    - 추론된 scope 는 `files[].scope` 에 기록. HITL Phase 4 에서 사용자가 수정 가능.
@@ -141,11 +147,11 @@ files: []             # Phase 1 완료 후 채워짐
   ```bash
   ocrmypdf --force-ocr -l kor+eng \
     <원본_스캔본.pdf> \
-    .claude/runs/{trace_id}/ocr/<원본_스캔본_ocr.pdf>
+    {RUNS}/{trace_id}/ocr/<원본_스캔본_ocr.pdf>
   ```
   - `-l kor+eng`: 한국어 + 영어 동시 인식.
   - `--force-ocr`: 혼합 PDF (텍스트+이미지) 전체 재인식.
-  - OCR 임시 파일은 `.claude/runs/{trace_id}/ocr/` 에만 저장. `sources/` 에는 절대 쓰지 않는다.
+  - OCR 임시 파일은 `{RUNS}/{trace_id}/ocr/` 에만 저장. `{SOURCES}/` 에는 절대 쓰지 않는다.
 
   2-OCR-3. OCR'd PDF에서 텍스트 재추출. 여전히 100자 미만이면:
   ```
@@ -156,21 +162,21 @@ files: []             # Phase 1 완료 후 채워짐
 
   2-OCR-4. OCR 성공 파일: `files[].ocr_processed: true` 마킹.
 
-2-3. 추출 결과를 `sources/legacy/{상대경로}.md` 에 저장. 상대경로는 입력 루트 기준으로 계산한다.
+2-3. 추출 결과를 `{SOURCES}/legacy/{상대경로}.md` 에 저장. 상대경로는 입력 루트 기준으로 계산한다.
 
   **경로 계산 규칙**:
   - 폴더 입력: 입력 루트(`source_path`)를 기준으로 상대경로 보존.
-    - 예: 입력 `sources/old_docs/`, 파일 `sources/old_docs/2024/Q1/sprint.docx`
-    - → `sources/legacy/2024/Q1/sprint.md`
+    - 예: 입력 `{SOURCES}/old_docs/`, 파일 `{SOURCES}/old_docs/2024/Q1/sprint.docx`
+    - → `{SOURCES}/legacy/2024/Q1/sprint.md`
   - 단건 입력: 파일명만 사용.
-    - 예: 입력 `sources/sprint.docx` → `sources/legacy/sprint.md`
+    - 예: 입력 `{SOURCES}/sprint.docx` → `{SOURCES}/legacy/sprint.md`
   - 중간 디렉토리는 자동 생성한다.
 
   **MD 형식 (Obsidian 호환)**:
 
   ```markdown
   ---
-  source_doc: sources/{원본파일명}
+  source_doc: {SOURCES}/{원본파일명}
   source_hash: sha256:<hash>
   extracted_at: "<ISO8601>"
   scope: "<--scope 값 또는 경로 자동 추론 결과>"
@@ -208,13 +214,13 @@ files: []             # Phase 1 완료 후 채워짐
 3-1. `backfill-matcher` 에이전트 위임:
 ```yaml
 trace_id: run-bXXXXXXXX
-legacy_dir: sources/legacy/
+legacy_dir: {SOURCES}/legacy/
 forced_wi: <--wi 값 또는 null>
 confidence_threshold: 75
 scope_explicit: <--scope 값 또는 null>
 ```
 
-3-2. backfill-matcher 가 반환한 `mapping_draft.yaml` 을 `.claude/runs/{trace_id}/` 에 저장.  
+3-2. backfill-matcher 가 반환한 `mapping_draft.yaml` 을 `{RUNS}/{trace_id}/` 에 저장.  
 3-3. state.yaml `last_phase: match` 갱신.
 
 ### Phase 4 — HITL
@@ -269,7 +275,7 @@ No. 파일                              scope      그룹   추천 WI           
 ```
 ✅ 매핑 확정 — {n}건 진행, {m}건 제외
 
-📂 sources/legacy/ 에 추출된 MD 파일이 생성되었습니다.
+📂 {SOURCES}/legacy/ 에 추출된 MD 파일이 생성되었습니다.
    Obsidian 에서 내용을 검토·수정한 후 아래 명령으로 계속 진행하세요.
    (수정 없이 그대로 진행해도 됩니다.)
 
@@ -283,37 +289,37 @@ state.yaml `status: pending_hitl_confirmation` 으로 정지.
 5-1. `mapping_draft.yaml` 의 `groups[]` 를 기준으로 순회 (파일 단위 아닌 그룹 단위).
 5-2. 각 그룹의 WI 의 TMP 읽기.
 5-3. **그룹별 TMP 필드 병합 (LLM)**:
-   - **primary 파일 먼저**: `sources/legacy/{primary 경로}.md` 에서 TMP 전 필드 추출.
+   - **primary 파일 먼저**: `{SOURCES}/legacy/{primary 경로}.md` 에서 TMP 전 필드 추출.
      - frontmatter `metadata` (date/author/approver) 우선.
      - 필드명·섹션명과 MD 본문·표 대조.
    - **supplementary 파일 순차 보완**: primary 에서 `"(원본 미확인)"` 인 필드만 대상.
      - confidence 높은 순서로 시도.
      - 값 발견 시 채움 + `source: {파일명}` 주석 기록.
    - 최종적으로도 미확인인 필드: `"(원본 미확인)"` 유지.
-5-4. 그룹별 `backfill_payload.yaml` 을 `.claude/runs/{trace_id}/payloads/` 에 저장:
+5-4. 그룹별 `backfill_payload.yaml` 을 `{RUNS}/{trace_id}/payloads/` 에 저장:
 
 ```yaml
 group_id: G1
 is_group: true           # 단일 파일 싱글턴은 false
 wi_id: WI-CMMI-04-01-03
-wi_path: vault/05_WI_업무지침/WI-CMMI-04-01-03_*.md
+wi_path: {VAULT}/05_WI_업무지침/WI-CMMI-04-01-03_*.md
 tmp_id: TMP-CMMI-04-01-03-01
-tmp_path: vault/06_TMP_템플릿/TMP-CMMI-04-01-03-01_*.md
+tmp_path: {VAULT}/06_TMP_템플릿/TMP-CMMI-04-01-03-01_*.md
 backfiller: 홍길동
 backfill_date: "2026-03"
 scope: "project-A"
 source_primary:
-  doc: sources/legacy/sprint-01/review.md
-  source_doc: sources/sprint-01/review.docx
+  doc: {SOURCES}/legacy/sprint-01/review.md
+  source_doc: {SOURCES}/sprint-01/review.docx
   hash: sha256:<hash>
   confidence: 87
 sources_supplementary:
-  - doc: sources/legacy/sprint-01/eval.md
-    source_doc: sources/sprint-01/eval.xlsx
+  - doc: {SOURCES}/legacy/sprint-01/eval.md
+    source_doc: {SOURCES}/sprint-01/eval.xlsx
     hash: sha256:<hash>
     confidence: 85
-  - doc: sources/legacy/sprint-01/sign_off.md
-    source_doc: sources/sprint-01/sign_off.pdf
+  - doc: {SOURCES}/legacy/sprint-01/sign_off.md
+    source_doc: {SOURCES}/sprint-01/sign_off.pdf
     hash: sha256:<hash>
     confidence: 78
 fields:
@@ -330,7 +336,7 @@ fields:
 ```yaml
 mode: backfill
 trace_id: run-bXXXXXXXX
-payload_path: .claude/runs/{trace_id}/payloads/{group_id}.yaml
+payload_path: {RUNS}/{trace_id}/payloads/{group_id}.yaml
 options:
   dry_run: <--dry-run 여부>
 ```
@@ -358,8 +364,8 @@ options:
 ✅ REC 백필 완료 — run-bXXXXXXXX
 
 📁 생성된 REC ({n}건):
-   vault/08_REC_기록/REC-CMMI-04-01-03-01-2026-001_작업산출물_평가표.md  (backfilled)
-   vault/08_REC_기록/REC-CMMI-04-01-05-01-2026-001_동료검토_결과표.md   (backfilled)
+   {VAULT}/08_REC_기록/REC-CMMI-04-01-03-01-2026-001_작업산출물_평가표.md  (backfilled)
+   {VAULT}/08_REC_기록/REC-CMMI-04-01-05-01-2026-001_동료검토_결과표.md   (backfilled)
 
 ❌ 제외 ({m}건):
    meeting_kick_off.docx — 매칭 불가
@@ -385,8 +391,8 @@ options:
 
 ## 5. 강제 규칙
 
-- 쓰기 허용 경로: `sources/legacy/` (추출 MD), `vault/08_REC_기록/` (REC), `vault/90_MAT_통합매핑/MAT-005_*.md` (인덱스). 그 외 쓰기 금지.
-- OCR 임시 PDF는 `.claude/runs/{trace_id}/ocr/` 에만 저장. OCR'd PDF를 `sources/` 에 직접 쓰지 않는다.
+- 쓰기 허용 경로: `{SOURCES}/legacy/` (추출 MD), `{VAULT}/08_REC_기록/` (REC), `{VAULT}/90_MAT_통합매핑/MAT-005_*.md` (인덱스). 그 외 쓰기 금지.
+- OCR 임시 PDF는 `{RUNS}/{trace_id}/ocr/` 에만 저장. OCR'd PDF를 `{SOURCES}/` 에 직접 쓰지 않는다.
 - 매칭 불가 파일은 절대 강제 진행하지 않는다.
 - `verdict_type: legacy_evidence` 누락 금지 — 백필 REC 임을 항상 명시.
 - source_hash 기록 필수 — 원본 문서 추적성 보장.

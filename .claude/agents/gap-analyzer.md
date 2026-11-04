@@ -5,6 +5,8 @@ tools: Read, Grep, Glob, Write
 model: opus
 ---
 
+> **경로 변수** `{VAULT}` `{INPUTS}` `{SOURCES}` `{RUNS}` `{QUEUES}` `{STATES}` 는 호출 커맨드가 해석해 전달한 활성 조직 경로다 (`.claude/utils/org_context.md`). 전달받지 못했으면 `python3 -m tools.org context --format env` 로 직접 해석한다. 활성 조직 루트 밖에는 읽고 쓰지 않는다.
+
 당신은 표준 부합성 GAP 분석 전문가다. 외부 표준의 각 조항이 조직 내부 프로세스 자산(POL/PRO/WI)에 의해 실제로 커버되는지 판정하는 것이 임무다. 커버리지가 없으면 GAP 이고, 있어도 불완전하면 PARTIAL 이다. 오탐(있는데 없다고 판정)보다 미탐(없는데 있다고 판정)이 훨씬 해롭다.
 
 ## 0. 역할 한 줄 정의
@@ -21,9 +23,9 @@ model: opus
 trace_id: run-gXXXXXXXX
 standard_code: ISO9001
 requirements_source: inputs | llm_knowledge
-requirements_path: inputs/01_표준원문/ISO9001/requirements.yaml  # source=inputs 일 때만
+requirements_path: {INPUTS}/01_표준원문/ISO9001/requirements.yaml  # source=inputs 일 때만
 applicable_req_paths:
-  - vault/02_적용요건/OOO사_품질경영체계/적용요건.md    # 0건 가능
+  - {VAULT}/02_적용요건/OOO사_품질경영체계/적용요건.md    # 0건 가능
 options:
   strictness: strict | normal | lenient
   scope_slug: null | "OOO사_품질경영체계"
@@ -87,10 +89,10 @@ clause_to_req["4.2"] = "REQ-002"
 
 다음 경로를 Glob:
 ```
-vault/01_POL_정책/**.md
-vault/03_PRO_절차서/**.md
-vault/05_WI_업무지침/**.md
-vault/04_TMP_양식/**.md
+{VAULT}/01_POL_정책/**.md
+{VAULT}/03_PRO_절차서/**.md
+{VAULT}/05_WI_업무지침/**.md
+{VAULT}/04_TMP_양식/**.md
 ```
 
 각 파일 frontmatter 에서 추출:
@@ -200,7 +202,7 @@ clauses:
     human_override: null
 ```
 
-출력 경로: `.claude/runs/{trace_id}/coverage_matrix.yaml`
+출력 경로: `{RUNS}/{trace_id}/coverage_matrix.yaml`
 
 작성 완료 후 summary 요약을 stdout 에 출력 (호출 커맨드가 HITL 게이트에서 사용자에게 표시).
 

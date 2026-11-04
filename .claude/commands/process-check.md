@@ -13,28 +13,34 @@ argument-hint: "start <PRO|WI|범위> --auditor \"이름\" | --resume <trace_id>
 
 ---
 
-## 조직 컨텍스트 (공통 — org-layer §3 단계 1)
+## 조직 컨텍스트 (공통 — org-layer §3 단계 1·2)
 
-본 커맨드의 모든 vault · inputs · sources · runs · queues · states 경로는 **활성 조직 루트** 기준으로 해석한다. 규약 전문: `.claude/utils/org_context.md`
+본 문서와 에이전트 정의의 경로 변수는 **활성 조직 루트** 기준이다. 규약 전문: `.claude/utils/org_context.md`
 
-1. 진입 직후 1회 해석한다. 인자 `--org-root <path>` > `--org <id>` > 환경변수 `PROCESSWARE_ORG_ROOT` > `PROCESSWARE_ORG` > **fallback: default 조직(플랫폼 repo 의 `vault/`)**.
+| 변수 | 의미 | default 모드 (미설정) | 조직 모드 |
+|---|---|---|---|
+| `{VAULT}` | Obsidian vault | `vault/` | `{ORG_ROOT}/vault/` |
+| `{INPUTS}` · `{SOURCES}` | ingest 산출물 · 원본 파일 | `inputs/` · `sources/` | `{ORG_ROOT}/inputs/` · `sources/` |
+| `{RUNS}` · `{QUEUES}` · `{STATES}` | 실행 trace · 인계 큐 · 체크포인트 | `.claude/runs|queues|states/` | `{ORG_ROOT}/.processware/runs|queues|states/` |
+
+1. 진입 직후 1회 해석한다. 인자 `--org-root <path>` > `--org <id>` > 환경변수 `PROCESSWARE_ORG_ROOT` > `PROCESSWARE_ORG` > **fallback: default 조직(플랫폼 repo)**.
    ```bash
    python3 -m tools.org context --format env [--org <id> | --org-root <path>]
    ```
-   exit ≠ 0 이면 즉시 중단하고 stderr 를 사용자에게 보여준다. 성공 시 `조직: {id} ({mode}) · 루트: {root}` 1줄을 출력하고 trace 첫 이벤트에 `org_id` · `org_root` · `org_source` 를 기록한다.
-2. **경로 치환 (단계 2 완료 전 임시)**: 본 문서와 에이전트 정의의 `vault/…` → `{PROCESSWARE_VAULT}/…`, `inputs/…` → `{PROCESSWARE_INPUTS}/…`, `sources/…` → `{PROCESSWARE_SOURCES}/…`, `.claude/runs|queues|states/…` → `{PROCESSWARE_RUNS|QUEUES|STATES}/…` 로 읽는다. 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`) 은 치환하지 않는다.
-3. 활성 조직 루트 밖에는 읽고 쓰지 않는다. `--org`/`--org-root` 는 다른 모드 인자와 함께 어느 위치에나 올 수 있다.
+   exit ≠ 0 이면 즉시 중단하고 stderr 를 사용자에게 보여준다. 성공 시 `PROCESSWARE_VAULT` → `{VAULT}` 등으로 변수를 바인딩하고, `조직: {id} ({mode}) · 루트: {root}` 1줄을 출력하며, trace 첫 이벤트에 `org_id` · `org_root` · `org_source` 를 기록한다.
+2. 에이전트에 위임할 때 바인딩된 변수 값을 프롬프트 첫머리에 그대로 전달한다 (에이전트는 전달받은 값을 쓰고, 없을 때만 직접 해석).
+3. `--org-root` 로 받은 값은 하위 `python3 -m tools.*` 호출 전에 `PROCESSWARE_ORG_ROOT` 로 export 한다. 활성 조직 루트 밖에는 읽고 쓰지 않는다. 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`) 은 변수화 대상이 아니다.
 
 ---
 
 ## 0. 실행 원칙
 
 - **자산은 읽기 전용**: POL/PRO/WI/TMP/EX/REC/MAT-001~005,007 은 본 커맨드가 절대 수정하지 않는다.
-- **신규 산출물만 생성**: 심사 보고서·부적합 → `vault/08_REC_기록/AUDIT/REC-AUDIT-*.md` 와 `vault/08_REC_기록/AUDIT/REC-NCR-*.md` (Phase 2). NCR 관리대장은 `vault/90_MAT_통합매핑/MAT-009_NCR_관리대장.md` (Phase 2).
+- **신규 산출물만 생성**: 심사 보고서·부적합 → `{VAULT}/08_REC_기록/AUDIT/REC-AUDIT-*.md` 와 `{VAULT}/08_REC_기록/AUDIT/REC-NCR-*.md` (Phase 2). NCR 관리대장은 `{VAULT}/90_MAT_통합매핑/MAT-009_NCR_관리대장.md` (Phase 2).
 - **MAT-005 §심사 이력 만 갱신**: 차원 2 가 §실행 기록 을 누적하듯, 차원 3 은 §심사 이력 섹션에 1행 append.
 - **독립성 강제 (ISO 9.2)**: `/process-check start` 진입 시 `--auditor` 이름과 대상 trace 들의 `executed_by` 가 1건이라도 일치하면 즉시 abort. PoC 한정 `--override-independence` 만 허용 (Phase 1 만, Phase 4 에서 제거).
 - **대화는 차원 2 보다 적다**: 차원 3 은 "사후 검토" 라 사람과의 대화는 매트릭스 확정 1회 (HITL gate) + 부적합 등급 조정 (Phase 2) 정도. 차원 2 의 step-by-step 대화 모델과 다르다.
-- **모든 입력·LLM 출력 전수 로그**: `.claude/runs/{trace_id}/trace.jsonl` (심사 증적의 증적).
+- **모든 입력·LLM 출력 전수 로그**: `{RUNS}/{trace_id}/trace.jsonl` (심사 증적의 증적).
 - **환각 방지**: 충족 판정은 REC 본문에 명시된 값·증적 매트릭스의 trace_id 만 근거로 한다. REC 에 없는 값은 임의로 채우지 않는다.
 
 ---
@@ -54,7 +60,7 @@ argument-hint: "start <PRO|WI|범위> --auditor \"이름\" | --resume <trace_id>
 - 첫 인자가 `PRO-` / `WI-` / 표준 코드 패턴이면 직접 매칭.
 - `--auditor` 누락 시 에러 (독립성 강제 위해 필수).
 - `--period` 누락 시 기본값: 지난 분기 (오늘 기준 90일).
-- trace_id 생성 (예: `run-a` + 8자 hex), `.claude/runs/{trace_id}/state.yaml` 초기화.
+- trace_id 생성 (예: `run-a` + 8자 hex), `{RUNS}/{trace_id}/state.yaml` 초기화.
 
 ### 1-2. `resume` 모드 — `/process-check --resume <trace_id>`
 ```
@@ -92,7 +98,7 @@ argument-hint: "start <PRO|WI|범위> --auditor \"이름\" | --resume <trace_id>
 /process-check --list-ncr --status closed --standard CMMI-DEV-ML3
 /process-check --list-ncr --severity critical --overdue        # SLA 기한 경과한 critical NCR
 ```
-→ `vault/90_MAT_통합매핑/MAT-009_NCR_관리대장.md` 의 두 섹션을 Read · 필터 적용 후 표 출력.
+→ `{VAULT}/90_MAT_통합매핑/MAT-009_NCR_관리대장.md` 의 두 섹션을 Read · 필터 적용 후 표 출력.
 - 각 행에 NCR_ID, 등급, 제목, R/A, SLA 기한, 잔여일 (open 만), 상태, 모(母) 심사 wikilink 포함.
 - `--overdue` : open 인 NCR 중 `today > sla_due_date` 인 것.
 - 출력은 stdout (파일 미생성, 미수정).
@@ -121,7 +127,7 @@ KPI 측정·시계열 누적·회귀 탐지를 담당하는 단일 진입점. 4 
   6. 결과 표 stdout (verdict 분포 + alerts 수).
 
 - **`show`** (조회만, 미수정):
-  1. `vault/90_MAT_통합매핑/MAT-008_KPI_대시보드.md` Read.
+  1. `{VAULT}/90_MAT_통합매핑/MAT-008_KPI_대시보드.md` Read.
   2. 해당 표준 섹션의 §회차 시계열 + §회귀 알림 + §결과 요약 출력.
   3. `--round N` 지정 시 그 회차만 (전체는 default).
 
@@ -145,7 +151,7 @@ KPI 측정·시계열 누적·회귀 탐지를 담당하는 단일 진입점. 4 
 ```
 
 **4 subcommand 동작**:
-- `list`: `Glob ".claude/queues/process-act/queue-q*.yaml"` 전수 스캔 + 필터 적용 후 표 stdout.
+- `list`: `Glob "{QUEUES}/process-act/queue-q*.yaml"` 전수 스캔 + 필터 적용 후 표 stdout.
 - `show <queue_id>`: 해당 큐 yaml 본문 stdout.
 - `dispatch <queue_id> --to <이름>`: 큐 status: pending → in_progress, dispatched_to / dispatched_at 채움. RBAC 검증: dispatch 는 process_owner 또는 qmr 권한 필요.
 - `done <queue_id> --capa <REC>`: 큐 status: in_progress → done, done_at / done_capa_rec 채움. 본 큐가 NCR 연계면 NCR 도 자동 close 권장 (별도 `/process-check --close-ncr` 호출 안내).
@@ -225,7 +231,7 @@ A-3. **독립성 가드 (ISO §9.2) — Phase 4 부터 `independence-guard` 정�
    - **추가 RBAC 검증** (Phase 4): independence-guard 를 `rbac_check` 모드로 다시 호출 (action: `audit.start`, target: scope.ids[0]). denied 시 abort.
    - state.yaml 에 `independence: { checked: true, violations: [...], overridden: false, rbac_verdict: allowed }` 기록.
    - trace.jsonl 에 `independence_guard_invoked` + `rbac_check_invoked` 이벤트.
-A-4. trace_id 생성 (`run-a` + 8자 hex 권장 — 차원 2 와 충돌 방지). `.claude/runs/{trace_id}/` 디렉터리 생성 + `state.yaml` 초기화.
+A-4. trace_id 생성 (`run-a` + 8자 hex 권장 — 차원 2 와 충돌 방지). `{RUNS}/{trace_id}/` 디렉터리 생성 + `state.yaml` 초기화.
 
 #### Phase B. audit-planner 위임 (요건 → 체크리스트)
 
@@ -237,7 +243,7 @@ B-1. 서브에이전트 `audit-planner` 호출:
 - options: { strictness }
 
 [출력]
-- .claude/runs/{trace_id}/audit_plan.yaml
+- {RUNS}/{trace_id}/audit_plan.yaml
   └ requirement[] : { req_id, source(PRO/WI), source_section, statement, severity_default, expected_evidence_type }
 - trace.jsonl 1라인/이벤트
 ```
@@ -253,7 +259,7 @@ C-1. 서브에이전트 `evidence-collector` 호출:
 - trace_id
 
 [출력]
-- .claude/runs/{trace_id}/evidence.yaml
+- {RUNS}/{trace_id}/evidence.yaml
   └ rec[] : { rec_id, rec_path, parent_wi, parent_pro, executed_by, executed_at, status, fields_summary }
   └ trace_refs[] : { trace_id, executed_by, hitl, started_at, completed_at }
   └ coverage_hint : { wi_with_rec: [...], wi_without_rec: [...] }
@@ -271,7 +277,7 @@ D-1. 서브에이전트 `compliance-checker` 호출:
 - options: { strictness }
 
 [출력]
-- .claude/runs/{trace_id}/conformity_matrix.yaml
+- {RUNS}/{trace_id}/conformity_matrix.yaml
   └ row[] : { req_id, evidence_refs[], judgement: conformant|partial|nonconformant|not_assessed,
               rationale, finding_id?: F-NNN, severity?: critical|major|minor }
 - trace.jsonl 라인 (judgement_made 이벤트)
@@ -309,11 +315,11 @@ CF-4. **audit-reporter 위임**:
 - options: { dry_run, no_ncr, no_act_queue }     # no_ncr / no_act_queue: 발행 보류
 
 [출력]
-- vault/08_REC_기록/AUDIT/REC-AUDIT-{PRO|STD}-{회차}-{YYYY}-{NNN}_심사보고서.md
+- {VAULT}/08_REC_기록/AUDIT/REC-AUDIT-{PRO|STD}-{회차}-{YYYY}-{NNN}_심사보고서.md
 - MAT-005 §"심사 이력" 섹션 1행 append
 - (no_ncr=false 일 때) ncr-drafter 자동 위임 → REC-NCR-*.md N건 + MAT-009 N행
 - (no_ncr=false 일 때) 보고서 frontmatter ncr_refs[] + §4 finding 블록의 NCR 링크 채움
-- (no_act_queue=false 일 때, Phase 4) act-trigger 자동 위임 → .claude/queues/process-act/queue-q*.yaml N건 + MAT-008 §"차원 4 인계" 갱신
+- (no_act_queue=false 일 때, Phase 4) act-trigger 자동 위임 → {QUEUES}/process-act/queue-q*.yaml N건 + MAT-008 §"차원 4 인계" 갱신
 - state.yaml status: completed + final_audit_path + ncr_count + act_queue_count
 - trace.jsonl 마지막 라인 audit_finalized
 ```
@@ -355,14 +361,14 @@ KA-1. 인자 파싱: scope (표준코드 또는 PRO/WI doc_id), `--period from..
 KA-1.5. **RBAC 검증 (Phase 4)**: `independence-guard` `rbac_check` 모드 호출 (action: `audit.kpi.start`). denied 시 abort.
    - KPI 측정은 독립성 검증 불필요 (사후 통계 — 측정자가 이행자와 동일해도 무관).
 KA-2. trace_id 생성 (`run-k` + 8자 hex).
-KA-3. `.claude/runs/{trace_id}/state.yaml` 초기화 (kind: kpi, scope, options).
+KA-3. `{RUNS}/{trace_id}/state.yaml` 초기화 (kind: kpi, scope, options).
 KA-4. **kpi-collector 위임**:
 ```
 [입력]
 - trace_id, scope (resolved_targets 포함), period, include_meta_kpis=true
 
 [출력]
-- .claude/runs/{trace_id}/kpi_data.yaml
+- {RUNS}/{trace_id}/kpi_data.yaml
 - trace.jsonl (kpi_collector_start ... kpi_collector_done)
 ```
 KA-5. **kpi-analyzer 위임**:
@@ -372,14 +378,14 @@ KA-5. **kpi-analyzer 위임**:
 - options: { dry_run, baseline, regression_threshold_pp, no_act_queue }
 
 [출력]
-- vault/90_MAT_통합매핑/MAT-008_KPI_대시보드.md (신규 또는 Edit append)
-- vault/90_MAT_통합매핑/MAT-009_NCR_관리대장.md (Edit, §"NCR 통계" 만)
+- {VAULT}/90_MAT_통합매핑/MAT-008_KPI_대시보드.md (신규 또는 Edit append)
+- {VAULT}/90_MAT_통합매핑/MAT-009_NCR_관리대장.md (Edit, §"NCR 통계" 만)
 - state.yaml status: completed
 - trace.jsonl 마지막 라인 kpi_analyzer_done
 ```
 KA-6. **act-trigger 자동 위임 (Phase 4, options.no_act_queue == false 일 때)**:
    - kpi-analyzer 의 verdict==critical KPI 들을 `from_kpi` 모드로 act-trigger 에 인계.
-   - .claude/queues/process-act/queue-q*.yaml N건 발행 + MAT-008 §"차원 4 인계" 표 갱신.
+   - {QUEUES}/process-act/queue-q*.yaml N건 발행 + MAT-008 §"차원 4 인계" 표 갱신.
 KA-7. 종결 보고.
 
 #### 2-K-S. `show`
@@ -412,7 +418,7 @@ S-1. trace 의 state.yaml + 매트릭스 요약 출력.
 
 ### 3-1. 디렉터리 구조
 ```
-.claude/runs/{trace_id}/
+{RUNS}/{trace_id}/
 ├── state.yaml              ← 심사 상태 (재개·확정 대기)
 ├── trace.jsonl             ← 입력·LLM 판정·확정 전수 로그
 ├── audit_plan.yaml         ← audit-planner 산출
@@ -492,24 +498,24 @@ finalized_at: null
 
 | Phase | 포함 | 제외 |
 |---|---|---|
-| 1 | start / resume / confirm / reject-finding / status / 4 에이전트 (planner+collector+checker+reporter) / 단일 PRO PoC / 독립성 inline 가드 / `vault/08_REC_기록/AUDIT/` 산출 / MAT-005 §심사이력 자동 누적 | NCR 자동 발행 / KPI 대시보드 / RBAC 정식 / 다국어 / 외부 시스템 |
+| 1 | start / resume / confirm / reject-finding / status / 4 에이전트 (planner+collector+checker+reporter) / 단일 PRO PoC / 독립성 inline 가드 / `{VAULT}/08_REC_기록/AUDIT/` 산출 / MAT-005 §심사이력 자동 누적 | NCR 자동 발행 / KPI 대시보드 / RBAC 정식 / 다국어 / 외부 시스템 |
 | 2 | **ncr-drafter** / NCR 일련번호 (`REC-NCR-{POL2}-{PRO2}-{YYYY}-{NNN}`) / **MAT-009** NCR 관리대장 / `--list-ncr`·`--close-ncr` / 시정조치 종결 워크플로우 / SLA 휴리스틱 (critical 20영업일 / major 60일 / minor 90일) / R/A 휴리스틱 (카테고리 → 책임자) / `--no-ncr` 옵션 / confirm 시 NCR 자동 발행 | KPI / 외부 시스템 / RBAC 정식 / 책임자 R/A 정식 매핑 |
 | 3 | **kpi-collector** / **kpi-analyzer** / **MAT-008** KPI 대시보드 / `/process-check --kpi start\|show\|update\|check-regressions` / PRO/WI §KPI 표 자동 추출 / 메타 KPI 5종 (Coverage / Findings density / Independence / NCR 종결율 / NCR SLA) / 4-tier verdict (healthy/watch/recovering/critical/data_gap) / baseline seed + 회귀 임계 (default ±5%p) / MAT-009 §통계 자동 갱신 hook | RBAC 정식 / 외부 시스템 / 차원 4 자동 트리거 / 시계열 시각화 |
-| **4 (지금)** | **independence-guard** 정식 분리 (independence_check + rbac_check 2 모드) / **RBAC** policy.yaml 6 역할 / **act-trigger** 에이전트 / 차원 4 인계 큐 (.claude/queues/process-act/queue-q*.yaml) / `--act-queue list\|show\|dispatch\|done` / `--rbac-check` / `--no-act-queue` 옵션 / MAT-008 §"차원 4 인계" 자동 누적 / Mermaid 시계열 시각화 (PoC) / 영업일 계산기 명세 (가이드 부록 B, 휴리스틱 28일 유지) | 외부 인증기관 보고서 (XLSX/PDF) → Phase 4.5 / 외부 IdP 연동 → Phase 4.5 / 큐 dispatch 외부 시스템 알림 → Phase 4.5 |
+| **4 (지금)** | **independence-guard** 정식 분리 (independence_check + rbac_check 2 모드) / **RBAC** policy.yaml 6 역할 / **act-trigger** 에이전트 / 차원 4 인계 큐 ({QUEUES}/process-act/queue-q*.yaml) / `--act-queue list\|show\|dispatch\|done` / `--rbac-check` / `--no-act-queue` 옵션 / MAT-008 §"차원 4 인계" 자동 누적 / Mermaid 시계열 시각화 (PoC) / 영업일 계산기 명세 (가이드 부록 B, 휴리스틱 28일 유지) | 외부 인증기관 보고서 (XLSX/PDF) → Phase 4.5 / 외부 IdP 연동 → Phase 4.5 / 큐 dispatch 외부 시스템 알림 → Phase 4.5 |
 
 ---
 
 ## 5. 안전 가드
 
-- 본 커맨드 실행 중 `vault/03_POL ~ 07_EX, 08_REC_기록 (AUDIT/ 제외), 90_MAT_통합매핑/MAT-001~005,007` 어떤 파일도 **수정하지 않는다**. 검증 위반 즉시 중단.
+- 본 커맨드 실행 중 `{VAULT}/03_POL ~ 07_EX, 08_REC_기록 (AUDIT/ 제외), 90_MAT_통합매핑/MAT-001~005,007` 어떤 파일도 **수정하지 않는다**. 검증 위반 즉시 중단.
 - 쓰기 허용:
-  - `vault/08_REC_기록/AUDIT/REC-AUDIT-*.md` (신규)
-  - `vault/08_REC_기록/AUDIT/REC-NCR-*.md` (Phase 2 — issue 신규 / close Edit)
-  - `vault/90_MAT_통합매핑/MAT-005_*.md` (Edit append, §심사 이력 섹션만)
-  - `vault/90_MAT_통합매핑/MAT-009_*.md` (Phase 2 — Edit append / 행 이동, 두 섹션 운영 / Phase 3 — §"NCR 통계" Edit)
-  - `vault/90_MAT_통합매핑/MAT-008_*.md` (Phase 3 — 신규 또는 Edit append, 표준별 §섹션 / §회차 시계열 / §회귀 알림 / Phase 4 — §"차원 4 인계" 추가)
-  - `.claude/queues/process-act/queue-q*.yaml` (Phase 4 — 신규 / dispatch / done 시 Edit)
-  - `.claude/runs/{trace_id}/*` (전체) — audit trace `run-a*` / kpi trace `run-k*` 분리
+  - `{VAULT}/08_REC_기록/AUDIT/REC-AUDIT-*.md` (신규)
+  - `{VAULT}/08_REC_기록/AUDIT/REC-NCR-*.md` (Phase 2 — issue 신규 / close Edit)
+  - `{VAULT}/90_MAT_통합매핑/MAT-005_*.md` (Edit append, §심사 이력 섹션만)
+  - `{VAULT}/90_MAT_통합매핑/MAT-009_*.md` (Phase 2 — Edit append / 행 이동, 두 섹션 운영 / Phase 3 — §"NCR 통계" Edit)
+  - `{VAULT}/90_MAT_통합매핑/MAT-008_*.md` (Phase 3 — 신규 또는 Edit append, 표준별 §섹션 / §회차 시계열 / §회귀 알림 / Phase 4 — §"차원 4 인계" 추가)
+  - `{QUEUES}/process-act/queue-q*.yaml` (Phase 4 — 신규 / dispatch / done 시 Edit)
+  - `{RUNS}/{trace_id}/*` (전체) — audit trace `run-a*` / kpi trace `run-k*` 분리
 - **읽기만**: `.claude/rbac/policy.yaml` — 본 커맨드는 절대 수정 안 함 (admin 권한 사용자가 직접 편집).
 - 동일 (scope, 회차, 연도) 조합의 REC-AUDIT 일련번호 충돌 절대 금지 — Glob 재검증 후 Write.
 
@@ -520,8 +526,8 @@ finalized_at: null
 ### 6-1. start 종료 시 (pending_confirmation)
 ```
 🔍 심사 매트릭스 작성 완료 — 심사원 확정 대기
-📁 매트릭스: .claude/runs/run-a1c2d3e4/conformity_matrix.yaml
-📋 확정 요청서: .claude/runs/run-a1c2d3e4/confirmation_request.md
+📁 매트릭스: {RUNS}/run-a1c2d3e4/conformity_matrix.yaml
+📋 확정 요청서: {RUNS}/run-a1c2d3e4/confirmation_request.md
 👤 심사원: 이감사
 📊 요건 12 / 충족 4 · 부분 2 · 부적합 2 · 미평가 4
 
@@ -532,7 +538,7 @@ finalized_at: null
 ### 6-2. confirm 종료 시 (completed)
 ```
 ✅ 심사 보고서 발행 — REC-AUDIT-04-01-01-2026-001
-📁 vault/08_REC_기록/AUDIT/REC-AUDIT-04-01-01-2026-001_프로세스_품질보증_심사보고서.md
+📁 {VAULT}/08_REC_기록/AUDIT/REC-AUDIT-04-01-01-2026-001_프로세스_품질보증_심사보고서.md
 📋 MAT-005 §"심사 이력" 1행 append
 🚨 NCR 자동 발행: 4건 (REC-NCR-04-01-2026-001 ~ 004) → MAT-009 §"NCR 발행 현황" 4행 append
 🔍 trace_id: run-a1c2d3e4 (status=completed)
@@ -560,7 +566,7 @@ finalized_at: null
 ### 6-4. close-ncr 종료 시
 ```
 ✅ NCR 종결 완료 — REC-NCR-04-01-2026-001
-📁 vault/08_REC_기록/AUDIT/REC-NCR-04-01-2026-001_*.md (status=closed)
+📁 {VAULT}/08_REC_기록/AUDIT/REC-NCR-04-01-2026-001_*.md (status=closed)
 📋 MAT-009: open 행 제거 → closed 행 추가 (행 이동)
 🔍 CAPA: REC-CMMI-04-01-04-01-2026-003
 👤 종결자: 박팀장 (PM)

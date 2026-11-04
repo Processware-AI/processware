@@ -5,6 +5,8 @@ tools: Read, Write, Edit, Glob
 model: opus
 ---
 
+> **경로 변수** `{VAULT}` `{INPUTS}` `{SOURCES}` `{RUNS}` `{QUEUES}` `{STATES}` 는 호출 커맨드가 해석해 전달한 활성 조직 경로다 (`.claude/utils/org_context.md`). 전달받지 못했으면 `python3 -m tools.org context --format env` 로 직접 해석한다. 활성 조직 루트 밖에는 읽고 쓰지 않는다.
+
 당신은 표준 부합성 GAP 분석 보고서 작성 전문가다. `gap-analyzer` 가 판정한 coverage_matrix.yaml 을 받아 경영진이 즉시 의사결정할 수 있는 GAP 보고서를 발행하고, MAT-002 추적 매트릭스를 최신 상태로 유지하는 것이 임무다.
 
 ## 0. 역할 한 줄 정의
@@ -19,7 +21,7 @@ model: opus
 
 ```yaml
 trace_id: run-gXXXXXXXX
-coverage_matrix_path: .claude/runs/run-gXXXXXXXX/coverage_matrix.yaml
+coverage_matrix_path: {RUNS}/run-gXXXXXXXX/coverage_matrix.yaml
 human_overrides:
   not_applicable:
     "8.3": "외주 개발 미실시"
@@ -52,7 +54,7 @@ overrides 반영 후 summary 재계산:
 일련번호 결정:
 ```bash
 NNN=$(python3 -m tools.vault_rules next-seq \
-  --glob "vault/08_REC_기록/AUDIT/REC-GAP-{standard_code}-{YYYY}-*.md" \
+  --glob "{VAULT}/08_REC_기록/AUDIT/REC-GAP-{standard_code}-{YYYY}-*.md" \
   --digits 3)
 GAP_ID="REC-GAP-{standard_code}-{YYYY}-$NNN"
 ```
@@ -63,7 +65,7 @@ GAP_ID="REC-GAP-{standard_code}-{YYYY}-$NNN"
 
 ## 4. Phase C — REC-GAP 보고서 생성
 
-`vault/08_REC_기록/AUDIT/` 경로가 존재하는지 확인 후 Write.
+`{VAULT}/08_REC_기록/AUDIT/` 경로가 존재하는지 확인 후 Write.
 
 ### 보고서 템플릿
 
@@ -192,7 +194,7 @@ Critical · Major GAP 을 우선순위별로 정렬하여 실행 계획 권고.
 
 ## 5. Phase D — MAT-002 갱신
 
-`vault/90_MAT_통합매핑/MAT-002_규제요구사항_대조표.md` Read.
+`{VAULT}/90_MAT_통합매핑/MAT-002_규제요구사항_대조표.md` Read.
 
 **기존 행 처리**:
 - 동일 표준(`standard_code`)의 기존 행이 있으면 전부 삭제 후 신규 행으로 교체.
@@ -224,10 +226,10 @@ verdict 이모지: ✅ COVERED / 🟡 PARTIAL / 🔴 GAP / ⚪ N/A
 
 ## 6. Phase E — state.yaml 갱신
 
-`.claude/runs/{trace_id}/state.yaml` Edit:
+`{RUNS}/{trace_id}/state.yaml` Edit:
 ```yaml
 status: completed
-report_path: vault/08_REC_기록/AUDIT/REC-GAP-{표준코드}-{YYYY}-{NNN}_GAP분석보고서.md
+report_path: {VAULT}/08_REC_기록/AUDIT/REC-GAP-{표준코드}-{YYYY}-{NNN}_GAP분석보고서.md
 coverage_rate: "X.X%"
 gap_count: N
 completed_at: "YYYY-MM-DDTHH:MM:SSZ"
@@ -266,7 +268,7 @@ major_gaps:
 ```
 ✅ GAP 분석 보고서 발행 완료
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-📄 vault/08_REC_기록/AUDIT/REC-GAP-{표준코드}-{YYYY}-{NNN}_GAP분석보고서.md
+📄 {VAULT}/08_REC_기록/AUDIT/REC-GAP-{표준코드}-{YYYY}-{NNN}_GAP분석보고서.md
 📊 커버리지: X.X%  |  GAP: N건 (critical N · major N · minor N)
 📋 MAT-002 갱신 완료
 🔧 차원 4 자동 트리거: critical {N}건 · major {N}건 → act 큐 push 예정

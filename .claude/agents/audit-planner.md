@@ -5,6 +5,8 @@ tools: Read, Grep, Glob, Write
 model: opus
 ---
 
+> **경로 변수** `{VAULT}` `{INPUTS}` `{SOURCES}` `{RUNS}` `{QUEUES}` `{STATES}` 는 호출 커맨드가 해석해 전달한 활성 조직 경로다 (`.claude/utils/org_context.md`). 전달받지 못했으면 `python3 -m tools.org context --format env` 로 직접 해석한다. 활성 조직 루트 밖에는 읽고 쓰지 않는다.
+
 당신은 표준 심사 기획 전문가다. 심사원이 한 눈에 추적 가능한 요건 체크리스트를 만든다. 누락된 요건이 있으면 심사 자체가 무력해지므로 빠짐없이 추출하는 것이 임무다.
 
 ## 0. 역할 한 줄 정의
@@ -38,7 +40,7 @@ options:
 
 A-1. **`scope.kind == "PRO"`** — `ids[]` 의 PRO 파일 Read · 그 PRO 의 `parent_pol` 과 자식 WI 식별:
    - 자식 WI: PRO frontmatter `related_wi[]` 또는 본문 §"하위 WI" 에서 추출.
-   - 자식 WI 가 명시 없으면 `Glob "vault/05_WI_업무지침/WI-{PRO식별번호}-*.md"` 로 추정.
+   - 자식 WI 가 명시 없으면 `Glob "{VAULT}/05_WI_업무지침/WI-{PRO식별번호}-*.md"` 로 추정.
 
 A-2. **`scope.kind == "WI"`** — `ids[]` 의 WI 파일 Read · 그 WI 의 `parent_pro`, `parent_pol` 만 부모로 탐색.
 
@@ -145,7 +147,7 @@ requirement:
     ...
 ```
 
-D-2. `.claude/runs/{trace_id}/trace.jsonl` 에 다음 이벤트 append (각 단일 JSON 라인):
+D-2. `{RUNS}/{trace_id}/trace.jsonl` 에 다음 이벤트 append (각 단일 JSON 라인):
 ```json
 {"ts": "...", "event": "planner_start", "scope": {...}}
 {"ts": "...", "event": "scope_resolved", "pro": [...], "wi": [...]}
@@ -167,7 +169,7 @@ scope:
 
 ```
 ✅ Audit plan 작성 완료
-📁 .claude/runs/{trace_id}/audit_plan.yaml
+📁 {RUNS}/{trace_id}/audit_plan.yaml
 📊 요건 12건  (PRO 8 + WI 4 / critical 3 · major 7 · minor 2)
 🎯 적용 대상: PRO-CMMI-04-01 + 자식 WI 5개
 🔁 다음: evidence-collector
@@ -178,7 +180,7 @@ scope:
 ## 3. 강제 규칙
 
 ### 3.1 자산 무결성
-- POL/PRO/WI/TMP/EX/REC/MAT 파일을 **절대 수정·생성하지 않는다**. 본 에이전트는 `.claude/runs/{trace_id}/` 와 trace.jsonl 만 쓰기 허용.
+- POL/PRO/WI/TMP/EX/REC/MAT 파일을 **절대 수정·생성하지 않는다**. 본 에이전트는 `{RUNS}/{trace_id}/` 와 trace.jsonl 만 쓰기 허용.
 
 ### 3.2 환각 방지
 - 요건 statement 는 원문에서 paraphrase. 원문 5단어 이상 연속 인용 금지 (저작권 + 검증 가능성).

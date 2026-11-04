@@ -574,4 +574,4 @@ Phase 4.5 extensions (명세 활성화):
 - **가이드 문서**: 4 (빌드 / 실행 / 심사 / 제·개정)
 - **Phase 4.5 명세**: 3 utils (영업일 / PCB quorum / 자동 트렌드) + RBAC extensions 4종
 - **Phase 5 구현**: publish/redmine/ (11 파일) + .github/workflows/vault-push.yml + 2 스킬
-- **조직 계층 (org-layer)**: 단계 1 조직 컨텍스트 구현 (`tools/org/`, 커맨드 9 공통 절, unittest 15) / 단계 2~7 미착수
+- **조직 계층 (org-layer)**: 단계 1 조직 컨텍스트 (`tools/org/`, unittest 15) + 단계 2 경로 추상화 (에이전트 29 · 커맨드 9 의 경로 574건 → `{VAULT}` 등 변수) 구현 / 단계 3~7 미착수

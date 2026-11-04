@@ -1,12 +1,12 @@
 ---
 type: util-spec
 title: 조직 컨텍스트 — 활성 조직 루트 해석 규약 (org-layer §3 단계 1)
-version: "0.1"
+version: "0.2"
 owner: "QMR"
-status: impl                            # tools/org/ 구현 완료. 단계 2(경로 치환)·3(sync-core) 는 미착수
+status: impl                            # 단계 1 tools/org/ + 단계 2 경로 변수화 완료. 단계 3(sync-core) 미착수
 created: 2026-11-04
 related_commands: [process-ingest, process-plan, process-do, process-backfill, process-check, process-audit, process-act, vault-push, workspace-create]
-related_agents: ["(전체 — 단계 2 에서 경로 변수 치환 시 적용)"]
+related_agents: ["(전체 29 — 경로 변수 {VAULT} {INPUTS} {SOURCES} {RUNS} {QUEUES} {STATES} 사용)"]
 related_docs: ["docs/architecture/org-layer.md"]
 ---
 
@@ -66,22 +66,24 @@ default 모드일 때는 추가로 fallback 경고를 그대로 전달한다 (st
 
 ---
 
-## 3. 경로 치환 규칙 — 단계 2 완료 전 임시 브리지
+## 3. 경로 변수 표기 (단계 2 — 적용 완료)
 
-커맨드·에이전트 정의 문서에 적힌 리터럴 경로는 아래 표대로 **읽어서 해석** 한다. 단계 2 에서 문서 자체가 변수 표기로 치환되면 이 절은 삭제된다.
+커맨드·에이전트 정의 문서는 리터럴 경로 대신 아래 **경로 변수** 를 쓴다. 커맨드가 §2 의 해석 결과를 변수에 바인딩하고, 에이전트 위임 시 값을 프롬프트 첫머리에 전달한다.
 
-| 문서의 리터럴 | 해석 |
-|---|---|
-| `vault/…` | `{PROCESSWARE_VAULT}/…` |
-| `inputs/…` | `{PROCESSWARE_INPUTS}/…` |
-| `sources/…` | `{PROCESSWARE_SOURCES}/…` |
-| `.claude/runs/…` | `{PROCESSWARE_RUNS}/…` |
-| `.claude/queues/…` | `{PROCESSWARE_QUEUES}/…` |
-| `.claude/states/…` | `{PROCESSWARE_STATES}/…` |
+| 변수 | 바인딩 원천 | default 모드 | 조직 모드 |
+|---|---|---|---|
+| `{VAULT}` | `PROCESSWARE_VAULT` | `{repo}/vault` | `{ORG_ROOT}/vault` |
+| `{INPUTS}` | `PROCESSWARE_INPUTS` | `{repo}/inputs` | `{ORG_ROOT}/inputs` |
+| `{SOURCES}` | `PROCESSWARE_SOURCES` | `{repo}/sources` | `{ORG_ROOT}/sources` |
+| `{RUNS}` | `PROCESSWARE_RUNS` | `{repo}/.claude/runs` | `{ORG_ROOT}/.processware/runs` |
+| `{QUEUES}` | `PROCESSWARE_QUEUES` | `{repo}/.claude/queues` | `{ORG_ROOT}/.processware/queues` |
+| `{STATES}` | `PROCESSWARE_STATES` | `{repo}/.claude/states` | `{ORG_ROOT}/.processware/states` |
 
-**치환하지 않는 플랫폼 자산**: `.claude/agents|commands|utils|rbac`, `tools/`, `docs/`, `core/` (단계 3 신설). 이들은 항상 `{PROCESSWARE_PLATFORM_ROOT}` 기준이다.
+**변수화하지 않는 플랫폼 자산**: `.claude/agents|commands|utils|rbac`, `tools/`, `docs/`, `core/` (단계 3 신설). 항상 `{PROCESSWARE_PLATFORM_ROOT}` 기준이다.
 
-> 주의: default 모드에서는 두 표현이 같은 경로를 가리키므로 동작 차이가 없다. 조직 모드에서만 분기된다.
+**frontmatter 는 예외**: 커맨드·에이전트의 `description` · `argument-hint` 는 사용자가 실제로 타이핑하는 예시(`/process-ingest sources/ISO9001.pdf`)이므로 리터럴을 유지한다. 사용자가 준 상대 경로는 커맨드가 `{SOURCES}` 등 활성 조직 루트 기준으로 해석한다.
+
+**사용자 가이드 (`vault/09_REF_참고자료/*_가이드.md`)** 는 default 모드 기준 리터럴 경로로 설명한다. 조직 모드 안내는 단계 3 이후 갱신.
 
 ---
 

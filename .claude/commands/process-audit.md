@@ -12,38 +12,44 @@ argument-hint: 'start --against <표준코드> [--scope <모듈슬러그>] [--st
 
 ```
 외부 표준 조항 (ISO/IEC/KS/법규)
-    ↓  inputs/{category}/{표준}/requirements.yaml
+    ↓  {INPUTS}/{category}/{표준}/requirements.yaml
 적용요건 매핑 (REQ-NNN ↔ 표준 조항)
-    ↓  vault/02_적용요건/{슬러그}/적용요건.md
+    ↓  {VAULT}/02_적용요건/{슬러그}/적용요건.md
 내부 자산 커버리지 (POL/PRO/WI 가 REQ-NNN 을 커버하는가?)
-    ↓  vault/01_POL / 03_PRO / 05_WI 의 frontmatter requirements[]
+    ↓  {VAULT}/01_POL / 03_PRO / 05_WI 의 frontmatter requirements[]
 gap-analyzer → coverage_matrix.yaml → gap-reporter → REC-GAP-*.md
 ```
 
 ---
 
-## 조직 컨텍스트 (공통 — org-layer §3 단계 1)
+## 조직 컨텍스트 (공통 — org-layer §3 단계 1·2)
 
-본 커맨드의 모든 vault · inputs · sources · runs · queues · states 경로는 **활성 조직 루트** 기준으로 해석한다. 규약 전문: `.claude/utils/org_context.md`
+본 문서와 에이전트 정의의 경로 변수는 **활성 조직 루트** 기준이다. 규약 전문: `.claude/utils/org_context.md`
 
-1. 진입 직후 1회 해석한다. 인자 `--org-root <path>` > `--org <id>` > 환경변수 `PROCESSWARE_ORG_ROOT` > `PROCESSWARE_ORG` > **fallback: default 조직(플랫폼 repo 의 `vault/`)**.
+| 변수 | 의미 | default 모드 (미설정) | 조직 모드 |
+|---|---|---|---|
+| `{VAULT}` | Obsidian vault | `vault/` | `{ORG_ROOT}/vault/` |
+| `{INPUTS}` · `{SOURCES}` | ingest 산출물 · 원본 파일 | `inputs/` · `sources/` | `{ORG_ROOT}/inputs/` · `sources/` |
+| `{RUNS}` · `{QUEUES}` · `{STATES}` | 실행 trace · 인계 큐 · 체크포인트 | `.claude/runs|queues|states/` | `{ORG_ROOT}/.processware/runs|queues|states/` |
+
+1. 진입 직후 1회 해석한다. 인자 `--org-root <path>` > `--org <id>` > 환경변수 `PROCESSWARE_ORG_ROOT` > `PROCESSWARE_ORG` > **fallback: default 조직(플랫폼 repo)**.
    ```bash
    python3 -m tools.org context --format env [--org <id> | --org-root <path>]
    ```
-   exit ≠ 0 이면 즉시 중단하고 stderr 를 사용자에게 보여준다. 성공 시 `조직: {id} ({mode}) · 루트: {root}` 1줄을 출력하고 trace 첫 이벤트에 `org_id` · `org_root` · `org_source` 를 기록한다.
-2. **경로 치환 (단계 2 완료 전 임시)**: 본 문서와 에이전트 정의의 `vault/…` → `{PROCESSWARE_VAULT}/…`, `inputs/…` → `{PROCESSWARE_INPUTS}/…`, `sources/…` → `{PROCESSWARE_SOURCES}/…`, `.claude/runs|queues|states/…` → `{PROCESSWARE_RUNS|QUEUES|STATES}/…` 로 읽는다. 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`) 은 치환하지 않는다.
-3. 활성 조직 루트 밖에는 읽고 쓰지 않는다. `--org`/`--org-root` 는 다른 모드 인자와 함께 어느 위치에나 올 수 있다.
+   exit ≠ 0 이면 즉시 중단하고 stderr 를 사용자에게 보여준다. 성공 시 `PROCESSWARE_VAULT` → `{VAULT}` 등으로 변수를 바인딩하고, `조직: {id} ({mode}) · 루트: {root}` 1줄을 출력하며, trace 첫 이벤트에 `org_id` · `org_root` · `org_source` 를 기록한다.
+2. 에이전트에 위임할 때 바인딩된 변수 값을 프롬프트 첫머리에 그대로 전달한다 (에이전트는 전달받은 값을 쓰고, 없을 때만 직접 해석).
+3. `--org-root` 로 받은 값은 하위 `python3 -m tools.*` 호출 전에 `PROCESSWARE_ORG_ROOT` 로 export 한다. 활성 조직 루트 밖에는 읽고 쓰지 않는다. 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`) 은 변수화 대상이 아니다.
 
 ---
 
 ## 0. 실행 원칙
 
 - **자산 읽기 전용**: 본 커맨드는 POL/PRO/WI/TMP 를 수정하지 않는다.
-- **신규 산출물만 생성**: `vault/08_REC_기록/AUDIT/REC-GAP-{표준코드}-{YYYY}-{NNN}.md` + MAT-002 갱신.
+- **신규 산출물만 생성**: `{VAULT}/08_REC_기록/AUDIT/REC-GAP-{표준코드}-{YYYY}-{NNN}.md` + MAT-002 갱신.
 - **환각 방지**: 커버리지 판정은 반드시 파일 실존 + frontmatter 근거. 없으면 GAP.
-- **LLM fallback 명시**: `inputs/` 에 표준 요건 파일이 없을 때만 `--llm-fallback` 허용. 이 경우 보고서에 `source: llm_knowledge` 로 표시 + 낮은 신뢰도 경고.
+- **LLM fallback 명시**: `{INPUTS}/` 에 표준 요건 파일이 없을 때만 `--llm-fallback` 허용. 이 경우 보고서에 `source: llm_knowledge` 로 표시 + 낮은 신뢰도 경고.
 - **HITL 1회 강제**: coverage_matrix 초안 완성 후 반드시 사람이 검토 확정 (`--confirm`). 확정 전까지 보고서 미발행.
-- **트레이스 완전 보관**: `.claude/runs/{trace_id}/` — state.yaml + coverage_matrix.yaml + trace.jsonl.
+- **트레이스 완전 보관**: `{RUNS}/{trace_id}/` — state.yaml + coverage_matrix.yaml + trace.jsonl.
 
 ---
 
@@ -55,16 +61,16 @@ gap-analyzer → coverage_matrix.yaml → gap-reporter → REC-GAP-*.md
 /process-audit start --against ISO9001
 /process-audit start --against ISO9001 --scope "OOO사_품질경영체계"
 /process-audit start --against ISO9001 --strictness strict
-/process-audit start --against ISO27001 --llm-fallback    # inputs/ 없을 때
+/process-audit start --against ISO27001 --llm-fallback    # {INPUTS}/ 없을 때
 ```
 
 인자 파싱:
 - `--against` 필수. 표준 코드 (예: ISO9001, ISO27001, CMMI-ML3, 개인정보보호법).
-- `--scope` 선택. `vault/02_적용요건/` 하위 특정 슬러그만 대상. 생략 시 전체 스캔.
+- `--scope` 선택. `{VAULT}/02_적용요건/` 하위 특정 슬러그만 대상. 생략 시 전체 스캔.
 - `--strictness` 기본 `normal`.
-- `--llm-fallback` 생략 시, inputs/ 에 표준 파일 없으면 abort + 안내.
+- `--llm-fallback` 생략 시, {INPUTS}/ 에 표준 파일 없으면 abort + 안내.
 - trace_id 생성: `run-g` + 8자 hex.
-- `.claude/runs/{trace_id}/state.yaml` 초기화.
+- `{RUNS}/{trace_id}/state.yaml` 초기화.
 
 strictness 별 GAP 판정 범위:
 | strictness | 보고 대상 |
@@ -102,7 +108,7 @@ strictness 별 GAP 판정 범위:
 /process-audit --list --against ISO9001
 ```
 
-→ `.claude/runs/run-g*/state.yaml` Glob → 표로 출력.
+→ `{RUNS}/run-g*/state.yaml` Glob → 표로 출력.
 
 ### 1-5. `export` 모드
 
@@ -116,7 +122,7 @@ strictness 별 GAP 판정 범위:
 
 - `status: completed` trace 만 처리. 미완료 시 abort + `/process-audit --confirm {trace_id}` 안내.
 - state.yaml 에서 `coverage_matrix_path` + `report_path` 로드.
-- `gap-exporter` 위임 → `vault/08_REC_기록/AUDIT/exports/` 에 출력.
+- `gap-exporter` 위임 → `{VAULT}/08_REC_기록/AUDIT/exports/` 에 출력.
 - `--template` 기본값: `default`.
 - `--org` 미지정 시 coverage_matrix.scope_slug 사용.
 
@@ -130,17 +136,17 @@ P0-1. 표준 코드 정규화 (대소문자 통일, 구분자 통일: `ISO 9001`
 
 P0-2. 표준 요건 파일 탐색 (우선순위):
 ```
-inputs/01_표준원문/{표준코드}/requirements.yaml    # 1순위
-inputs/02_법규/{표준코드}/requirements.yaml        # 2순위 (법규)
-inputs/03_해설서/{표준코드}/requirements.yaml      # 3순위 (해설서 기반)
+{INPUTS}/01_표준원문/{표준코드}/requirements.yaml    # 1순위
+{INPUTS}/02_법규/{표준코드}/requirements.yaml        # 2순위 (법규)
+{INPUTS}/03_해설서/{표준코드}/requirements.yaml      # 3순위 (해설서 기반)
 ```
 - 발견 → `requirements_source: inputs` 로 기록, Phase 1 진행.
 - 미발견 + `--llm-fallback` 없음 → **abort**:
   ```
-  ⛔ inputs/ 에 {표준코드} 요건 파일이 없습니다.
+  ⛔ {INPUTS}/ 에 {표준코드} 요건 파일이 없습니다.
   
   해결 방법:
-    /process-ingest sources/{표준코드}.pdf --standard {표준코드}
+    /process-ingest {SOURCES}/{표준코드}.pdf --standard {표준코드}
     /process-ingest --confirm {표준코드}
   
   또는 LLM 추정 모드로 실행 (낮은 신뢰도):
@@ -148,9 +154,9 @@ inputs/03_해설서/{표준코드}/requirements.yaml      # 3순위 (해설서 �
   ```
 - 미발견 + `--llm-fallback` → `requirements_source: llm_knowledge` 기록, 경고 출력 후 진행.
 
-P0-3. `vault/02_적용요건/` 하위 적용요건.md 탐색.
-- `--scope` 지정 시: `vault/02_적용요건/{슬러그}/적용요건.md` 단일 파일.
-- 미지정 시: Glob `vault/02_적용요건/*/적용요건.md` 전체.
+P0-3. `{VAULT}/02_적용요건/` 하위 적용요건.md 탐색.
+- `--scope` 지정 시: `{VAULT}/02_적용요건/{슬러그}/적용요건.md` 단일 파일.
+- 미지정 시: Glob `{VAULT}/02_적용요건/*/적용요건.md` 전체.
 - 0건이어도 abort 하지 않음 (직접 frontmatter 매핑으로 fallback).
 
 P0-4. state.yaml 초기화 + trace.jsonl 시작.
@@ -164,9 +170,9 @@ P0-4. state.yaml 초기화 + trace.jsonl 시작.
 trace_id: run-gXXXXXXXX
 standard_code: ISO9001
 requirements_source: inputs | llm_knowledge
-requirements_path: inputs/01_표준원문/ISO9001/requirements.yaml   # source=inputs 일 때만
+requirements_path: {INPUTS}/01_표준원문/ISO9001/requirements.yaml   # source=inputs 일 때만
 applicable_req_paths:
-  - vault/02_적용요건/OOO사_품질경영체계/적용요건.md
+  - {VAULT}/02_적용요건/OOO사_품질경영체계/적용요건.md
 options:
   strictness: normal
   scope_slug: null | "OOO사_품질경영체계"
@@ -179,7 +185,7 @@ options:
 - POL/PRO/WI frontmatter Glob → `requirements: [REQ-NNN, ...]` 수집.
 - 조항별 커버리지 판정 → `coverage_matrix.yaml` 생성.
 
-산출: `.claude/runs/{trace_id}/coverage_matrix.yaml`
+산출: `{RUNS}/{trace_id}/coverage_matrix.yaml`
 
 ---
 
@@ -221,7 +227,7 @@ state: `pending_confirmation`.
 **위임 입력:**
 ```yaml
 trace_id: run-gXXXXXXXX
-coverage_matrix_path: .claude/runs/run-gXXXXXXXX/coverage_matrix.yaml
+coverage_matrix_path: {RUNS}/run-gXXXXXXXX/coverage_matrix.yaml
 human_overrides:
   not_applicable:
     "8.3": "외주 개발 미실시"
@@ -232,7 +238,7 @@ standard_code: ISO9001
 
 `gap-reporter` 가 수행:
 - coverage_matrix.yaml 에 human_overrides 반영.
-- 일련번호 결정: Glob `vault/08_REC_기록/AUDIT/REC-GAP-ISO9001-{YYYY}-*.md` → max + 1.
+- 일련번호 결정: Glob `{VAULT}/08_REC_기록/AUDIT/REC-GAP-ISO9001-{YYYY}-*.md` → max + 1.
 - `REC-GAP-{표준코드}-{YYYY}-{NNN}.md` 생성.
 - MAT-002 §매핑 표 갱신: GAP/PARTIAL/COVERED 행 반영.
 - state.yaml: `status: completed`, `report_path` 기록.
@@ -257,7 +263,7 @@ options:
 ```
 
 `act-trigger` (from_gap 모드) 가 수행:
-- critical/major GAP 마다 `.claude/queues/process-act/queue-q*.yaml` 1건씩 생성.
+- critical/major GAP 마다 `{QUEUES}/process-act/queue-q*.yaml` 1건씩 생성.
 - 중복 큐(동일 gap_rec_id + clause) 자동 skip.
 - MAT-008 §"차원 4 인계" 표 갱신.
 
@@ -268,21 +274,21 @@ GAP 없거나 (critical + major == 0) `--no-act-queue` 설정 시: 이 Phase 생
 ## 3. 산출물
 
 ```
-.claude/runs/{trace_id}/
+{RUNS}/{trace_id}/
 ├── state.yaml                    # 진행 상태·메타
 ├── coverage_matrix.yaml          # 조항별 커버리지 판정 (raw)
 └── trace.jsonl                   # 분석 로그
 
-vault/08_REC_기록/AUDIT/
+{VAULT}/08_REC_기록/AUDIT/
 ├── REC-GAP-{표준코드}-{YYYY}-{NNN}_GAP분석보고서.md
 └── exports/
     ├── {doc_id}_compliance_matrix.py   (--format xlsx)
     └── {doc_id}_report.html            (--format html|pdf)
 
-vault/90_MAT_통합매핑/
+{VAULT}/90_MAT_통합매핑/
 └── MAT-002_규제요구사항_대조표.md  (Edit — 신규/갱신 행 추가)
 
-.claude/queues/process-act/
+{QUEUES}/process-act/
 └── queue-q{hex}.yaml × N  (critical/major GAP 건수)  ← --no-act-queue 미설정 시
 ```
 
@@ -371,7 +377,7 @@ status: issued
 | `--against <코드>` | 대상 외부 표준 코드 (필수) | start |
 | `--scope <슬러그>` | 특정 적용요건 슬러그만 | start |
 | `--strictness` | strict / normal / lenient | start |
-| `--llm-fallback` | inputs/ 없을 때 LLM 지식 사용 | start |
+| `--llm-fallback` | {INPUTS}/ 없을 때 LLM 지식 사용 | start |
 | `--auditor "이름"` | 보고서 심사자 명시 | start |
 | `--not-applicable <조항>="사유"` | 해당 조항 N/A 처리 | confirm |
 | `--adjust-gap <조항>=<등급>` | 심각도 override | confirm |
@@ -386,13 +392,13 @@ status: issued
 ## 6. 사용 예시
 
 ```bash
-# 기본: ISO 9001 대비 GAP 분석 (inputs/ 필요)
+# 기본: ISO 9001 대비 GAP 분석 ({INPUTS}/ 필요)
 /process-audit start --against ISO9001
 
 # 특정 모듈만
 /process-audit start --against ISO9001 --scope "OOO사_품질경영체계"
 
-# inputs/ 없이 LLM 추정
+# {INPUTS}/ 없이 LLM 추정
 /process-audit start --against CMMI-ML3 --llm-fallback
 
 # 엄격 모드 (WI 없으면 PARTIAL)

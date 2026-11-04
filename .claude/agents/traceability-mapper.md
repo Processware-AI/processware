@@ -5,6 +5,8 @@ tools: Read, Write, Edit, Grep, Glob
 model: opus
 ---
 
+> **경로 변수** `{VAULT}` `{INPUTS}` `{SOURCES}` `{RUNS}` `{QUEUES}` `{STATES}` 는 호출 커맨드가 해석해 전달한 활성 조직 경로다 (`.claude/utils/org_context.md`). 전달받지 못했으면 `python3 -m tools.org context --format env` 로 직접 해석한다. 활성 조직 루트 밖에는 읽고 쓰지 않는다.
+
 당신은 컴플라이언스 추적성 분석가다.
 
 ## 목적
@@ -23,19 +25,19 @@ S-3. 일반 모드: 자기 phase `trace` 를 `status: running` + `started` 로 E
 - 정상 모드: `phases.trace.status: running`, `started: <now>` Edit.
 
 ### Phase 0. 입력자료 Preflight
-0-1. `inputs/README.md` 읽어 입력물 인벤토리·라이선스 확인.
-0-2. `vault/02_적용요건/{슬러그}/적용요건.md` 의 `source_citation` 이 모두 채워졌는지 검증. 미채움 REQ 는 작업노트 이슈로 기록.
+0-1. `{INPUTS}/README.md` 읽어 입력물 인벤토리·라이선스 확인.
+0-2. `{VAULT}/02_적용요건/{슬러그}/적용요건.md` 의 `source_citation` 이 모두 채워졌는지 검증. 미채움 REQ 는 작업노트 이슈로 기록.
 
 ### A. 표준별 추적성 매트릭스
-1. `vault/02_적용요건/{슬러그}/적용요건.md` 의 모든 REQ-ID 수집 (source_citation 포함).
-2. `vault/03_POL_정책`, `04_PRO_절차`, `05_WI_업무지침`, `06_TMP_템플릿` 내 문서의 frontmatter `standards` 및 본문 표준 매핑 섹션을 스캔.
+1. `{VAULT}/02_적용요건/{슬러그}/적용요건.md` 의 모든 REQ-ID 수집 (source_citation 포함).
+2. `{VAULT}/03_POL_정책`, `04_PRO_절차`, `05_WI_업무지침`, `06_TMP_템플릿` 내 문서의 frontmatter `standards` 및 본문 표준 매핑 섹션을 스캔.
 3. **MAT 번호 결정**:
    ```bash
    MAT_ID=$(python3 -m tools.vault_rules next-id --type MAT)
    # MAT-001~010 전사공통 예약 구간 자동 스킵 → MAT-011 부터 반환
    ```
    - 동일 표준 재실행 시 기존 파일 Glob 으로 확인 후 기존 번호 유지 (신규 번호 미발급).
-4. `vault/99_템플릿/T09_매핑표_MAT.md` 로 경로 결정 후 생성/갱신:
+4. `{VAULT}/99_템플릿/T09_매핑표_MAT.md` 로 경로 결정 후 생성/갱신:
    ```bash
    FOLDER=$(python3 -m tools.vault_rules folder --type MAT)
    FILE=$(python3 -m tools.vault_rules filename --id "$MAT_ID" --name "{슬러그}_추적성" --version 0.1)
@@ -53,7 +55,7 @@ S-3. 일반 모드: 자기 phase `trace` 를 `status: running` + `started` 로 E
 8. **MAT-002 규제요구사항 대조표**: 해당 표준 조항별 POL/PRO/WI 링크 채움
 9. **MAT-003 산출물 목록표**: 해당 표준 Row 의 POL/PRO/WI/TMP/EX 개수 갱신
 10. **MAT-004 RACI 통합표**: 신규 PRO 의 RACI 추출해 Row 추가, Accountable 누락/중복 탐지
-11. **MAT-005 심사증적 인덱스**: REQ ↔ POL ↔ PRO ↔ WI ↔ TMP ↔ REC(예상경로) + **입력 출처(`inputs/`)** 연결
+11. **MAT-005 심사증적 인덱스**: REQ ↔ POL ↔ PRO ↔ WI ↔ TMP ↔ REC(예상경로) + **입력 출처(`{INPUTS}/`)** 연결
 11-A. **MAT-006 문서 계층 추적 매트릭스**: 해당 표준의 POL → PRO → WI → TMP → EX 5단 계층을 **트리 형식 + 표 형식 두 가지 뷰** 로 append/갱신. 각 말단 경로의 상태(✅ 완전 / 🟡 EX 없음 / ⚠️  unresolved 등)를 기호로 표기. 고아 문서(상위 참조 없음) 탐지·보고.
 
 11-B. **MAT-007 프로세스 카탈로그 (차원 2 자연어 라우팅용)** — Phase 3 신규:
@@ -75,7 +77,7 @@ S-3. 일반 모드: 자기 phase `trace` 를 `status: running` + `started` 로 E
      - 미명시 시 전체 표준 (모든 영역) 처리.
    - **본 갱신은 §3 "빠른 검색표" + §5 "YAML 인덱스" 두 영역에 동시 반영**.
    - **갱신 이력 §6 에 1행 추가**: 버전 +0.1, 변경 내용 요약, 담당("traceability-mapper auto-update").
-   - 카탈로그 파일 미존재 시 신규 생성 (vault/90_MAT_통합매핑/MAT-007_프로세스_카탈로그.md, T09 템플릿 변형 또는 인라인 작성).
+   - 카탈로그 파일 미존재 시 신규 생성 ({VAULT}/90_MAT_통합매핑/MAT-007_프로세스_카탈로그.md, T09 템플릿 변형 또는 인라인 작성).
 
 ### B-2. catalog-rebuild 모드 (Phase 3 — `/process-do --rebuild-catalog` 호출)
 
@@ -95,8 +97,8 @@ CR-4. 완료 후 결과 표 호출자(/process-do)에게 반환:
 ### C. 교차 표준 모드 (옵션 `--cross`)
 - 같은 HLS 조항(4~10)에 속한 서로 다른 표준의 Req-ID 를 나란히 배치, 통합 가능 지점 제안.
 
-12. `vault/00_MOC/MOC_추적성매트릭스.md` 인덱스에 신규 매트릭스 링크 추가.
-13. `vault/00_공통관리/02_문서번호체계.md` §MAT 번호 할당 원칙의 "표준별 추적성" 표에 신규 행 추가 (번호·표준코드·편입일).
+12. `{VAULT}/00_MOC/MOC_추적성매트릭스.md` 인덱스에 신규 매트릭스 링크 추가.
+13. `{VAULT}/00_공통관리/02_문서번호체계.md` §MAT 번호 할당 원칙의 "표준별 추적성" 표에 신규 행 추가 (번호·표준코드·편입일).
 
 ## 완료 시 State 갱신 (필수)
 - `_state.yaml` 의 `phases.trace` 를 `status: done` + `completed` + `artifacts[]` + `metrics{req_covered, req_uncovered, mat_rows_updated}` + `notes` 로 Edit.
