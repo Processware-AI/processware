@@ -4,6 +4,20 @@ description: vault → 외부 시스템 Process Library 단방향 동기화. fin
 
 vault를 외부 시스템 Process Library에 단방향 Push하는 스킬입니다.
 
+## 조직 컨텍스트 (공통 — org-layer §3 단계 1)
+
+본 커맨드의 모든 vault · inputs · sources · runs · queues · states 경로는 **활성 조직 루트** 기준으로 해석한다. 규약 전문: `.claude/utils/org_context.md`
+
+1. 진입 직후 1회 해석한다. 인자 `--org-root <path>` > `--org <id>` > 환경변수 `PROCESSWARE_ORG_ROOT` > `PROCESSWARE_ORG` > **fallback: default 조직(플랫폼 repo 의 `vault/`)**.
+   ```bash
+   python3 -m tools.org context --format env [--org <id> | --org-root <path>]
+   ```
+   exit ≠ 0 이면 즉시 중단하고 stderr 를 사용자에게 보여준다. 성공 시 `조직: {id} ({mode}) · 루트: {root}` 1줄을 출력하고 trace 첫 이벤트에 `org_id` · `org_root` · `org_source` 를 기록한다.
+2. **경로 치환 (단계 2 완료 전 임시)**: 본 문서와 에이전트 정의의 `vault/…` → `{PROCESSWARE_VAULT}/…`, `inputs/…` → `{PROCESSWARE_INPUTS}/…`, `sources/…` → `{PROCESSWARE_SOURCES}/…`, `.claude/runs|queues|states/…` → `{PROCESSWARE_RUNS|QUEUES|STATES}/…` 로 읽는다. 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`) 은 치환하지 않는다.
+3. 활성 조직 루트 밖에는 읽고 쓰지 않는다. `--org`/`--org-root` 는 다른 모드 인자와 함께 어느 위치에나 올 수 있다.
+
+---
+
 ## 사용법
 
 ```

@@ -1,6 +1,6 @@
 ---
 description: 표준 프로세스 심사 (차원 3 Check) — REC ↔ PRO/WI 요건 자동 대조 + 부적합 탐지 + 심사 보고서 발행. ISO §9.2 독립성 강제. 사용 ./process-check start <PRO|WI|범위> --auditor "이름" | --confirm <trace> | --status <trace>
-argument-hint: "start <PRO|WI|범위> --auditor \"이름\" | --resume <trace_id> | --confirm <trace_id> [--auditor \"이름\"] | --reject-finding <ncr_id> --reason \"...\" | --status <trace_id> | --list-ncr [--status open|closed] | --close-ncr <ncr_id> --capa <REC> [+ --dry-run | --override-independence (PoC만) | --period <from..to> | --strictness strict|normal|lenient]"
+argument-hint: "start <PRO|WI|범위> --auditor \"이름\" | --resume <trace_id> | --confirm <trace_id> [--auditor \"이름\"] | --reject-finding <ncr_id> --reason \"...\" | --status <trace_id> | --list-ncr [--status open|closed] | --close-ncr <ncr_id> --capa <REC> [+ --dry-run | --override-independence (PoC만) | --period <from..to> | --strictness strict|normal|lenient] [--org <id> | --org-root <path>]"
 ---
 
 # 표준 프로세스 심사 하네스 (차원 3 Check)
@@ -10,6 +10,20 @@ argument-hint: "start <PRO|WI|범위> --auditor \"이름\" | --resume <trace_id>
 본 커맨드는 차원 2 (`/process-do`) 가 누적한 **REC + trace.jsonl + MAT-005** 를 입력으로, AI 심사원이 **PRO/WI 요건 ↔ REC 충족 여부**를 자동 대조하여 **심사 보고서·부적합·KPI** 를 산출한다.
 
 상위 설계: `docs/표준프로세스_AI관리체계_4차원PDCA.md` §3 "차원 3 — CHECK" / §5.2 "AI 독립성 보장" / `docs/AI-Driven CMMI Operating Platform.md` Layer 2 회귀 방지
+
+---
+
+## 조직 컨텍스트 (공통 — org-layer §3 단계 1)
+
+본 커맨드의 모든 vault · inputs · sources · runs · queues · states 경로는 **활성 조직 루트** 기준으로 해석한다. 규약 전문: `.claude/utils/org_context.md`
+
+1. 진입 직후 1회 해석한다. 인자 `--org-root <path>` > `--org <id>` > 환경변수 `PROCESSWARE_ORG_ROOT` > `PROCESSWARE_ORG` > **fallback: default 조직(플랫폼 repo 의 `vault/`)**.
+   ```bash
+   python3 -m tools.org context --format env [--org <id> | --org-root <path>]
+   ```
+   exit ≠ 0 이면 즉시 중단하고 stderr 를 사용자에게 보여준다. 성공 시 `조직: {id} ({mode}) · 루트: {root}` 1줄을 출력하고 trace 첫 이벤트에 `org_id` · `org_root` · `org_source` 를 기록한다.
+2. **경로 치환 (단계 2 완료 전 임시)**: 본 문서와 에이전트 정의의 `vault/…` → `{PROCESSWARE_VAULT}/…`, `inputs/…` → `{PROCESSWARE_INPUTS}/…`, `sources/…` → `{PROCESSWARE_SOURCES}/…`, `.claude/runs|queues|states/…` → `{PROCESSWARE_RUNS|QUEUES|STATES}/…` 로 읽는다. 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`) 은 치환하지 않는다.
+3. 활성 조직 루트 밖에는 읽고 쓰지 않는다. `--org`/`--org-root` 는 다른 모드 인자와 함께 어느 위치에나 올 수 있다.
 
 ---
 

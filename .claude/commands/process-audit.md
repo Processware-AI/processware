@@ -1,6 +1,6 @@
 ---
 description: '외부 표준 부합성 심사 (GAP 분석) — inputs/ 의 표준 요건 ↔ 내부 POL/PRO/WI 커버리지 대조 → GAP 보고서 발행 + MAT-002 갱신. --export <trace_id> 로 외부 인증기관 제출용 XLSX/HTML/PDF 내보내기. 사용: /process-audit start --against <표준코드> | --confirm <trace> | --status <trace> | --export <trace_id> --format xlsx|html|pdf'
-argument-hint: 'start --against <표준코드> [--scope <모듈슬러그>] [--strictness strict|normal|lenient] [--llm-fallback] | --confirm <trace_id> [--not-applicable <조항>="사유"] [--adjust-gap <조항>=minor|major|critical] [--no-act-queue] | --status <trace_id> | --list [--status pending|done] | --export <trace_id> --format xlsx|html|pdf [--template default|iso9001|iso27001|cmmi] [--org "조직명"]'
+argument-hint: 'start --against <표준코드> [--scope <모듈슬러그>] [--strictness strict|normal|lenient] [--llm-fallback] | --confirm <trace_id> [--not-applicable <조항>="사유"] [--adjust-gap <조항>=minor|major|critical] [--no-act-queue] | --status <trace_id> | --list [--status pending|done] | --export <trace_id> --format xlsx|html|pdf [--template default|iso9001|iso27001|cmmi] [--org "조직명"] [--org <id> | --org-root <path>]'
 ---
 
 # 외부 표준 부합성 심사 하네스 (GAP 분석)
@@ -19,6 +19,20 @@ argument-hint: 'start --against <표준코드> [--scope <모듈슬러그>] [--st
     ↓  vault/01_POL / 03_PRO / 05_WI 의 frontmatter requirements[]
 gap-analyzer → coverage_matrix.yaml → gap-reporter → REC-GAP-*.md
 ```
+
+---
+
+## 조직 컨텍스트 (공통 — org-layer §3 단계 1)
+
+본 커맨드의 모든 vault · inputs · sources · runs · queues · states 경로는 **활성 조직 루트** 기준으로 해석한다. 규약 전문: `.claude/utils/org_context.md`
+
+1. 진입 직후 1회 해석한다. 인자 `--org-root <path>` > `--org <id>` > 환경변수 `PROCESSWARE_ORG_ROOT` > `PROCESSWARE_ORG` > **fallback: default 조직(플랫폼 repo 의 `vault/`)**.
+   ```bash
+   python3 -m tools.org context --format env [--org <id> | --org-root <path>]
+   ```
+   exit ≠ 0 이면 즉시 중단하고 stderr 를 사용자에게 보여준다. 성공 시 `조직: {id} ({mode}) · 루트: {root}` 1줄을 출력하고 trace 첫 이벤트에 `org_id` · `org_root` · `org_source` 를 기록한다.
+2. **경로 치환 (단계 2 완료 전 임시)**: 본 문서와 에이전트 정의의 `vault/…` → `{PROCESSWARE_VAULT}/…`, `inputs/…` → `{PROCESSWARE_INPUTS}/…`, `sources/…` → `{PROCESSWARE_SOURCES}/…`, `.claude/runs|queues|states/…` → `{PROCESSWARE_RUNS|QUEUES|STATES}/…` 로 읽는다. 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`) 은 치환하지 않는다.
+3. 활성 조직 루트 밖에는 읽고 쓰지 않는다. `--org`/`--org-root` 는 다른 모드 인자와 함께 어느 위치에나 올 수 있다.
 
 ---
 

@@ -141,14 +141,45 @@ def _die(msg):
     sys.exit(1)
 
 
+def _apply_org_context(args):
+    """--vault 미지정 시 활성 조직 컨텍스트(tools.org)의 vault 를 기본값으로 쓴다 (org-layer §3 단계 1).
+
+    next-seq 의 상대 --glob 은 조직 루트 기준으로 해석한다.
+    """
+    try:
+        from tools.org import resolve, OrgContextError
+    except ImportError:  # 플랫폼 밖에서 단독 실행
+        if args.vault is None:
+            args.vault = "vault"
+        return
+    try:
+        ctx = resolve()
+    except OrgContextError as e:
+        _die(str(e))
+    if args.vault is None:
+        args.vault = str(ctx.vault)
+    g = getattr(args, "glob", None)
+    if g and not Path(g).is_absolute():
+        args.glob = str(ctx.org_root / g)
+
+
 # ── Main ──────────────────────────────────────────────────────────────────────
 
 def main():
+    for _stream in (sys.stdout, sys.stderr):
+        if hasattr(_stream, "reconfigure"):
+            try:
+                _stream.reconfigure(encoding="utf-8", errors="replace")
+            except Exception:
+                pass
     parser = argparse.ArgumentParser(
         prog="python -m tools.vault_rules",
         description="Deterministic vault structure rules for processware",
     )
-    parser.add_argument("--vault", default="vault", help="Vault root directory (default: vault)")
+    parser.add_argument(
+        "--vault", default=None,
+        help="Vault root directory (default: 활성 조직 컨텍스트의 vault — tools.org, 미설정 시 ./vault)",
+    )
     sub = parser.add_subparsers(dest="command", required=True)
 
     # next-id
@@ -193,6 +224,7 @@ def main():
     p.add_argument("--digits", type=int, default=3, help="Zero-pad width (default: 3)")
 
     args = parser.parse_args()
+    _apply_org_context(args)
 
     dispatch = {
         "next-id":  cmd_next_id,

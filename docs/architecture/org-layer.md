@@ -1,7 +1,7 @@
 ---
 type: architecture
 title: 조직 계층 도입 설계 방향 — 플랫폼 1 + 조직 루트 N
-version: "0.3"
+version: "0.4"
 status: draft
 updated: 2026-11-04
 decided:
@@ -103,7 +103,7 @@ Obsidian 은 vault 가 자기완결적이어야 wikilink 가 동작한다. 따�
 
 | 단계 | 내용 | 영향 범위 |
 |---|---|---|
-| **1. 조직 컨텍스트 도입** | `PROCESSWARE_ORG_ROOT` 환경변수 또는 모든 커맨드의 `--org` 옵션으로 활성 조직을 정한다. 미지정 시 현재 `vault/` 를 `default` 조직으로 취급해 하위 호환을 유지한다 (단계 3 완료 시 이 fallback 은 제거). | 커맨드 9 |
+| **1. 조직 컨텍스트 도입** ✅ 구현 (2026-11-04) | `PROCESSWARE_ORG_ROOT` 환경변수 또는 모든 커맨드의 `--org <id>` / `--org-root <path>` 옵션으로 활성 조직을 정한다. 미지정 시 현재 `vault/` 를 `default` 조직으로 취급해 하위 호환을 유지한다 (단계 3 완료 시 이 fallback 은 제거). 구현: `tools/org/` (context · schema · registry · CLI) + `.claude/utils/org_context.md` 규약 + 커맨드 9개 공통 절 + `tools/vault_rules` 기본 vault 연동. §6 참조. | 커맨드 9 · tools |
 | **2. 경로 추상화** | 에이전트 · 커맨드 38개 중 **30개** 가 `vault/08_REC_기록` 같은 경로를 하드코딩하고 있다 (08_REC 68회 · 90_MAT 38회 · 05_WI 19회 · 02_적용요건 19회 …). 이를 `{VAULT}` · `{RUNS}` · `{QUEUES}` · `{STATES}` 변수로 치환한다. `tools/vault_rules` 는 이미 `--vault` 루트 인자를 받으므로 그대로 쓴다. | 에이전트 · 커맨드 30 |
 | **3. 스캐폴드 도구** | `python -m tools.org init {org_id}` 가 조직 루트를 생성하고 `core/vault_base` 를 복사한다. 현재 `vault/` 는 첫 조직(`default`) 으로 마이그레이션한다. | 신규 `tools/org/` |
 | **4. RBAC 조직화** | 현재 `policy.yaml` 은 역할 6종 정의만 있고 **사용자 배정이 없다**. 역할 정의는 플랫폼 템플릿으로 남기고, 사용자→역할 배정과 audit_log 는 `org.yaml` 로 내린다. independence-guard 는 활성 조직 파일만 읽는다. | independence-guard · policy.yaml |
@@ -135,7 +135,23 @@ Obsidian 은 vault 가 자기완결적이어야 wikilink 가 동작한다. 따�
 
 ---
 
-## 6. 관련 문서
+## 6. 구현 현황
+
+| 단계 | 상태 | 산출물 |
+|---|---|---|
+| 1. 조직 컨텍스트 도입 | ✅ 구현 (2026-11-04) | `tools/org/` — `context.py` (해석 우선순위 5단계 · 레이아웃), `schema.py` (org.yaml 검증), `registry.py` (`~/.processware/orgs.yaml`), `__main__.py` (`context` · `validate` · `init` · `register` · `unregister` · `list`), `templates/org.yaml`, `tests/` (unittest 15건). `.claude/utils/org_context.md` 해석 규약. 커맨드 9개에 "조직 컨텍스트 (공통)" 절 + `argument-hint` 에 `--org` / `--org-root` 추가. `tools/vault_rules` 의 `--vault` 기본값을 활성 조직 vault 로 연동. |
+| 2. 경로 추상화 | ⏳ 미착수 | 단계 1 의 "경로 치환 (임시 브리지)" 규칙으로 동작 중. 에이전트·커맨드 30개의 리터럴 경로를 변수 표기로 치환하면 브리지 규칙 삭제 |
+| 3. 스캐폴드 도구 | ⏳ 미착수 | `init` 은 org.yaml + 폴더 뼈대까지만. `core/vault_base/` 신설 + `sync-core` 미구현 |
+| 4~7 | ⏳ 미착수 | — |
+
+**단계 1 의 알려진 제한**
+- 조직 모드에서 `/process-plan` 을 돌리면 vault 공통 폴더(00_공통관리 · 01_구성원칙 · 99_템플릿) 가 없어 기준 문서를 찾지 못한다 → 단계 3 `sync-core` 전까지는 default 모드만 실사용 가능.
+- `publish/redmine/*` Python 은 아직 `vault/` 리터럴을 쓴다 (단계 6).
+- 에이전트가 호출하는 `python3 -m tools.vault_rules` 는 환경변수 `PROCESSWARE_ORG_ROOT` 를 상속받아야 조직 vault 를 본다. 커맨드가 `--org-root` 로 받은 값은 하위 호출 전에 환경변수로 export 한다.
+
+---
+
+## 7. 관련 문서
 
 - `derivative-products.md` — 3-Vault 생태계 (코어 + RFP-to-Proposal + Project Asset Generator). 분리 축이 프로덕트인 반면, 본 문서의 분리 축은 조직.
 - `../표준프로세스_AI관리체계_4차원PDCA.md` §Phase 5 — SaaS 멀티테넌트 로드맵.

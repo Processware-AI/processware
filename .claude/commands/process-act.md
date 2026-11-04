@@ -1,6 +1,6 @@
 ---
 description: 표준 프로세스 제·개정 (차원 4 Act) — act queue 를 받아 RCA → 개정 범위 결정 → PCB 승인 → 차원 1 재트리거. 4차원 PDCA 폐쇄 루프 마지막 단계. 사용 ./process-act start <queue_id> | --resume <trace> | --approve <trace> | --trigger-rebuild <trace>
-argument-hint: "start <queue_id> | --resume <trace_id> | --approve <trace_id> [--approver <이름>] | --reject <trace_id> --reason \"...\" | --trigger-rebuild <trace_id> [--dry-run] | --status <trace_id> | --list [--status pending|running|approved|done] [+ --dry-run | --rca-method 5why|fishbone|both | --auto-approve]"
+argument-hint: "start <queue_id> | --resume <trace_id> | --approve <trace_id> [--approver <이름>] | --reject <trace_id> --reason \"...\" | --trigger-rebuild <trace_id> [--dry-run] | --status <trace_id> | --list [--status pending|running|approved|done] [+ --dry-run | --rca-method 5why|fishbone|both | --auto-approve] [--org <id> | --org-root <path>]"
 ---
 
 # 표준 프로세스 제·개정 하네스 (차원 4 Act)
@@ -10,6 +10,20 @@ argument-hint: "start <queue_id> | --resume <trace_id> | --approve <trace_id> [-
 본 커맨드는 차원 3 (`/process-check`) 의 act-trigger 가 발행한 큐 (`.claude/queues/process-act/queue-q*.yaml`) 를 받아 **근본 원인 분석 → 개정 범위 결정 → PCB 승인 → 차원 1 재트리거** 의 4단계로 자산 개정을 자동화한다. 4차원 PDCA 의 **Act → Plan 재트리거 폐쇄 루프**.
 
 상위 설계: `docs/표준프로세스_AI관리체계_4차원PDCA.md` §3 차원 4 / §5.4 차원 4 재트리거 조건 / `docs/AI-Driven CMMI Operating Platform.md` Layer 3 자동 최적화 (ML5)
+
+---
+
+## 조직 컨텍스트 (공통 — org-layer §3 단계 1)
+
+본 커맨드의 모든 vault · inputs · sources · runs · queues · states 경로는 **활성 조직 루트** 기준으로 해석한다. 규약 전문: `.claude/utils/org_context.md`
+
+1. 진입 직후 1회 해석한다. 인자 `--org-root <path>` > `--org <id>` > 환경변수 `PROCESSWARE_ORG_ROOT` > `PROCESSWARE_ORG` > **fallback: default 조직(플랫폼 repo 의 `vault/`)**.
+   ```bash
+   python3 -m tools.org context --format env [--org <id> | --org-root <path>]
+   ```
+   exit ≠ 0 이면 즉시 중단하고 stderr 를 사용자에게 보여준다. 성공 시 `조직: {id} ({mode}) · 루트: {root}` 1줄을 출력하고 trace 첫 이벤트에 `org_id` · `org_root` · `org_source` 를 기록한다.
+2. **경로 치환 (단계 2 완료 전 임시)**: 본 문서와 에이전트 정의의 `vault/…` → `{PROCESSWARE_VAULT}/…`, `inputs/…` → `{PROCESSWARE_INPUTS}/…`, `sources/…` → `{PROCESSWARE_SOURCES}/…`, `.claude/runs|queues|states/…` → `{PROCESSWARE_RUNS|QUEUES|STATES}/…` 로 읽는다. 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`) 은 치환하지 않는다.
+3. 활성 조직 루트 밖에는 읽고 쓰지 않는다. `--org`/`--org-root` 는 다른 모드 인자와 함께 어느 위치에나 올 수 있다.
 
 ---
 

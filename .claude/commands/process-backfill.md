@@ -1,6 +1,6 @@
 ---
 description: 'REC 백필 (기존 산출물 → REC 변환) — 레거시 문서(DOCX/XLSX/PDF 등)를 WI 자동 매칭 후 표준 REC 로 변환. 배치·단건 모두 지원. 사용: /process-backfill <path> | --confirm <trace> | --resume <trace> | --status <trace> | --list'
-argument-hint: "<파일|폴더> [--wi WI-XX] [--backfiller <이름>] [--date YYYY-MM] [--scope <레이블>] [--ocr] [--dry-run] | --confirm <trace_id> | --resume <trace_id> | --status <trace_id> | --list"
+argument-hint: "<파일|폴더> [--wi WI-XX] [--backfiller <이름>] [--date YYYY-MM] [--scope <레이블>] [--ocr] [--dry-run] | --confirm <trace_id> | --resume <trace_id> | --status <trace_id> | --list [--org <id> | --org-root <path>]"
 ---
 
 # REC 백필 하네스
@@ -9,6 +9,20 @@ argument-hint: "<파일|폴더> [--wi WI-XX] [--backfiller <이름>] [--date YYY
 
 레거시 문서(Word·Excel·PDF 등)를 MAT-007 기반 자동 매칭 후 표준 REC 로 변환한다.  
 생성된 REC 는 `verdict_type: legacy_evidence` 로 마킹되어 `/process-check` 심사 시 별도 처리된다.
+
+---
+
+## 조직 컨텍스트 (공통 — org-layer §3 단계 1)
+
+본 커맨드의 모든 vault · inputs · sources · runs · queues · states 경로는 **활성 조직 루트** 기준으로 해석한다. 규약 전문: `.claude/utils/org_context.md`
+
+1. 진입 직후 1회 해석한다. 인자 `--org-root <path>` > `--org <id>` > 환경변수 `PROCESSWARE_ORG_ROOT` > `PROCESSWARE_ORG` > **fallback: default 조직(플랫폼 repo 의 `vault/`)**.
+   ```bash
+   python3 -m tools.org context --format env [--org <id> | --org-root <path>]
+   ```
+   exit ≠ 0 이면 즉시 중단하고 stderr 를 사용자에게 보여준다. 성공 시 `조직: {id} ({mode}) · 루트: {root}` 1줄을 출력하고 trace 첫 이벤트에 `org_id` · `org_root` · `org_source` 를 기록한다.
+2. **경로 치환 (단계 2 완료 전 임시)**: 본 문서와 에이전트 정의의 `vault/…` → `{PROCESSWARE_VAULT}/…`, `inputs/…` → `{PROCESSWARE_INPUTS}/…`, `sources/…` → `{PROCESSWARE_SOURCES}/…`, `.claude/runs|queues|states/…` → `{PROCESSWARE_RUNS|QUEUES|STATES}/…` 로 읽는다. 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`) 은 치환하지 않는다.
+3. 활성 조직 루트 밖에는 읽고 쓰지 않는다. `--org`/`--org-root` 는 다른 모드 인자와 함께 어느 위치에나 올 수 있다.
 
 ---
 

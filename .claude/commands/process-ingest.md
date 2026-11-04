@@ -1,6 +1,6 @@
 ---
 description: '표준 문서 전처리 (차원 0 Ingest) — sources/ 의 PDF·DOCX·PPTX 등을 추출·정규화·요구사항화하여 inputs/ 에 정제된 YAML·MD 패키지로 변환. /process-plan 의 선행 필수 단계. 사용: /process-ingest sources/ISO9001.pdf --standard ISO9001 --version 2015'
-argument-hint: "<source_file> --standard <ID> [--version <ver>] [--category <01-05>] [--ocr] [--mode delta --base-version <ver>] | --confirm <standard_id> [--mode delta] | --status <standard_id> | --list [--category <01-05>]"
+argument-hint: "<source_file> --standard <ID> [--version <ver>] [--category <01-05>] [--ocr] [--mode delta --base-version <ver>] | --confirm <standard_id> [--mode delta] | --status <standard_id> | --list [--category <01-05>] [--org <id> | --org-root <path>]"
 ---
 
 # 표준 문서 전처리 파이프라인 (차원 0 Ingest)
@@ -8,6 +8,20 @@ argument-hint: "<source_file> --standard <ID> [--version <ver>] [--category <01-
 대상 입력: **$ARGUMENTS**
 
 본 커맨드는 `sources/` 에 배치된 원본 문서(PDF·DOCX·PPTX 등)를 **추출 → 정규화 → 요구사항 단위 분할 → 분류 → 추적성 매핑 → QA 검토** 단계로 처리하여, `/process-plan` 이 안정적으로 읽을 수 있는 **정규화된 입력 패키지** 를 `inputs/` 에 생성한다.
+
+---
+
+## 조직 컨텍스트 (공통 — org-layer §3 단계 1)
+
+본 커맨드의 모든 vault · inputs · sources · runs · queues · states 경로는 **활성 조직 루트** 기준으로 해석한다. 규약 전문: `.claude/utils/org_context.md`
+
+1. 진입 직후 1회 해석한다. 인자 `--org-root <path>` > `--org <id>` > 환경변수 `PROCESSWARE_ORG_ROOT` > `PROCESSWARE_ORG` > **fallback: default 조직(플랫폼 repo 의 `vault/`)**.
+   ```bash
+   python3 -m tools.org context --format env [--org <id> | --org-root <path>]
+   ```
+   exit ≠ 0 이면 즉시 중단하고 stderr 를 사용자에게 보여준다. 성공 시 `조직: {id} ({mode}) · 루트: {root}` 1줄을 출력하고 trace 첫 이벤트에 `org_id` · `org_root` · `org_source` 를 기록한다.
+2. **경로 치환 (단계 2 완료 전 임시)**: 본 문서와 에이전트 정의의 `vault/…` → `{PROCESSWARE_VAULT}/…`, `inputs/…` → `{PROCESSWARE_INPUTS}/…`, `sources/…` → `{PROCESSWARE_SOURCES}/…`, `.claude/runs|queues|states/…` → `{PROCESSWARE_RUNS|QUEUES|STATES}/…` 로 읽는다. 플랫폼 자산(`.claude/agents|commands|utils|rbac`, `tools/`, `docs/`) 은 치환하지 않는다.
+3. 활성 조직 루트 밖에는 읽고 쓰지 않는다. `--org`/`--org-root` 는 다른 모드 인자와 함께 어느 위치에나 올 수 있다.
 
 ---
 

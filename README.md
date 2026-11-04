@@ -123,7 +123,8 @@ STD_Process_Builder/
 ├── (subproducts/ 없음 — 모든 파생은 별도 repo 운영)
 ├── inputs/                                  ← /process-ingest 정제 산출물 (01_표준원문 ~ 05_산업가이드)
 ├── sources/                                 ← 원본 표준·법규 파일 투하 (PDF/DOCX/HWPX)
-├── tools/vault_rules/                       ← 문서 ID 발급·파일명·frontmatter 검증 CLI (python -m)
+├── tools/vault_rules/                       ← 문서 ID 발급·파일명·frontmatter 검증 CLI (python -m, 활성 조직 vault 기본)
+├── tools/org/                               ← 조직 컨텍스트 CLI (context·validate·init·register·list) — org-layer 단계 1
 ├── .claude/                                 ← 4차원 자동화 인프라
 │   ├── commands/                            ← 슬래시 커맨드 7 + 통합 스킬 2
 │   │   ├── process-ingest.md               ← 차원 0 (9 Phase + flow-proposer)
@@ -173,7 +174,8 @@ STD_Process_Builder/
 │   │   │                                       run-{hex}/ do · run-a*/ audit · run-k*/ kpi
 │   │   │                                       run-g*/ GAP 분석 · run-c*/ act · run-b*/ backfill
 │   │   └── (ingest_* 는 .gitignore, 나머지 trace 는 감사 증적으로 커밋 대상)
-│   └── utils/                               ← Phase 4.5 명세 (3)
+│   └── utils/                               ← Phase 4.5 명세 (3) + 조직 컨텍스트 규약 (1)
+│       ├── org_context.md                   ← 활성 조직 루트 해석 규약 (org-layer 단계 1, impl)
 │       ├── business_days_kr.md              ← 한국 영업일 (KST 공휴일 14개)
 │       ├── pcb_quorum.md                    ← PCB 다단계 quorum (4 모드)
 │       └── auto_trend_mermaid.md            ← round ≥ 2 자동 트렌드
@@ -267,6 +269,12 @@ STD_Process_Builder/
 ## 사용법
 
 ### 0. 사전 준비
+0. **조직 컨텍스트 (선택)** — 모든 커맨드는 활성 조직 루트 기준으로 경로를 해석한다. 미설정 시 이 repo 의 `vault/` 가 `default` 조직이다 (단계 3 마이그레이션 후 제거 예정). 규약: `.claude/utils/org_context.md`
+   ```bash
+   python3 -m tools.org init /work/acme --org-id acme --name "ACME" --register   # 조직 루트 뼈대 (별도 repo 권장)
+   export PROCESSWARE_ORG_ROOT=/work/acme                                        # 또는 커맨드마다 --org acme / --org-root <path>
+   python3 -m tools.org context --format table                                   # 해석 결과 확인
+   ```
 1. Obsidian 에서 `vault/` 폴더를 **Open folder as vault** 로 열기.
 2. **입력자료 배치 (권장)** — `vault/02_표준/{표준코드}/_inputs/` 에 표준원문·법규·해설서·As-Is 투하. 상세 규칙: `vault/00_공통관리/05_입력자료_규칙.md`
 
@@ -566,3 +574,4 @@ Phase 4.5 extensions (명세 활성화):
 - **가이드 문서**: 4 (빌드 / 실행 / 심사 / 제·개정)
 - **Phase 4.5 명세**: 3 utils (영업일 / PCB quorum / 자동 트렌드) + RBAC extensions 4종
 - **Phase 5 구현**: publish/redmine/ (11 파일) + .github/workflows/vault-push.yml + 2 스킬
+- **조직 계층 (org-layer)**: 단계 1 조직 컨텍스트 구현 (`tools/org/`, 커맨드 9 공통 절, unittest 15) / 단계 2~7 미착수

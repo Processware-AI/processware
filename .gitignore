@@ -108,3 +108,6 @@ build/
 # ==========================================
 processmine.db
 *.db
+
+# 조직 루트를 플랫폼 repo 에 두고 테스트할 때 생기는 런타임 폴더 (org-layer 단계 1)
+.processware/
