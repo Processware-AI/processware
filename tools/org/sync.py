@@ -91,6 +91,7 @@ def _glob_to_re(pattern: str) -> "re.Pattern[str]":
 class Manifest:
     managed: list
     seed: list
+    org_owned: list = field(default_factory=list)   # managed 폴더 안의 조직 소유 예외 (가드 허용 · sync 미개입)
 
     @classmethod
     def load(cls, base: Path) -> "Manifest":
@@ -102,9 +103,13 @@ class Manifest:
         return cls(
             managed=[_glob_to_re(g) for g in data.get("managed") or []],
             seed=[_glob_to_re(g) for g in data.get("seed") or []],
+            org_owned=[_glob_to_re(g) for g in data.get("org_owned") or []],
         )
 
     def classify(self, rel: str) -> Optional[str]:
+        """managed | seed | org (조직 소유 예외) | None (미분류)"""
+        if any(r.match(rel) for r in self.org_owned):
+            return "org"
         if any(r.match(rel) for r in self.managed):
             return "managed"
         if any(r.match(rel) for r in self.seed):

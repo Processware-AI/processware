@@ -30,7 +30,7 @@ S-3. 일반 모드: 자기 phase `design` 을 `status: running` + `started` 로 
 ### Phase -1. 상태 Prerequisite 확인 + 레지스트리 분기
 - `_state.yaml` Read.
 - 선행 phase(`preflight`, `analyze`) 모두 `status: done` 확인. 아니면 중단.
-- **`phases.analyze.metrics` 에서 `integration_mode` 추출** (standard-analyzer 가 기록). 없으면 `[[07_표준분류레지스트리]]` 직접 조회.
+- **`phases.analyze.metrics` 에서 `integration_mode` 추출** (standard-analyzer 가 기록). 없으면 `[[07_표준분류레지스트리]]` (+ 조직 추가분 `07_표준분류레지스트리_조직추가.md`) 직접 조회.
 - 자가수정 모드 감지: orchestrator 요청에 `qa_failures` 서브셋이 포함되어 있으면 `assigned_to: process-designer` 항목만 수정 후 종료.
 - 정상 모드면 `phases.design` 을 `status: running`, `started: <now>` 로 Edit.
 

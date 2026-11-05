@@ -2,10 +2,15 @@
 #
 # managed : 플랫폼 관리 파일. sync 마다 조직 vault 에 덮어쓴다. 조직별 추가는 별도 파일로.
 # seed    : 조직 시드 파일. 조직 vault 에 없을 때만 복사하고 이후 조직이 소유·갱신한다 (--force 로 재시드).
+# org_owned : 관리 폴더 안이지만 조직이 소유하는 추가 파일 패턴 (예: 07_표준분류레지스트리_조직추가.md).
+#             managed 보다 우선 — 가드가 쓰기를 허용하고 sync-core 는 덮어쓰지 않는다. vault_base 에는 두지 않는다.
 # 두 목록 어디에도 없는 파일이 vault_base 에 있으면 sync-core 가 오류로 보고한다 (분류 누락 방지).
 # 경로는 vault_base 기준 POSIX 상대경로. ** / * / ? 지원. managed 가 seed 보다 우선.
 
 version: 1
+
+org_owned:
+  - "00_공통관리/*_조직추가.md"           # 조직별 추가 (용어집 · 표준분류레지스트리 등) — /process-plan Phase −2-1
 
 managed:
   - ".obsidian/**"

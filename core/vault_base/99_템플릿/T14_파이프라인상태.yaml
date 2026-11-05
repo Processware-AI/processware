@@ -2,6 +2,10 @@
 # 상세 규약: [[06_파이프라인_상태규약]]
 
 standard: "{{표준코드}}"
+org_id: "{{org_id}}"                 # 활성 조직 (org.yaml)
+git:
+  branch: "feat/{{슬러그}}-output"   # --no-branch 시 기준 브랜치
+  base: "main"                       # 조직 repo 기준 브랜치 ({BASE})
 pipeline_version: "1.0"
 created: "{{ISO8601_now}}"
 updated: "{{ISO8601_now}}"

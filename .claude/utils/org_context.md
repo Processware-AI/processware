@@ -1,7 +1,7 @@
 ---
 type: util-spec
 title: 조직 컨텍스트 — 활성 조직 루트 해석 규약 (org-layer §3 단계 1~7)
-version: "0.7"
+version: "0.8"
 owner: "QMR"
 status: impl                            # 단계 1 tools/org/ + 단계 2 경로 변수화 + 단계 3 sync-core 완료
 created: 2026-11-04
@@ -89,7 +89,8 @@ exit ≠ 0 이면 **즉시 중단** 하고 stderr 메시지를 사용자에게 �
 - 활성 조직 루트 **밖** 의 vault/inputs/sources/runs/queues/states 에는 읽기 · 쓰기 모두 하지 않는다.
 - 플랫폼 자산은 읽기 전용. `/process-act` 의 개정 제안도 조직 vault 안의 자산만 대상으로 한다.
 - `{VAULT}/00_공통관리` · `01_구성원칙` · `99_템플릿` · 각 폴더 `README.md` 는 **플랫폼 관리(managed)** 파일이다. 에이전트는 이 파일들을 수정하지 않는다 (sync-core 가 덮어쓴다). 조직별 추가는 별도 파일로.
-- git 작업(branch · commit)은 조직 루트 repo 에서 수행한다. 플랫폼 repo 는 건드리지 않는다.
+- git 작업(branch · commit · push)은 조직 루트 repo 에서만 수행한다 — 항상 `git -C {ORG_ROOT} …` (작업 디렉토리는 바꾸지 않는다). 플랫폼 repo 에서는 git 명령을 실행하지 않는다. 조직 루트가 다른 repo(특히 플랫폼 repo) 안에 중첩되어 있으면 중단한다. 브랜치 규약(branch-per-standard · 기준 브랜치 판정 · 등록 위치 · 재개)은 `/process-plan` Phase −2 가 정의한다.
+- 관리 폴더 안의 조직 추가 파일은 `*_조직추가.md` 패턴만 허용된다 (`core/vault_base/_manifest.yaml` → `org_owned`). 예: `00_공통관리/07_표준분류레지스트리_조직추가.md`.
 - **강제 (단계 5)** — `tools/org/guard.py` 가 경로를 org / platform / outside 로 분류하고 쓰기를 판정한다 (org 허용 · managed 거부 · platform 거부 · outside 거부):
   1. **Claude Code 훅**: `.claude/settings.json` PreToolUse (Write/Edit/MultiEdit/NotebookEdit) → `python3 -m tools.org.hook_guard`. 조직 컨텍스트가 있을 때 managed 파일 · 제거된 플랫폼 `vault/` 등 · outside 쓰기를 exit 2 로 차단. 플랫폼 자산 편집(개발 작업)은 차단하지 않는다.
   2. **`tools.vault_rules validate`**: 조직 vault 밖이거나 managed 파일이면 `격리 위반` 오류.

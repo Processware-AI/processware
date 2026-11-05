@@ -93,7 +93,7 @@ python3 -m tools.vault_rules validate --file {파일경로}
 **검사 방법**: Grep 으로 `{INPUTS}/01_표준원문/*.md` (PDF 텍스트 추출본 있을 경우) 의 15~20단어 샘플 문장을 산출물 전수 검색. 일치 시 **부적합(FAIL)**.
 
 ### 11.5 Integration Mode 정합성 (레지스트리 §4.3)
-`[[07_표준분류레지스트리]]` 에 등록된 각 표준의 `integration_mode` 대비 배치 정합성:
+`[[07_표준분류레지스트리]]` (+ 조직 추가분 `07_표준분류레지스트리_조직추가.md`) 에 등록된 각 표준의 `integration_mode` 대비 배치 정합성:
 
 - [ ] `interface_only` 표준이 **HLS 영역코드**(QMS/ISMS 등) POL/PRO 의 `standards[]` 에 단독 매핑됨 → **레이어 혼재 FAIL**
   - 예: `POL-QMS-001.md` 의 `standards: [ASPICE]` 단독 → FAIL (SPICE 전용 영역코드로 분리되어야)

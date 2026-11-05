@@ -56,6 +56,9 @@ class TestGuard(Base):
         self.assertIn("sync-core", managed.reason)
         readme = self.guard.check(self.root / "vault" / "03_POL_정책" / "README.md")
         self.assertFalse(readme.ok)                    # 폴더 README 도 managed
+        org_add = self.guard.check(self.root / "vault" / "00_공통관리" / "07_표준분류레지스트리_조직추가.md")
+        self.assertTrue(org_add.ok, org_add.reason)    # 관리 폴더 안의 *_조직추가.md 는 조직 소유 (Phase −2-1 등록 파일)
+        self.assertFalse(org_add.managed)
 
     def test_write_platform_and_outside(self):
         plat = self.guard.check(PLATFORM / "docs" / "x.md")

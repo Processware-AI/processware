@@ -126,6 +126,8 @@ def cmd_init(args):
     if args.register:
         oid, _ = registry.register(root)
         print(f"  레지스트리 등록: {oid} → {root}")
+    if not (root / ".git").exists():
+        print(f"  git: 조직 루트는 별도 repo 다 — `git -C {root} init -b main` 후 초기 커밋 권장 (/process-plan Phase −2-0 이 확인)")
     print(f"\n활성화: export {ENV_ORG_ROOT}={root}")
 
 

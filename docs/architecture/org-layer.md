@@ -155,7 +155,7 @@ Obsidian 은 vault 가 자기완결적이어야 wikilink 가 동작한다. 따�
 **알려진 제한 (단계 6 시점)**
 - Redmine 실 서버 연동은 네트워크가 없는 환경이라 미검증 (dry-run · 식별자 · 설정 경로만 테스트). 첫 실연동 시 `--setup --dry-run` 으로 확인.
 - 플랫폼 repo 에는 더 이상 `vault/` · `inputs/` · `sources/` 가 없다. 모든 커맨드는 `PROCESSWARE_ORG_ROOT` 또는 `--org`/`--org-root` 가 있어야 동작한다.
-- `/process-plan` Phase −2 (git branch 격리)는 vault 가 있는 repo 에서 branch 를 만든다는 전제다. 조직 루트가 별도 repo 가 되었으므로 git 작업은 `{ORG_ROOT}` 에서 해야 한다 (공통 절에 원칙만 명시, 커맨드 본문 보강은 단계 6~7).
+- ~~`/process-plan` Phase −2 (git branch 격리)는 vault 가 있는 repo 에서 branch 를 만든다는 전제다.~~ **해소 (2026-11-05)** — Phase −2 를 조직 repo 기준으로 재작성: 모든 git 명령은 `git -C {ORG_ROOT}`, −2-0 에서 repo 여부 · 중첩(플랫폼 repo 안) 차단 · 기준 브랜치 · origin 유무 · 기존 빌드 브랜치(재개) 검사, −2-1 사전 등록은 관리 파일 대신 조직 소유 파일(`org.yaml scopes` · `00_MOC/MOC_추적성매트릭스.md` · `07_표준분류레지스트리_조직추가.md`)에, Phase Final 에 플랫폼 repo 오염 검사. 이를 위해 manifest 에 `org_owned` (`00_공통관리/*_조직추가.md`) 예외를 추가했고 `_state.yaml` 에 `org_id` · `git.branch` · `git.base` 를 기록한다. 표준_빌드_워크플로우_가이드 v2.0 으로 갱신.
 - 사용자 가이드 4종 · 사용자_매뉴얼은 `vault/`, `.claude/runs/` 리터럴로 설명한다. 조직 루트 기준으로 읽는다. 본문 갱신은 후속 과제.
 - 에이전트가 호출하는 `python3 -m tools.vault_rules` 는 환경변수 `PROCESSWARE_ORG_ROOT` 를 상속받아야 한다. 커맨드가 `--org-root` 로 받은 값은 하위 호출 전에 export 한다.
 

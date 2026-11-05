@@ -39,36 +39,63 @@ argument-hint: "<모듈_또는_요건> [--restart] [--resume] [--from <phase>] [
 
 ## Phase −2: Git Branch 격리 (state 결정 직전)
 
-본 파이프라인은 **branch-per-standard** 정책을 따른다. main 은 harness 와 표준 등록 메타만 누적하고, 표준별 산출물은 격리된 feature branch 에 영구 보존한다.
+본 파이프라인은 **branch-per-standard** 정책을 따른다. 기준 브랜치 `{BASE}`(보통 main)는 조직 설정 · 등록 메타 · sync-core 결과만 누적하고, 표준별 산출물은 격리된 feature branch 에 영구 보존한다.
 
-### −2-1. 사전 등록 (main 작업)
+**git 작업 대상은 조직 루트 repo `{ORG_ROOT}` 하나다.** 플랫폼 repo(Claude Code 의 현재 작업 디렉토리일 수 있다)에서는 git 명령을 실행하지 않는다. 모든 git 명령은 `git -C {ORG_ROOT} …` 로 호출하고 `cd` 로 작업 디렉토리를 바꾸지 않는다 (하위 `python3 -m tools.*` 호출이 플랫폼 루트 기준이기 때문). `git add` 경로는 조직 루트 상대 경로(`vault/…`, `.processware/…`)다.
 
-표준 빌드 시작 전, 다음 두 파일에 **신규 표준 식별 정보**를 등록하고 main 에 직접 commit·push 한다:
+**예외**: `--no-branch` 플래그이면 −2-2 · −2-4 를 건너뛰고 `{BASE}` 단일 브랜치로 작업한다. −2-0 검증과 −2-1 등록은 그대로 수행한다.
 
-- `{VAULT}/00_공통관리/02_문서번호체계.md` — 영역 코드 표 신규 행 + MAT 표준별 추적성 표 신규 행
-- `{VAULT}/00_공통관리/07_표준분류레지스트리.md` — §2 해당 섹션에 row 추가 + §6 메타 모델 YAML block 추가
+### −2-0. 대상 repo 검증 · 기준 브랜치 결정
 
-**진행 절차**:
 ```bash
-git checkout main
-git pull --ff-only
-# (위 2개 파일 편집)
-git add {VAULT}/00_공통관리/02_문서번호체계.md {VAULT}/00_공통관리/07_표준분류레지스트리.md
-git commit -m "feat(registry): {표준코드} 영역코드 등록 + 표준분류레지스트리 등재"
-git push origin main
+git -C {ORG_ROOT} rev-parse --show-toplevel                      # (1) repo 여부 · 최상위 경로
+git -C {ORG_ROOT} symbolic-ref --short refs/remotes/origin/HEAD  # (2) 기준 브랜치 (origin/main 등)
+git -C {ORG_ROOT} remote get-url origin                          # (3) 원격 유무
+git -C {ORG_ROOT} status --porcelain                             # (4) 미커밋 변경
+git -C {ORG_ROOT} branch --list "feat/{슬러그}-output*"           # (5) 기존 빌드 브랜치
 ```
 
-**예외**: 사용자가 `--no-branch` 플래그로 비활성화하면 본 phase 전체를 skip (단일 main 작업 모드).
+| 검사 | 조건 | 동작 |
+|---|---|---|
+| (1) | 실패 — git repo 아님 | 질문: **A)** `git -C {ORG_ROOT} init -b main` → `git -C {ORG_ROOT} add -A` → `commit -m "chore(org): 조직 루트 초기화 ({org_id})"` 후 진행 (권장) · **B)** `--no-branch` 모드로 계속 (branch 격리 없음 — 최종 보고에 명시) |
+| (1) | 최상위 ≠ `{ORG_ROOT}` (상위 repo 에 중첩) 또는 최상위 = `{PLATFORM_ROOT}` | **즉시 중단** — 조직 루트는 별도 repo 여야 한다 (org-layer §5 결정 1). 상위 repo 에서 분리하거나 다른 루트를 지정하도록 안내 |
+| (2) | 원격 HEAD 없음 | `main` → `master` → 현재 브랜치 순으로 존재하는 첫 브랜치를 `{BASE}` 로 |
+| (3) | origin 없음 | pull · push 단계 생략. 로컬 브랜치만 운영하고 최종 보고에 `origin 없음` 표시 |
+| (4) | 변경 있음 | 목록을 보여주고 질문: 커밋/stash 후 진행 또는 그대로 진행(미커밋 변경은 체크아웃을 따라간다). 변경이 `vault/00_공통관리` · `01_구성원칙` · `99_템플릿` · 폴더 `README.md` · `org.yaml platform_version` · `.processware/sync-core.yaml` 뿐이면 sync-core 결과이므로 `{BASE}` 에 `chore(sync-core): platform {platform_version}` 로 먼저 커밋 |
+| (5) | `feat/{슬러그}-output` 존재 · `--restart` 아님 | 재개 후보 — 해당 브랜치를 체크아웃한 뒤 Phase −1 로 (`_state.yaml` 은 그 브랜치에 있다). `--restart` 면 일자 suffix 브랜치를 새로 만든다 |
+
+`조직 repo: {ORG_ROOT} · 기준: {BASE} · origin: 있음/없음` 1줄을 출력하고 trace 첫 이벤트에 `git_base` · `git_remote` 를 기록한다. 플랫폼 repo 의 `git -C {PLATFORM_ROOT} status --porcelain` 결과를 보관해 Phase Final 에서 대조한다.
+
+### −2-1. 사전 등록 (`{BASE}` 작업 — 조직 소유 파일만)
+
+표준 빌드 시작 전 신규 표준 식별 정보를 등록하고 `{BASE}` 에 직접 commit·push 한다. **플랫폼 관리 파일(`{VAULT}/00_공통관리/02_문서번호체계.md` · `07_표준분류레지스트리.md` 등)은 수정하지 않는다** — PreToolUse 훅이 막고 sync-core 가 덮어쓴다. 등록 위치는 모두 조직 소유 파일이다:
+
+| 항목 | 위치 (조직 소유) | 내용 |
+|---|---|---|
+| 영역코드 편입 | `{ORG_ROOT}/org.yaml` → `scopes` | 영역코드 추가 (예: `scopes: [QMS, ISMS]`). `python3 -m tools.org validate` 로 확인 — 플랫폼 레지스트리에 없는 코드는 warning 만 낸다 |
+| 플랫폼 레지스트리에 없는 **신규 표준** | `{VAULT}/00_공통관리/07_표준분류레지스트리_조직추가.md` (없으면 생성) | 플랫폼 레지스트리 §2 형식의 row + §6 형식의 메타 모델 YAML block. `standard-analyzer` · `process-designer` · `qa-reviewer` 는 플랫폼 레지스트리와 이 파일을 함께 조회한다. 플랫폼 레지스트리 편입은 플랫폼 PCB 심의 (별도 PR) |
+| 표준별 추적성 MAT 예약 | `{VAULT}/00_MOC/MOC_추적성매트릭스.md` §표준별 추적성 매트릭스 | 번호(MAT-011 부터 다음 미사용) · 표준 · 편입일 행 추가 — Trace 단계에서 traceability-mapper 가 확정 |
+
+```bash
+git -C {ORG_ROOT} checkout {BASE}
+git -C {ORG_ROOT} pull --ff-only                        # origin 있을 때만
+# (위 파일 편집)
+git -C {ORG_ROOT} add org.yaml vault/00_MOC/MOC_추적성매트릭스.md vault/00_공통관리/07_표준분류레지스트리_조직추가.md
+git -C {ORG_ROOT} commit -m "feat(registry): {표준코드} 영역코드 등록 — org.yaml scopes + MOC 추적성 예약"
+git -C {ORG_ROOT} push origin {BASE}                    # origin 있을 때만
+```
+
+이미 `scopes` 에 있고 MOC 에 등재된 표준(재빌드)이면 변경 없음으로 통과한다.
 
 ### −2-2. Feature branch 생성
 
-main 의 등록 commit 위에서 분기:
+`{BASE}` 의 등록 commit 위에서 분기:
 
 ```bash
-git checkout -b feat/{모듈슬러그}-output
+git -C {ORG_ROOT} checkout -b feat/{모듈슬러그}-output
 ```
 
-이후 모든 phase (preflight ~ qa, 자가수정) 는 이 branch 에서 작업.
+이후 모든 phase (preflight ~ qa, 자가수정) 는 이 branch 에서 작업. `_state.yaml` 에 `org_id` 와 `git: {branch, base}` 를 기록한다 (T14 템플릿 필드) — 재개 시 −2-0 (5) 와 대조하고, 현재 브랜치가 다르면 기록된 브랜치로 체크아웃한다.
 
 **branch 명 컨벤션**:
 - 형식: `feat/{모듈슬러그}-output`
@@ -81,6 +108,8 @@ git checkout -b feat/{모듈슬러그}-output
 
 ### −2-3. 작업 도중 commit 정책
 
+커밋 범위는 `vault/` 산출물 + `.processware/states/{슬러그}_state.yaml` + `.processware/runs/` (감사 증적) 이다. `vault/00_공통관리` 등 관리 폴더 변경이 diff 에 섞이면 산출물 커밋에 넣지 말고 `chore(sync-core): …` 로 분리한다.
+
 각 phase 종료 시 **선택적 중간 commit** (사용자 옵션 `--commit-per-phase` 시):
 - analyze 종료: `feat({슬러그}): analyze 완료 — 적용요건 REQ N건`
 - design 종료: `feat({슬러그}): design 완료 — POL N / PRO M`
@@ -88,26 +117,32 @@ git checkout -b feat/{모듈슬러그}-output
 - trace 종료: `chore({슬러그}): MAT 갱신 + MAT-{NNN} 신규`
 - qa 종료: `chore({슬러그}): QA attempt N — Pass/Fail 통계`
 
-기본은 **종료 시 일괄 4개 분할 commit**:
+기본은 **종료 시 일괄 4개 분할 commit** (모두 `git -C {ORG_ROOT}`):
 1. `feat({슬러그}): 산출물 + 적용요건 (POL/PRO/WI/TMP/EX/REF)`
 2. `chore(MAT): MAT-001~006 갱신 + MAT-{NNN} 신규`
-3. `docs(MOC): 전체표준·추적성매트릭스 인덱스 갱신`
+3. `docs(MOC): 전체표준·추적성매트릭스 인덱스 갱신 + state·trace`
 4. (필요 시) `fix({표준코드}): self-heal 후속 보정`
 
 ### −2-4. 종료 시 push
 
 `overall_status: done` 도달 시:
 ```bash
-git push -u origin feat/{슬러그}-output
+git -C {ORG_ROOT} push -u origin feat/{슬러그}-output      # origin 있을 때만
 ```
 
-main 에 merge 는 사용자 결정 사항. PR 생성 안내만 출력 (`gh pr create` 명령 예시).
+`{BASE}` 에 merge 는 사용자 결정 사항. PR 생성 안내만 출력한다 (실행하지 않음):
+```bash
+gh pr create -R <조직 repo> --base {BASE} --head feat/{슬러그}-output --title "feat({슬러그}): 표준 산출물"
+```
+조직 repo 에 `.github/workflows/vault-push.yml` 이 있고 `org.yaml redmine.enabled: true` 이면, `{BASE}` merge 시 Redmine Library push 가 자동 실행됨을 함께 알린다.
 
 ### −2-5. 안전 가드
 
-- main 에 절대 force-push 하지 않는다.
+- 플랫폼 repo 에서는 git 명령을 실행하지 않는다. Phase Final 에서 `git -C {PLATFORM_ROOT} status --porcelain` 이 −2-0 보관본과 다르면 🚩 로 보고한다 (플랫폼 오염).
+- `{BASE}` 에 절대 force-push 하지 않는다.
 - branch 에 force-push 가 필요하면 `--force-with-lease` 사용.
 - 빌드 실패·중단 시 branch 는 그대로 보존 (다음 attempt 재개 가능).
+- `git -C {ORG_ROOT} add` 에 `{ORG_ROOT}` 밖 경로를 넣지 않는다. `-A` 는 −2-0 (1)-A 초기화 때만.
 
 ---
 
@@ -179,7 +214,7 @@ main 에 merge 는 사용자 결정 사항. PR 생성 안내만 출력 (`gh pr c
    - **`--flow` 단독 실행 시**: 이 단계만 실행 (1~3 단계 생략). PRO/WI 가 이미 존재해야 함.
 
 4. **Trace** — Agent `traceability-mapper`
-   - 출력: `90_MAT_통합매핑/MAT-{NNN}_{표준코드}_추적성_*` (NNN 은 MAT-011 부터 순차. 기존 번호 스캔 후 max+1), 공통 매트릭스(MAT-001·003·004·005·006) 최신화, 02_문서번호체계 표에 신규 행 append
+   - 출력: `90_MAT_통합매핑/MAT-{NNN}_{표준코드}_추적성_*` (NNN 은 MAT-011 부터 순차. 기존 번호 스캔 후 max+1), 공통 매트릭스(MAT-001·003·004·005·006) 최신화, `00_MOC/MOC_추적성매트릭스.md` §표준별 추적성 표 확정 (관리 파일 `02_문서번호체계.md` 는 수정하지 않음)
    - done-marker: `phases.trace`
 
 5. **QA** — Agent `qa-reviewer` (옵션 `--skip-qa` 시 생략)
@@ -230,6 +265,7 @@ R-6. QA 결과로 루프 재평가.
 ## Phase Final: 마무리
 - `00_MOC/MOC_전체표준.md` 상태 ✅ 갱신
 - `_state.yaml` 의 `overall_status: done` 확인
+- 플랫폼 repo 오염 검사: `git -C {PLATFORM_ROOT} status --porcelain` 이 Phase −2-0 보관본과 같은지 확인 (다르면 🚩)
 - 생성/수정 파일 요약, 잔여 Issue 보고
 
 ---
@@ -245,7 +281,7 @@ R-6. QA 결과로 루프 재평가.
 | `--skip-qa` | QA·자가수정 루프 생략 |
 | `--cross` | trace 단계에서 교차 표준 통합 분석 포함 |
 | `--max-attempts N` | 자가수정 최대 횟수 변경 (기본 3) |
-| `--no-branch` | Phase −2 (git branch 격리) skip — 단일 main 작업 모드 |
+| `--no-branch` | Phase −2 의 −2-2 · −2-4 skip — 조직 repo `{BASE}` 단일 브랜치 모드 (−2-0 검증 · −2-1 등록은 수행) |
 | `--commit-per-phase` | 각 phase 종료 시 중간 commit (기본은 종료 시 일괄 4분할) |
 | `--flow` | Phase 3.5 (flow-mapper) 만 단독 실행. PRO/WI 가 이미 존재해야 함. MAT-010 재생성. |
 
@@ -268,5 +304,5 @@ R-6. QA 결과로 루프 재평가.
 - 🔗 `source_citation` 누락 건수 (목표: 0)
 - 📋 MAT 5종 갱신 요약
 - 🚩 잔여 Issue (`manual` 에스컬레이션 + 미해결)
-- 🌿 git branch 정보 (현재 branch / origin push 결과 / PR 생성 안내)
+- 🌿 git 정보 (조직 repo 경로 · `{BASE}` / 현재 branch / origin push 결과 또는 `origin 없음` / PR 생성 안내 / 플랫폼 repo 변경 없음 확인)
 - ➡️ 다음 권장 빌드 (연관 모듈·갭 보완 제안)

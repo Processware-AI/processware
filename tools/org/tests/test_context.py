@@ -151,6 +151,8 @@ class TestSync(EnvIsolation):
         self.assertEqual(m.classify("00_MOC/README.md"), "managed")
         self.assertEqual(m.classify("00_MOC/MOC_전체표준.md"), "seed")
         self.assertEqual(m.classify("90_MAT_통합매핑/MAT-001_문서관리대장.md"), "seed")
+        self.assertEqual(m.classify("00_공통관리/07_표준분류레지스트리_조직추가.md"), "org")   # 조직 소유 예외
+        self.assertEqual(m.classify("00_공통관리/07_표준분류레지스트리.md"), "managed")
 
     def test_sync_create_update_preserve(self):
         root = Path(self.tmp.name) / "acme"

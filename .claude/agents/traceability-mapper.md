@@ -98,7 +98,7 @@ CR-4. 완료 후 결과 표 호출자(/process-do)에게 반환:
 - 같은 HLS 조항(4~10)에 속한 서로 다른 표준의 Req-ID 를 나란히 배치, 통합 가능 지점 제안.
 
 12. `{VAULT}/00_MOC/MOC_추적성매트릭스.md` 인덱스에 신규 매트릭스 링크 추가.
-13. `{VAULT}/00_공통관리/02_문서번호체계.md` §MAT 번호 할당 원칙의 "표준별 추적성" 표에 신규 행 추가 (번호·표준코드·편입일).
+13. `{VAULT}/00_MOC/MOC_추적성매트릭스.md` §표준별 추적성 매트릭스 표의 예약 행(번호·표준코드·편입일)을 확정한다. 플랫폼 관리 파일 `00_공통관리/02_문서번호체계.md` 는 **수정하지 않는다** (sync-core 가 덮어씀 · 가드가 차단).
 
 ## 완료 시 State 갱신 (필수)
 - `_state.yaml` 의 `phases.trace` 를 `status: done` + `completed` + `artifacts[]` + `metrics{req_covered, req_uncovered, mat_rows_updated}` + `notes` 로 Edit.
